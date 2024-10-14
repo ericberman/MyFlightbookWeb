@@ -367,6 +367,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region utilities
         const string keyLastEndingHobbs = "LastHobbs";
         const string keyLastEndingTach = "LastTach";
+        const string keyLastEndingMeter = "LastMeter";
+        const string keyLastEndingFuel = "LastFuel";
         const string keyLastEntryDate = "LastEntryDate";
         const string keySessionInProgress = "InProgressFlight";
 
@@ -471,6 +473,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     Session[keyLastEndingHobbs] = le.HobbsEnd;
                     Session[keyLastEndingTach] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropTachEnd);
+                    Session[keyLastEndingMeter] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightMeterEnd);
+                    Session[keyLastEndingFuel] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtLanding);
                     Session[keyLastEntryDate] = le.Date; // new flight - save the date
                 }
 
@@ -606,6 +610,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // Set the starting hobbs - if a new flight - to the ending hobbs of the last flight, if present
                 le.HobbsStart = ((decimal?)Session[keyLastEndingHobbs]) ?? 0.0M;
                 le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, ((decimal?)Session[keyLastEndingTach]) ?? 0.0M));
+                le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightMeterStart, ((decimal?)Session[keyLastEndingMeter]) ?? 0.0M));
+                le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelAtStart, ((decimal?)Session[keyLastEndingFuel]) ?? 0.0M));
 
                 // If the user has entered another flight this session, default to that date rather than today
                 if (Session[keyLastEntryDate] != null)
@@ -615,6 +621,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Session.Remove(keyLastEndingHobbs);
                 Session.Remove(keyLastEndingTach);
                 Session.Remove(keyLastEntryDate);
+                Session.Remove(keyLastEndingMeter);
+                Session.Remove(keyLastEndingFuel);
             }
 
             return PartialView("_editFlight");

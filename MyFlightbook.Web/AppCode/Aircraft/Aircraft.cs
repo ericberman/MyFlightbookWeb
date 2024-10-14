@@ -2724,8 +2724,31 @@ ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.ID
                 val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
             });
             return val;
-
         }
+
+        public static decimal HighWaterMarkFlightMeter(int idAircraft, string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+            if (idAircraft <= 0)
+                return 0.0M;
+
+            decimal val = 0.0M;
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(meter.decvalue) AS highWater FROM
+(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
+ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.IDPropFlightMeterEnd));
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("id", idAircraft);
+            },
+            (dr) =>
+            {
+                val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
+            });
+            return val;
+        }
+
 
         #region Import WebMethods
         /// <summary>

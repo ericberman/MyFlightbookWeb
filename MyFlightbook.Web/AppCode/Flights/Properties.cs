@@ -189,6 +189,8 @@ namespace MyFlightbook
             IDPropMultiPilotTime = 664,
             IDPropRunwaysUsed = 651,
             IDPropXCMoreThan100nm = 665,
+            IDPropFlightMeterStart = 666,
+            IDPropFlightMeterEnd = 667,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,
             IDPropEnhancedVisionApproach = 670,

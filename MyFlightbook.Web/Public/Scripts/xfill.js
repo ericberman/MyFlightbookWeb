@@ -68,6 +68,36 @@ function getTachFill(currentlySelectedAircraft, baseUrl) {
     }
 }
 
+function getFlightMeterFill(currentlySelectedAircraft, baseUrl) {
+    return function (onResult) {
+        if (!currentlySelectedAircraft)
+            return;
+
+        var id = currentlySelectedAircraft();
+
+        if (id === null || id === '')
+            return;
+
+        var params = new Object();
+        params.idAircraft = id;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: baseUrl + '/HighWaterMarkFlightMeter',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                    if (onError !== null)
+                        onError();
+                },
+                complete: function () { },
+                success: function (response) {
+                    onResult(response.d);
+                }
+            });
+    }
+}
+
 function getHobbsFill(currentlySelectedAircraft, baseUrl) {
     return function (onResult) {
         if (!currentlySelectedAircraft)

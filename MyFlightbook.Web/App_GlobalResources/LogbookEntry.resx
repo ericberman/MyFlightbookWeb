@@ -2020,4 +2020,7 @@ Proceed with import?</value>
   <data name="ImportIconPendingFlight" xml:space="preserve">
     <value>Flight will be added to pending flights</value>
   </data>
+  <data name="FlightMeterXFillTip" xml:space="preserve">
+    <value>Set to highest previous flight meter ending value you've recorded in the selected aircraft</value>
+  </data>
 </root>

@@ -272,6 +272,21 @@ namespace MyFlightbook.Web.Ajax
         }
 
         /// <summary>
+        /// Returns the high-watermark flight meter for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [WebMethod(EnableSession = true)]
+        public string HighWaterMarkFlightMeter(int idAircraft)
+        {
+            CheckAuth();
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
+
+            return AircraftUtility.HighWaterMarkFlightMeter(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
         /// Returns the current time formatted in UTC or specified time-zone
         /// </summary>
         /// <returns>Now in the specified locale, adjusted for the timezone.</returns>

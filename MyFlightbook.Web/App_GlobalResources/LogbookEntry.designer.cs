@@ -1807,6 +1807,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set to highest previous flight meter ending value you&apos;ve recorded in the selected aircraft.
+        /// </summary>
+        internal static string FlightMeterXFillTip {
+            get {
+                return ResourceManager.GetString("FlightMeterXFillTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This flight has been modified since originally saved..
         /// </summary>
         internal static string FlightModified {
