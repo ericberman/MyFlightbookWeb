@@ -545,19 +545,14 @@
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
-    <Content Include="Controls\imageSlider.ascx" />
     <Content Include="Controls\mfbATDFTD.ascx" />
-    <Content Include="Controls\mfbBadgeSet.ascx" />
-    <Content Include="Controls\mfbCurrency.ascx" />
     <Content Include="Controls\mfbDateTime.ascx" />
     <Content Include="Controls\mfbDeadlines.ascx" />
     <Content Include="Controls\mfbDecimalEdit.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
-    <Content Include="Controls\mfbFacebookFan.ascx" />
     <Content Include="Controls\mfbFileUpload.ascx" />
     <Content Include="Controls\mfbFooter.ascx" />
-    <Content Include="Controls\mfbGoogleAdSense.ascx" />
     <Content Include="Controls\mfbHeader.ascx" />
     <Content Include="Controls\mfbHoverImageList.ascx" />
     <Content Include="Controls\mfbImageList.ascx" />
@@ -565,7 +560,6 @@
     <Content Include="Controls\mfbMultiFileUpload.ascx" />
     <Content Include="Controls\mfbQueryDescriptor.ascx" />
     <Content Include="Controls\mfbQueryDescriptorItem.ascx" />
-    <Content Include="Controls\mfbRecentAchievements.ascx" />
     <Content Include="Controls\mfbSearchbox.ascx" />
     <Content Include="Controls\mfbSearchForm.ascx" />
     <Content Include="Controls\mfbSignature.ascx" />
@@ -1423,7 +1417,6 @@
     <Content Include="Public\Scripts\Signature.js" />
     <Content Include="Public\Scripts\todataurl-png.js" />
     <Content Include="Public\Scripts\xfill.js" />
-    <Content Include="Public\StatsForMail.aspx" />
     <Content Include="Public\stylesheet.css" />
     <Content Include="Public\tabimages\AdminTab.png" />
     <Content Include="Public\tabimages\AircraftTab.png" />
@@ -1431,7 +1424,6 @@
     <Content Include="Public\tabimages\LogbookTab.png" />
     <Content Include="Public\tabimages\ProfileTab.png" />
     <Content Include="Public\tabimages\TrainingTab.png" />
-    <Content Include="Public\TotalsAndCurrencyEmail.aspx" />
     <Content Include="Public\UploadAirplanePicture.aspx" />
     <Content Include="Public\UploadEndorsement.aspx" />
     <Content Include="Public\UploadPicture.aspx" />
@@ -2061,33 +2053,12 @@
     <Compile Include="Controls\GoogleAnalytics.ascx.designer.cs">
       <DependentUpon>GoogleAnalytics.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\imageSlider.ascx.cs">
-      <DependentUpon>imageSlider.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\imageSlider.ascx.designer.cs">
-      <DependentUpon>imageSlider.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbATDFTD.ascx.cs">
       <DependentUpon>mfbATDFTD.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\mfbATDFTD.ascx.designer.cs">
       <DependentUpon>mfbATDFTD.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbBadgeSet.ascx.cs">
-      <DependentUpon>mfbBadgeSet.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbBadgeSet.ascx.designer.cs">
-      <DependentUpon>mfbBadgeSet.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbCurrency.ascx.cs">
-      <DependentUpon>mfbCurrency.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbCurrency.ascx.designer.cs">
-      <DependentUpon>mfbCurrency.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbDateTime.ascx.cs">
       <DependentUpon>mfbDateTime.ascx</DependentUpon>
@@ -2124,13 +2095,6 @@
     <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
       <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbFacebookFan.ascx.cs">
-      <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbFacebookFan.ascx.designer.cs">
-      <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbFileUpload.ascx.cs">
       <DependentUpon>mfbFileUpload.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2144,13 +2108,6 @@
     </Compile>
     <Compile Include="Controls\mfbFooter.ascx.designer.cs">
       <DependentUpon>mfbFooter.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbGoogleAdSense.ascx.cs">
-      <DependentUpon>mfbGoogleAdSense.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbGoogleAdSense.ascx.designer.cs">
-      <DependentUpon>mfbGoogleAdSense.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbHeader.ascx.cs">
       <DependentUpon>mfbHeader.ascx</DependentUpon>
@@ -2200,13 +2157,6 @@
     </Compile>
     <Compile Include="Controls\mfbQueryDescriptorItem.ascx.designer.cs">
       <DependentUpon>mfbQueryDescriptorItem.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\mfbRecentAchievements.ascx.cs">
-      <DependentUpon>mfbRecentAchievements.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbRecentAchievements.ascx.designer.cs">
-      <DependentUpon>mfbRecentAchievements.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbSearchbox.ascx.cs">
       <DependentUpon>mfbSearchbox.ascx</DependentUpon>
@@ -2450,20 +2400,6 @@
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\StatsForMail.aspx.cs">
-      <DependentUpon>StatsForMail.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\StatsForMail.aspx.designer.cs">
-      <DependentUpon>StatsForMail.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\TotalsAndCurrencyEmail.aspx.cs">
-      <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\TotalsAndCurrencyEmail.aspx.designer.cs">
-      <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\UploadAirplanePicture.aspx.cs">
       <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
