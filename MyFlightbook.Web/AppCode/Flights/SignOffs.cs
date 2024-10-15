@@ -260,7 +260,8 @@ namespace MyFlightbook.Instruction
                 // Not an ad-hoc endorsement: requires a valid instructor name and a valid expiration date
                 if (String.IsNullOrWhiteSpace(InstructorName))
                     throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
-                if (!CFIExpirationDate.HasValue() || CFIExpirationDate.CompareTo(Date) < 0)
+                bool fOptionalExpiration = DateTime.Now.Date.CompareTo(new DateTime(2024, 12, 1, 0, 0, 0)) >= 0;
+                if ((!fOptionalExpiration && !CFIExpirationDate.HasValue()) || (CFIExpirationDate.HasValue() && CFIExpirationDate.CompareTo(Date) < 0))
                     throw new MyFlightbookException(Resources.SignOff.errExpiredCertificate);
 
                 if (StudentType == StudentTypes.Member && !new CFIStudentMap(InstructorName).IsInstructorOf(StudentName))
