@@ -15,6 +15,8 @@
     bool fSICEndorsementEligible = le.SIC > 0 && (m.CategoryClassID == CategoryClass.CatClassID.AMEL || m.EngineType.IsTurbine());
     int copyPref = (int)(pfSigner?.GetPreferenceForKey(MFBConstants.keyPrefCopyFlightToCFI) ?? 0);
     bool showNext = !fAdhoc && pfSigner.UserName.CompareCurrentCulture(User.Identity.Name) == 0 && le != null && LogbookEntryBase.PendingSignaturesForStudent(pfSigner, MyFlightbook.Profile.GetUser(le.User)).Count() > 1;
+    DateTime dtNow = DateTime.Now.Date;
+    bool fExpirationOptional = dtNow.CompareTo(new DateTime(2024, 12, 1, 0, 0, 0)) >= 0; // as of Dec 1 2024, expiration dates are optional for CFIs, at least in the US.
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, pfTarget.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
@@ -69,12 +71,11 @@ else if (fPickSigner)
                 IDictionary<string, LogbookEntry> adHocInstructors = LogbookEntryBase.PreviouslySignedAdhocFlightsForUser(pfTarget.UserName);
                 List<string> adHocNames = new List<string>(adHocInstructors.Keys);
                 adHocNames.Sort();
-                DateTime dtNow = DateTime.Now.Date;
-                int cExpired = instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
+                int cExpired = fExpirationOptional ? instructors.Count() + adHocInstructors.Count : instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
                 int cInstructors = instructors.Count() + adHocNames.Count;
                 bool fShowMore = cExpired > 0 && cExpired < cInstructors;
 
-                if (fShowMore)
+                if (fShowMore && !fExpirationOptional)
                 {
                     <style type="text/css">
                         .expiredCert {
@@ -85,7 +86,7 @@ else if (fPickSigner)
 
                 foreach (InstructorStudent instructor in instructors)
                 {
-                    bool fExpired = instructor.CertificateExpiration.CompareTo(dtNow) < 0;
+                    bool fExpired = !fExpirationOptional && instructor.CertificateExpiration.CompareTo(dtNow) < 0;
                     <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
                         <img src="@("~/images/signaturesm.png".ToAbsolute())" style="visibility:hidden" />
                         <a href="#" onclick="javascript: selectInstructor('@instructor.UserName'); return false;">@instructor.UserFullName</a>
@@ -201,7 +202,7 @@ else
                 cfiEmail: "required",
                 cfiCert: "required",
                 hdnSigData: "required",
-                cfiExpiration: { @(le.IsGroundOnly ? string.Empty : "required : true,") validDate: true }
+                cfiExpiration: { @(le.IsGroundOnly || fExpirationOptional ? string.Empty : "required : true,") validDate: true }
             }, {
                 cfiName: "@Resources.SignOff.errProvideNameToSign",
                 cfiEmail: {
@@ -216,7 +217,7 @@ else
             v.settings.ignore = ":hidden:not('#hdnSigData')";
 
             $("#txtCFIExpiration").width(280);
-            $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
+            $("#txtCFIExpiration").attr("required", @Json.Encode(!fExpirationOptional && !le.IsGroundOnly));
         });
     </script>
     <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>

@@ -1417,9 +1417,9 @@ namespace MyFlightbook
         /// Signs a flight, updating the relevant fields.  Throws exceptions if the user is not eligible to sign.
         /// </summary>
         /// <param name="szCFIUsername">Name of the signing user</param>
-        /// <param name="fGroundOrATP">True if we can ignore missing expiration dates.</param>
+        /// <param name="fOptionalExpiration">True if we can ignore missing expiration dates.</param>
         /// <param name="szComment">Any additional comment from the CFI</param>
-        public void SignFlightAuthenticated(string szCFIUsername, string szComment, bool fGroundOrATP)
+        public void SignFlightAuthenticated(string szCFIUsername, string szComment, bool fOptionalExpiration)
         {
             Profile pfCFI = Profile.GetUser(szCFIUsername);
 
@@ -1430,7 +1430,7 @@ namespace MyFlightbook
             if (!CanSignThisFlight(szCFIUsername, out string szErr))
                 throw new MyFlightbookException(szErr);
 
-            if (!pfCFI.CanSignFlights(out szErr, fGroundOrATP))
+            if (!pfCFI.CanSignFlights(out szErr, fOptionalExpiration))
                 throw new MyFlightbookException(szErr);
 
             DigitizedSignature = null;
