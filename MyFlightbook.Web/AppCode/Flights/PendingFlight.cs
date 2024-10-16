@@ -62,6 +62,8 @@ namespace MyFlightbook
             // Populating an object doesn't fully flesh out a custom property with its type
             foreach (CustomFlightProperty cfp in this.CustomProperties)
                 cfp.InitPropertyType(new CustomPropertyType[] { CustomPropertyType.GetCustomPropertyType(cfp.PropTypeID) });
+
+            ErrorString = FlightColorHex = string.Empty;    // these may have been null due to JsonConvert.  Ensure they have values to avoid breaking android
             // Also fix up any missing tail mappings - aircraft may have been added to the user's account since we last saved this pending flight
         }
 

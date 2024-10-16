@@ -239,7 +239,7 @@ namespace MyFlightbook
         /// A place to store and serialize the color for the flight for flightcoloring.  MUST BE EXPLICITLY SET; it is NOT automatically computed.
         /// Representation is either null/empty, or 6 hex digits.
         /// </summary>
-        public string FlightColorHex { get; set; }
+        public string FlightColorHex { get; set; } = string.Empty;
 
         /// <summary>
         /// An error message for the last operation that failed
