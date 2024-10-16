@@ -10,7 +10,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
 
@@ -101,9 +100,9 @@ namespace MyFlightbook
     public class MakeModel
     {
         public const int UnknownModel = -1;
-        private string szSampleAircraftIDs = "";
-        static readonly Regex rModelNormalize = new Regex("[^a-zA-Z0-9 ]*", RegexOptions.Compiled);
-        static readonly Regex rModelNormalizeNoSpace = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
+        private string szSampleAircraftIDs = string.Empty;
+        static readonly LazyRegex rModelNormalize = new LazyRegex("[^a-zA-Z0-9 ]*");
+        static readonly LazyRegex rModelNormalizeNoSpace = new LazyRegex("[^a-zA-Z0-9]*");
 
         /// <summary>
         /// For turbine aircraft, indicates the type of turbine
@@ -1109,7 +1108,7 @@ WHERE {1}";
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ModelSortDirection { Ascending, Descending };
 
-        static readonly Regex rNormalizeModel = new Regex("[- ]+", RegexOptions.Compiled);
+        static readonly LazyRegex rNormalizeModel = new LazyRegex("[- ]+");
 
         /// <summary>
         /// Prefix to use for modelname to force to Family.

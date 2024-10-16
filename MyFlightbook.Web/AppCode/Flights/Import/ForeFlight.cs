@@ -137,6 +137,9 @@ namespace MyFlightbook.ImportFlights
 
             return szPerson;
         }
+
+        private readonly static LazyRegex rApproachFixed = new LazyRegex(" ?\\(GPS\\)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private readonly static LazyRegex rModelFixed = new LazyRegex(" *[([]?SIM[)\\]]?$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
         
         public override LogbookEntry ToLogbookEntry()
         {
@@ -155,7 +158,7 @@ namespace MyFlightbook.ImportFlights
             {
                 if (!String.IsNullOrWhiteSpace(szApproach))
                 {
-                    string szFixedApproach = Regex.Replace(szApproach, " ?\\(GPS\\)", "/GPS", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
+                    string szFixedApproach = rApproachFixed.Expr.Replace(szApproach, "/GPS");
                     try
                     {
                         MatchCollection mc = RegexUtility.ApproachDescriptionForeflight.Matches(szFixedApproach);
@@ -202,7 +205,7 @@ namespace MyFlightbook.ImportFlights
             if (AircraftID.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
                 AircraftID = CountryCodePrefix.szSimPrefix;
 
-            string szModel = Regex.Replace(((String.IsNullOrEmpty(TypeCode) ? Model : TypeCode) ?? string.Empty), " *[([]?SIM[)\\]]?$", String.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
+            string szModel = rModelFixed.Expr.Replace(((String.IsNullOrEmpty(TypeCode) ? Model : TypeCode) ?? string.Empty), string.Empty);
 
             LogbookEntry le = new LogbookEntry()
             {
@@ -261,7 +264,7 @@ namespace MyFlightbook.ImportFlights
 
     public class ForeFlightImporter : ExternalFormatImporter
     {
-        private readonly static Regex rDataTypes = new Regex("^(Text|hhmm|Decimal|Boolean)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly static LazyRegex rDataTypes = new LazyRegex("^(Text|hhmm|Decimal|Boolean)$", true);
         private readonly Dictionary<string, ForeFlightAircraftDescriptor> dictAircraft = new Dictionary<string, ForeFlightAircraftDescriptor>();
 
         public override string Name { get { return "ForeFlight"; } }

@@ -1,12 +1,11 @@
 ﻿using MyFlightbook;
 using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2022 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,7 +46,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
         }
     }
 
-    private readonly static Regex rTimeOnly = new Regex("^\\w*\\d\\d?\\:\\d\\d\\w*$", RegexOptions.Compiled);
+    private readonly static LazyRegex rTimeOnly = new LazyRegex("^\\w*\\d\\d?\\:\\d\\d\\w*$");
     public DateTime DateAndTime
     {
         get {

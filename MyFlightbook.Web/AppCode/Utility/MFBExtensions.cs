@@ -269,8 +269,8 @@ namespace MyFlightbook
             return defVal;
         }
 
-        static readonly Regex rZuluDateLocalWithOffset = new Regex("(?<sign>[-+])(?<hours>\\d{2})(?<minutes>\\d{2})$", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
-        static readonly Regex rZuluDateTime = new Regex("^(?<year>\\d{4})[-/.](?<month>\\d{2})[-/.](?<day>\\d{2})T(?<hour>\\d{2})[-:.](?<minute>\\d{2})[-:.](?<seconds>\\d{2}([.,]\\d*)?)Z$", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        static readonly LazyRegex rZuluDateLocalWithOffset = new LazyRegex("(?<sign>[-+])(?<hours>\\d{2})(?<minutes>\\d{2})$", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        static readonly LazyRegex rZuluDateTime = new LazyRegex("^(?<year>\\d{4})[-/.](?<month>\\d{2})[-/.](?<day>\\d{2})T(?<hour>\\d{2})[-:.](?<minute>\\d{2})[-:.](?<seconds>\\d{2}([.,]\\d*)?)Z$", RegexOptions.Singleline | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// Parse the specified string, assigning it UTC if it is in 8601 format

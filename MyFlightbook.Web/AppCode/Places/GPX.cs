@@ -10,7 +10,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +19,7 @@ namespace MyFlightbook.Telemetry
 {
     public class GPXParser : TelemetryParser
     {
-        private static readonly Regex rGPX = new Regex("^<gpx [^>]*xmlns[:=]", RegexOptions.Compiled | RegexOptions.Multiline);
+        private static readonly LazyRegex rGPX = new LazyRegex("^<gpx [^>]*xmlns[:=]", RegexOptions.Multiline);
 
         public GPXParser() : base() { }
 

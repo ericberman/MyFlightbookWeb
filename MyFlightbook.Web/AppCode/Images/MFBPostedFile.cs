@@ -60,7 +60,7 @@ namespace MyFlightbook.Image
             ContentLength = contentLength;
         }
 
-        private static readonly Regex rDataUrl = new Regex("^data:((?<type>[\\w\\/]+))?;base64,(?<data>.+)$", RegexOptions.Compiled);
+        private static readonly LazyRegex rDataUrl = new LazyRegex("^data:((?<type>[\\w\\/]+))?;base64,(?<data>.+)$");
 
         /// <summary>
         /// Create an MFBPostedFile from a dataURL

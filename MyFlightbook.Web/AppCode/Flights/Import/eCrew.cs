@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,7 +69,7 @@ namespace MyFlightbook.ImportFlights
             PICName = ((string)dr["Name PIC"]) ?? string.Empty;
         }
 
-        private static readonly Regex rTime = new Regex("(?<hour>\\d{1,2}):(?<min>\\d{2})", RegexOptions.Compiled);
+        private static readonly LazyRegex rTime = new LazyRegex("(?<hour>\\d{1,2}):(?<min>\\d{2})");
 
         public override LogbookEntry ToLogbookEntry()
         {
@@ -173,9 +173,9 @@ namespace MyFlightbook.ImportFlights
             }
         }
 
-        private static readonly Regex rTop = new Regex("top: *(?<yval>\\d+)px", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex rLeft = new Regex("left: *(?<xval>\\d+)px", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex rZIndex = new Regex("z-index:", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly LazyRegex rTop = new LazyRegex("top: *(?<yval>\\d+)px", true);
+        private static readonly LazyRegex rLeft = new LazyRegex("left: *(?<xval>\\d+)px", true);
+        private static readonly LazyRegex rZIndex = new LazyRegex("z-index:", true);
 
         private static IList<PositionedDiv> ParseDivs(byte[] rgb)
         {

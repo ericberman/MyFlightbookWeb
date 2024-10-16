@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Copyright (c) 2020-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -84,7 +84,7 @@ namespace MyFlightbook.ImportFlights
 
         public override string Name { get { return "AA Scheduler"; } }
 
-        private readonly static Regex regAA = new Regex("^FLT,(?<startdate>[0-9/-]{8,10}),(?<starttime>\\d{1,2}:\\d{2}),(?<enddate>[0-9/-]{8,10}),(?<endtime>\\d{1,2}:\\d{2}),(?<seq>[^,]*),(?<leg>[^,]*),(?<deadhead>\\(D\\) )?(?<flightnum>\\d+),(?<from>[a-zA-Z0-9]+),(?<to>[a-zA-Z0-9]+),(?<blocktime>[0-9:]+),.*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private readonly static LazyRegex regAA = new LazyRegex("^FLT,(?<startdate>[0-9/-]{8,10}),(?<starttime>\\d{1,2}:\\d{2}),(?<enddate>[0-9/-]{8,10}),(?<endtime>\\d{1,2}:\\d{2}),(?<seq>[^,]*),(?<leg>[^,]*),(?<deadhead>\\(D\\) )?(?<flightnum>\\d+),(?<from>[a-zA-Z0-9]+),(?<to>[a-zA-Z0-9]+),(?<blocktime>[0-9:]+),.*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         public override bool CanParse(byte[] rgb)
         {

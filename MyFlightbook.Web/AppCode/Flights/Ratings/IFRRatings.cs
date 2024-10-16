@@ -3,7 +3,6 @@ using MyFlightbook.Currency;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -84,7 +83,7 @@ namespace MyFlightbook.RatingsProgress
 
         protected int MaxAATDTime { get; set; } = 20;
 
-        static readonly Regex regAATD = new Regex("\\bAATD\\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static readonly LazyRegex regAATD = new LazyRegex("\\bAATD\\b", true);
 
         protected int MinXCDistance { get; set; } = 250;
 

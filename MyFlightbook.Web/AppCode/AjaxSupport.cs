@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
 using System.ServiceModel;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Services;
 
@@ -420,11 +419,9 @@ namespace MyFlightbook.Web.Ajax
             CheckAuth();
 
             // Verify that both colors are valid colors
-            Regex r = new Regex("^#[a-zA-Z0-9]{6}$", RegexOptions.IgnoreCase);
-
-            if (!String.IsNullOrWhiteSpace(routeColor) && !r.IsMatch(routeColor))
+            if (!String.IsNullOrWhiteSpace(routeColor) && !RegexUtility.HexColor.IsMatch(routeColor))
                 throw new ArgumentOutOfRangeException("Invalid route color: " + routeColor);
-            if (!String.IsNullOrWhiteSpace(pathColor) && !r.IsMatch(pathColor))
+            if (!String.IsNullOrWhiteSpace(pathColor) && !RegexUtility.HexColor.IsMatch(pathColor))
                 throw new ArgumentOutOfRangeException("Invalid path color: " + pathColor);
             Profile pf = Profile.GetUser(User.Identity.Name);
             pf.SetPreferenceForKey(MFBConstants.keyRouteColor, routeColor, String.IsNullOrWhiteSpace(routeColor));

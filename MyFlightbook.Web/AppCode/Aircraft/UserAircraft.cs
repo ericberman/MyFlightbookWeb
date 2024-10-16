@@ -194,7 +194,7 @@ namespace MyFlightbook
             return GetAircraftForUserInternal(AircraftRestriction.UserAircraft).Find(pred);
         }
 
-        private readonly static Regex rAlias = new Regex("#ALT(?<altname>[a-zA-Z0-9-]+)#", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly static LazyRegex rAlias = new LazyRegex("#ALT(?<altname>[a-zA-Z0-9-]+)#", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Returns a string-indexable dictionary of tails 

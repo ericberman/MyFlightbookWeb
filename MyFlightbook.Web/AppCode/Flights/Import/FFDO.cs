@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2022 MyFlightbook LLC
+ * Copyright (c) 2022-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,7 +31,7 @@ namespace MyFlightbook.ImportFlights
 
         public FFDO(DataRow dr) : base(dr) { }
 
-        static private readonly Regex rTime = new Regex("^(?<hour>\\d{1,2}):?(?<min>\\d{2})$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        static private readonly LazyRegex rTime = new LazyRegex("^(?<hour>\\d{1,2}):?(?<min>\\d{2})$", RegexOptions.CultureInvariant);
 
         private static DateTime FixDateForTime(DateTime dtRef, string szTime)
         {

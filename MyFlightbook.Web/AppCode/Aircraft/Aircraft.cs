@@ -2195,8 +2195,8 @@ WHERE
 
         // Per https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/forming_nnumber, N1-N99 are allowed but reserved by FAA.  Explicitly allow these.
         private const string RegexValidTail = "^([a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+)|(N[1-9]\\d?)$";
-        public static readonly Regex rValidTail = new Regex(RegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        public static readonly Regex rValidNNumber = new Regex("^(N[^inoINO0][^ioIO]+)|(N[1-9]\\d?)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly LazyRegex rValidTail = new LazyRegex(RegexValidTail, RegexOptions.IgnoreCase);
+        public static readonly LazyRegex rValidNNumber = new LazyRegex("^(N[^inoINO0][^ioIO]+)|(N[1-9]\\d?)$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)
@@ -2431,12 +2431,14 @@ ORDER BY aircraft.instancetype, aircraft.idmodel");
             return lstAc;
         }
 
+        private static readonly LazyRegex rWild = new LazyRegex("[^a-zA-Z0-9#?]");
+
         public static IEnumerable<Aircraft> AircraftMatchingPattern(string szPattern)
         {
             if (String.IsNullOrEmpty(szPattern))
                 return Array.Empty<Aircraft>();
 
-            string szTailToMatch = Regex.Replace(szPattern, "[^a-zA-Z0-9#?]", "*").ConvertToMySQLWildcards();
+            string szTailToMatch = rWild.Replace(szPattern, "*").ConvertToMySQLWildcards();
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", @"WHERE tailnormal LIKE ?tailNum"));
 

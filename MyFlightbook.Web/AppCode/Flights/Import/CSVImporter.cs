@@ -7,7 +7,6 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -517,8 +516,8 @@ namespace MyFlightbook.ImportFlights
             #endregion
 
             #region FlightFromRow helpers
-            private static readonly Regex regGarminApproaches = new Regex("\\((?<count>\\d+)\\)$", RegexOptions.Compiled);
-            private static readonly Regex regForeFlightApproaches = new Regex("^(?<count>\\d+)", RegexOptions.Compiled);
+            private static readonly LazyRegex regGarminApproaches = new LazyRegex("\\((?<count>\\d+)\\)$");
+            private static readonly LazyRegex regForeFlightApproaches = new LazyRegex("^(?<count>\\d+)");
             private void InitFlightFromRowMainFields(LogbookEntry le)
             {
                 // Handle approaches where approach might be a string and properly mapped to approach name(s) property
@@ -666,7 +665,7 @@ namespace MyFlightbook.ImportFlights
 
                 string szModelShort = null;
                 // See if we can find the aircraft by tail, by unambiguous ID, or in the aircraft mapping
-                Aircraft ac = m_cm.AircraftForUser[idAircraft] ?? m_cm.AircraftForUser[szTail] ?? MappedAircraftForTailModel(szTail, szModel, out szModelShort);
+                Aircraft ac = m_cm.AircraftForUser[idAircraft] ?? (m_cm.AircraftForUser.DictAircraftForUser().TryGetValue(szTail, out Aircraft acFound) ? acFound : MappedAircraftForTailModel(szTail, szModel, out szModelShort));
                 if (ac == null)
                 {
                     if (!dictFoundAircraft.ContainsKey(szTail)) // Avoid more than one DB hit per aircraft

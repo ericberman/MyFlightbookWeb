@@ -177,8 +177,8 @@ namespace MyFlightbook.Geography
         }
         #endregion
 
-        private readonly static Regex regPosition = new Regex("([NnSs]) ?(\\d{1,2}) (\\d{0,2}(?:.\\d*)?) ([EeWw]) ?(\\d{1,3}) (\\d{0,2}(?:.\\d*)?)", RegexOptions.Compiled);
-        private readonly static Regex regPositionTuple = new Regex("(?<lat>-?\\d{1,2}(\\.\\d*)?),(?<lon>-?\\d{1,3}(\\.\\d*)?)", RegexOptions.Compiled);
+        private readonly static LazyRegex regPosition = new LazyRegex("([NnSs]) ?(\\d{1,2}) (\\d{0,2}(?:.\\d*)?) ([EeWw]) ?(\\d{1,3}) (\\d{0,2}(?:.\\d*)?)");
+        private readonly static LazyRegex regPositionTuple = new LazyRegex("(?<lat>-?\\d{1,2}(\\.\\d*)?),(?<lon>-?\\d{1,3}(\\.\\d*)?)");
         /// <summary>
         /// Creates a LatLong from a position string in the flight data format N 46 34.345 W 122 43.34
         /// </summary>

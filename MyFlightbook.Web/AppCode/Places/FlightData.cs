@@ -104,9 +104,9 @@ namespace MyFlightbook.Telemetry
         }
         #endregion
 
-        private readonly static Regex regStripUnits = new Regex("-?\\d*(\\.\\d*)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-        private readonly static Regex regNakedTime = new Regex("(\\d{1,2}):(\\d{1,2})(?::(\\d{1,2}))?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private readonly static Regex regUTCOffset = new Regex("(-)?(\\d{1,2}):(\\d{1,2})", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private readonly static LazyRegex regStripUnits = new LazyRegex("-?\\d*(\\.\\d*)?", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+        private readonly static LazyRegex regNakedTime = new LazyRegex("(\\d{1,2}):(\\d{1,2})(?::(\\d{1,2}))?",RegexOptions.CultureInvariant);
+        private readonly static LazyRegex regUTCOffset = new LazyRegex("(-)?(\\d{1,2}):(\\d{1,2})", RegexOptions.CultureInvariant);
 
         private static int ParseToInt(string szNumber)
         {

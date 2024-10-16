@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -70,8 +70,8 @@ namespace MyFlightbook.ImportFlights
     {
         private readonly List<TASCFlight> lstMatches = new List<TASCFlight>();
 
-        private readonly static Regex regTASC = new Regex("^(?<position>\\w{2}),,(?<model>\\w+),,(?<tail>\\w+),,(?<uselessmodel>\\w+),,(?<eq>\\w+),(?<flight>\\w+),,(?<dep>\\w+),,(?<depmonth>\\d{1,2})\\/(?<depday>\\d{1,2}) (?<dephour>\\d{1,2}):(?<depmin>\\d{2})[^,]*,,,[^,]*,,,(?<arr>\\w+),,,(?<arrmonth>\\d{1,2})\\/(?<arrday>\\d{1,2}) (?<arrhour>\\d{1,2}):(?<arrmin>\\d{2})[^,]*,.*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
-        private readonly static Regex regDateAnchor = new Regex("^(?<date>\\d{1,4}\\/\\d{1,4}\\/\\d{1,4}) ");
+        private readonly static LazyRegex regTASC = new LazyRegex("^(?<position>\\w{2}),,(?<model>\\w+),,(?<tail>\\w+),,(?<uselessmodel>\\w+),,(?<eq>\\w+),(?<flight>\\w+),,(?<dep>\\w+),,(?<depmonth>\\d{1,2})\\/(?<depday>\\d{1,2}) (?<dephour>\\d{1,2}):(?<depmin>\\d{2})[^,]*,,,[^,]*,,,(?<arr>\\w+),,,(?<arrmonth>\\d{1,2})\\/(?<arrday>\\d{1,2}) (?<arrhour>\\d{1,2}):(?<arrmin>\\d{2})[^,]*,.*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private readonly static LazyRegex regDateAnchor = new LazyRegex("^(?<date>\\d{1,4}\\/\\d{1,4}\\/\\d{1,4}) ");
 
         public override string Name {get {return "TASC";} }
 

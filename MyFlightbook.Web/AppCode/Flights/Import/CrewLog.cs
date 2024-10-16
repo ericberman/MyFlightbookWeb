@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2022 MyFlightbook LLC
+ * Copyright (c) 2019-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -142,7 +142,7 @@ namespace MyFlightbook.ImportFlights
 
         // looking for column PF followed by PNF, then columns AIT,SIT,NITE,DT,NT,DL, and the string "(Crewlog".  
         // Can actually be multiple commas separating those headers!
-        private static readonly Regex rCrew = new Regex("PF,+PNF,.*AIT,+SIT,+NITE,+DT,+NT,+DL,", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly LazyRegex rCrew = new LazyRegex("PF,+PNF,.*AIT,+SIT,+NITE,+DT,+NT,+DL,", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
         public override bool CanParse(byte[] rgb)
         {
@@ -168,6 +168,8 @@ namespace MyFlightbook.ImportFlights
             }
             return true;
         }
+
+        private readonly static LazyRegex rWords = new LazyRegex("\\W", RegexOptions.Multiline);
 
         public override byte[] PreProcess(byte[] rgb)
         {
@@ -208,7 +210,7 @@ namespace MyFlightbook.ImportFlights
                                 fHeaderFound = true;
                                 for (int iCol = 0; iCol < rgRow.Length; iCol++)
                                 {
-                                    string szHeader = Regex.Replace(rgRow[iCol], "\\W", string.Empty, RegexOptions.Multiline | RegexOptions.Compiled).ToUpper(CultureInfo.CurrentCulture);
+                                    string szHeader = rWords.Replace(rgRow[iCol], string.Empty).ToUpper(CultureInfo.CurrentCulture);
                                     dictHeaders[iCol] = IsEmptyCell(szHeader) ? null : szHeader;
                                 }
 

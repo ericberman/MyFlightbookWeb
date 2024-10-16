@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,8 +29,8 @@ namespace MyFlightbook.Telemetry
         #region CSV Reading Utilities
         #region Fix broken CSV
 
-        static private readonly Regex rGarminLog = new Regex("^(?<line1>#airframe_info,.*)\\n?(?<header1>.+)\\n?(?<header2>.+)\\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
-        static private readonly Regex rGarminAc = new Regex("(?:aircraft_ident=\"(?<aircraftid>[^\"]+)\")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        static private readonly LazyRegex rGarminLog = new LazyRegex("^(?<line1>#airframe_info,.*)\\n?(?<header1>.+)\\n?(?<header2>.+)\\n?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        static private readonly LazyRegex rGarminAc = new LazyRegex("(?:aircraft_ident=\"(?<aircraftid>[^\"]+)\")", RegexOptions.IgnoreCase);
 
         private string FixedGarminData(string flightData)
         {
@@ -86,7 +86,7 @@ namespace MyFlightbook.Telemetry
             return rGarminLog.Replace(flightData, szMergedHeader + "\r\n");
         }
 
-        static private readonly Regex rBrokenTelemetryHeader = new Regex("^LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT[\r\n]+[0-9]{1,2},[0-9]+,[0-9]{1,3},[0-9]+,[0-9]+,[0-9]+,[0-9],[0-9]+,[0-9],.*,.*[\r\n]", RegexOptions.Compiled);
+        static private readonly LazyRegex rBrokenTelemetryHeader = new LazyRegex("^LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT[\r\n]+[0-9]{1,2},[0-9]+,[0-9]{1,3},[0-9]+,[0-9]+,[0-9]+,[0-9],[0-9]+,[0-9],.*,.*[\r\n]");
 
         /// <summary>
         /// We have some telemetry in the system from non-US iPhone/Androids that use commas a separators AND local locale with a comma as the decimal separator.

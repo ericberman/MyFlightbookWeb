@@ -57,6 +57,10 @@ namespace MyFlightbook
         /// Words - non-word characters (useful for splitting routes into airports)
         /// </summary>
         public static Regex Words { get { return mWords ?? (mWords = new Regex("\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+
+        private static Regex mHexColor = null;
+
+        public static Regex HexColor { get { return mHexColor ?? (mHexColor = new Regex("^#[a-zA-Z0-9]{6}$", RegexOptions.IgnoreCase)); } }
         #endregion
 
         #region FlightQuery
@@ -207,7 +211,7 @@ namespace MyFlightbook
 
         private static Regex mAnonymous = null;
 
-        public static Regex AnonymousTail {  get { return mAnonymous ?? (mAnonymous = new Regex("^#\\d{6}$")); } }
+        public static Regex AnonymousTail { get { return mAnonymous ?? (mAnonymous = new Regex("^#\\d{6}$")); } }
 
         private static Regex rNormal = null;
         public static Regex NormalizedTailChars { get { return rNormal ?? (rNormal = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled)); } }
@@ -431,5 +435,75 @@ namespace MyFlightbook
         /// </summary>
         public static Regex AdminSignatureSanity { get { return mAdminSignatureSanity ?? (mAdminSignatureSanity = new Regex("^(.*)(XC[0-9., ]+N[0-9., ]+SI[0-9., ]+IM[0-9., ]+GS[0-9., ]+DU[0-9., ]+CF[0-9., ]+SI[0-9., ]+PI[0-9., ]+TT[0-9., ]+)(.*)$", RegexOptions.Compiled)); } }
         #endregion
+    }
+
+    /// <summary>
+    /// Provides a lazy-loaded compiled regex for regexes that are less general use thatn RegexUtility
+    /// Can be used like a regex in that it provides IsMatch, Match, Matches, and Replace functionality
+    /// ALWAYS compiled.
+    /// </summary>
+    public class LazyRegex
+    {
+        #region private vars
+        private Regex re = null;
+        private readonly string expr = null;
+        private readonly RegexOptions flags = RegexOptions.Compiled;
+        #endregion
+
+        #region Constructors
+        public LazyRegex(string Expression, RegexOptions Options)
+        {
+            expr = Expression;
+            flags = flags | Options;
+        }
+
+        public LazyRegex(string Expression, bool ignoreCase = false, bool multiLine = false) : 
+            this(Expression, 
+                (ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None) | (multiLine ? RegexOptions.Multiline : RegexOptions.None))
+        {
+        }
+        #endregion
+
+        /// <summary>
+        /// Returns the described regular expression.  Only ever creates a new Regex once
+        /// </summary>
+        public Regex Expr { get { return re ?? (re = new Regex(expr, flags)); } }
+
+        #region Regex shortcuts
+        /// <summary>
+        /// Shortcut for testing if the string is a match for the regex
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public bool IsMatch(string s)
+        {
+            return Expr.IsMatch(s);
+        }
+
+        /// <summary>
+        /// Returns the match collection for a string
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public MatchCollection Matches(string s)
+        {
+            return Expr.Matches(s);
+        }
+
+        public Match Match(string s)
+        {
+            return Expr.Match(s);
+        }
+
+        public string Replace(string s, string replacement)
+        {
+            return Expr.Replace(s, replacement);
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return expr;
+        }
     }
 }

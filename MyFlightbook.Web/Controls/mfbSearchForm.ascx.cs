@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ public partial class Controls_mfbSearchForm : UserControl
 
     public const string FullStopAirportAnchor = "!";
 
-    private readonly static Regex regAirports = new Regex(String.Format(CultureInfo.InvariantCulture, "{0}?{1}?[a-zA-Z0-9]+{0}?", FullStopAirportAnchor, airport.ForceNavaidPrefix), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private readonly static LazyRegex regAirports = new LazyRegex(String.Format(CultureInfo.InvariantCulture, "{0}?{1}?[a-zA-Z0-9]+{0}?", FullStopAirportAnchor, airport.ForceNavaidPrefix), RegexOptions.IgnoreCase);
 
     #region properties
     /// <summary>
