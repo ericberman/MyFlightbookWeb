@@ -22,6 +22,24 @@
 }
 <script type="text/javascript">
     $(() => {
+        ajaxFileUpload($("#divUploadTelemetry"), {
+            uploadURL: "@Url.Action("UploadTelemetry", "FlightEdit")",
+            allowedTypes: "kml gpx csv txt xml nmea igc",
+            dragTargetClass: "fileDragTargetSmall",
+            additionalParams: [],
+            maxFiles: 1,
+            onUpload: function () { },
+            onFileUploaded: function (status, result) {
+                $(".fileInQueueContainer").hide();
+                $("#hdnFieldCompressedTelemetry").val(result);
+                $("#divExistingTelemetry").show();
+            },
+            dropPrompt: "@Resources.LogbookEntry.DragTelemetryPrompt",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+
         ajaxFileUpload($("#divUploadFlightImages"), {
             uploadURL: "@Url.Action(String.Format(CultureInfo.InvariantCulture, "UploadFlightImages/{0}", le.FlightID), "FlightEdit")",
             allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, fCanDoVideo)",
@@ -48,24 +66,6 @@
                 });
             },
             dropPrompt: "@Resources.LocalizedText.UploadImages",
-            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
-            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
-            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
-        });
-
-        ajaxFileUpload($("#divUploadTelemetry"), {
-            uploadURL: "@Url.Action("UploadTelemetry", "FlightEdit")",
-            allowedTypes: "kml gpx csv txt xml nmea igc",
-            dragTargetClass: "fileDragTargetSmall",
-            additionalParams: [],
-            maxFiles: 1,
-            onUpload: function () { },
-            onFileUploaded: function (status, result) {
-                $(".fileInQueueContainer").hide();
-                $("#hdnFieldCompressedTelemetry").val(result);
-                $("#divExistingTelemetry").show();
-            },
-            dropPrompt: "@Resources.LogbookEntry.DragTelemetryPrompt",
             errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
             errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
             abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
