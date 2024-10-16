@@ -168,6 +168,7 @@
                     else {
                         $("#pnlConflicts").html(r);
                         showModalById("pnlDupesFound", '@Resources.Makes.editMakePossibleMatch', 600);
+                        $("#pnlDupesFound").find("button")[0].focus();
                     }
                 }
             });
@@ -406,7 +407,7 @@
     <div id="pnlConflicts" style="overflow-y: auto; border: 1px solid gray; width: 90%; margin-left: auto; margin-right: auto; height: 200px;">
     </div>
     <p style="text-align:center">
-        <button type="button" onclik="javascript: $('#pnlDupesFound').dialog('close');">@Resources.LocalizedText.Cancel</button>&nbsp;&nbsp;<button type="button" onclick="javascript: $('#pnlDupesFound').dialog('close'); submitForm(true);">@Resources.Makes.editMakePossibleMatchNoneMatch</button>
+        <button type="button" onclick="javascript: $('#pnlDupesFound').dialog('close');">@Resources.LocalizedText.Cancel</button>&nbsp;&nbsp;<button type="button" onclick="javascript: $('#pnlDupesFound').dialog('close'); submitForm(true);">@Resources.Makes.editMakePossibleMatchNoneMatch</button>
     </p>
 </div>
 
