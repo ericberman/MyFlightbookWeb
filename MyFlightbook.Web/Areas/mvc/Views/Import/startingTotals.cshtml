@@ -80,12 +80,10 @@
                     getFormForMode();
                 else if (newStep == 4)
                     previewProposedTimes();
-                else if (newStep == 5)
-                    submitProposedTimes();
                 return true;
             },
             onFinish: function () {
-                window.location = submitProposedTimes();
+                submitProposedTimes();
             }
         });
     });
