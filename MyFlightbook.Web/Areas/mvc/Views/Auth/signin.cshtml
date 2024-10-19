@@ -1,0 +1,93 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabHome;
+    int signinStep = ViewBag.step ?? 0;         // 0 = collect email, 1 = collect password
+    bool fCollectTFA = ViewBag.usesTFA ?? false;
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divSignIn", "btnSignIn");
+        $("@(signinStep == 0 ? "#txtEmail" : "#txtPW")")[0].focus();
+
+        $.validator.addMethod("regex2fa", function (value, element) {
+            return this.optional(element) || /^[0-9]{6}$/.test(value);
+        }, "@Resources.Profile.TFAErrCodeFormat");
+
+        var v = validateForm($("#frmSignIn"), {
+            userEmail: { required: true, email: true },
+            userPW: { required: true },
+            tfaCode: {
+                required: true,
+                regex2fa: true,
+                minlength: 6,
+                maxlength: 6,
+                remote: {
+                    url: "@Url.Action("Check2fa", "Auth")",
+                    type: "post",
+                    data: {
+                        userEmail: function () {
+                            return $("#txtEmail").val();
+                        },
+                        tfaCode: function () {
+                            return $("#txtTfaCode").val();
+                        }
+                    }
+                }
+            }
+        }, {
+            userEmail: { required: "@Resources.Profile.errEmailRequired", email: "@Resources.LocalizedText.ValidationEmailFormat" },
+            userPW: { required: "@Resources.Profile.errInvalidPassword" },
+            tfaCode: { required: '@Resources.Profile.TFARequired', regex2fa: '@Resources.Profile.TFAErrCodeFormat', minlength: '@Resources.Profile.TFAErrCodeFormat', maxlength: '@Resources.Profile.TFAErrCodeFormat', remote: "@Resources.Profile.TFACodeFailed" }
+        });
+    });
+</script>
+<div style="padding: 10px; margin-left:auto; max-width: 700px; margin-right: auto;" id="divSignIn">
+    <div style="display:inline-block; margin:5px; vertical-align:top">
+        <h2>@Resources.LocalizedText.SignInPrompt</h2>
+        @using (Html.BeginForm("", "Auth", String.IsNullOrEmpty(Request["ReturnUrl"]) ? new { } : new { ReturnUrl = Request["ReturnUrl"] }, FormMethod.Post, new { id = "frmSignIn", name = "frmSignIn" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="vwSignIn">
+                @if (String.IsNullOrEmpty(ViewBag.email))
+                {
+                    <div>@Resources.LocalizedText.SignInEmailPrompt</div>
+                }
+                else
+                {
+                    <p style="font-weight: bold">@ViewBag.email</p>
+                }
+                <div><input type="@(signinStep == 0 ? "email" : "hidden")" name="userEmail" id="txtEmail" style="width: 20em;" value="@(ViewBag.email ?? string.Empty)" /></div>
+                <div id="vwPW" style="@(signinStep == 1 ? string.Empty : "display: none;")">
+                    <div>@Resources.LocalizedText.SignInPasswordPrompt</div>
+                    <div><input type="password" name="userPW" id="txtPW" style="width:20em;" /></div>
+                </div>
+                <div id="vwTFA" style="@(signinStep == 1 && fCollectTFA ? string.Empty : "display: none;")">
+                    <div style="max-width:300px;">
+                        <h3>@Resources.Profile.TFAIsSetUp</h3>
+                        <p>@Resources.Profile.TFAUseYourApp</p>
+                        <div><input type="text" maxlength="6" placeholder="######" pattern="^[0-9]{6}$" data-1p-ignore name="tfaCode" id="txtTfaCode" style="width: 6em;" /></div>
+                    </div>
+                </div>
+                @if (signinStep == 1)
+                {
+                    <p><label><input type="checkbox" name="rememberMe" value="yes" />@Resources.LocalizedText.SignInRememberMe</label></p>
+                }
+                <div style="margin-top: 12pt;"><button id="btnSignIn" type="submit">@(signinStep == 1 ? Resources.LocalizedText.SignInButtonTitle : Resources.LocalizedText.NextPrompt)</button></div>
+                <div class="error">@(ViewBag.error ?? string.Empty)</div>
+            </div>
+        }
+        <div style="margin-top: 18pt;"><a href="@("~/Logon/ResetPass.aspx".ToAbsolute())">@Resources.LocalizedText.SignInForgotPasswordLink</a></div>
+        @if (signinStep == 0)
+        {
+            <div style="margin-top: 18pt;">
+                @Resources.Profile.SignInNewUserPrompt <a href="@("~/Logon/Newuser.aspx".ToAbsolute())">@Resources.LocalizedText.SignInCreateAccountLink</a> @Html.Raw(Resources.LocalizedText.SignInCreateAccountFree)
+            </div>
+        }
+    </div>
+    @if (signinStep == 0)
+    {
+        <div class="welcomeHeader" id="signIn">@Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))</div>
+    }
+</div>

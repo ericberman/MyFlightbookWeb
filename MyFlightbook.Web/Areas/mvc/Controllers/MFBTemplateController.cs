@@ -52,7 +52,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (User.Identity.IsAuthenticated)
                 FormsAuthentication.SignOut();
-            Response.Redirect(VirtualPathUtility.ToAbsolute("~/Secure/login.aspx"));
+            Response.Redirect(VirtualPathUtility.ToAbsolute("~/mvc/auth"));
             return null;
         }
 

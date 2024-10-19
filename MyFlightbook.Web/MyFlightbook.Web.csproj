@@ -563,7 +563,6 @@
     <Content Include="Controls\mfbSearchbox.ascx" />
     <Content Include="Controls\mfbSearchForm.ascx" />
     <Content Include="Controls\mfbSignature.ascx" />
-    <Content Include="Controls\mfbSignIn.ascx" />
     <Content Include="Controls\mfbTooltip.ascx" />
     <Content Include="Controls\mfbTotalSummary.ascx" />
     <Content Include="Controls\mfbTypeInDate.ascx" />
@@ -1617,6 +1616,7 @@
     <Content Include="Areas\mvc\Views\Admin\_statsContent.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminStatsNightlyMail.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\nightlyEmail.cshtml" />
+    <Content Include="Areas\mvc\Views\Auth\signin.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1633,7 +1633,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Secure\login.aspx" />
     <Content Include="Support\2024-06-14 - AddFlysto.sql" />
     <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
     <Content Include="Support\2024-10-03 - Add recaptcha.txt" />
@@ -2179,13 +2178,6 @@
     <Compile Include="Controls\mfbSignature.ascx.designer.cs">
       <DependentUpon>mfbSignature.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\mfbSignIn.ascx.cs">
-      <DependentUpon>mfbSignIn.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\mfbSignIn.ascx.designer.cs">
-      <DependentUpon>mfbSignIn.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\mfbTooltip.ascx.cs">
       <DependentUpon>mfbTooltip.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2428,13 +2420,6 @@
     </Compile>
     <Compile Include="Public\ViewPublicFlight.aspx.designer.cs">
       <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Secure\login.aspx.cs">
-      <DependentUpon>login.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Secure\login.aspx.designer.cs">
-      <DependentUpon>login.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

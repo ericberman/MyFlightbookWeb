@@ -21,7 +21,7 @@
     @Html.AntiForgeryToken()
     <div id="divGuard2fa">
         <input type="hidden" name="ret" value="@ViewBag.returnRef" />
-        <input type="text" maxlength="6" pattern="^[0-9]{6}$" required data-1p-ignore name="tfaCode" id="txtTfaCode" />
+        <input type="text" placeholder="######" maxlength="6" pattern="^[0-9]{6}$" required data-1p-ignore name="tfaCode" id="txtTfaCode" />
         <button type="button" id="btnVerifyCode" onclick="javascript: if ($('#frm2faGuard').valid()) { (@ViewBag.onSubmit)($(this).prev().val()); }; return false;">@Resources.Profile.TFAValidateCode</button>
     </div>
     <div class="error" id="twoFactorErr">@(ViewBag.tfaErr ?? string.Empty)</div>
