@@ -215,7 +215,9 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.FlightDutyTime, new string[] {Resources.Currency.CustomCurrencyEventFlightDutyHour, Resources.Currency.CustomCurrencyEventFlightDutyHours } },
                         { CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach, new string[] { Resources.Currency.CustomCurrencyEventSAApproach, Resources.Currency.CustomCurrencyEventSAApproaches } },
                         { CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach, new string[] { Resources.Currency.CustomCurrencyEventEVApproach, Resources.Currency.CustomCurrencyEventEVApproaches } },
-                        { CustomCurrency.CustomCurrencyEventType.NVUnaidedTime, new string[] { Resources.Currency.CustomCurrencyEventNVUnaidedHour , Resources.Currency.CustomCurrencyEventNVUnaidedHours} }
+                        { CustomCurrency.CustomCurrencyEventType.NVUnaidedTime, new string[] { Resources.Currency.CustomCurrencyEventNVUnaidedHour , Resources.Currency.CustomCurrencyEventNVUnaidedHours} },
+                        { CustomCurrency.CustomCurrencyEventType.OffshoreTakeoff, new string[] {Resources.Currency.CustomCurrencyEventOffshoreTakeoff, Resources.Currency.CustomCurrencyEventOffshoreTakeoffs}},
+                        { CustomCurrency.CustomCurrencyEventType.OffshoreLanding, new string[] {Resources.Currency.CustomCurrencyEventOffshoreLanding, Resources.Currency.CustomCurrencyEventOffshoreLandings}}
                     };
             }
 
@@ -271,6 +273,8 @@ namespace MyFlightbook.Currency
                 case CustomCurrency.CustomCurrencyEventType.FlightReview:
                 case CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach:
                 case CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach:
+                case CustomCurrency.CustomCurrencyEventType.OffshoreLanding:
+                case CustomCurrency.CustomCurrencyEventType.OffshoreTakeoff:
                     return true;
                     /*
                 case CustomCurrency.CustomCurrencyEventType.TotalHours:
@@ -361,7 +365,9 @@ namespace MyFlightbook.Currency
             SpecialAuthorizationApproach = 35,
             EnhancedVisionApproach = 36,
             InstructionGiven = 37,
-            NVUnaidedTime = 38
+            NVUnaidedTime = 38,
+            OffshoreTakeoff = 39,
+            OffshoreLanding = 40
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -893,6 +899,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.EnhancedVisionApproach, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach); } },
             { CustomCurrencyEventType.InstructionGiven, (fq, lst, ap) => { fq.HasCFI = true; } },
             { CustomCurrencyEventType.NVUnaidedTime, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVUnaided); } },
+            { CustomCurrencyEventType.OffshoreTakeoff, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropOffshoreTakeoff); } },
+            { CustomCurrencyEventType.OffshoreLanding, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropOffshoreLanding); } }
         };
 
         /// <summary>
@@ -1106,6 +1114,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.EnhancedVisionApproach, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach)); } },
             { CustomCurrencyEventType.InstructionGiven, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.CFI); } },
             { CustomCurrencyEventType.NVUnaidedTime, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNVUnaided)); } },
+            { CustomCurrencyEventType.OffshoreLanding, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropOffshoreLanding)); } },
+            { CustomCurrencyEventType.OffshoreTakeoff, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropOffshoreTakeoff)); } },
         };
 
         /// <summary>

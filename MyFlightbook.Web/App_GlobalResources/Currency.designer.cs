@@ -1264,6 +1264,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Offshore Landing.
+        /// </summary>
+        internal static string CustomCurrencyEventOffshoreLanding {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventOffshoreLanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offshore Landings.
+        /// </summary>
+        internal static string CustomCurrencyEventOffshoreLandings {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventOffshoreLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offshore Takeoff.
+        /// </summary>
+        internal static string CustomCurrencyEventOffshoreTakeoff {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventOffshoreTakeoff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offshore Takeoffs.
+        /// </summary>
+        internal static string CustomCurrencyEventOffshoreTakeoffs {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventOffshoreTakeoffs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to unmanned aerial system (UAS) recoveries.
         /// </summary>
         internal static string CustomCurrencyEventRecoveries {

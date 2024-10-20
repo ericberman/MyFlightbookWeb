@@ -497,7 +497,7 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CurrencyDisclaimer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>content.en\currencydisclaimer.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>content.en\currencydisclaimer.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
   </data>
   <data name="CustomCurrencyEventLandingPIC" xml:space="preserve">
     <value>landing as PIC</value>
@@ -1274,5 +1274,17 @@
   </data>
   <data name="CustomCurrencyEventNVUnaidedHours" xml:space="preserve">
     <value>hours of unaided NV time</value>
+  </data>
+  <data name="CustomCurrencyEventOffshoreTakeoff" xml:space="preserve">
+    <value>Offshore Takeoff</value>
+  </data>
+  <data name="CustomCurrencyEventOffshoreTakeoffs" xml:space="preserve">
+    <value>Offshore Takeoffs</value>
+  </data>
+  <data name="CustomCurrencyEventOffshoreLanding" xml:space="preserve">
+    <value>Offshore Landing</value>
+  </data>
+  <data name="CustomCurrencyEventOffshoreLandings" xml:space="preserve">
+    <value>Offshore Landings</value>
   </data>
 </root>
