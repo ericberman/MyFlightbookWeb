@@ -18,11 +18,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class MFBTemplateController : Controller
     {
-        private const string szKeyIsNightSession = "IsNightSession";
         protected bool IsNight
         {
-            get { return (Session[szKeyIsNightSession] != null && (Boolean)Session[szKeyIsNightSession] == true); }
-            set { Session[szKeyIsNightSession] = value; }
+            get { return (bool)(Session[MFBConstants.keyIsNightSession] ?? false); }
+            set { Session[MFBConstants.keyIsNightSession] = value; }
         }
 
         private const string szKeyIsNakedSession = "IsNakedSession";

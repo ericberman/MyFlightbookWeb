@@ -34,7 +34,7 @@
                                 </asp:View>
                                 <asp:View ID="vwWelcomeNotAuth" runat="server">
                                     <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/mvc/auth" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
-                                     | <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>" />
+                                     | <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/mvc/auth/newuser" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>" />
                                 </asp:View>
                             </asp:MultiView>
                         </div>

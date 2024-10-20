@@ -775,7 +775,6 @@
     <Content Include="images\xlicon_med.png" />
     <Content Include="images\xml.gif" />
     <Content Include="images\zip_med.png" />
-    <Content Include="Logon\newuser.aspx" />
     <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
     <Content Include="Member\Ajax.asmx" />
@@ -1617,6 +1616,7 @@
     <Content Include="Areas\mvc\Views\Admin\adminStatsNightlyMail.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\nightlyEmail.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\signin.cshtml" />
+    <Content Include="Areas\mvc\Views\Auth\newuser.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2315,13 +2315,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Logon\newuser.aspx.cs">
-      <DependentUpon>newuser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Logon\newuser.aspx.designer.cs">
-      <DependentUpon>newuser.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Logon\ResetPass.aspx.cs">
       <DependentUpon>ResetPass.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

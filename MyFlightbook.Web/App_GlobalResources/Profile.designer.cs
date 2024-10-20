@@ -1513,6 +1513,123 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Password:.
+        /// </summary>
+        internal static string NewUserConfirmPasswordPrompt {
+            get {
+                return ResourceManager.GetString("NewUserConfirmPasswordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Account.
+        /// </summary>
+        internal static string NewUserCreateAccount {
+            get {
+                return ResourceManager.GetString("NewUserCreateAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create an account - it&apos;s Free!.
+        /// </summary>
+        internal static string NewUserCreateAccountPrompt {
+            get {
+                return ResourceManager.GetString("NewUserCreateAccountPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email address you are trying to use is already in use.  If that is your email, please try signing in with it.  You can also perform a password reset if needed..
+        /// </summary>
+        internal static string NewUserEmailAlreadyInUse {
+            get {
+                return ResourceManager.GetString("NewUserEmailAlreadyInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email and password.
+        /// </summary>
+        internal static string NewUserEmailAndPassHeader {
+            get {
+                return ResourceManager.GetString("NewUserEmailAndPassHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your email address uniquely identifies you, and enables a password reset if you forget it.  Don&apos;t worry, we don&apos;t share it!.
+        /// </summary>
+        internal static string NewUserEmailDisclaimer {
+            get {
+                return ResourceManager.GetString("NewUserEmailDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password and its confirmation must match.
+        /// </summary>
+        internal static string NewUserErrPasswordMismatch {
+            get {
+                return ResourceManager.GetString("NewUserErrPasswordMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your name (optional).
+        /// </summary>
+        internal static string NewUserNamePrompt {
+            get {
+                return ResourceManager.GetString("NewUserNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password:.
+        /// </summary>
+        internal static string NewUserPasswordPrompt {
+            get {
+                return ResourceManager.GetString("NewUserPasswordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create your account.
+        /// </summary>
+        internal static string NewUserPromptCreateAccountHeader {
+            get {
+                return ResourceManager.GetString("NewUserPromptCreateAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security Question and Answer.
+        /// </summary>
+        internal static string NewUserQAPrompt {
+            get {
+                return ResourceManager.GetString("NewUserQAPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security Answer:.
+        /// </summary>
+        internal static string NewUserSecurityAnswerPrompt {
+            get {
+                return ResourceManager.GetString("NewUserSecurityAnswerPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security Question:.
+        /// </summary>
+        internal static string NewUserSecurityQuestionPrompt {
+            get {
+                return ResourceManager.GetString("NewUserSecurityQuestionPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have authorized %APP_NAME% to save backups to your OneDrive account..
         /// </summary>
         internal static string OneDriveIsAuthed {
@@ -1527,6 +1644,15 @@ namespace Resources {
         internal static string PasswordChangedSubject {
             get {
                 return ResourceManager.GetString("PasswordChangedSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must be between 8 and 48 characters.  A good password includes numbers, symbols, and both uppercase and lowercase letters.
+        /// </summary>
+        internal static string PasswordQualityHint {
+            get {
+                return ResourceManager.GetString("PasswordQualityHint", resourceCulture);
             }
         }
         

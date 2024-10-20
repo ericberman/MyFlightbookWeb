@@ -23,7 +23,7 @@
     {
         @Html.AntiForgeryToken()
         <h3>@Resources.Preferences.AccountQAPasswordPrompt</h3>
-        <div><input type="password" required name="accountQACurrentPass" required /></div>
+        <div><input type="password" required name="accountQACurrentPass" /></div>
         <h3>@Resources.Preferences.AccountQACurrentQuestion</h3>
         <div style="font-weight:bold">@m_pf.SecurityQuestion</div>
         <h3>@Resources.Preferences.AccountQANewQuestion</h3>
