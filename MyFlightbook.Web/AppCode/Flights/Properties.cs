@@ -177,6 +177,8 @@ namespace MyFlightbook
             IDPropFMSApproaches = 583,
             IDPropAirborneTime = 592,
             IDPropNVUnaided = 593,
+            IDPropOffshoreTakeoff = 597,
+            IDPropOffshoreLanding = 598,
             IDPropMilitaryPIC = 603,
             IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property
             IDPropDutyStart = 608,
