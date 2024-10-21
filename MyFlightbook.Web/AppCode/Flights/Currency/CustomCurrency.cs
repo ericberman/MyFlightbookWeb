@@ -246,55 +246,39 @@ namespace MyFlightbook.Currency
             return (rgsz == null || rgsz.Length < 2) ? ccet.ToString() : rgsz[1];
         }
 
+        private static HashSet<CustomCurrency.CustomCurrencyEventType> integerEventTypes = null;
+
         public static bool IsIntegerOnly(this CustomCurrency.CustomCurrencyEventType ccet)
         {
-            switch (ccet)
-            {
-                case CustomCurrency.CustomCurrencyEventType.Flights:
-                case CustomCurrency.CustomCurrencyEventType.Landings:
-                case CustomCurrency.CustomCurrencyEventType.TakeoffsAny:
-                case CustomCurrency.CustomCurrencyEventType.IFRApproaches:
-                case CustomCurrency.CustomCurrencyEventType.BaseCheck:
-                case CustomCurrency.CustomCurrencyEventType.UASLaunch:
-                case CustomCurrency.CustomCurrencyEventType.UASRecovery:
-                case CustomCurrency.CustomCurrencyEventType.NightLandings:
-                case CustomCurrency.CustomCurrencyEventType.NightTouchAndGo:
-                case CustomCurrency.CustomCurrencyEventType.NightLandingAny:
-                case CustomCurrency.CustomCurrencyEventType.NightTakeoffs:
-                case CustomCurrency.CustomCurrencyEventType.PICLandings:
-                case CustomCurrency.CustomCurrencyEventType.PICNightLandings:
-                case CustomCurrency.CustomCurrencyEventType.HoistOperations:
-                case CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude:
-                case CustomCurrency.CustomCurrencyEventType.CAP5Checkride:
-                case CustomCurrency.CustomCurrencyEventType.CAP91Checkride:
-                case CustomCurrency.CustomCurrencyEventType.FMSApproaches:
-                case CustomCurrency.CustomCurrencyEventType.GliderTow:
-                case CustomCurrency.CustomCurrencyEventType.IPC:
-                case CustomCurrency.CustomCurrencyEventType.FlightReview:
-                case CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach:
-                case CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach:
-                case CustomCurrency.CustomCurrencyEventType.OffshoreLanding:
-                case CustomCurrency.CustomCurrencyEventType.OffshoreTakeoff:
-                    return true;
-                    /*
-                case CustomCurrency.CustomCurrencyEventType.TotalHours:
-                case CustomCurrency.CustomCurrencyEventType.Hours:
-                case CustomCurrency.CustomCurrencyEventType.IFRHours:
-                case CustomCurrency.CustomCurrencyEventType.GroundSimHours:
-                case CustomCurrency.CustomCurrencyEventType.BackseatHours:
-                case CustomCurrency.CustomCurrencyEventType.FrontSeatHours:
-                case CustomCurrency.CustomCurrencyEventType.NVHours:
-                case CustomCurrency.CustomCurrencyEventType.NVGoggles:
-                case CustomCurrency.CustomCurrencyEventType.NVFLIR:
-                case CustomCurrency.CustomCurrencyEventType.NightFlight:
-                case CustomCurrency.CustomCurrencyEventType.HoursDual:
-                case CustomCurrency.CustomCurrencyEventType.RestTime:
-                case CustomCurrency.CustomCurrencyEventType.DutyTime:
-                case CustomCurrency.CustomCurrencyEventType.FlightDutyTime:
-                */
-                default:
-                    return false;
-            }
+            if (integerEventTypes == null)
+                integerEventTypes = new HashSet<CustomCurrency.CustomCurrencyEventType>() {
+                    CustomCurrency.CustomCurrencyEventType.Flights,
+                    CustomCurrency.CustomCurrencyEventType.Landings,
+                    CustomCurrency.CustomCurrencyEventType.TakeoffsAny,
+                    CustomCurrency.CustomCurrencyEventType.IFRApproaches,
+                    CustomCurrency.CustomCurrencyEventType.BaseCheck,
+                    CustomCurrency.CustomCurrencyEventType.UASLaunch,
+                    CustomCurrency.CustomCurrencyEventType.UASRecovery,
+                    CustomCurrency.CustomCurrencyEventType.NightLandings,
+                    CustomCurrency.CustomCurrencyEventType.NightTouchAndGo,
+                    CustomCurrency.CustomCurrencyEventType.NightLandingAny,
+                    CustomCurrency.CustomCurrencyEventType.NightTakeoffs,
+                    CustomCurrency.CustomCurrencyEventType.PICLandings,
+                    CustomCurrency.CustomCurrencyEventType.PICNightLandings,
+                    CustomCurrency.CustomCurrencyEventType.HoistOperations,
+                    CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude,
+                    CustomCurrency.CustomCurrencyEventType.CAP5Checkride,
+                    CustomCurrency.CustomCurrencyEventType.CAP91Checkride,
+                    CustomCurrency.CustomCurrencyEventType.FMSApproaches,
+                    CustomCurrency.CustomCurrencyEventType.GliderTow,
+                    CustomCurrency.CustomCurrencyEventType.IPC,
+                    CustomCurrency.CustomCurrencyEventType.FlightReview,
+                    CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach,
+                    CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach,
+                    CustomCurrency.CustomCurrencyEventType.OffshoreLanding,
+                    CustomCurrency.CustomCurrencyEventType.OffshoreTakeoff
+                };
+            return integerEventTypes.Contains(ccet);
         }
 
         /// <summary>
