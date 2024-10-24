@@ -792,6 +792,7 @@
     <Content Include="Public\Scripts\listDragNew.js" />
     <Content Include="Public\Scripts\prefs.js" />
     <Content Include="Public\Scripts\printing.js" />
+    <Content Include="Public\Scripts\searchform.js" />
     <Content Include="Public\tmap\airport.svg" />
     <Content Include="Public\tmap\data\data.js" />
     <Content Include="Public\tmap\flags\1x1\ad.svg" />

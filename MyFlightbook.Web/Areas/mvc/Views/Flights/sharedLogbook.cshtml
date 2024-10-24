@@ -32,7 +32,7 @@
     }
 
     function qfeClicked(propName) {
-        $("#hdnQuery").val(JSON.stringify(buildQuery()));
+        $("#hdnQuery").val(JSON.stringify(srch.buildQuery()));
         $("#hdnQFEClicked").val(true);
         $("#hdnPropToDelete").val(propName);
         $("#frmUpdateQuery").submit();
@@ -41,7 +41,7 @@
 
     function estimateDistance() {
         var params = new Object();
-        params.fq = buildQuery();
+        params.fq = srch.buildQuery();
         params.df = $("#hdnDistanceFill")[0].value;
         params.skID = '@sk.ID';
         var d = JSON.stringify(params);
