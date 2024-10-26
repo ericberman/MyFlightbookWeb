@@ -62,9 +62,9 @@
                         <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
                         <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
                     </td>
-                    <td><%# Eval("Approaches") %></td>
-                    <td><%# Eval("NetDayLandings") %></td>
-                    <td><%# Eval("NetNightLandings") %></td>
+                    <td><%# Eval("Approaches").FormatInt() %></td>
+                    <td><%# Eval("NetDayLandings").FormatInt() %></td>
+                    <td><%# Eval("NetNightLandings").FormatInt() %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.ASEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.AMEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td runat="server" id="tdOptColumnCatClass1" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
@@ -98,9 +98,9 @@
                         <ItemTemplate>
                             <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.FormatInt() %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings.FormatInt() %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings.FormatInt() %></td>
                             <!-- <td colspan="<% = 3 + OptionalColumn.CatClassColumnCount(OptionalColumns) %>"><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td> -->
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalForCategoryClass(CategoryClass.CatClassID.ASEL).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalForCategoryClass(CategoryClass.CatClassID.AMEL).FormatDecimal(CurrentUser.UsesHHMM) %></td>

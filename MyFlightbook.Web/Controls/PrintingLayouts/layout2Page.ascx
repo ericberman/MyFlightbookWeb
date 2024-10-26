@@ -59,9 +59,9 @@
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="3" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="3" />
                         </asp:Panel>
                     </td>
-                    <td><%# Eval("Approaches") %></td>
-                    <td><%# Eval("NetDayLandings") %></td>
-                    <td><%# Eval("NetNightLandings") %></td>
+                    <td><%# Eval("Approaches").FormatInt() %></td>
+                    <td><%# Eval("NetDayLandings").FormatInt() %></td>
+                    <td><%# Eval("NetNightLandings").FormatInt() %></td>
                     <td class="gap">&nbsp;</td>
                     <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -89,9 +89,9 @@
                         <ItemTemplate>
                             <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.FormatInt() %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings.FormatInt() %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings.FormatInt() %></td>
                             <td class="gap">&nbsp;</td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Nighttime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
