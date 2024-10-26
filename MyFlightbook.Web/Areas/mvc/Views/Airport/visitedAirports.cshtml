@@ -20,7 +20,7 @@
     }
 
     function qfeClicked(propName) {
-        $("#hdnQueryForVA").val(JSON.stringify(buildQuery()));
+        $("#hdnQueryForVA").val(JSON.stringify(srch.buildQuery()));
         $("#hdnQFEClicked").val(true);
         $("#hdnPropToDelete").val(propName);
         $("#updateQuery").submit();
@@ -33,7 +33,7 @@
     }
 
     function togglePath(sender) {
-        $("#hdnQueryForVA").val(JSON.stringify(buildQuery()));
+        $("#hdnQueryForVA").val(JSON.stringify(srch.buildQuery()));
         $("#hdnQFEClicked").val(false);
         $("#hdnPropToDelete").val("");
         $("#hdnShowPath").val(sender.checked ? 1 : 0);
@@ -43,7 +43,7 @@
 
     function estimateDistance() {
         var params = new Object();
-        params.fq = buildQuery();
+        params.fq = srch.buildQuery();
         params.df = false;
         var d = JSON.stringify(params);
         $("#divEstimatingProgress").toggle();

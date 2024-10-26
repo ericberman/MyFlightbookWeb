@@ -23,7 +23,7 @@
     }
 
     function qfeClicked(propName) {
-        $("#hdnQuery").val(JSON.stringify(buildQuery()));
+        $("#hdnQuery").val(JSON.stringify(srch.buildQuery()));
         $("#hdnQFEClicked").val(true);
         $("#hdnPropToDelete").val(propName);
         $("#frmUpdateQuery").submit();

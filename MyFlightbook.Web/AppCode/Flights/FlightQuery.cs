@@ -1474,6 +1474,8 @@ namespace MyFlightbook
             if (qfi.PropertyName.CompareOrdinal("HasFlightFeatures") == 0)
                 FlightCharacteristicsConjunction = fqBlank.FlightCharacteristicsConjunction;
 
+            UpdateRestriction();    // this gets called when we have a flightresult cache miss, but if the cache hits, then we need to pre-emptively update the restriction.
+
             return this;
         }
 
