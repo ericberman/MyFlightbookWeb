@@ -49,6 +49,7 @@ namespace MyFlightbook
         public const string keyTrackOriginal = "prefTrackOriginal";  // true if the user tracks the original version of a flight.
         public const string keyRouteColor = "prefRouteColor";   // key for the color when showing routes on a map
         public const string keyPathColor = "prefPathColor";     // key for the color when showing a path on a map
+        public const string keyIsNightSession = "IsNightSession";   // key if we have a night session.
         public const int DefaultMaintenanceWindow = 90;
 
         // Logbook preferences

@@ -758,4 +758,46 @@
   <data name="BoxIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to save backups to your Box account.</value>
   </data>
+  <data name="NewUserCreateAccountPrompt" xml:space="preserve">
+    <value>Create an account - it's Free!</value>
+  </data>
+  <data name="NewUserPromptCreateAccountHeader" xml:space="preserve">
+    <value>Create your account</value>
+  </data>
+  <data name="NewUserNamePrompt" xml:space="preserve">
+    <value>Your name (optional)</value>
+  </data>
+  <data name="NewUserEmailAndPassHeader" xml:space="preserve">
+    <value>Email and password</value>
+  </data>
+  <data name="NewUserEmailDisclaimer" xml:space="preserve">
+    <value>Your email address uniquely identifies you, and enables a password reset if you forget it.  Don't worry, we don't share it!</value>
+  </data>
+  <data name="NewUserPasswordPrompt" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="NewUserConfirmPasswordPrompt" xml:space="preserve">
+    <value>Confirm Password:</value>
+  </data>
+  <data name="NewUserErrPasswordMismatch" xml:space="preserve">
+    <value>The password and its confirmation must match</value>
+  </data>
+  <data name="NewUserEmailAlreadyInUse" xml:space="preserve">
+    <value>The email address you are trying to use is already in use.  If that is your email, please try signing in with it.  You can also perform a password reset if needed.</value>
+  </data>
+  <data name="NewUserSecurityAnswerPrompt" xml:space="preserve">
+    <value>Security Answer:</value>
+  </data>
+  <data name="NewUserSecurityQuestionPrompt" xml:space="preserve">
+    <value>Security Question:</value>
+  </data>
+  <data name="NewUserQAPrompt" xml:space="preserve">
+    <value>Security Question and Answer</value>
+  </data>
+  <data name="NewUserCreateAccount" xml:space="preserve">
+    <value>Create Account</value>
+  </data>
+  <data name="PasswordQualityHint" xml:space="preserve">
+    <value>Password must be between 8 and 48 characters.  A good password includes numbers, symbols, and both uppercase and lowercase letters</value>
+  </data>
 </root>

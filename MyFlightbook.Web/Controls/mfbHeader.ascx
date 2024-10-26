@@ -20,7 +20,7 @@
                                     <div><asp:Label ID="lblMemberSince" runat="server" /></div>
                                     <div><asp:Label ID="lblLastLogin" runat="server" /></div>
                                     <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server" /></div>
-                                    <div id="signOutRow"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" Width="100%" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
+                                    <div id="signOutRow"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/mvc/auth" Width="100%" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
                                 </div>
                             </asp:View>
                             <asp:View ID="vwNotSignedIn" runat="server">
@@ -33,8 +33,8 @@
                                     <div style="padding:2px; font-weight: bold;"><asp:HyperLink ID="lnkDonate" runat="server" NavigateUrl="~/mvc/Donate" /></div>
                                 </asp:View>
                                 <asp:View ID="vwWelcomeNotAuth" runat="server">
-                                    <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
-                                     | <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>" />
+                                    <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/mvc/auth" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
+                                     | <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/mvc/auth/newuser" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>" />
                                 </asp:View>
                             </asp:MultiView>
                         </div>

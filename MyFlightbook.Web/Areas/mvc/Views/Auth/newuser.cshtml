@@ -1,0 +1,116 @@
+﻿@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.Title = Resources.Profile.NewUserCreateAccountPrompt;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    string securityQuestion = ViewBag.question ?? string.Empty;
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divCreateUser", "btnCreateUser");
+        $(".pr-password").passwordRequirements({
+            style: "@((bool) (Session[MFBConstants.keyIsNightSession] ?? false) ? "dark" : "light")",
+            infoMessage: "@Resources.Profile.PasswordQualityHint"
+        });
+
+        var v = validateForm($("#frmNewUser"), {
+            accountEmail: { required: true, email: true },
+            accountEmail2: { required: true, email: true, equalTo: "#txtEmail" },
+            accountPass: { required: true, minlength: 8, maxlength: 48 },
+            accountPass2: { required: true, equalTo: "#txtPass" },
+            accountQAAnswer: { required: true },
+            accountQAQuestionCustom: { required: true, maxlength: 80 }
+        }, {
+            accountEmail: { required: "@Resources.Profile.errEmailRequired", email: "@Resources.LocalizedText.ValidationEmailFormat" },
+            accountEmail2: { required: "@Resources.Profile.err2ndEmailRequired", pattern: "@Resources.Profile.err2ndEmailRequired", equalTo: "@Resources.Profile.err2ndEmailRequired" },
+            accountPass: { required: "@Resources.Profile.errInvalidPassword", minlength: "@Resources.Profile.errBadPasswordLength", maxlength: "@Resources.Profile.errBadPasswordLength" },
+            accountPass2: { required: "@Resources.Profile.errInvalidPassword", equalTo: "@Resources.Profile.NewUserErrPasswordMismatch" },
+            accountQAAnswer: { required: "@Resources.Preferences.errAccountQAAnswerMissing" },
+            accountQAQuestionCustom: { required: "@Resources.LocalizedText.AccountQuestionRequired" }
+        });
+    });
+</script>
+<script type="text/javascript" src="@("~/public/scripts/jquery.passwordRequirements.min.js".ToAbsolute())"></script>
+<div id="divCreateUser">
+    <h2>@Resources.LocalizedText.TermsAndConditionsHeader</h2>
+    @Html.Raw(MyFlightbook.Branding.ReBrand(Resources.LocalizedText.TermsAndConditions))
+</div>
+@using (Html.BeginForm("NewUser", "Auth", FormMethod.Post, new { id = "frmNewUser", name = "frmNewUser" }))
+{
+    @Html.AntiForgeryToken()
+    <table cellpadding="5">
+        <tr>
+            <td colspan="3">
+                <h2>@Resources.Profile.NewUserPromptCreateAccountHeader</h2>
+                <h3>@Resources.Profile.NewUserNamePrompt</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.accountFirstNamePrompt</td>
+            <td><input type="text" id="txtFirst" name="firstName" placeholder="@Resources.Profile.accountFirstNamePrompt" value="@(ViewBag.firstName ?? string.Empty)" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.accountLastNamePrompt</td>
+            <td><input type="text" id="txtLastName" name="lastName" placeholder="@Resources.Profile.accountLastNamePrompt" value="@(ViewBag.lastName ?? string.Empty)" /></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <h3>@Resources.Profile.NewUserEmailAndPassHeader</h3>
+                @Resources.Profile.NewUserEmailDisclaimer
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.accountEmailPrompt</td>
+            <td><input type="email" id="txtEmail" name="accountEmail" placeholder="@Resources.Profile.accountEmailPrompt" value="@(ViewBag.email ?? string.Empty)" required /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.accountRetypeEmailPrompt</td>
+            <td><input type="email" id="txtEmail2" name="accountEmail2" placeholder="@Resources.Profile.accountRetypeEmailPrompt" value="@(ViewBag.email ?? string.Empty)" required /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.NewUserPasswordPrompt</td>
+            <td><input type="password" id="txtPass" name="accountPass" required class="pr-password" maxlength="48" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.NewUserConfirmPasswordPrompt</td>
+            <td><input type="password" id="txtPass2" name="accountPass2" required maxlength="48" /></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <h3>@Resources.Profile.NewUserQAPrompt</h3>
+                @Html.Raw(Resources.LocalizedText.AccountQuestionHint)
+            </td>
+        </tr>
+        <tr style="vertical-align: top;">
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.NewUserSecurityQuestionPrompt</td>
+            <td>
+                <div>
+                    <select id="accountQAPreparedQuestions" name="accountQAQuestionCanned" onchange="javascript: $('#txtAccountQAQuestionCustom').toggle(this.value == ''); $('#txtAccountQAQuestionCustom').val(this.value); return false;">
+                        <option value="">@Resources.Preferences.AccountQAMakeUpOwn</option>
+                        @foreach (string sz in MyFlightbook.ProfileAdmin.SuggestedSecurityQuestions)
+                        {
+                            <option value="@sz" @((sz.CompareCurrentCultureIgnoreCase(securityQuestion) == 0).ToSelected())>@sz</option>
+                        }
+                    </select>
+                </div>
+                <p><input type="text" style="width: 400px" required name="accountQAQuestionCustom" id="txtAccountQAQuestionCustom" value="@securityQuestion" maxlength="80" /></p>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>@Resources.Profile.NewUserSecurityAnswerPrompt</td>
+            <td>
+                <div><input type="text" style="width: 400px;" required name="accountQAAnswer" value="@(ViewBag.answer ?? string.Empty)" maxlength="80" /></div>
+            </td>
+        </tr>
+    </table>
+    <div><button type="submit" id="btnCreateUser">@Resources.Profile.NewUserCreateAccount</button></div>
+}
+<div class="error">@(ViewBag.error ?? string.Empty)</div>

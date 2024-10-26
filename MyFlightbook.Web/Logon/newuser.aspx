@@ -197,7 +197,7 @@
                                     meta:resourcekey="locEmailInUseResource1"></asp:Localize>
                                 
                                     <asp:HyperLink ID="lnkSignIn" runat="server" 
-                                    NavigateUrl="~/Secure/login.aspx" Text="sign in with that e-mail address" 
+                                    NavigateUrl="~/mvc/auth" Text="sign in with that e-mail address" 
                                     meta:resourcekey="lnkSignInResource1"></asp:HyperLink>
                                     <asp:Localize ID="locNewUserAccountOption" runat="server" Text=", or " 
                                     meta:resourcekey="locNewUserAccountOptionResource1"></asp:Localize>
