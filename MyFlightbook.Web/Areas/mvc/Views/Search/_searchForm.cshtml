@@ -2,6 +2,12 @@
 @using Newtonsoft.Json
 @{
     FlightQuery fq = ViewBag.query;
+    List<string> lst = new List<string>();
+    foreach (CannedQuery cq in ViewBag.cannedQueries)
+    {
+        lst.Add(cq.ToJSONString());
+    }
+    string szCanned = String.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", lst));
 }
 <style type="text/css">
     .decluttered {
@@ -16,9 +22,9 @@
         vertical-align: top;
     }
 </style>
-<script type="text/javascript" src="@("~/Public/Scripts/searchform.js".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/searchform.js?v=1".ToAbsolute())"></script>
 <script type="text/javascript">
-    var rgCanned = @Html.Raw(Json.Encode(ViewBag.cannedQueries));
+    var rgCanned = @Html.Raw(szCanned);
 
     var srch;
     $(() => {

@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class SearchController : Controller
+    public class SearchController : AdminController
     {
         #region Query description
         [ChildActionOnly]
@@ -34,31 +34,42 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region web services for canned queries
         [HttpPost]
         [Authorize]
-        public void DeleteCannedQuery(CannedQuery cq)
+        public ActionResult DeleteCannedQuery(CannedQuery cq)
         {
-            if (cq == null || cq.UserName.CompareOrdinal(User.Identity.Name) != 0)
-                throw new UnauthorizedAccessException();
+            return SafeOp(() =>
+            {
+                if ((cq?.UserName ?? string.Empty).CompareOrdinal(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
 
-            if (String.IsNullOrEmpty(cq.QueryName))
-                throw new InvalidOperationException("Attempt to delete unnamed query");
+                if (String.IsNullOrEmpty(cq?.QueryName))
+                    throw new InvalidOperationException("Attempt to delete unnamed query");
 
-            cq.Delete();
+                cq.Delete();
+
+                return new EmptyResult();
+            });
         }
 
         [HttpPost]
         [Authorize]
-        public void AddCannedQuery(CannedQuery cq)
+        public ActionResult AddCannedQuery(CannedQuery cq)
         {
-            if (cq == null || cq.UserName.CompareOrdinal(User.Identity.Name) != 0)
-                throw new UnauthorizedAccessException();
+            return SafeOp(() =>
+            {
+                if (cq == null || cq.UserName.CompareOrdinal(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
 
-            if (String.IsNullOrEmpty(cq.QueryName))
-                return;
+                if (String.IsNullOrEmpty(cq.QueryName))
+                    return new EmptyResult();
 
-            cq.Commit(true);
+                cq.Commit(true);
+
+                return new EmptyResult();
+            });
         }
         #endregion
 
+        [ChildActionOnly]
         public ActionResult SearchForm(FlightQuery fq, string onClientSearch, string onClientReset)
         {
             if (fq == null && !User.Identity.IsAuthenticated)
@@ -91,11 +102,5 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.onClientReset = onClientReset;
             return PartialView("_searchForm");
         }
-
-        // GET: mvc/Search
-        public ActionResult Index()
-        {
-            return View();
-        }
-    }
+   }
 }

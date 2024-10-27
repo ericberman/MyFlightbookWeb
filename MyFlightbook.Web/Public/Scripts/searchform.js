@@ -226,7 +226,7 @@ function searchForm(options) {
         $.ajax({
             url: options.targetAddCanned,
             type: "POST", data: d, dataType: "text", contentType: "application/json",
-            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function () {
                 options.onClientSearch(cq);
             }
@@ -242,8 +242,8 @@ function searchForm(options) {
             {
                 url: options.targetDeleteCanned,
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                 },
                 success: function () {
                     sender.parentElement.style.display = "none";
