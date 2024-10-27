@@ -19,8 +19,8 @@
     var clubNavControl;
 
     function updateDate(d) {
-        // create a new date that is local but looks like this one.
-        var d2 = new Date(d.getTime() + new Date().getTimezoneOffset() * 60000);
+        // create a new date that is local but looks like this one, but add two hours to account for crossing daylight saving time.
+        var d2 = new Date(d.getTime() + new Date().getTimezoneOffset() * 60000 + 7200 * 1000);
         $("#lblDate").html(d2.toDateString());
     }
 
