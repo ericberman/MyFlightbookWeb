@@ -540,8 +540,6 @@
     <Content Include="Controls\PrintingLayouts\LayoutPCAA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutUASCivi.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutNavy.ascx" />
-    <Content Include="Controls\TwoFactorAuth.ascx" />
-    <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
     <Content Include="Controls\Expando.ascx" />
     <Content Include="Controls\GoogleAnalytics.ascx" />
@@ -580,7 +578,6 @@
     <Content Include="Controls\PrintingLayouts\pageHeader.ascx" />
     <Content Include="Controls\PrintOptions.ascx" />
     <Content Include="Controls\SponsoredAd.ascx" />
-    <Content Include="Controls\TwoFactorAuthVerifyCode.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="HTTP403.htm" />
@@ -1790,9 +1787,6 @@
     <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\LocalConfig.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
-    <Compile Include="AppCode\Utility\MFBWizardPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="AppCode\Utility\Payment.cs" />
     <Compile Include="AppCode\Utility\RegexUtility.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />
@@ -2018,20 +2012,6 @@
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutNavy.ascx.designer.cs">
       <DependentUpon>layoutNavy.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TwoFactorAuth.ascx.cs">
-      <DependentUpon>TwoFactorAuth.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\TwoFactorAuth.ascx.designer.cs">
-      <DependentUpon>TwoFactorAuth.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AccountQuestions.ascx.cs">
-      <DependentUpon>AccountQuestions.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\AccountQuestions.ascx.designer.cs">
-      <DependentUpon>AccountQuestions.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\AircraftControls\SelectMake.ascx.cs">
       <DependentUpon>SelectMake.ascx</DependentUpon>
@@ -2298,13 +2278,6 @@
     </Compile>
     <Compile Include="Controls\SponsoredAd.ascx.designer.cs">
       <DependentUpon>SponsoredAd.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TwoFactorAuthVerifyCode.ascx.cs">
-      <DependentUpon>TwoFactorAuthVerifyCode.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\TwoFactorAuthVerifyCode.ascx.designer.cs">
-      <DependentUpon>TwoFactorAuthVerifyCode.ascx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

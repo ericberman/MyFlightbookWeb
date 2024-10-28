@@ -92,7 +92,6 @@
 <p>
     Migrate up to: <input id="txtLimitMB" value="100" type="number" step="1" />MB or <input id="txtLimitFiles" value="100" type="number" step="1" /> images.  
     <button type="button" onclick="javascript: migrateImages('@ViewBag.imageClass', $('#txtLimitMB').val(), $('#txtLimitFiles').val());">Migrate Images</button>
-    <asp:TextBox ID="txtLimitFiles" Text="100" runat="server"></asp:TextBox>
     <div style="display:none" id="divMigrateProgress"><img src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /></div>
     <div id="divMigrateResults"></div>
 </p>
