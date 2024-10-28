@@ -775,7 +775,6 @@
     <Content Include="images\xlicon_med.png" />
     <Content Include="images\xml.gif" />
     <Content Include="images\zip_med.png" />
-    <Content Include="Logon\ResetPass.aspx" />
     <Content Include="MasterPage.master" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Member\EditAircraft.aspx" />
@@ -2318,13 +2317,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Logon\ResetPass.aspx.cs">
-      <DependentUpon>ResetPass.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Logon\ResetPass.aspx.designer.cs">
-      <DependentUpon>ResetPass.aspx</DependentUpon>
-    </Compile>
     <Compile Include="MasterPage.master.cs">
       <DependentUpon>MasterPage.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2643,10 +2635,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_LocalResources\DefaultMini.aspx.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Logon\App_LocalResources\newuser.aspx.resx" />
-    <Content Include="Logon\App_LocalResources\ResetPass.aspx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />
