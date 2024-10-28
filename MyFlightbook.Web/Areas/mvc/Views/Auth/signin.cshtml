@@ -78,7 +78,7 @@
                 <div class="error">@(ViewBag.error ?? string.Empty)</div>
             </div>
         }
-        <div style="margin-top: 18pt;"><a href="@("~/Logon/ResetPass.aspx".ToAbsolute())">@Resources.LocalizedText.SignInForgotPasswordLink</a></div>
+        <div style="margin-top: 18pt;"><a href="@("~/mvc/auth/resetpass".ToAbsolute())">@Resources.LocalizedText.SignInForgotPasswordLink</a></div>
         @if (signinStep == 0)
         {
             <div style="margin-top: 18pt;">

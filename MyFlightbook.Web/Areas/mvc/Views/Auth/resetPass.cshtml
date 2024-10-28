@@ -1,0 +1,44 @@
+﻿@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.Title = Resources.Profile.resetPassTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    int step = ViewBag.step ?? 0;
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("pnlEmail", "btnResetEmail");
+
+        validateForm($("#frmSendEmail"), { resetEmail: { required: true, email: true } }, { resetEmail: { required: "@Resources.Profile.errEmailRequired", email: "@Resources.LocalizedText.ValidationEmailFormat" } });
+    });
+</script>
+@if (step == 0)
+{
+    <div id="vwEmail">
+        @using (Html.BeginForm("ResetPass", "Auth", FormMethod.Post, new { id = "frmSendEmail", name = "frmSendEmail" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="pnlEmail" DefaultButton="btnSendEmail">
+                <div>@Resources.Profile.resetPassEmailPrompt</div>
+                <div>
+                    <input type="email" style="width:200px;" required name="resetEmail" />
+                    <button id="btnResetEmail" type="submit">@Resources.Profile.resetPassSendEmail</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div id="vwEmailSent">
+        <h2>@Resources.Profile.resetPassEmailSent</h2>
+        <div>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmailSent, ViewBag.emailSent)</div>
+        <p>@Resources.Profile.resetPassIfNoReceive</p>
+        <ul>
+            <li>@Html.Raw(Resources.Profile.resetPassVerifyCorrectEmail.Linkify())</li>
+            <li>@Resources.Profile.resetPassCheckJunk</li>
+            <li><a href="@("~/mvc/pub/contact".ToAbsolute())">@Resources.LocalizedText.ContactUsTitle</a></li>
+        </ul>
+    </div>
+}
+<div class="error">@(ViewBag.error ?? string.Empty)</div>

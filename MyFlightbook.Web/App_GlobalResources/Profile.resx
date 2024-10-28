@@ -800,4 +800,40 @@
   <data name="PasswordQualityHint" xml:space="preserve">
     <value>Password must be between 8 and 48 characters.  A good password includes numbers, symbols, and both uppercase and lowercase letters</value>
   </data>
+  <data name="resetPassTitle" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="resetPassEmailPrompt" xml:space="preserve">
+    <value>Please enter the e-mail address associated with your account:</value>
+  </data>
+  <data name="resetPassSendEmail" xml:space="preserve">
+    <value>Send a password reset</value>
+  </data>
+  <data name="resetPassEmailSent" xml:space="preserve">
+    <value>E-mail sent</value>
+  </data>
+  <data name="resetPassIfNoReceive" xml:space="preserve">
+    <value>If you don't receive it momentarily...</value>
+  </data>
+  <data name="resetPassVerifyCorrectEmail" xml:space="preserve">
+    <value>*Verify that the email address is the one you use for your account*.  For security, we don't tell you whether or not an account exists or whether a given email address is associated with an account.</value>
+  </data>
+  <data name="resetPassCheckJunk" xml:space="preserve">
+    <value>Check your junk mail folder</value>
+  </data>
+  <data name="resetPassVerify" xml:space="preserve">
+    <value>Reset Password: Verify Your Identity</value>
+  </data>
+  <data name="resetPassQAPrompt" xml:space="preserve">
+    <value>Please provide the answer to the following question, which you provided when you created your account</value>
+  </data>
+  <data name="resetPassQANote" xml:space="preserve">
+    <value>The answer must match EXACTLY, including capitalization, punctuation, and spaces.</value>
+  </data>
+  <data name="resetPassQuestion" xml:space="preserve">
+    <value>Your question:</value>
+  </data>
+  <data name="resetPassChooseNew" xml:space="preserve">
+    <value>Reset Password: Choose a new password</value>
+  </data>
 </root>

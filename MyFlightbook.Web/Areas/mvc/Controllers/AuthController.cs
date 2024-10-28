@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -33,6 +34,164 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.onSubmit = onSubmit;
             ViewBag.tfaErr = tfaErr;
             return PartialView("_tfaGuard");
+        }
+
+        /// <summary>
+        /// Step 0 - just hit the page ab-initio
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult ResetPass()
+        {
+            return View("resetPass");
+        }
+
+        /// <summary>
+        /// Step 1 - send the email and tell "OK"
+        /// </summary>
+        /// <param name="resetEmail"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPass(string resetEmail)
+        {
+            ViewBag.step = 1;
+            ViewBag.emailSent = resetEmail ?? string.Empty;
+            string szUser = Membership.GetUserNameByEmail(resetEmail);
+            if (!String.IsNullOrEmpty(szUser))  // fail silently on empty user - don't do anything to acknowledge the existence or lack thereof of an account
+            {
+                PasswordResetRequest prr = new PasswordResetRequest() { UserName = szUser };
+                prr.FCommit();
+
+                var nvc = HttpUtility.ParseQueryString(string.Empty);
+                nvc["t"] = prr.ID;
+
+                UriBuilder uriBuilder = new UriBuilder(Request.Url.Scheme, Request.Url.Host)
+                {
+                    Path = "~/mvc/Auth/ProcessReset".ToAbsolute(),
+                    Query = nvc.ToString()
+                };
+
+                string szEmailBody = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmail)).Replace("<% RESET_LINK %>", uriBuilder.Uri.ToString());
+                Profile pf = MyFlightbook.Profile.GetUser(szUser);
+                util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.ResetPasswordSubjectNew), szEmailBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+            }
+            return View("resetPass");
+        }
+
+        /// <summary>
+        /// Handle a reset link in an email
+        /// </summary>
+        /// <param name="t">The ID of the password reset request</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [HttpGet]
+        public ActionResult ProcessReset(string t)
+        {
+            try
+            {
+                PasswordResetRequest prr = String.IsNullOrEmpty(t) ? null : new PasswordResetRequest(t);
+                if (prr != null)
+                {
+                    switch (prr.Status)
+                    {
+                        case PasswordResetRequest.RequestStatus.Expired:
+                            throw new InvalidOperationException(Resources.LocalizedText.ResetPasswordRequestExpired);
+                        case PasswordResetRequest.RequestStatus.Failed:
+                        case PasswordResetRequest.RequestStatus.Success:
+                            throw new InvalidOperationException(Resources.LocalizedText.ResetPasswordRequestAlreadyUsed);
+                    }
+                    ViewBag.prr = prr;
+                }
+            }
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException)
+            {
+                ViewBag.error = Resources.LocalizedText.ResetPasswordInvalidRequest;
+            }
+            catch (Exception ex) when (ex is InvalidOperationException)
+            {
+                ViewBag.error = ex.Message;
+            }
+
+            return View("processReset");
+        }
+
+        /// <summary>
+        /// Step 2 of processing - validate the user's answer and, if needed, TFA code, and 
+        /// Step 3 - let the user change their password
+        /// </summary>
+        /// <param name="prrID">The ID of the password reset request</param>
+        /// <param name="answer">The user's answer</param>
+        /// <param name="tfaCode">A tfa code, if required</param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProcessReset()
+        {
+            PasswordResetRequest prr = null;
+            try
+            {
+                prr = new PasswordResetRequest(Request["prrID"]);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                ViewBag.error = ex.Message;
+                return View("processReset");
+            }
+            ViewBag.prr = prr;
+
+            string tmpp = Request["tmpp"];  // see if the password itself has been reset
+            if (String.IsNullOrEmpty(tmpp)) // still need to verify identity
+            {
+                try
+                {
+                    string szUser = prr.UserName;
+                    Profile pf = MyFlightbook.Profile.GetUser(szUser);
+                    if (pf.PreferenceExists(MFBConstants.keyTFASettings) && !Check2FA(pf, Request["tfaCode"] ?? string.Empty))
+                        throw new UnauthorizedAccessException(Resources.Profile.TFACodeFailed);
+
+                    ViewBag.tmpp = Membership.GetUser(szUser).ResetPassword(Request["answer"] ?? string.Empty);
+                    ViewBag.step = 1;
+                }
+                catch (Exception ex) when (ex is MembershipPasswordException || ex is UnauthorizedAccessException || ex is ArgumentOutOfRangeException)
+                {
+                    if (prr != null)
+                    {
+                        prr.Status = PasswordResetRequest.RequestStatus.Failed;
+                        prr.FCommit();
+                    }
+                    ViewBag.error = ex.Message;
+                }
+                return View("processReset");
+            }
+            else
+            {
+                string accountPass = Request["accountPass"];
+
+                try
+                {
+                    if ((accountPass?.Length ?? 0) < 8)
+                        throw new MyFlightbookException(Resources.Profile.errBadPasswordLength);
+                    if (!Membership.Provider.ChangePassword(prr.UserName, tmpp, accountPass))
+                        throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
+
+                    if (Membership.ValidateUser(prr.UserName, accountPass))
+                        FormsAuthentication.SetAuthCookie(prr.UserName, false);
+
+                    prr.Status = PasswordResetRequest.RequestStatus.Success;
+                    prr.FCommit();
+                    return Redirect("~/mvc/pub");
+                }
+                catch (MyFlightbookException ex)
+                {
+                    prr.Status = PasswordResetRequest.RequestStatus.Failed;
+                    prr.FCommit();
+                    ViewBag.tmpp = tmpp;
+                    ViewBag.error = ex.Message;
+                    ViewBag.step = 1;   // stay on this step
+                    return View("processReset");
+                }
+            }
         }
 
         private readonly static object lockObject = new object();

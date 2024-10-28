@@ -1068,7 +1068,7 @@
     <value>Use this as default image</value>
   </data>
   <data name="ResetPassEmailSent" xml:space="preserve">
-    <value>A message has been sent to {0} with instructions for how to reset your password.</value>
+    <value>If an account exists using {0}, then a message has been sent to that address with instructions for how to complete a password reset.</value>
   </data>
   <data name="ResetPasswordAnswerRequired" xml:space="preserve">
     <value>Please provide the answer to the question you provided</value>

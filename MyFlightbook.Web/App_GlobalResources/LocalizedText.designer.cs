@@ -4763,7 +4763,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A message has been sent to {0} with instructions for how to reset your password..
+        ///   Looks up a localized string similar to If an account exists using {0}, then a message has been sent to that address with instructions for how to complete a password reset..
         /// </summary>
         internal static string ResetPassEmailSent {
             get {

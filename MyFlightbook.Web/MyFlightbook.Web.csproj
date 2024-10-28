@@ -1618,6 +1618,8 @@
     <Content Include="Areas\mvc\Views\Flights\nightlyEmail.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\signin.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\newuser.cshtml" />
+    <Content Include="Areas\mvc\Views\Auth\resetPass.cshtml" />
+    <Content Include="Areas\mvc\Views\Auth\processReset.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

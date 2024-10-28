@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.Title = Resources.Profile.resetPassTitle;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    PasswordResetRequest prr = ViewBag.prr;
+    int step = ViewBag.step ?? 0;
+}
+<script type="text/javascript" src="@("~/public/scripts/jquery.passwordRequirements.min.js".ToAbsolute())"></script>
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("pnlAnswer", "btnAnswer");
+        defaultButtonForDiv("pnlNewPass", "btnUpdatePass");
+
+        $(".pr-password").passwordRequirements({
+            style: "@((bool) (Session[MFBConstants.keyIsNightSession] ?? false) ? "dark" : "light")",
+            infoMessage: "@Resources.Profile.PasswordQualityHint"
+        });
+
+        $.validator.addMethod("regex2fa", function (value, element) {
+            return this.optional(element) || /^[0-9]{6}$/.test(value);
+        }, "@Resources.Profile.TFAErrCodeFormat");
+
+        validateForm($("#frmAnswerQ"), {
+            answer: { required: true },
+            tfaCode: {
+                required: true,
+                regex2fa: true,
+                minlength: 6,
+                maxlength: 6,
+                remote: {
+                    url: "@Url.Action("Check2fa", "Auth")",
+                    type: "post",
+                    data: {
+                        userEmail: function () {
+                            return $("#txtEmail").val();
+                        },
+                        tfaCode: function () {
+                            return $("#txtTfaCode").val();
+                        }
+                    }
+                }
+            }
+        }, {
+            answer: { required: "@Resources.LocalizedText.ResetPasswordAnswerRequired" },
+            tfaCode: { required: '@Resources.Profile.TFARequired', regex2fa: '@Resources.Profile.TFAErrCodeFormat', minlength: '@Resources.Profile.TFAErrCodeFormat', maxlength: '@Resources.Profile.TFAErrCodeFormat', remote: "@Resources.Profile.TFACodeFailed" }
+        });
+        validateForm($("#frmChangePass"), {
+            accountPass: { required: true, minlength: 8, maxlength: 48 },
+            accountPass2: { required: true, equalTo: "#txtPass" }
+        }, {
+            accountPass: { required: "@Resources.Profile.errInvalidPassword", minlength: "@Resources.Profile.errBadPasswordLength", maxlength: "@Resources.Profile.errBadPasswordLength" },
+            accountPass2: { required: "@Resources.Profile.errInvalidPassword", equalTo: "@Resources.Profile.NewUserErrPasswordMismatch" }
+        });
+    });
+</script>
+
+@if (step == 0)
+{
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(prr?.UserName ?? string.Empty);
+    bool fCollectTFA = pf.PreferenceExists(MFBConstants.keyTFASettings);
+
+    <div id="vwVerify">
+        <h2>@Resources.Profile.resetPassVerify</h2>
+        <p>@Resources.Profile.resetPassQAPrompt</p>
+        <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> @Resources.Profile.resetPassQANote</p>
+        <p>@Resources.Profile.resetPassQuestion</p>
+        <p style="font-weight: bold;">@pf.SecurityQuestion</p>
+        @using (Html.BeginForm("ProcessReset", "Auth", FormMethod.Post, new { id = "frmAnswerQ", name = "frmAnswerQ" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="pnlAnswer">
+                <input type="hidden" name="prrID" value="@(prr?.ID ?? string.Empty)" />
+                <div><input type="text" required name="answer" data-1p-ignore @(prr == null ? "disabled" : string.Empty) /></div>
+                <div><input type="hidden" id="txtEmail" value="@(pf.Email)" /></div>
+                <div id="vwTFA" style="@(fCollectTFA ? string.Empty : "display: none;")">
+                    <div style="max-width:300px;">
+                        <h3>@Resources.Profile.TFAIsSetUp</h3>
+                        <p>@Resources.Profile.TFAUseYourApp</p>
+                        <div><input type="text" maxlength="6" placeholder="######" pattern="^[0-9]{6}$" data-1p-ignore name="tfaCode" id="txtTfaCode" style="width: 6em;"  @(prr == null ? "disabled" : string.Empty) /></div>
+                    </div>
+                </div>
+                <p><button id="btnAnswer" type="submit" @(prr == null ? "disabled" : string.Empty)>@Resources.LocalizedText.NextPrompt</button></p>
+            </div>
+        }
+    </div>
+}
+else
+{
+<div id="vwNewPass">
+    <h2>@Resources.Profile.resetPassChooseNew</h2>
+    @using (Html.BeginForm("ProcessReset", "Auth", FormMethod.Post, new { id = "frmChangePass", name = "frmChangePass" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="tmpp" value="@ViewBag.tmpp" />
+        <input type="hidden" name="prrID" value="@(prr?.ID ?? string.Empty)" />
+        <div id="pnlNewPass" DefaultButton="btnUpdatePass">
+            <p>@Resources.Profile.NewUserPasswordPrompt</p>
+            <div><input type="password" id="txtPass" name="accountPass" required class="pr-password" maxlength="48" /></div>
+            <p>@Resources.Profile.NewUserConfirmPasswordPrompt</p>
+            <div><input type="password" id="txtPass2" name="accountPass2" required maxlength="48" /></div>
+            <p><button id="btnUpdatePass" type="submit">@Resources.Preferences.AccountPasswordChange</button></p>
+        </div>
+    }
+</div>
+}
+<div class="error">@(ViewBag.error ?? string.Empty)</div>

@@ -1825,6 +1825,114 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check your junk mail folder.
+        /// </summary>
+        internal static string resetPassCheckJunk {
+            get {
+                return ResourceManager.GetString("resetPassCheckJunk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Password: Choose a new password.
+        /// </summary>
+        internal static string resetPassChooseNew {
+            get {
+                return ResourceManager.GetString("resetPassChooseNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter the e-mail address associated with your account:.
+        /// </summary>
+        internal static string resetPassEmailPrompt {
+            get {
+                return ResourceManager.GetString("resetPassEmailPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail sent.
+        /// </summary>
+        internal static string resetPassEmailSent {
+            get {
+                return ResourceManager.GetString("resetPassEmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you don&apos;t receive it momentarily....
+        /// </summary>
+        internal static string resetPassIfNoReceive {
+            get {
+                return ResourceManager.GetString("resetPassIfNoReceive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The answer must match EXACTLY, including capitalization, punctuation, and spaces..
+        /// </summary>
+        internal static string resetPassQANote {
+            get {
+                return ResourceManager.GetString("resetPassQANote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide the answer to the following question, which you provided when you created your account.
+        /// </summary>
+        internal static string resetPassQAPrompt {
+            get {
+                return ResourceManager.GetString("resetPassQAPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your question:.
+        /// </summary>
+        internal static string resetPassQuestion {
+            get {
+                return ResourceManager.GetString("resetPassQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send a password reset.
+        /// </summary>
+        internal static string resetPassSendEmail {
+            get {
+                return ResourceManager.GetString("resetPassSendEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Password.
+        /// </summary>
+        internal static string resetPassTitle {
+            get {
+                return ResourceManager.GetString("resetPassTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Password: Verify Your Identity.
+        /// </summary>
+        internal static string resetPassVerify {
+            get {
+                return ResourceManager.GetString("resetPassVerify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Verify that the email address is the one you use for your account*.  For security, we don&apos;t tell you whether or not an account exists or whether a given email address is associated with an account..
+        /// </summary>
+        internal static string resetPassVerifyCorrectEmail {
+            get {
+                return ResourceManager.GetString("resetPassVerifyCorrectEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Return to Students.
         /// </summary>
         internal static string ReturnToProfile {
