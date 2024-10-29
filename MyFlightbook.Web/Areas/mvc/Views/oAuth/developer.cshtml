@@ -1,0 +1,216 @@
+﻿@using MyFlightbook
+@using OAuthAuthorizationServer.Code
+@using OAuthAuthorizationServer.Services
+@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.Title = "Developers";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    bool AdminMode = User.Identity.IsAuthenticated && (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport);
+    IEnumerable<MFBOauth2Client> ownedClients = AdminMode ? MFBOauth2Client.GetAvailableClients() : MFBOauth2Client.GetClientsForUser(User.Identity.Name);
+    MFBOauth2Client newClient = ViewBag.client;
+}
+<script type="text/javascript">
+    $(() => {
+        defaultButtonForDiv("divNewClient", "btnAddClient");
+
+        validateForm($("#frmNewClient"), {
+            clientID: { required: true },
+            clientSecret: { required: true },
+            clientName: { required: true },
+            clientCallBack: { required: true }
+        }, {
+            clientID: { required: "You must choose a unique ID for your client." },
+            clientSecret: { required: "You must choose a secret for your client." },
+            clientName: { required: "You must choose a name for your client." },
+            clientCallBack: { required: "You must provide at least one valid callback URL for your client." }
+        });
+    });
+
+    function deleteClient(id) {
+        if (confirm("Are you sure?  You can NOT undo this action, and it WILL disable the service for any user of your client!")) {
+            var params = new Object();
+            params.clientID = id;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '@Url.Action("DeleteOAuthClient", "OAuth")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function (response) { window.location.reload(); }
+            });
+        }
+    }
+
+    function updateClient(id, parent) {
+        var params = new Object();
+        params.clientID = parent.find("input[name='clientID']").val();
+        params.clientSecret = parent.find("input[name='clientSecret']").val();
+        params.clientName = parent.find("input[name='clientName']").val();
+        params.clientCallBack = parent.find("textarea[name='clientCallBack']").val();
+        params.clientScopes = parent.find("input[name='clientScopes']").val();
+        params.szOwner = parent.find("input[name='clientOwner']").val();
+        var d = JSON.stringify(params);
+        $.ajax({
+            url: '@Url.Action("UpdateOauthClient", "OAuth")',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function (response) { window.location.reload(); }
+        });
+    }
+</script>
+<h2>Source code</h2>
+<p>@Branding.ReBrand("%APP_NAME% is now open source.")   Please visit <a href="https://github.com/ericberman" target="_blank">GitHub</a> if you are interested.</p>
+<p>There are 4 projects there:</p>
+<ul>
+    <li><a href="https://github.com/ericberman/MyFlightbookWeb" target="_blank">MyFlightbookWeb</a> has the code for the website, which backs the mobile apps.  This is where the real database lives and where all the main logic lies.</li>
+    <li><a href="https://github.com/ericberman/MyFlightbookAndroid" target="_blank">MyFlightbookAndroid</a> has the code for the Android app.</li>
+    <li><a href="https://github.com/ericberman/MyFlightbookiOS" target="_blank">MyFlightbookiOS</a> has the code for the the iOS app.</li>
+    <li>
+        <a href="https://github.com/ericberman/WSDLtoObjC" target="_blank">WSDLtoObjC</a> has support code for the iOS app.  This code consumes the <a href="https://en.wikipedia.org/wiki/Web_Services_Description_Language" target="_blank">WSDL</a> (Web Service Description Language) from the website and generates
+        Objective-C classes that talk to the web service and encapsulate the data.
+    </li>
+</ul>
+<p>To set up the web server, you will need Windows running IIS and a MySQL database.  The <a href="https://github.com/ericberman/MyFlightbookWeb/blob/master/README.md" target="_blank">README.md</a> file on GitHub provides walk-through instructions</p>
+<p><span style="font-weight:bold">PLEASE DO NOT TEST AGAINST THE LIVE SITE.</span>  <a href="@("~/mvc/pub/contact".ToAbsolute())">Contact us</a> and we can point you to a safe staging/development server that you can use.</p>
+<h2>Web Service</h2>
+<p>The available calls (some of which are deprecated) can be found <a href="@("~/public/WebService.asmx".ToAbsolute())" target="_blank">here</a>; a formal XML-based description of the data structures can be found <a href="@("~/public/WebService.asmx?WSDL".ToAbsolute())" target="_blank">here</a>.</p>
+<p>Please read the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki" target="_blank">wiki</a> on github for more information.</p>
+<h2>@Branding.ReBrand("Integrating with %APP_NAME%") </h2>
+<p>@Branding.ReBrand("%APP_NAME% supports the oAuth2 protocol.")   You can learn more about this on the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki">MyFlightbook wiki.</a></p>
+<p>To integrate your service, you must implement oAuth.  You can then call make calls to the web service on behalf of the user</p>
+<p>There is an <a href="@("~/mvc/PlayPen/ClientTestBed".ToAbsolute())">oAuth testbed</a> in the <a href="@("~/mvc/PlayPen".ToAbsolute())">playpen</a> (where widgets and tools that aren't officially supported live) that you can use to test this out.</p>
+@if (User.Identity.IsAuthenticated)
+{
+    <style type="text/css">
+        .boldHeader {
+            font-weight: bold;
+        }
+    </style>
+    <div style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px;">
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.error), targetID = "divNewClient", labelText = "Add a client", labelClass = "boldHeader" }); }
+        <div id="divNewClient" style="@(String.IsNullOrEmpty(ViewBag.error) ? "display: none;" : string.Empty)">
+            @using (Html.BeginForm("", "oAuth", FormMethod.Post, new { id = "frmNewClient", name = "frmNewClient" }))
+            {
+                @Html.AntiForgeryToken()
+                <table style="padding:3px;">
+                    <tr style="vertical-align:top">
+                        <td>Client ID</td>
+                        <td><input type="text" maxlength="45" id="txtClient" data-1p-ignore name="clientID" required value="@(newClient?.ClientIdentifier ?? string.Empty)" /></td>
+                        <td>This is the unique ID for your client.</td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td>Client Secret</td>
+                        <td><input type="text" maxlength="255" required id="txtSecret" name="clientSecret" value="@(newClient?.ClientSecret ?? string.Empty)" /></td>
+                        <td>This is the secret for your client.  Keep it safe!!!</td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td>Client Name</td>
+                        <td><input type="text" id="txtName" maxlength="255" name="clientName" required value="@(newClient?.ClientName ?? string.Empty)" /></td>
+                        <td>This is the name for your client, as displayed to your users.</td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td>Callback URL(s):<br /><span class="fineprint">Separate multiple urls with a space or a newline.</span></td>
+                        <td><textarea id="txtCallback" name="clientCallback" maxlength="1023" ValidationGroup="newClient" rows="4" required>@(newClient?.CallbacksAsString ?? "https://")</textarea></td>
+                        <td>When authorizing a user, the redirect URL MUST match this.  These MUST be https.</td>
+                    </tr>
+                    <tr style="vertical-align:top">
+                        <td>Requested Scopes</td>
+                        <td>
+                            @foreach (MFBOAuthScope scope in Enum.GetValues(typeof(MFBOAuthScope)))
+                            {
+                                if (scope != MFBOAuthScope.none)
+                                {
+                                    <div><label><input type="checkbox" name="clientScopes" value="@scope.ToString()" @((newClient?.Scope.Contains(scope.ToString()) ?? false).ToChecked()) />@MFBOauthServer.ScopeDescription(scope)</label></div>
+                                }
+                            }
+                        </td>
+                        <td>What sorts of operations might you request for a given user?</td>
+                    </tr>
+                </table>
+                <input type="hidden" name="clientOwner" value="@User.Identity.Name" />
+                <button type="submit" id="btnAddClient">Add</button>
+                <div class="error">@(ViewBag.error ?? string.Empty)</div>
+            }
+        </div>
+    </div>
+    <h2>Your oAuth clients:</h2>
+    if (ownedClients.Any())
+    {
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault gvhLeft"></th>
+                    @if (AdminMode)
+                    {
+                        <th class="headerBase gvhDefault gvhLeft">Owning Username</th>
+                    }
+                    <th class="headerBase gvhDefault gvhLeft">Client ID</th>
+                    <th class="headerBase gvhDefault gvhLeft">Client Secret</th>
+                    <th class="headerBase gvhDefault gvhLeft">Client Name</th>
+                    <th class="headerBase gvhDefault gvhLeft">Callback URL(s)</th>
+                    <th class="headerBase gvhDefault gvhLeft">Scopes (space separated)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (MFBOauth2Client client in ownedClients)
+                {
+                    <tr style="vertical-align: top;">
+                        <td><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: deleteClient('@client.ClientIdentifier'); return false;" /></td>
+                        @if (AdminMode)
+                        {
+                            <td>@client.OwningUser</td>
+                        }
+                        <td>
+                            <input type="hidden" name="clientOwner" value="@User.Identity.Name" />
+                            <input type="hidden" name="clientID" value="@client.ClientIdentifier" />
+                            @client.ClientIdentifier
+                        </td>
+                        <td>
+                            <div class="displayCell">@client.ClientSecret</div>
+                            <div class="editCell"><input type="text" name="clientSecret" value="@client.ClientSecret" /></div>
+                        </td>
+                        <td>
+                            <div class="displayCell">@client.ClientName</div>
+                            <div class="editCell"><input type="text" name="clientName" value="@client.ClientName" /></div>
+                        </td>
+                        <td>
+                            <div class="displayCell">
+                                <ul>
+                                    @foreach (string key in client.AuthLinks.Keys)
+                                    {
+                                        <li><a href="@client.AuthLinks[key].ToString()">Try it!</a> @key</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="editCell">
+                                <div class="fineprint">Enter urls, using spaces or new lines to divide multiple ones.</div>
+                                <textarea name="clientCallBack" maxlength="1023" style="width: 40em;" rows="4">@client.CallbacksAsString</textarea>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayCell">@client.Scope</div>
+                            <div class="editCell"><input type="text" name="clientScopes" value="@client.Scope" /></div>
+                        </td>
+                        <td>
+                            <div class="displayCell">
+                                <a href="#" onclick="javascript: $(this).parents('tr').toggleClass('editRow'); return false;">Edit</a>
+                            </div>
+                            <div class="editCell">
+                                <a href="#" onclick="javascript: $(this).parents('tr').toggleClass('editRow'); return false;">Cancel</a>
+                                <a href="#" onclick="javascript: updateClient('@client.ClientIdentifier', $(this).parents('tr')); return false;">Update</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div>You have no oAuth clients</div>
+    }
+}
+else
+{
+    <div>Sign in to create a client.</div>
+}

@@ -1362,7 +1362,6 @@
     <Content Include="Public\CSS\staging.css" />
     <Content Include="Public\DayPilot-LICENSE.txt" />
     <Content Include="Public\DayPilot-NOTICE.txt" />
-    <Content Include="Public\Developer.aspx" />
     <Content Include="Public\iPadImages\Full\iPad1.png" />
     <Content Include="Public\iPadImages\Full\iPad2.png" />
     <Content Include="Public\iPadImages\Full\iPad3.png" />
@@ -1616,6 +1615,7 @@
     <Content Include="Areas\mvc\Views\Auth\newuser.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\resetPass.cshtml" />
     <Content Include="Areas\mvc\Views\Auth\processReset.cshtml" />
+    <Content Include="Areas\mvc\Views\oAuth\developer.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2339,13 +2339,6 @@
     </Compile>
     <Compile Include="Public\CrashReport.aspx.designer.cs">
       <DependentUpon>CrashReport.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\Developer.aspx.cs">
-      <DependentUpon>Developer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\Developer.aspx.designer.cs">
-      <DependentUpon>Developer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>

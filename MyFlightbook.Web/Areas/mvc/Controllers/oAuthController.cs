@@ -505,10 +505,55 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        // GET: mvc/oAuth
+        #region Developer Page
+        [HttpPost]
+        [Authorize]
+        public ActionResult UpdateOauthClient(string clientID, string clientSecret, string clientName, string clientCallBack, string clientScopes, string szOwner)
+        {
+            return SafeOp(() =>
+            {
+                MFBOauth2Client client = new MFBOauth2Client(clientID, clientSecret, clientCallBack, clientName, (clientScopes ?? string.Empty).Replace(",", " "), szOwner);
+                client.Commit();
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteOAuthClient(string clientID)
+        {
+            return SafeOp(() =>
+            {
+                MFBOauth2Client.DeleteForUser(clientID, User.Identity.Name);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(string clientID, string clientSecret, string clientName, string clientCallBack, string clientOwner)
+        {
+            MFBOauth2Client client = new MFBOauth2Client(clientID, clientSecret, clientCallBack, clientName, (Request["clientScopes"] ?? string.Empty).Replace(",", " "), clientOwner);
+            try
+            {
+                client.Commit();
+                util.NotifyAdminEvent("oAuth client created", String.Format(CultureInfo.CurrentCulture, "User: {0}, Name: {1}", User.Identity.Name, client.ClientName), ProfileRoles.maskCanReport);
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is MyFlightbookValidationException || ex is ArgumentOutOfRangeException)
+            {
+                ViewBag.client = client;
+                ViewBag.error = ex.Message;
+            }
+            return View("developer");
+        }
+
+        // GET: mvc/oAuth - return the developer page
+        [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            return View("developer");
         }
+        #endregion
     }
 }

@@ -113,7 +113,7 @@
 <h2>Cache management</h2>
 <div>@ViewBag.memStats</div>
 
-@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCacheTable", labelText = "OcjectSummary" }); }
+@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCacheTable", labelText = "ObjectSummary" }); }
 <div id="divCacheTable" style="display:none">
     <table>
         @foreach (string szClass in dCache.Keys)
