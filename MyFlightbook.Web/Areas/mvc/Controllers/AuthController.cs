@@ -252,7 +252,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         // POST: mvc/Auth - postback for a sign-in page
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Index(string userEmail, string userPW, string tfaCode)
         {
 

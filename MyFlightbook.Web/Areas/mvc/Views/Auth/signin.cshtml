@@ -48,7 +48,6 @@
         <h2>@Resources.LocalizedText.SignInPrompt</h2>
         @using (Html.BeginForm("", "Auth", String.IsNullOrEmpty(Request["ReturnUrl"]) ? new { } : new { ReturnUrl = Request["ReturnUrl"] }, FormMethod.Post, new { id = "frmSignIn", name = "frmSignIn" }))
         {
-            @Html.AntiForgeryToken()
             <div id="vwSignIn">
                 @if (String.IsNullOrEmpty(ViewBag.email))
                 {
