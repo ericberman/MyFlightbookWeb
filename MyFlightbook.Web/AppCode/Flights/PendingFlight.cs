@@ -125,7 +125,7 @@ namespace MyFlightbook
             if (flights == null)
                 HttpContext.Current?.Cache?.Remove(CacheKeyForUser(szUser));
             else
-                HttpContext.Current?.Cache?.Add(CacheKeyForUser(szUser), flights, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                HttpContext.Current?.Cache?.Insert(CacheKeyForUser(szUser), flights, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Default, null);
         }
 
         static private IEnumerable<PendingFlight> CachedFlightsForUser(string szUser)
@@ -187,11 +187,11 @@ namespace MyFlightbook
             // Now map those missing aircraft
             foreach (PendingFlight pf in flightsToMap)
             {
-                if (pf.AircraftID < 0)
+                Aircraft ac = (pf.AircraftID < 0) ? null : ua[pf.AircraftID];
+                if (ac == null)
                     pf.AircraftID = d.TryGetValue(pf.TailNumDisplay, out int acid) ? acid : Aircraft.idAircraftUnknown;
                 else
                 {
-                    Aircraft ac = ua[pf.AircraftID];
                     pf.CatClassDisplay = ac.CategoryClassDisplay;
                     pf.ModelDisplay = ac.ModelDescription;
                 }
