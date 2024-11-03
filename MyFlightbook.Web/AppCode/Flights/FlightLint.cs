@@ -179,55 +179,63 @@ namespace MyFlightbook.Lint
             {
                 currentIssues = new List<FlightIssue>();
 
-                // If the flight has any actual errors, add those first
-                if (!String.IsNullOrEmpty(le.ErrorString))
-                    currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
-
-                // ignore deadhead flights or flights that have been explicitly ignored (indicated by IgnoreMarker at end of string)
-                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead) || ((options & (UInt32) LintOptions.IncludeIgnored) == 0 && le.Route.EndsWith(IgnoreMarker, StringComparison.CurrentCultureIgnoreCase)))
-                    continue;
-
-                currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);
-
-                if (currentAircraft == null)
+                try
                 {
-                    currentIssues.Add(new FlightIssue(LintOptions.MiscIssues, Resources.FlightLint.warningSIMAircraftNotFound));
-                    continue;
+                    // If the flight has any actual errors, add those first
+                    if (!String.IsNullOrEmpty(le.ErrorString))
+                        currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
+
+                    // ignore deadhead flights or flights that have been explicitly ignored (indicated by IgnoreMarker at end of string)
+                    if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead) || ((options & (UInt32)LintOptions.IncludeIgnored) == 0 && le.Route.EndsWith(IgnoreMarker, StringComparison.CurrentCultureIgnoreCase)))
+                        continue;
+
+                    currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);
+
+                    if (currentAircraft == null)
+                    {
+                        currentIssues.Add(new FlightIssue(LintOptions.MiscIssues, Resources.FlightLint.warningSIMAircraftNotFound));
+                        continue;
+                    }
+
+                    currentModel = MakeModel.GetModel(currentAircraft.ModelID);
+
+                    currentCatClassID = (le.CatClassOverride == 0 ? currentModel.CategoryClassID : (CategoryClass.CatClassID)le.CatClassOverride);
+
+                    if (alMaster != null)
+                        alSubset = alMaster.CloneSubset(le.Route);
+
+                    if ((options & (UInt32)LintOptions.SimIssues) != 0)
+                        CheckSimIssues(le);
+
+                    if ((options & (UInt32)LintOptions.IFRIssues) != 0)
+                        CheckIFRIssues(le);
+
+                    if ((options & (UInt32)LintOptions.AirportIssues) != 0)
+                        CheckAirportIssues(le);
+
+                    if ((options & (UInt32)LintOptions.XCIssues) != 0)
+                        CheckXCIssues(le);
+
+                    if ((options & (UInt32)LintOptions.PICSICDualMath) != 0)
+                        CheckPICSICDualIssues(le);
+
+                    if ((options & (UInt32)LintOptions.TimeIssues) != 0)
+                        CheckTimeIssues(le);
+
+                    if ((options & (UInt32)LintOptions.DateTimeIssues) != 0)
+                        CheckDateTimeIssues(le);
+
+                    if ((options & (UInt32)LintOptions.MiscIssues) != 0)
+                        CheckMiscIssues(le);
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                {
+                    // issue # 1332 - check flights can throw an exception sometimes; catch it as an issue
+                    currentIssues.Add(new FlightIssue() { IssueDescription = ex.Message });
                 }
 
-                currentModel = MakeModel.GetModel(currentAircraft.ModelID);
-
-                currentCatClassID = (le.CatClassOverride == 0 ? currentModel.CategoryClassID : (CategoryClass.CatClassID)le.CatClassOverride);
-
-                if (alMaster != null)
-                    alSubset = alMaster.CloneSubset(le.Route);
-
-                if ((options & (UInt32)LintOptions.SimIssues) != 0)
-                    CheckSimIssues(le);
-
-                if ((options & (UInt32)LintOptions.IFRIssues) != 0)
-                    CheckIFRIssues(le);
-
-                if ((options & (UInt32)LintOptions.AirportIssues) != 0)
-                    CheckAirportIssues(le);
-
-                if ((options & (UInt32)LintOptions.XCIssues) != 0)
-                    CheckXCIssues(le);
-
-                if ((options & (UInt32)LintOptions.PICSICDualMath) != 0)
-                    CheckPICSICDualIssues(le);
-
-                if ((options & (UInt32)LintOptions.TimeIssues) != 0)
-                    CheckTimeIssues(le);
-
-                if ((options & (UInt32)LintOptions.DateTimeIssues) != 0)
-                    CheckDateTimeIssues(le);
-
-                if ((options & (UInt32)LintOptions.MiscIssues) != 0)
-                    CheckMiscIssues(le);
-
                 if (currentIssues.Count > 0 && (dtMinDate == null || (dtMinDate.HasValue && le.Date.CompareTo(dtMinDate.Value) > 0)))
-                    lstFlights.Add(new FlightWithIssues(le, currentIssues));
+                        lstFlights.Add(new FlightWithIssues(le, currentIssues));
 
                 previousFlight = le;
             }
