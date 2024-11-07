@@ -301,7 +301,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult SaveFlightToSession()
         {
             return SafeOp(() =>
