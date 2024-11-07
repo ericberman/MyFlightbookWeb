@@ -55,7 +55,7 @@
                 <td class="gvcLeft">
                     <span style="display:none">@pf.Date.YMDString()</span>
                     <div>
-                        <a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })" style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</a>
+                        <span style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</span>
                         <span style="font-weight: bold; font-size: larger;">@pf.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
                         <a href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/airport/maproute?Airports={0}", pf.Route).ToAbsolute())" style="font-weight: bold">@pf.Route</a>
                         <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
@@ -115,7 +115,15 @@
                 <td class="gvcCentered">@pf.PIC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.PIC.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="noprint"></td>
-                <td class="noprint"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" onclick="javascript: deletePendingFlight('@pf.PendingID');" /></td>
+                <td class="noprint">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                    <div class="popMenuContent popMenuHidden" style="margin-top: -10px; margin-left: -90px">
+                        <div class="flightContextMenu">
+                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>
+                            <div><a href="#" onclick="javascript: deletePendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a></div>
+                        </div>
+                    </div>
+                </td>
             </tr>
         }
     </tbody>
