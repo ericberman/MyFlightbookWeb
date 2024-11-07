@@ -95,7 +95,7 @@ function searchForm(options) {
                 fq.DateMaxStr = "0001-01-01";
         }
         fq.GeneralText = $('#txtRestrict').val();
-        const reAirports = /!?@@?[a-zA-Z0-9]+!?/g;
+        const reAirports = /!?@?[a-zA-Z0-9]+!?/g;
         fq.AirportList = $('#txtAirports').val().match(reAirports);
         fq.Distance = $('input[name="FlightRange"]:checked').val();
 
