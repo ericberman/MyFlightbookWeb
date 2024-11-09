@@ -273,6 +273,11 @@ namespace MyFlightbook.Printing
 
         protected void ckIncludeSignatures_CheckedChanged(object sender, EventArgs e)
         {
+            // Issue #1337: for some stupid reason, the way I was hiding signatures by modifying the underlying flights (yikes!)
+            // This is soon-to-be legacy code, but solve this by flushing the flights cache when switching from no-sigs to sigs
+            if (ckIncludeSignatures.Checked)
+                FlightResultManager.FlightResultManagerForUser(UserName).Invalidate();
+
             NotifyDelegate();
         }
 
