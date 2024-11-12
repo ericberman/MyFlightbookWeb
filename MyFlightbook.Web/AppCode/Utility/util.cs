@@ -241,10 +241,10 @@ namespace MyFlightbook
         /// <param name="token">The token</param>
         /// <param name="action">Optional, the action being validated</param>
         /// <param name="referringDomain">The referring domain</param>
-        /// <returns>true if all is good</returns>
+        /// <returns>The score (0 to 1.0); 1.0 if any error</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="HttpRequestException"></exception>
-        static async public Task<bool> ValidateRecaptcha(string token, string action, string referringDomain)
+        static async public Task<double> ValidateRecaptcha(string token, string action, string referringDomain)
         {
             if (String.IsNullOrEmpty(token))
                 throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaRequired);
@@ -271,7 +271,7 @@ namespace MyFlightbook
                 if (d?.riskAnalysis?.score == null) // let's debug this
                     util.NotifyAdminEvent("Unrecognized recaptcha response", r, ProfileRoles.maskSiteAdminOnly);
 
-                return (d?.riskAnalysis?.score ?? 1.0) > 0.5;   // if d, riskAnalysis, or score are null, just let it through - better to allow a bot then disallow a user
+                return d?.riskAnalysis?.score ?? 1.0;   // if null, pass 1 - treat as accepted.
             }
         }
     }
@@ -599,9 +599,10 @@ namespace MyFlightbook
         /// <param name="message">The message</param>
         /// <param name="subject">The subject of the message</param>
         /// <param name="postedFile">If provided, any posted files</param>
+        /// <param name="captchaScore">The captcha score</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles)
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore)
         {
             if (String.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
@@ -614,11 +615,12 @@ namespace MyFlightbook
             
             MailAddress ma = new MailAddress(email, displayName ?? string.Empty);
 
-            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}</pre></body></html>", 
+            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}\r\nScore: {4}</pre></body></html>", 
                 (message ?? string.Empty).Replace("\r\n", "<br />").Replace("\n", "<br />"), 
                 (String.IsNullOrEmpty(userName) ? "anonymous" : userName), 
                 email, 
-                DateTime.Now.ToLongDateString());
+                DateTime.Now.ToLongDateString(),
+                captchaScore);
             string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, subject);
             using (MailMessage msg = new MailMessage()
             {

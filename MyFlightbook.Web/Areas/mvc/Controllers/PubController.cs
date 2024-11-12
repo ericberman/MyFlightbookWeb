@@ -288,9 +288,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Contact(string name, string email, string subject, string message, int noCap)
         {
+            double score = -1.0;
             try
             {
-                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && !await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host))
+                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host)) < 0.5)
                     throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
             }
             catch (HttpRequestException)
@@ -306,7 +307,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("contact");
             }
 
-            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files);
+            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files, score);
             ViewBag.success = true;
             ViewBag.showReturn = (noCap == 0);
             return View("contact");

@@ -30,6 +30,7 @@
         });
     });
 </script>
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 <script type="text/javascript" src="@("~/public/scripts/jquery.passwordRequirements.min.js".ToAbsolute())"></script>
 <div id="divCreateUser">
     <h2>@Resources.LocalizedText.TermsAndConditionsHeader</h2>
@@ -108,6 +109,13 @@
             <td>@Resources.Profile.NewUserSecurityAnswerPrompt</td>
             <td>
                 <div><input type="text" style="width: 400px;" required name="accountQAAnswer" value="@(ViewBag.answer ?? string.Empty)" maxlength="80" /></div>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td></td>
+            <td>
+                <div style="margin-top: 10pt; margin-bottom: 10pt;" class="g-recaptcha" data-sitekey="@LocalConfig.SettingForKey("recaptchaKey")" data-action="SUBMIT"></div>
             </td>
         </tr>
     </table>
