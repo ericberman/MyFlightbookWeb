@@ -4104,7 +4104,7 @@ WHERE f1.username = ?uName ");
             decimal total = 0;
             foreach (int idcatclass in rgCats)
                 if (dictCatClassTotals.TryGetValue(idcatclass, out decimal value))
-                    total += value;
+                    total = total.AddMinutes(value, RoundingUnit);  // issue #1341 - need to addminutes, not straight add, or you get negative tiny crumbs
             return total;
         }
 
