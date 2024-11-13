@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -199,7 +200,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> NewUser(string firstName, string lastName, string accountEmail, string accountPass, string accountQAQuestionCustom, string accountQAQuestionCanned, string accountQAAnswer)
+        public ActionResult NewUser(string firstName, string lastName, string accountEmail, string accountPass, string accountQAQuestionCustom, string accountQAQuestionCanned, string accountQAAnswer)
         {
             try
             {
@@ -220,9 +221,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.IsNullOrEmpty(accountQAAnswer))
                     throw new ArgumentNullException(nameof(accountQAAnswer), Resources.Preferences.errAccountQAAnswerMissing);
 
-                double score = -1.0;
-
-                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "signup", Request.Url.Host)) < 0.3)
+                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && String.IsNullOrEmpty(Request["g-recaptcha-response"]))
                     throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
 
                 string szUser = Membership.GetUserNameByEmail(accountEmail);
