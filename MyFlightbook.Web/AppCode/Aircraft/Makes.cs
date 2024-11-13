@@ -554,7 +554,7 @@ ORDER BY model ASC;", string.Join(",", modelIDs)));
             Is200HP = IsAllGlass = IsAllTAA = IsCertifiedSinglePilot = IsComplex = IsComplex = IsConstantProp = IsHighPerf = IsMotorGlider = IsMultiEngineHelicopter = IsRetract = IsTailWheel = false;
         }
 
-        protected const string szSQLSelectTemplate = @"SELECT models.*, categoryclass.CatClass as 'Category/Class', manufacturers.manufacturer 
+        protected const string szSQLSelectTemplate = @"SELECT models.*, categoryclass.CatClass as 'Category/Class', manufacturers.manufacturer, '' AS AircraftIDs
 FROM models 
 INNER JOIN categoryclass ON categoryclass.idCatClass = models.idcategoryclass 
 INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer 

@@ -118,7 +118,7 @@
     @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = fq, linkItems = false, sk = (string)null, canDownload = true }); }
 </div>
 <div id="targetPrintView" style="display: none">
-    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%" id="divPrefPrintingSections">
+    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
         <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
         @{ Html.RenderAction("PrintPrefsSections", "Print", new { paramList = nvc, fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
     </div>

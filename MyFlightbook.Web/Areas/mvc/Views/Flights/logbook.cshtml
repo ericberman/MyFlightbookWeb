@@ -233,7 +233,7 @@
     <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
 </div>
 <div id="targetPrintView" style="display: none">
-    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%" id="divPrefPrintingSections">
+    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
         <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
         @{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
     </div>
