@@ -4,6 +4,14 @@
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
+
+/*
+  Handles preference management for printing
+   - Container - the containing DIV in which this lives
+   - Options:
+     * includeFlightsSection (whether or not to show the "include flights" section)
+     * onChangeFunc (javascript function to call when preferences change)
+*/
 function printingSections(container, options) {
     this.options = options;
     this.container = container;

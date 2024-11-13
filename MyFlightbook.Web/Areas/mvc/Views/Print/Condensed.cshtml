@@ -1,0 +1,95 @@
+﻿
+@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Printing
+@{
+    PrintLayout pl = ViewBag.pl;
+    IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+}
+@foreach (LogbookPrintedPage lpp in pages)
+{
+    Html.RenderPartial("_printHeader");
+    pl.StripRedundantOrExcludedProperties(null, lpp.Flights);
+
+    <table class="pageTable">
+        <thead>
+            <tr class="bordered">
+                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall" style="width:1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSegments</th>
+                <th class="headerSmall clipped">@Resources.LogbookEntry.PrintHeaderModel</th>
+                <th class="headerSmall clipped">@Resources.LogbookEntry.PrintHeaderRoute</th>
+                @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                {
+                    <th class="headerSmall" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                }
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproachesShort</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldXCountry</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall" style="width:1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldPIC</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldCFI</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldTotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntryDisplay led in lpp.Flights)
+            {
+                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
+                    <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td>@led.FlightCount.FormatInt()</td>
+                    <td class="clipped">@pl.ModelDisplay(led)</td>
+                    <td class="clipped"><span style="font-weight:bold">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</td>
+                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    {
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                    }
+                    <td>@led.Landings.FormatInt()</td>
+                    <td>@led.Approaches.FormatInt()</td>
+                    <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                </tr>
+            }
+            @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+            {
+                int itemIndex = 0;
+                foreach (LogbookEntryDisplay led in stc.Subtotals)
+                {
+                    <tr class="subtotal">
+                        @if (itemIndex++ == 0)
+                        {
+                            <td colspan="2" class="clipped" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
+                        }
+                        <td colspan="2">@led.CatClassDisplay</td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            <td>@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@led.LandingsTotal.FormatInt()</td>
+                        <td>@led.Approaches.FormatInt()</td>
+                        <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+}

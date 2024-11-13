@@ -1,0 +1,133 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Printing
+@{
+    PrintLayout pl = ViewBag.pl;
+    IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+}
+@foreach (LogbookPrintedPage lpp in pages)
+{
+    Html.RenderPartial("_printHeader");
+    pl.StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropStudentName,
+        (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC,
+        (int) CustomPropertyType.KnownProperties.IDPropNameOfSIC,
+        (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
+        (int) CustomPropertyType.KnownProperties.IDPropFirstOfficerName,
+        (int) CustomPropertyType.KnownProperties.IDPropNightTakeoff }, lpp.Flights);
+
+    <table class="pageTable">
+        <thead>
+            <tr class="bordered">
+                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderPICName</th>
+                <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
+                <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderFlightDetails</th>
+                @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                {
+                    <th class="headerSmall" rowspan="2" style="width:1cm">@oc.Title</th>
+                }
+                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderInstrumentShort</th>
+            </tr>
+            <tr class="bordered">
+                <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderTypeShort</th>
+                <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderRegistration</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntryDisplay led in lpp.Flights)
+            {
+                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
+                    <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td>@pl.ModelDisplay(led)</td>
+                    <td>@led.TailNumOrSimDisplay</td>
+                    <td>@led.PICName</td>
+                    <td>@led.SICName @led.StudentName</td>
+                    <td>
+                        <span style="text-transform:uppercase; font-style:italic; font-weight:bold;">@led.Route</span>
+                        <span style="white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div>
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                            }
+                        </div>
+                        @if (pl.Options.IncludeImages)
+                        {
+                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                            il.Refresh(false, null, false);
+                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                            {
+                                MFBImageInfo img = il.ImageArray[i];
+                                <div class="ilItem">
+                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                    <div>@img.Comment</div>
+                                </div>
+                            }
+                        }
+                    </td>
+                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    {
+                        <td>@led.OptionalColumnDisplayValue(i)</td>
+                    }
+                    <td>@((led.Dual - Math.Min(led.Dual, led.Nighttime)).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                    <td class="nightCol">@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@((led.PICUSTime - Math.Min(led.PICUSTime, led.Nighttime)).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                    <td class="nightCol">@Math.Min(led.PICUSTime, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@((led.PIC - Math.Min(led.PIC, led.Nighttime)).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                    <td class="nightCol">@Math.Min(led.PIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@((led.SIC - Math.Min(led.SIC, led.Nighttime)).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                    <td class="nightCol">@Math.Min(led.SIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                </tr>
+            }
+            @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+            {
+                int itemIndex = 0;
+                foreach (LogbookEntryDisplay led in stc.Subtotals)
+                {
+                    <tr class="subtotal">
+                        @if (itemIndex++ == 0)
+                        {
+                            <td colspan="3" class="subtotalLabel" rowspan='@stc.SubtotalCount'></td>
+                            <td colspan="2" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
+                        }
+                        <td>@led.CatClassDisplay</td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            <td>@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@((led.Dual - led.NightDualTotal).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                        <td class="nightCol">@led.NightDualTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@((led.PICUSTotal - led.NightPICUSTotal).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                        <td class="nightCol">@led.NightPICUSTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@((led.PIC - led.NightPICTotal).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                        <td class="nightCol">@led.NightPICTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@((led.SIC - led.NightSICTotal).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
+                        <td class="nightCol">@led.NightSICTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+}
+

@@ -1,0 +1,153 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Printing
+@{
+    PrintLayout pl = ViewBag.pl;
+    IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+}
+@foreach (LogbookPrintedPage lpp in pages)
+{
+    Html.RenderPartial("_printHeader");
+    pl.StripRedundantOrExcludedProperties(null, lpp.Flights);
+
+    <table class="pageTable">
+        <thead class="header bordered">
+            <tr>
+                <th colspan="2"></th>
+                <th>@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                {
+                    <th><div class="custColumn">@oc.Title</div></th>
+                }
+                <th><div>@Resources.LogbookEntry.PrintHeaderApproachesShort</div></th>
+                <th><div>@Resources.LogbookEntry.FieldHold</div></th>
+                <th><div>@Resources.LogbookEntry.PrintHeaderLandingsShort</div></th>
+                <th><div>@Resources.LogbookEntry.FieldXCountry</div></th>
+                <th><div>@Resources.LogbookEntry.FieldNight</div></th>
+                <th><div>@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</div></th>
+                <th><div>@Resources.LogbookEntry.FieldIMC</div></th>
+                <th><div>@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</div></th>
+                <th><div>@Resources.LogbookEntry.FieldDual</div></th>
+                @if (pl.CurrentUser.IsInstructor)
+                {
+                    <th><div>@Resources.LogbookEntry.FieldCFI</div></th>
+                }
+                @if (pl.CurrentUser.TracksSecondInCommandTime)
+                {
+                    <th><div>@Resources.LogbookEntry.FieldSIC</div></th>
+                }
+                <th><div>@Resources.LogbookEntry.FieldPIC</div></th>
+                <th><div>@Resources.LogbookEntry.FieldTotal</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntryDisplay led in lpp.Flights)
+            {
+                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
+                    <td colspan="2">
+                        <div>
+                            @pl.ChangeMarkerForFlight(led)<span style="font-weight: bold; font-size: larger">@led.Date.ToShortDateString()</span>
+                            <span style="font-weight:bold">@led.Route</span>
+                            <span style="white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                        </div>
+                        @if (pl.CurrentUser.DisplayTimesByDefault)
+                        {
+                            <div>@led.EngineTimeDisplay</div>
+                            <div>@led.FlightTimeDisplay</div>
+                            <div>@led.HobbsDisplay</div>
+                        }
+                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                        {
+                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                        }
+                        @if (pl.Options.IncludeImages)
+                        {
+                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                            il.Refresh(false, null, false);
+                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                            {
+                                MFBImageInfo img = il.ImageArray[i];
+                                <div class="ilItem">
+                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                    <div>@img.Comment</div>
+                                </div>
+                            }
+                        }
+                    </td>
+                    <td style="width: 3cm">
+                        <div style="font-weight:bold">@led.TailNumOrSimDisplay</div>
+                        <div style="font-size:smaller">@pl.ModelDisplay(led) @led.CatClassDisplay</div>
+                    </td>
+                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    {
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                    }
+                    <td class="numericColumn">@led.Approaches.FormatInt()</td>
+                    <td class="numericColumn">
+                        @if (led.fHoldingProcedures)
+                        {
+                            <img src="@("~/images/checkmark.png".ToAbsolute())" style="height:10pt; width: 10pt;" />
+                        }
+                    </td>
+                    <td class="numericColumn">@led.LandingDisplay</td>
+                    <td class="numericColumn">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    @if (pl.CurrentUser.IsInstructor)
+                    {
+                        <td class="numericColumn">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    }
+                    @if (pl.CurrentUser.TracksSecondInCommandTime)
+                    {
+                        <td class="numericColumn">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    }
+                    <td class="numericColumn">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                </tr>
+            }
+            @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+            {
+                int itemIndex = 0;
+                foreach (LogbookEntryDisplay led in stc.Subtotals)
+                {
+                    <tr class="subtotal">
+                        @if (itemIndex++ == 0)
+                        {
+                            <td class="noborder" rowspan='@stc.SubtotalCount'></td>
+                            <td class="subtotalLabel" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
+                        }
+                        <td>@led.CatClassDisplay</td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            <td class="numericColumn">@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@led.Approaches.FormatInt()</td>
+                        <td style="background-color:lightgray"></td>
+                        <td>@led.Landings.FormatInt()</td>
+                        <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @if (pl.CurrentUser.IsInstructor)
+                        {
+                            <td class="numericColumn">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        @if (pl.CurrentUser.TracksSecondInCommandTime)
+                        {
+                            <td class="numericColumn">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+}

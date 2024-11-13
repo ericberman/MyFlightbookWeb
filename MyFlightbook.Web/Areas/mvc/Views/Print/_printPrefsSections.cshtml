@@ -1,6 +1,6 @@
 ﻿@using MyFlightbook.Printing
 @using System.Collections.Specialized
-@{ 
+@{
     NameValueCollection nvc = ViewBag.paramList;
     FlightQuery fq = ViewBag.query;
     PrintingOptions po = ViewBag.po;
@@ -31,53 +31,52 @@
         });
     });
 </script>
-<div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%" id="divPrefPrintingSections">
-    <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
+<div id="divPrefPrintingSections">
     <table>
         <tr>
-            <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" /></td>
+            <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" name="poSectCover" /></td>
             <td><label for="ckPrintSectionsCoverSheet">@Resources.LocalizedText.PrintViewIncludeCoverSheet</label></td>
         </tr>
         @if (includeFlightsSection)
         {
             <tr>
-                <td><input type="checkbox" @po.Sections.IncludeFlights.ToChecked() id="ckPrintSectionFlights" /></td>
+                <td><input type="checkbox" @po.Sections.IncludeFlights.ToChecked() id="ckPrintSectionFlights" name="poSectFlights" /></td>
                 <td><label for="ckPrintSectionFlights">@Resources.LocalizedText.PrintViewSelectedFlightsLabel</label></td>
             </tr>
             <tr>
                 <td></td>
-                <td>TODO - put query descriptor and change option here</td>
+                <td>
+                    <button onclick="javascript: toggleSearch(); return false;">@Resources.LocalizedText.ChangeQuery</button>
+                    @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+                </td>
             </tr>
         }
         <tr>
             <td>
-                <input type="checkbox" @po.Sections.IncludeTotals.ToChecked() id="ckPrintSectionTotals" />
+                <input type="checkbox" @po.Sections.IncludeTotals.ToChecked() id="ckPrintSectionTotals" name="poSectTotals" />
             </td>
             <td>
                 <label for="ckPrintSectionTotals">@Resources.LocalizedText.PrintViewIncludeTotals</label>
-                <input type="checkbox" @po.Sections.CompactTotals.ToChecked() id="ckPrintSectionCompactTotals" />
-                <label for="ckPrintSectionCompactTotals">@Resources.LocalizedText.PrintViewTotalsCompact</label>
+                <label><input type="checkbox" name="poSectTotalsCompact" @po.Sections.CompactTotals.ToChecked() id="ckPrintSectionCompactTotals" />@Resources.LocalizedText.PrintViewTotalsCompact</label>
                 <span class="fineprint">@Resources.LocalizedText.PrintViewTotalsCompactNote</span>
             </td>
         </tr>
         <tr>
             <td style="vertical-align:top;">
-                <input type="checkbox" @((po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None).ToChecked()) id="ckPrintSectionEndorsements" />
+                <input type="checkbox" name="poSectEndorsements" @((po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None).ToChecked()) id="ckPrintSectionEndorsements" />
             </td>
             <td>
-                <div>
-                    <label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label>
-                    <input type="checkbox" @((po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos).ToChecked()) id="ckPrintSectionEndorsementImages" />
-                    <label for="ckPrintSectionEndorsementImages">@Resources.LocalizedText.PrintViewIncludeJPEGEndorsements</label>
-                </div>
+                <label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label>
+                <label><input type="checkbox" name="poSectEndorsementsJPG" @(po.Sections.Endorsements == PrintingSections.EndorsementsLevel.None ? "disabled" : string.Empty) @((po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos).ToChecked()) id="ckPrintSectionEndorsementImages" />@Resources.LocalizedText.PrintViewIncludeJPEGEndorsements</label>
                 <div class="fineprint">@Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote</div>
             </td>
         </tr>
     </table>
     @if (String.IsNullOrEmpty(ViewBag.onChange))
     {
-    <ul class="nextStep">
-        <li><a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a></li>
-    </ul>
+        <ul class="nextStep">
+            <li><a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a></li>
+        </ul>
     }
 </div>
+

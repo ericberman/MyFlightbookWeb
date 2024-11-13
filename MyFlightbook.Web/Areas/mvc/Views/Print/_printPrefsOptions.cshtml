@@ -1,0 +1,175 @@
+﻿@using System.Globalization
+@using MyFlightbook.Printing
+@{
+    PrintingOptions po = ViewBag.po;
+    string userName = ViewBag.userName;
+    string onChange = ViewBag.onChange;
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(userName);
+    List<CustomPropertyType> rgcptUser = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(pf.UserName));
+    rgcptUser.RemoveAll(cpt => !cpt.IsFavorite && !pf.BlocklistedProperties.Contains(cpt.PropTypeID));
+    List<CustomPropertyType> rgcptUserOptionalColumns = rgcptUser.FindAll(cpt => (cpt.Type == CFPPropertyType.cfpDecimal || cpt.Type == CFPPropertyType.cfpInteger) && !cpt.IsNoSum);
+    rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+    rgcptUserOptionalColumns.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+    PrintLayout pl = ViewBag.pl;
+
+    IEnumerable<OptionalColumnType> optionalColumnCandidates = new OptionalColumnType[]
+{
+        OptionalColumnType.Complex,
+        OptionalColumnType.Retract,
+        OptionalColumnType.Tailwheel,
+        OptionalColumnType.HighPerf,
+        OptionalColumnType.TAA,
+        OptionalColumnType.TurboProp,
+        OptionalColumnType.Turbine,
+        OptionalColumnType.Jet,
+        OptionalColumnType.TurbineSIC,
+        OptionalColumnType.TurbinePIC,
+        OptionalColumnType.CrossCountry,
+        OptionalColumnType.None,
+        OptionalColumnType.ATD,
+        OptionalColumnType.FTD,
+        OptionalColumnType.FFS,
+        OptionalColumnType.None,
+        OptionalColumnType.ASEL,
+        OptionalColumnType.AMEL,
+        OptionalColumnType.ASES,
+        OptionalColumnType.AMES,
+        OptionalColumnType.Glider,
+        OptionalColumnType.Helicopter,
+        OptionalColumnType.Gyroplane,
+        OptionalColumnType.HotAirBalloon,
+        OptionalColumnType.GasBalloon,
+        OptionalColumnType.UAS,
+        OptionalColumnType.None,
+        OptionalColumnType.XCInstruction,
+        OptionalColumnType.XCSolo,
+        OptionalColumnType.XCSIC,
+        OptionalColumnType.XCPIC,
+        OptionalColumnType.NightInstruction,
+        OptionalColumnType.NightSolo,
+        OptionalColumnType.NightSIC,
+        OptionalColumnType.NightPIC,
+        };
+}
+<script type="text/javascript">
+    function toggleSelectAll(sender) {
+        $("input[name='poExcludedProp']").attr('checked', sender.checked);
+    }
+</script>
+<div id="divPrintPrefs">
+    <div>
+        <h3>@Resources.LogbookEntry.PrintFormatPrompt</h3>
+        <select name="poLayout" onchange="javascript:@(onChange)();">
+            <option value="Native" @((po.Layout == PrintLayoutType.Native).ToSelected())>@Resources.LogbookEntry.PrintFormatNative</option>
+            <option value="Portrait" @((po.Layout == PrintLayoutType.Portrait).ToSelected())>@Resources.LogbookEntry.PrintFormatPortrait</option>
+            <option value="EASA" @((po.Layout == PrintLayoutType.EASA).ToSelected())>@Resources.LogbookEntry.PrintFormatEASA</option>
+            <option value="USA" @((po.Layout == PrintLayoutType.USA).ToSelected())>@Resources.LogbookEntry.PrintFormatUSA</option>
+            <option value="Canada" @((po.Layout == PrintLayoutType.Canada).ToSelected())>@Resources.LogbookEntry.PrintFormatCanada</option>
+            <option value="SACAA" @((po.Layout == PrintLayoutType.SACAA).ToSelected())>@Resources.LogbookEntry.PrintFormatSACAA</option>
+            <option value="CASA" @((po.Layout == PrintLayoutType.CASA).ToSelected())>@Resources.LogbookEntry.PrintFormatCASA</option>
+            <option value="PCAA" @((po.Layout == PrintLayoutType.PCAA).ToSelected())>@Resources.LogbookEntry.PrintFormatPCAA</option>
+            <option value="NZ" @((po.Layout == PrintLayoutType.NZ).ToSelected())>@Resources.LogbookEntry.PrintFormatNZ</option>
+            <option value="Glider" @((po.Layout == PrintLayoutType.Glider).ToSelected())>@Resources.LogbookEntry.PrintFormatGlider</option>
+            <option value="Condensed" @((po.Layout == PrintLayoutType.Condensed).ToSelected())>@Resources.LogbookEntry.PrintFormatCondensed</option>
+            <option value="UASCivi" @((po.Layout == PrintLayoutType.UASCivi).ToSelected())>@Resources.LogbookEntry.PrintFormatUASCivi</option>
+            <option value="TwoPage" @((po.Layout == PrintLayoutType.TwoPage).ToSelected())>@Resources.LogbookEntry.PrintFormat2Page</option>
+            <option value="Navy" @((po.Layout == PrintLayoutType.Navy).ToSelected())>@Resources.LogbookEntry.PrintFormatNavy</option>
+            <option value="Airline" @((po.Layout == PrintLayoutType.Airline).ToSelected())>@Resources.LogbookEntry.PrintFormatAirline</option>
+            <option value="HongKong" @((po.Layout == PrintLayoutType.HongKong).ToSelected())>@Resources.LogbookEntry.PrintFormatHongKong</option>
+        </select>
+        <div style="@(pl.SupportsImages ? string.Empty : "display: none;")" ><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poImages" @((po.IncludeImages && pl.SupportsImages).ToChecked()) />@Resources.LocalizedText.PrintViewIncludeImages</label></div>
+        <div><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poSigs" @po.IncludeSignatures.ToChecked() />@Resources.LocalizedText.PrintViewIncludeSignatures</label></div>
+        <div>
+            <label><input type="checkbox" onchange="javascript:@(onChange)();" name="poColors" @po.UseFlightColoring.ToChecked() />@Resources.LocalizedText.PrintViewFlightColoring</label>
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTTPrintColor", tipTextHTML = Resources.LocalizedText.PrintViewFlightColoringTip }); }
+        </div>
+        <div>
+            <label style="font-size: 7pt;"><input type="radio" value="Small" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Small).ToChecked())>@Resources.LocalizedText.PrintFontSizeSmaller</label>
+            <label><input type="radio" value="Normal" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Normal).ToChecked())>@Resources.LocalizedText.PrintFontSizeNormal</label>
+            <label style="font-size: 11pt;"><input type="radio" value="Large" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Large).ToChecked())>@Resources.LocalizedText.PrintFontSizeLarge</label>
+        </div>
+    </div>
+    <div>
+        <div>
+            <h3 style="display: inline-block; font-weight: bold">@Resources.LocalizedText.PrintViewFlightsPerPage</h3>
+            @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); }
+        </div>
+        <div id="flightsPerPageTip" style="display: none" class="callout">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
+        <select name="poFlightsPerPage" onchange="javascript:@(onChange)();">
+            <option value="-1" @((po.FlightsPerPage <= 0).ToSelected())>@Resources.LocalizedText.PrintViewAsFit</option>
+            @for (int i = 3; i <= 40; i++)
+            {
+                <option value="@i.ToString(CultureInfo.InvariantCulture)" @((i == po.FlightsPerPage).ToSelected())>@i.ToString(CultureInfo.CurrentCulture)</option>
+            }
+        </select>
+        <div><label><input type="checkbox" onchange="javascript: @(onChange)();" name="poIncludeColumn" @po.IncludeColumnTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludeColumnTotals</label></div>
+        <div style="@(po.FlightsPerPage <= 0 ? "display: none;" : string.Empty)"><label><input type="checkbox" @(po.IncludeColumnTotals ? string.Empty : "disabled") onchange="javascript:@(onChange)();" name="poIncludePreviousPage" @po.IncludePullForwardTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludePreviousPageTotals</label></div>
+        <div><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poSubtotalCatClass" @po.StripeSubtotalsByCategoryClass.ToChecked() />@Resources.LocalizedText.PrintViewSubtotalsByCategoryClass</label></div>
+        <div style="@(po.FlightsPerPage <= 0 ? "display: none;" : string.Empty)">
+            @Resources.LocalizedText.PrintViewBreakPeriodPrompt
+            <label><input type="radio" onchange="javascript:@(onChange)();" value="None" name="poForcedBreak" @((!po.BreakAtMonthBoundary && !po.BreakAtYearBoundary).ToChecked()) />@Resources.LocalizedText.PrintViewBreakNone</label>
+            <label><input type="radio" onchange="javascript:@(onChange)();" value="Month" name="poForcedBreak" @po.BreakAtMonthBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakMonth</label>
+            <label><input type="radio" onchange="javascript:@(onChange)();" value="Year" name="poForcedBreak" @po.BreakAtYearBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakYear</label>
+        </div>
+    </div>
+    <div>
+        <h3>@Resources.LocalizedText.PrintViewModelDisplay</h3>
+        <div><label><input type="radio" onchange="javascript:@(onChange)();" value="Full" name="poModelDisplay" @((po.DisplayMode == PrintingOptions.ModelDisplayMode.Full).ToChecked()) />@Resources.LocalizedText.PrintViewModelDisplayFull</label></div>
+        <div><label><input type="radio" onchange="javascript:@(onChange)();" value="Short" name="poModelDisplay" @((po.DisplayMode == PrintingOptions.ModelDisplayMode.Short).ToChecked()) />@Resources.LocalizedText.PrintViewModelDisplayShort</label></div>
+        <div><label><input type="radio" onchange="javascript:@(onChange)();" value="ICAO" name="poModelDisplay" @((po.DisplayMode == PrintingOptions.ModelDisplayMode.ICAO).ToChecked()) />@Resources.LocalizedText.PrintViewModelDisplayICAO</label></div>
+    </div>
+    <div style="@(pl.SupportsOptionalColumns ? string.Empty : "display: none;")">
+        <h3>@Resources.LocalizedText.PrintViewOptionalColumns</h3>
+        @for (int icol = 0; icol < 4; icol++)
+        {
+            OptionalColumnType colType = (icol < po.OptionalColumns.Count) ? po.OptionalColumns[icol].ColumnType : OptionalColumnType.None;
+            <div style="display: inline-block;">
+                <select name="poOptColumn" onchange="javascript:@(onChange)();">
+                    <option value="" @((colType == OptionalColumnType.None).ToSelected())>@Resources.LocalizedText.PrintViewOptionalColumnNone</option>
+                    @foreach (OptionalColumnType oct in optionalColumnCandidates)
+                    {
+                        <option value="@(oct == OptionalColumnType.None ? string.Empty : oct.ToString())" @((oct != OptionalColumnType.None && colType == oct).ToSelected()) @(oct == OptionalColumnType.None ? "disabled" : string.Empty)>@(oct == OptionalColumnType.None ? Resources.LocalizedText.DropDownListSeparator : OptionalColumn.TitleForType(oct))</option>
+                    }
+                    @if (rgcptUserOptionalColumns.Any())
+                    {
+                        <option value="" disabled>@Resources.LocalizedText.DropDownListSeparator</option>
+                        foreach (CustomPropertyType cpt in rgcptUserOptionalColumns)
+                        {
+                            <option value="@cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)"
+                                    @((icol < po.OptionalColumns.Count && po.OptionalColumns[icol].ColumnType == OptionalColumnType.CustomProp && po.OptionalColumns[icol].IDPropType == cpt.PropTypeID).ToSelected())>
+                                @cpt.Title
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+            if (icol == 1)
+            {
+                <div>&nbsp;</div>
+            }
+        }
+    </div>
+    <div id="pnlProperties" style="padding:3px">
+        <h3>@Resources.LocalizedText.PrintViewPropertySeparator</h3>
+        <div>
+            <label><input type="radio" onchange="javascript:@(onChange)();" name="poPropSeparator" value="Space" @((po.PropertySeparator == PrintingOptions.PropertySeparatorType.Space).ToChecked())>@Resources.LocalizedText.PrintViewPropertySeparatorSpace</label>
+            <label><input type="radio" onchange="javascript:@(onChange)();" name="poPropSeparator" value="Comma" @((po.PropertySeparator == PrintingOptions.PropertySeparatorType.Comma).ToChecked())>@Resources.LocalizedText.PrintViewPropertySeparatorComma</label>
+            <label><input type="radio" onchange="javascript:@(onChange)();" name="poPropSeparator" value="Semicolon" @((po.PropertySeparator == PrintingOptions.PropertySeparatorType.Semicolon).ToChecked())>@Resources.LocalizedText.PrintViewPropertySeparatorSemicolon</label>
+            <label><input type="radio" onchange="javascript:@(onChange)();" name="poPropSeparator" value="Newline" @((po.PropertySeparator == PrintingOptions.PropertySeparatorType.Newline).ToChecked())>@Resources.LocalizedText.PrintViewPropertySeparatorNewline</label>
+        </div>
+        @if (rgcptUser.Any())
+        {
+            <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = po.ExcludedPropertyIDs.Any(), targetID = "divExcludedProps", labelText = Resources.LocalizedText.PrintViewPropertyInclusion });}</h3>
+            <div id="divExcludedProps" style="@(po.ExcludedPropertyIDs.Any() ? string.Empty : "display: none;")">
+                @foreach (CustomPropertyType cpt in rgcptUser)
+                {
+                    <div style="display: inline-block; width: 25em; text-overflow: ellipsis;"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poExcludedProp" value="@cpt.PropTypeID" @po.ExcludedPropertyIDs.Contains(cpt.PropTypeID).ToChecked() />@cpt.Title</label></div>
+                }
+                @if (rgcptUser.Count > 4)
+                {
+                    <div><label><input type="checkbox" onclick="javascript: toggleSelectAll(this);" />@Resources.LocalizedText.SelectAll</label> </div>
+                }
+            </div>
+        }
+    </div>
+</div>

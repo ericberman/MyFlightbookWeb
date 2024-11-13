@@ -1,0 +1,79 @@
+﻿@using MyFlightbook.Printing
+@{
+    PrintingOptions po = ViewBag.po;
+    PDFOptions pdfOptions = po.PDFSettings ?? new PDFOptions();
+}
+<script type="text/javascript">
+    function pageSizeChanged(sender) {
+        $("#rowCustomPage").toggle(sender.value === "Custom");
+    }
+</script>
+<div style="float:right; width: 170px;">
+    <div style="text-align:center;">@Branding.ReBrand(Resources.LogbookEntry.ProSoftPartnership)</div>
+    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 3 });}
+</div>
+<table>
+    <tr style="vertical-align:top;">
+        <td>@Resources.LocalizedText.PDFPageSizePrompt</td>
+        <td>
+            <div>
+                <select id="cmbPageSize" name="pdfPageSize" onchange="javascript: pageSizeChanged(this);">
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.Letter).ToSelected()) value="Letter">@Resources.LocalizedText.PDFPageSizeLetter</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.Legal).ToSelected()) value="Legal">@Resources.LocalizedText.PDFPageSizeLegal</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.A1).ToSelected()) value="A1">@Resources.LocalizedText.PDFPageSizeA1</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.A2).ToSelected()) value="A2">@Resources.LocalizedText.PDFPageSizeA2</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.A3).ToSelected()) value="A3">@Resources.LocalizedText.PDFPageSizeA3</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.A4).ToSelected()) value="A4">@Resources.LocalizedText.PDFPageSizeA4</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.A5).ToSelected()) value="A5">@Resources.LocalizedText.PDFPageSizeA5</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.B1).ToSelected()) value="B1">@Resources.LocalizedText.PDFPageSizeB1</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.B2).ToSelected()) value="B2">@Resources.LocalizedText.PDFPageSizeB2</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.B3).ToSelected()) value="B3">@Resources.LocalizedText.PDFPageSizeB3</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.B4).ToSelected()) value="B4">@Resources.LocalizedText.PDFPageSizeB4</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.B5).ToSelected()) value="B5">@Resources.LocalizedText.PDFPageSizeB5</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.Tabloid).ToSelected()) value="Tabloid">@Resources.LocalizedText.PDFPageSizeTabloid</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.Executive).ToSelected()) value="Executive">@Resources.LocalizedText.PDFPageSizeExecutive</option>
+                    <option @((pdfOptions.PaperSize == PDFOptions.PageSize.Custom).ToSelected()) value="Custom">@Resources.LocalizedText.PDFPageSizeCustom</option>
+                </select>
+            </div>
+            <div id="rowCustomPage" style="display:none; vertical-align:middle; margin-top: 3px;">
+                @Resources.LocalizedText.PDFPageSizeCustomWidth @{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtCustPDFWidth", name = "pdfCustWidth", fRequired = true, value = pdfOptions.PageWidth }); }
+                @Resources.LocalizedText.PDFPageSizeCustomHeight @{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtCustPDFHeight", name = "pdfCustHeight", fRequired = true, value = pdfOptions.PageHeight }); }
+            </div>
+        </td>
+    </tr>
+    <tr style="vertical-align:middle">
+        <td>@Resources.LocalizedText.PDFPageOrientationPrompt</td>
+        <td>
+            <label style="vertical-align: middle;"><input type="radio" checked name="pdfOrientation" value="Landscape" @((pdfOptions.Orientation == PDFOptions.PageOrientation.Landscape).ToChecked()) style="vertical-align: middle;" /><img src="@("~/images/landscapeprint.png".ToAbsolute())" alt="@Resources.LocalizedText.PDFOrientationLandscape" title="@Resources.LocalizedText.PDFOrientationLandscape" style="vertical-align: middle;" /></label>
+            <label style="vertical-align: middle;"><input type="radio" name="pdfOrientation" value="Portrait" @((pdfOptions.Orientation == PDFOptions.PageOrientation.Portrait).ToChecked()) style="vertical-align: middle;" /><img src="@("~/images/portraitprint.png".ToAbsolute())" alt="@Resources.LocalizedText.PDFOrientationPortrait" title="@Resources.LocalizedText.PDFOrientationPortrait" style="vertical-align: middle;" /></label>
+        </td>
+    </tr>
+    <tr>
+        <td><div>@Resources.LocalizedText.PDFMargin</div><div class="fineprint">@Resources.LocalizedText.PDFMarginNote</div></td>
+        <td style="padding-left: 20px">
+            <table>
+                <tr>
+                    <td></td>
+                    <td style="text-align:center">@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginTop", name = "pdfMarginTop", value = pdfOptions.TopMargin.HasValue ? pdfOptions.TopMargin.Value : 10 }); }</td>
+                    <td></td>
+                </tr>
+                <tr style="vertical-align:middle">
+                    <td><div>@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginLeft", name = "pdfMarginLeft", value = pdfOptions.LeftMargin.HasValue ? pdfOptions.LeftMargin.Value : 10 }); }</div></td>
+                    <td style="border: 1px dotted black; width: 60px; margin: 4px; height:60px">&nbsp;</td>
+                    <td><div>@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginRight", name = "pdfMarginRight", value = pdfOptions.RightMargin.HasValue ? pdfOptions.RightMargin.Value : 10 }); }</div></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align:center">@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginBottom", name = "pdfMarginBottom", value = pdfOptions.BottomMargin.HasValue ? pdfOptions.BottomMargin.Value : 10 }); }</td>
+                    <td></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><label><input type="checkbox" name="pdfIncludePageCount" /> @Resources.LocalizedText.PrintViewShowTotalPages</label></td>
+    </tr>
+</table>
+<div style="margin-top: 10pt;"><a style="vertical-align: middle;" href="#" onclick="javascript: $('#btnPDF').click();"><img style="vertical-align: middle;" src="@("~/images/download.png".ToAbsolute())" /><img style="vertical-align: middle; margin-left: 10px; margin-right: 10px;" src="@("~/images/pdficon_med.png".ToAbsolute())" />@Resources.LocalizedText.DownloadAsPDF</a><button name="refreshPrintView" value="PDF" style="display: none;" type="submit" id="btnPDF"></button></div>
+
+<div style="margin-top: 10pt;" class="fineprint"><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> @Html.Raw(Resources.LocalizedText.wkhtmlnote)</div>

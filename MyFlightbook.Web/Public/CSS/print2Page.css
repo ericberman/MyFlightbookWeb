@@ -32,17 +32,17 @@ tr.subtotal td.subtotalLabel {
 
 .gap, tr.bordered td.gap, tr.bordered th.gap, tr.subtotal td.gap {
     border: none;
-    background-color: unset;
+    background-color: white;
     width: 10% !important;
 }
 
 @media screen {
-    tr.bordered td, tr.bordered th {
+    tr.bordered {
         background-color: lightsteelblue;
     }
 
     tr.bordered td.gap {
-        background-color: unset;
+        background-color: white;
     }
 }
 

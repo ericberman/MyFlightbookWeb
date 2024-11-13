@@ -674,7 +674,7 @@
     <value>MyFlightbook</value>
   </data>
   <data name="PrintFormatPrompt" xml:space="preserve">
-    <value>Layout to use:</value>
+    <value>Layout to use</value>
   </data>
   <data name="PrintFormatUSA" xml:space="preserve">
     <value>US Formats (similar to ASA, Jeppesen, etc.)</value>
@@ -2022,5 +2022,8 @@ Proceed with import?</value>
   </data>
   <data name="FlightMeterXFillTip" xml:space="preserve">
     <value>Set to highest previous flight meter ending value you've recorded in the selected aircraft</value>
+  </data>
+  <data name="ProSoftPartnership" xml:space="preserve">
+    <value>For professional printing and binding, %APP_NAME% has partnered with ProSoft</value>
   </data>
 </root>

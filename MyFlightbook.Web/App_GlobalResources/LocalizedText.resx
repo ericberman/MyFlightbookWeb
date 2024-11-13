@@ -1011,7 +1011,7 @@
     <value>Continuous</value>
   </data>
   <data name="PrintViewFlightsPerPage" xml:space="preserve">
-    <value>Flights per page (approximate):</value>
+    <value>Flights per page (approximate)</value>
   </data>
   <data name="PrintViewIncludeSubtotals" xml:space="preserve">
     <value>Subtotals</value>
@@ -1134,7 +1134,7 @@
     <value>Portrait</value>
   </data>
   <data name="PDFPageOrientationPrompt" xml:space="preserve">
-    <value>Orientation:</value>
+    <value>Orientation</value>
   </data>
   <data name="PDFPageSizeA4" xml:space="preserve">
     <value>A4</value>
@@ -1146,7 +1146,7 @@
     <value>Letter</value>
   </data>
   <data name="PDFPageSizePrompt" xml:space="preserve">
-    <value>Page size:</value>
+    <value>Page size</value>
   </data>
   <data name="PDFGenerationFailed" xml:space="preserve">
     <value>Unable to create PDF file: {0}</value>
@@ -1377,10 +1377,10 @@
     <value>Printing of flight properties</value>
   </data>
   <data name="PrintViewPropertyInclusion" xml:space="preserve">
-    <value>Exclude these properties from print view:</value>
+    <value>Exclude these properties from print view</value>
   </data>
   <data name="PrintViewPropertySeparator" xml:space="preserve">
-    <value>Separate Properties with:</value>
+    <value>Separate Properties with</value>
   </data>
   <data name="PrintViewPropertySeparatorComma" xml:space="preserve">
     <value>, (Comma)</value>
@@ -1410,7 +1410,7 @@
     <value>(None)</value>
   </data>
   <data name="PrintViewOptionalColumns" xml:space="preserve">
-    <value>Choose up to 4 additional columns:</value>
+    <value>Choose up to 4 additional columns</value>
   </data>
   <data name="PDFMargin" xml:space="preserve">
     <value>Margins (mm)</value>
@@ -1812,7 +1812,7 @@
     <value>Use Flight Coloring</value>
   </data>
   <data name="PrintViewFlightColoringTip" xml:space="preserve">
-    <value>In Preferences, you can specify a background color to use for flights that contain specific keywords.</value>
+    <value>In Preferences, you can specify a background color to use for flights that meet specific criteria.</value>
   </data>
   <data name="PrintedFooterPageCountWithTotals" xml:space="preserve">
     <value>Page {0:#,##0} of {1:#,##0}</value>

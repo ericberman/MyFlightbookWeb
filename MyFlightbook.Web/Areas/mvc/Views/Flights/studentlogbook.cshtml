@@ -15,7 +15,7 @@
     ViewBag.defaultTab = tabID.tabTraining;
 }
 <script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
-<script type="text/javascript" src="~/Public/Scripts/printing.js?v=1"></script>
+<script type="text/javascript" src="~/Public/Scripts/printing.js?v=2"></script>
 <script type="text/javascript">
     function doSearch(fq) {
         $("#hdnQuery").val(JSON.stringify(fq));
@@ -118,7 +118,10 @@
     @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = fq, linkItems = false, sk = (string)null, canDownload = true }); }
 </div>
 <div id="targetPrintView" style="display: none">
-    @{ Html.RenderAction("PrintPrefsSections", "Print", new { paramList = nvc, fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
+    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%" id="divPrefPrintingSections">
+        <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
+        @{ Html.RenderAction("PrintPrefsSections", "Print", new { paramList = nvc, fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
+    </div>
     <div style="text-align: center; width: 100%;">
         @using (Html.BeginForm("DownloadLogbookForUser", "Flights", FormMethod.Post, new { id = "frmDownloadCSV", name = "frmDownloadCSV" }))
         {
@@ -130,7 +133,7 @@
         }
     </div>
 </div>
-
 <div>
     @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = true, targetUser = pfTarget.UserName, sk = (string)null, fq = fq, currentRange = (FlightResultRange)null }); }
 </div>
+

@@ -91,12 +91,6 @@
 <link rel="Stylesheet" type="text/css" href='@ViewBag.NightCSS' />
 <link href="@ViewBag.BrandCSS" rel="Stylesheet" type="text/css" />
 <link rel="Stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
-@{
-    if (!String.IsNullOrEmpty(ViewBag.PrintingCSS))
-    {
-        <link href="@VirtualPathUtility.ToAbsolute(ViewBag.PrintingCSS)" rel="Stylesheet" type="text/css" />
-    }
-}
 <style type="text/css">
     .ui-wrapper {
         padding: 0 !important;

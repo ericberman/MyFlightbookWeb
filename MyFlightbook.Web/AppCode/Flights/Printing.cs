@@ -39,9 +39,14 @@ namespace MyFlightbook.Printing
     public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline, HongKong }
 
     #region Printing Layout implementations
-    public abstract class PrintLayout
+    public abstract class PrintLayout : IPrintingTemplate
     {
         public MyFlightbook.Profile CurrentUser { get; set; }
+        public IEnumerable<LogbookPrintedPage> Pages { get; private set; }
+        public PrintingOptions Options { get; private set; }
+        public bool ShowFooter { get; private set; }
+        private bool ShowTrackChanges { get; set; }
+        protected IEnumerable<CannedQuery> QueriesToColor { get; set; }
 
         /// <summary>
         /// Measures the specified logbookentry and determines if it needs to take up more than one flight row.  
@@ -118,6 +123,119 @@ namespace MyFlightbook.Printing
                     throw new ArgumentOutOfRangeException(nameof(plt));
             }
         }
+
+        public string ModelDisplay(LogbookEntryDisplay led)
+        {
+            if (led == null)
+                throw new ArgumentNullException(nameof(led));
+
+            switch (Options.DisplayMode)
+            {
+                default:
+                case PrintingOptions.ModelDisplayMode.Full:
+                    return led.ModelDisplay;
+                case PrintingOptions.ModelDisplayMode.Short:
+                    return led.ShortModelName;
+                case PrintingOptions.ModelDisplayMode.ICAO:
+                    return led.FamilyName;
+            }
+        }
+
+        #region IPrintingTemplate
+        /// <summary>
+        /// Default implementation for bind pages here just captures the specified data.
+        /// </summary>
+        /// <param name="lst"></param>
+        /// <param name="user"></param>
+        /// <param name="options"></param>
+        /// <param name="showFooter"></param>
+        public virtual void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
+        {
+            Pages = lst;
+            CurrentUser = user;
+            Options = options;
+            ShowFooter = showFooter;
+            ShowTrackChanges = CurrentUser.PreferenceExists(MFBConstants.keyTrackOriginal);
+        }
+        public virtual bool IsCondensed => false;
+        #endregion
+
+        #region Utilities while rendering
+        public string ChangeMarkerForFlight(LogbookEntryBase l)
+        {
+            return (!ShowTrackChanges || l == null || !l.IsModifiedFromOriginal) ? string.Empty : Resources.LogbookEntry.FlightModifiedMarker;
+        }
+
+        public string OtherCatClassValue(LogbookEntryDisplay led)
+        {
+            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(Options.OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ?
+                String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)) :
+                string.Empty;
+        }
+
+        public static string FormatTakeoffs(int i)
+        {
+            return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}T", i);
+        }
+
+        public static string FormatLandings(int i)
+        {
+            return (i == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0}L", i);
+        }
+
+        /// <summary>
+        /// Removes any properties from the property display of flights that are redundant with the rest of the print layout (as provided in rgProps)
+        /// </summary>
+        /// <param name="rgProps">The set of properties to be excluded</param>
+        /// <param name="rgle">The set of flights to modify</param>
+        public void StripRedundantOrExcludedProperties(IEnumerable<int> rgProps, IEnumerable<LogbookEntryDisplay> rgle)
+        {
+            if (rgle == null || !rgle.Any())
+                return;
+
+            HashSet<int> hsRedundantProps = rgProps == null ? new HashSet<int>() : new HashSet<int>(rgProps);
+            hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
+
+            // Issue #1011: also exclude properties that have their own columns
+            foreach (OptionalColumn oc in Options.OptionalColumns)
+            {
+                if (oc.ColumnType == OptionalColumnType.CustomProp && oc.IDPropType > 0 && !hsRedundantProps.Contains(oc.IDPropType))
+                    hsRedundantProps.Add(oc.IDPropType);
+            }
+
+            foreach (LogbookEntryDisplay led in rgle)
+            {
+                List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+                lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID) || (led.IsFSTD && cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropSimRegistration));
+                led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, Options.PropertySeparatorText);
+            }
+        }
+
+        /// <summary>
+        /// Return the direct-style flight coloring for a logbookentrydisplay
+        /// </summary>
+        /// <returns></returns>
+        public string ColorForFlight(LogbookEntryDisplay led)
+        {
+            if (led == null || !Options.UseFlightColoring)
+                return string.Empty;
+
+            if (QueriesToColor == null)
+                QueriesToColor = FlightColor.QueriesToColor(led.User);
+
+            System.Drawing.Color c = System.Drawing.Color.Empty;
+            foreach (CannedQuery cq in QueriesToColor)
+            {
+                if (cq.MatchesFlight(led))
+                {
+                    // Important - always match on the first matching query
+                    c = FlightColor.TryParseColor(cq.ColorString);
+                    break;
+                }
+            }
+            return c == System.Drawing.Color.Empty ? string.Empty : String.Format(CultureInfo.InvariantCulture, "style=\"background-color: {0};\" ", System.Drawing.ColorTranslator.ToHtml(c));
+        }
+        #endregion
     }
 
     #region concrete layout classes
@@ -223,6 +341,8 @@ namespace MyFlightbook.Printing
             // Issue #810 - show multi-pilot time IF the user has ever used multi-pilot time.
             // Even though we don't support optional columns for EASA layout, we use an optional column for this.
             // And issue #1028 - show single pilot time, similar rule
+            // Issue #1280: clear the optional columns first.
+            po.OptionalColumns.Clear();
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(CurrentUser.UserName);
             foreach (CustomPropertyType cpt in rgcpt)
                 if ((cpt.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMultiPilotTime || cpt.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropSinglePilot) && cpt.IsFavorite)
@@ -403,6 +523,8 @@ namespace MyFlightbook.Printing
         public override string ControlPath => "~/Controls/PrintingLayouts/layoutCondensed.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printCondensed.css?v=3"; } }
+
+        public override bool IsCondensed => true;
     }
 
     public class PrintLayoutPCAA : PrintLayout
@@ -481,7 +603,7 @@ namespace MyFlightbook.Printing
         }
         public override string ControlPath => "~/Controls/PrintingLayouts/layout2Page.ascx";
 
-        public override string CSSPath { get { return "~/Public/CSS/print2Page.css?v=1"; } }
+        public override string CSSPath { get { return "~/Public/CSS/print2Page.css?v=2"; } }
     }
     #endregion
 
@@ -642,7 +764,7 @@ namespace MyFlightbook.Printing
                 scheme = "https";
 
 
-            UriBuilder uriBuilder = new UriBuilder("~/Member/PrintView.aspx".ToAbsoluteURL(scheme, hostName));
+            UriBuilder uriBuilder = new UriBuilder("~/mvc/print".ToAbsoluteURL(scheme, hostName));
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
             nvc["po"] = JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).ToSafeParameter();
             nvc["fq"] = fq.ToBase64CompressedJSONString();
@@ -855,6 +977,11 @@ namespace MyFlightbook.Printing
         {
             get { return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, "[page]" /* , "[topage]" */); }
         }
+
+        /// <summary>
+        /// True to include the total # of pages in the PDF footer (e.g., "1 of 17" instead of "1")
+        /// </summary>
+        public bool IncludeTotalPageCount { get; set; }
         #endregion
 
         public PDFOptions() { }
@@ -1267,7 +1394,7 @@ namespace MyFlightbook.Printing
             if (lstFlights == null)
                 throw new ArgumentNullException(nameof(lstFlights));
 
-            PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, pf);
+            PrintLayout pl = (pt as PrintLayout) ?? PrintLayout.LayoutForType(printingOptions.Layout, pf);
             pl.Init(printingOptions);  // do any layout-specific initialization.
 
             // Exclude both excluded properties and properties that have been moved to their own columns
@@ -1286,20 +1413,6 @@ namespace MyFlightbook.Printing
                 // Fix up properties according to the printing options
                 List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
 
-                // And fix up model as well.
-                switch (printingOptions.DisplayMode)
-                {
-                    case PrintingOptions.ModelDisplayMode.Full:
-                        break;
-                    case PrintingOptions.ModelDisplayMode.Short:
-                        led.ModelDisplay = led.ShortModelName;
-                        break;
-                    case PrintingOptions.ModelDisplayMode.ICAO:
-                        led.ModelDisplay = led.FamilyName;
-                        break;
-                }
-
-
                 // Remove from the total property set all explicitly excluded properties...
                 lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
 
@@ -1310,8 +1423,6 @@ namespace MyFlightbook.Printing
                 if (printingOptions.IncludeImages)
                     led.PopulateImages(true);
 
-                if (!printingOptions.IncludeSignatures)
-                    led.CFISignatureState = LogbookEntryBase.SignatureState.None;
                 led.RowHeight = pl.RowHeight(led);
             }
 

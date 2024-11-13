@@ -1,0 +1,15 @@
+﻿@{
+    MyFlightbook.Profile pf = ((MyFlightbook.Printing.PrintLayout) ViewBag.pl).CurrentUser;
+}
+<table style="width:100%; page-break-before:always;">
+    <tr>
+        <td class="printHeaderLeft">@pf.Address</td>
+        <td class="printHeaderCenter" colspan="7">
+            <img style="max-width: 120px;" src="@Branding.CurrentBrand.LogoHRef.ToAbsoluteURL(Request)" />
+        </td>
+        <td class="printHeaderRight">
+            <div>@pf.UserFullName</div>
+            <div>@pf.LicenseDisplay</div>
+        </td>
+    </tr>
+</table>

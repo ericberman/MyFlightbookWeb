@@ -818,6 +818,11 @@ namespace MyFlightbook
         {
             return (sz ?? string.Empty).Split(newlineSeparators, StringSplitOptions.RemoveEmptyEntries);
         }
+
+        public static string[] SplitCommas(this string sz)
+        {
+            return (sz ?? string.Empty).Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
+        }
         #endregion
 
         #region Decimal Extensions

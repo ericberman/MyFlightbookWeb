@@ -1,0 +1,158 @@
+﻿@using System.Globalization
+@using MyFlightbook
+@using MyFlightbook.Currency
+@using MyFlightbook.Image
+@using MyFlightbook.Instruction
+@using MyFlightbook.Printing
+@{
+    FlightQuery fq = ViewBag.fq;
+    PrintingOptions po = ViewBag.po;
+    Profile pf = MyFlightbook.Profile.GetUser(fq.UserName);
+    bool suppressFooter = ViewBag.suppressFooter;
+
+    int selTab = ViewBag.prefTab ?? 1;
+
+    string returnLink = (fq.UserName.CompareOrdinal(User.Identity.Name) == 0) ?
+        String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", fq.ToBase64CompressedJSONString()) :
+        String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/StudentLogbook?fq={0}&student={1}", fq.ToBase64CompressedJSONString(), HttpUtility.UrlEncode(fq.UserName));
+
+    ViewBag.defaultTab = tabID.tabLogbook;
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
+    ViewBag.ForceNaked = true;
+    ViewBag.AddBaseRef = ViewBag.isPDF;
+    PrintLayout pl = PrintLayout.LayoutForType(po.Layout, pf);
+    ViewBag.PrintingCSS = pl.CSSPath.ToAbsolute();
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(() => {
+        $("#printPrefsContainer").tabs({
+            active: @selTab,
+            activate: function (event, ui) {
+                $("#hdnCurTab").val($("#printPrefsContainer").tabs("option", "active"));
+            }
+        });
+
+        validateForm($("#frmPrintOptions"), {
+            pdfCustWidth: { required: true, min: 50, max: 1000 },
+            pdfCustHeight: { required: true, min: 50, max: 1000 }
+        }, {
+            pdfCustWidth: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions",
+            pdfCustHeight: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions"
+        });
+    });
+
+    function prefsUpdated() {
+        $("#btnRefreshScreen").click();
+    }
+
+    function doSearch(fq) {
+        $("#hdnQueryForPrint").val(JSON.stringify(fq));
+        $("#hdnQFEClicked").val(false);
+        $("#hdnPropToDelete").val("");
+        prefsUpdated();
+        return false;
+    }
+
+    function qfeClicked(propName) {
+        $("#hdnQueryForPrint").val(JSON.stringify(srch.buildQuery()));
+        $("#hdnQFEClicked").val(true);
+        $("#hdnPropToDelete").val(propName);
+        prefsUpdated();
+        return false;
+    }
+
+    function toggleSearch() {
+        $("#divSections").toggle();
+        $("#divPrintSearch").toggle();
+    }
+</script>
+<script type="text/javascript" src="@("~/public/scripts/printing.js?v=2".ToAbsolute())"></script>
+@if (!ViewBag.isPDF)
+{
+    <div class="noprint">
+        <h1>@ViewBag.Title</h1>
+        <div><a style="vertical-align: middle;" href="@returnLink.ToAbsolute()"><img style="vertical-align: middle; margin-right: 10px;" src="@("~/images/back.png".ToAbsolute())" />@Resources.LocalizedText.PrintViewReturnLogbook</a></div>
+        <p>@Resources.LocalizedText.PrintViewDescription @Resources.LocalizedText.PrintViewPermaLink</p>
+        <div id="divSections">
+            @using (Html.BeginForm("Refresh", "Print", FormMethod.Post, new { id = "frmPrintOptions", name = "frmPrintOptions" }))
+            {
+                <input type="hidden" name="u" value="@(Request["u"] ?? string.Empty)" />
+                <input type="hidden" value="@fq.ToJSONString()" name="fqJSON" id="hdnQueryForPrint" />
+                <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
+                <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
+                <input type="hidden" value="@selTab" name="t" id="hdnCurTab" />
+                <button name="refreshPrintView" value="" style="display: none;" type="submit" id="btnRefreshScreen"></button>
+                <div id="printPrefsContainer">
+                    <ul>
+                        <li><a href="#printPrefs">@Resources.LocalizedText.PrintViewTabOptions</a></li>
+                        <li><a href="#sectPrefs">@Resources.LocalizedText.PrintViewTabFilter</a></li>
+                        <li><a href="#pdfPrefs">@Resources.LocalizedText.DownloadAsPDFTabHeader</a></li>
+                    </ul>
+                    <div id="printPrefs">@{ Html.RenderAction("PrintPrefsOptions", "Print", new { userName = fq.UserName, po = po, pl = pl, onChange = "prefsUpdated" }); } </div>
+                    <div id="sectPrefs">@{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, po = po, includeFlightsSection = true, onChange = "prefsUpdated" }); } </div>
+                    <div id="pdfPrefs">@{ Html.RenderPartial("_printPrefsPDF"); } </div>
+                </div>
+                <div class="error">@(ViewBag.error ?? string.Empty)</div>
+            }
+        </div>
+        <div class="ui-widget-content" style="display: none; padding: 1em 1.4em;" id="divPrintSearch">
+            @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
+        </div>
+    </div>
+}
+<div style="font-size: @(po.Size == PrintingOptions.FontSize.Normal ? "9pt" : String.Format(CultureInfo.InvariantCulture, po.Size == PrintingOptions.FontSize.Small ? "7pt" : "11pt"))">
+    @if (po.Sections.IncludeCoverPage)
+    {
+        <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;">
+            <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large; margin-top: 36pt;">
+                <p>@pf.UserFullName</p>
+                <p>@Resources.LocalizedText.PrintViewCoverSheetNameTemplate</p>
+            </div>
+            <div style="white-space:pre-line">@pf.Address</div>
+            <div>@(pf.DateOfBirth.HasValue && pf.DateOfBirth.Value.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.dateOfBirthFormat, pf.DateOfBirth.Value) : string.Empty)</div>
+            <div>@pf.LicenseDisplay</div>
+            <div><img src="@(Branding.CurrentBrand.LogoHRef.ToAbsolute())" style="max-width: 300px;" /></div>
+            <p>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now)</p>
+        </div>
+    }
+    @if (po.Sections.IncludeFlights)
+    {
+        <div>
+            @{ Html.RenderAction("FlightPages", "Print", new { pl = pl, pf = pf, fq = fq, po = po, suppressFooter = suppressFooter }); }
+        </div>
+    }
+    @if (po.Sections.IncludeTotals)
+    {
+        <div style="page-break-before:always;">
+            @if (po.Sections.CompactTotals)
+            {
+                Html.RenderAction("TotalsForUser", "Flights", new { userName = fq.UserName, linkItems = false, grouped = true });
+            }
+            else
+            {
+                TimeRollup tr = new TimeRollup(fq.UserName, fq) { IncludeTrailing12 = true, IncludeTrailing24 = true };
+                tr.Bind();
+                <div>@Html.Raw(tr.RenderHTML(pf.UsesHHMM, false))</div>
+            }
+        </div>
+    }
+    @if (po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None)
+    {
+        IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(fq.UserName, null);
+        foreach (Endorsement e in rgEndorsements)
+        {
+            <div>@Html.Raw(e.RenderHTML())</div>
+        }
+
+        if (po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos)
+        {
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, fq.UserName);
+            il.Refresh(fIncludeDocs: false, fIncludeVids: false);
+            foreach (MFBImageInfo mfbii in il.ImageArray)
+            {
+                <div style="margin-bottom: 5px; page-break-inside:avoid;"><img style="max-width:100%" src="@mfbii.URLFullImage" /></div>
+            }
+        }
+    }
+</div>

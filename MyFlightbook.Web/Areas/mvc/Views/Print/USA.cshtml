@@ -1,0 +1,188 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@using MyFlightbook.Printing
+@{
+    PrintLayout pl = ViewBag.pl;
+    IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+    HashSet<int> m_CategoryClasses = new HashSet<int>() { (int) CategoryClass.CatClassID.ASEL, (int) CategoryClass.CatClassID.AMEL };
+    foreach (OptionalColumn column in pl.Options.OptionalColumns)
+    {
+        m_CategoryClasses.Add((int) column.AssociatedCategoryClass);
+    }
+}
+@foreach (LogbookPrintedPage lpp in pages)
+{
+    Html.RenderPartial("_printHeader");
+    pl.StripRedundantOrExcludedProperties(null, lpp.Flights);
+
+    <table class="pageTable">
+        <thead class="header bordered">
+            <tr class="bordered">
+                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderModel</th>
+                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerBig" colspan="2">@Resources.LogbookEntry.PrintHeaderRoute</th>
+                <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
+                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+                <th class="headerBig" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLanding</th>
+                <th class="headerBig" colspan="@(3 + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))" style="width:3cm">@Resources.LogbookEntry.PrintHeaderCategory2</th>
+                <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderCondition2</th>
+                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSim</th>
+                @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                {
+                    if (!oc.IsCatClass)
+                    {
+                        <th class="headerSmall" rowspan="2" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    }
+                }
+                <th class="headerBig" colspan="@(3 + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (pl.CurrentUser.IsInstructor ? 1 : 0))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
+                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
+            </tr>
+            <tr class="bordered">
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderTo</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSEL</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderMEL</th>
+                @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                {
+                    if (oc.IsCatClass)
+                    {
+                        <th class="headerSmall" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    }
+                }
+                <th class="headerSmall" style="width:1cm">&nbsp;</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderCrossCountry</th>
+                @if (pl.CurrentUser.IsInstructor)
+                {
+                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldCFI</th>
+                }
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
+                @if (pl.CurrentUser.TracksSecondInCommandTime)
+                {
+                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
+                }
+                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LogbookEntryDisplay led in lpp.Flights)
+            {
+                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
+                    <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td>@pl.ModelDisplay(led)</td>
+                    <td>@led.TailNumOrSimDisplay</td>
+                    <td>@led.Departure</td>
+                    <td>@led.Destination</td>
+                    <td>
+                        <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
+                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                        {
+                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                        }
+                    </td>
+                    <td>@led.Approaches.FormatInt()</td>
+                    <td>@led.NetDayLandings.FormatInt()</td>
+                    <td>@led.NetNightLandings.FormatInt()</td>
+                    <td>@(led.EffectiveCatClass == (int) CategoryClass.CatClassID.ASEL ? led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</td>
+                    <td>@(led.EffectiveCatClass == (int) CategoryClass.CatClassID.AMEL ? led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</td>
+                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    {
+                        OptionalColumn oc = pl.Options.OptionalColumns[i];
+                        if (oc.IsCatClass)
+                        {
+                            <td>@led.OptionalColumnDisplayValue(i)</td>
+                        }
+                    }
+
+                    <td>@pl.OtherCatClassValue(led)</td>
+                    <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    {
+                        OptionalColumn oc = pl.Options.OptionalColumns[i];
+                        if (!oc.IsCatClass)
+                        {
+                            <td>@led.OptionalColumnDisplayValue(i)</td>
+                        }
+                    }
+                    <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    @if (pl.CurrentUser.IsInstructor)
+                    {
+                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    }
+                    <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    @if (pl.CurrentUser.TracksSecondInCommandTime)
+                    {
+                        <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    }
+                    <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                </tr>
+            }
+            @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+            {
+                int itemIndex = 0;
+                foreach (LogbookEntryDisplay led in stc.Subtotals)
+                {
+                    <tr class="subtotal">
+                        @if (itemIndex++ == 0)
+                        {
+                            <td colspan="3" class="subtotalLabel" rowspan='@stc.SubtotalCount'></td>
+                            <td colspan="2" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
+                        }
+                        <td>@led.CatClassDisplay</td>
+                        <td>@led.Approaches.FormatInt()</td>
+                        <td>@led.NetDayLandings.FormatInt()</td>
+                        <td>@led.NetNightLandings.FormatInt()</td>
+                        <td>@led.TotalForCategoryClass(CategoryClass.CatClassID.ASEL).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.TotalForCategoryClass(CategoryClass.CatClassID.AMEL).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            OptionalColumn oc = pl.Options.OptionalColumns[i];
+                            if (oc.IsCatClass)
+                            {
+                                <td>@led.OptionalColumnCatClassTotal(i).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            }
+                        }
+                        <td>@led.TotalExceptForCategoryClasses(m_CategoryClasses).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            OptionalColumn oc = pl.Options.OptionalColumns[i];
+                            if (!oc.IsCatClass)
+                            {
+                                <td>@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                            }
+                        }
+                        <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @if (pl.CurrentUser.IsInstructor)
+                        {
+                            <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @if (pl.CurrentUser.TracksSecondInCommandTime)
+                        {
+                            <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        }
+                        <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+}
+

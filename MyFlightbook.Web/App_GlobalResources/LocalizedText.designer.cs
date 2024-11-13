@@ -3873,7 +3873,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Orientation:.
+        ///   Looks up a localized string similar to Orientation.
         /// </summary>
         internal static string PDFPageOrientationPrompt {
             get {
@@ -4035,7 +4035,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Page size:.
+        ///   Looks up a localized string similar to Page size.
         /// </summary>
         internal static string PDFPageSizePrompt {
             get {
@@ -4298,7 +4298,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In Preferences, you can specify a background color to use for flights that contain specific keywords..
+        ///   Looks up a localized string similar to In Preferences, you can specify a background color to use for flights that meet specific criteria..
         /// </summary>
         internal static string PrintViewFlightColoringTip {
             get {
@@ -4307,7 +4307,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flights per page (approximate):.
+        ///   Looks up a localized string similar to Flights per page (approximate).
         /// </summary>
         internal static string PrintViewFlightsPerPage {
             get {
@@ -4478,7 +4478,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose up to 4 additional columns:.
+        ///   Looks up a localized string similar to Choose up to 4 additional columns.
         /// </summary>
         internal static string PrintViewOptionalColumns {
             get {
@@ -4514,7 +4514,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exclude these properties from print view:.
+        ///   Looks up a localized string similar to Exclude these properties from print view.
         /// </summary>
         internal static string PrintViewPropertyInclusion {
             get {
@@ -4523,7 +4523,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Separate Properties with:.
+        ///   Looks up a localized string similar to Separate Properties with.
         /// </summary>
         internal static string PrintViewPropertySeparator {
             get {
