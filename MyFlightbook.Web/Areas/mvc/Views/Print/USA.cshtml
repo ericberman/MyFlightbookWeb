@@ -1,6 +1,4 @@
-﻿@using System.Globalization
-@using MyFlightbook.Image
-@using MyFlightbook.Printing
+﻿@using MyFlightbook.Printing
 @{
     PrintLayout pl = ViewBag.pl;
     IEnumerable<LogbookPrintedPage> pages = pl.Pages;
@@ -9,7 +7,14 @@
     {
         m_CategoryClasses.Add((int) column.AssociatedCategoryClass);
     }
-}
+    bool fShowOther = false;
+    foreach (LogbookPrintedPage lpp in pages)
+    {
+        foreach (LogbookEntryBase le in lpp.Flights)
+        {
+            fShowOther = fShowOther || !m_CategoryClasses.Contains(le.EffectiveCatClass);
+        }
+    }}
 @foreach (LogbookPrintedPage lpp in pages)
 {
     Html.RenderPartial("_printHeader");
@@ -25,7 +30,7 @@
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproaches</th>
                 <th class="headerBig" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLanding</th>
-                <th class="headerBig" colspan="@(3 + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))" style="width:3cm">@Resources.LogbookEntry.PrintHeaderCategory2</th>
+                <th class="headerBig" colspan="@(2 + (fShowOther ? 1 : 0) + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))" style="width:3cm">@Resources.LogbookEntry.PrintHeaderCategory2</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderCondition2</th>
                 <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSim</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
@@ -52,7 +57,10 @@
                         <th class="headerSmall" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
                     }
                 }
-                <th class="headerSmall" style="width:1cm">&nbsp;</th>
+                @if (fShowOther)
+                {
+                    <th class="headerSmall" style="width:1cm">&nbsp;</th>
+                }
                 <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
                 <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
                 <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
@@ -101,7 +109,10 @@
                         }
                     }
 
-                    <td>@pl.OtherCatClassValue(led)</td>
+                    @if (fShowOther)
+                    {
+                        <td>@pl.OtherCatClassValue(led)</td>
+                    }
                     <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
@@ -153,7 +164,10 @@
                                 <td>@led.OptionalColumnCatClassTotal(i).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                             }
                         }
-                        <td>@led.TotalExceptForCategoryClasses(m_CategoryClasses).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        @if (fShowOther)
+                        {
+                            <td>@led.TotalExceptForCategoryClasses(m_CategoryClasses).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        }
                         <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                         <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                         <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
