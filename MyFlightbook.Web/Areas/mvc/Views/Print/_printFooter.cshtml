@@ -1,25 +1,27 @@
 ﻿@{
     MyFlightbook.Profile pf = ViewBag.pf;
 }
-<div>&nbsp;</div>
-@if (ViewBag.showFoot)
-{
-    <div>
-        <div style="float: right">
-            <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, ViewBag.pageNum, ViewBag.totalPages)</div>
-        </div>
+<div style="page-break-after:always;">
+    <div>&nbsp;</div>
+    @if (ViewBag.showFoot)
+    {
         <div>
-            <div>@Resources.LogbookEntry.LogbookCertification@(String.IsNullOrEmpty(pf?.FirstName ?? string.Empty + pf?.LastName ?? string.Empty) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)) _____________________________</div>
+            <div style="float: right">
+                <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, ViewBag.pageNum, ViewBag.totalPages)</div>
+            </div>
+            <div>
+                <div>@Resources.LogbookEntry.LogbookCertification@(String.IsNullOrEmpty(pf?.FirstName ?? string.Empty + pf?.LastName ?? string.Empty) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)) _____________________________</div>
+            </div>
         </div>
-    </div>
-}
-@if (!String.IsNullOrEmpty(ViewBag.layoutNotesPartial))
-{
-    <div class="fineprint">
-        @{ Html.RenderPartial((string)ViewBag.layoutNotesPartial); }
-    </div>
-}
-@if (pf.PreferenceExists(MFBConstants.keyTrackOriginal))
-{
-    <div class="fineprint">@Resources.LogbookEntry.FlightModifiedFooter</div>
-}
+    }
+    @if (!String.IsNullOrEmpty(ViewBag.layoutNotesPartial))
+    {
+        <div class="fineprint">
+            @{ Html.RenderPartial((string)ViewBag.layoutNotesPartial); }
+        </div>
+    }
+    @if (pf.PreferenceExists(MFBConstants.keyTrackOriginal))
+    {
+        <div class="fineprint">@Resources.LogbookEntry.FlightModifiedFooter</div>
+    }
+</div>

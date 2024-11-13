@@ -124,7 +124,7 @@
     }
     @if (po.Sections.IncludeTotals)
     {
-        <div style="page-break-before:always;">
+        <div style="page-break-after:always;">
             @if (po.Sections.CompactTotals)
             {
                 Html.RenderAction("TotalsForUser", "Flights", new { userName = fq.UserName, linkItems = false, grouped = true });
