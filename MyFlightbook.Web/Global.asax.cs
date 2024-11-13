@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.UI;
 
 /******************************************************
@@ -104,6 +105,9 @@ namespace MyFlightbook.Web
             }
 
             if ((myError is HttpException err && err.GetHttpCode() == 404))
+                return;
+
+            if (myError is HttpAntiForgeryException && !(Context?.User?.Identity?.IsAuthenticated ?? true))
                 return;
 
             if (Context != null)
