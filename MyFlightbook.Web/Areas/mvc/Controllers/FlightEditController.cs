@@ -900,7 +900,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Pending Flights
         [Authorize]
-        public ActionResult Pending(string id = null)
+        public ActionResult Pending(string id = null, int clone = 0, int reverse = 0)
         {
             Profile viewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
             ViewBag.viewer =viewer;
@@ -918,6 +918,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         ViewBag.nextFlightHref = Url.Action(this.ControllerContext.RouteData.Values["action"].ToString(), this.ControllerContext.RouteData.Values["controller"].ToString(), new { id = lst[i - 1].PendingID });
                     if (i < lst.Count - 1)
                         ViewBag.prevFlightHref = Url.Action(this.ControllerContext.RouteData.Values["action"].ToString(), this.ControllerContext.RouteData.Values["controller"].ToString(), new { id = lst[i + 1].PendingID });
+
+                    // Issue #1335 - clone/reverse of pending
+                    if (pf != null && clone != 0)
+                    {
+                        pf = pf.Clone(reverse != 0);
+                        pf.CleanNewClone();
+                        pf.Commit();
+                        // Redirect to the newly created flight so that we can lose the clone/pending parameters and so that we can pick up new next/previous
+                        return RedirectToAction("Pending", new { id = pf.PendingID });
+                    }
+
                     ViewBag.pendingFlight = pf;
                     ViewBag.onCancel = "cancelEdit";
                 }

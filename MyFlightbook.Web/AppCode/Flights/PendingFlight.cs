@@ -75,6 +75,20 @@ namespace MyFlightbook
         }
         #endregion
 
+        /// <summary>
+        /// Clones this flight (or the specified flight).  Does *not* persist it.
+        /// </summary>
+        /// <param name="fReverse">True to reverse as well.</param>
+        /// <returns>A new UNPERSISTED pending flight</returns>
+        public PendingFlight Clone(bool fReverse = false)
+        {
+
+            PendingFlight pf = new PendingFlight();
+            Clone(pf, fReverse);    // will overwrite the pending ID.
+            pf.PendingID = Guid.NewGuid().ToString();
+            return pf;
+        }
+
         #region Utility
         /// <summary>
         /// Sets the AircraftID for the flight from the display tail number, if the aircraftID is not already set and if the tail number display can be found.

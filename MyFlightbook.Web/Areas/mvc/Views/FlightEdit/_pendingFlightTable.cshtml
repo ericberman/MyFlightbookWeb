@@ -121,6 +121,8 @@
                         <div class="flightContextMenu">
                             <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>
                             <div><a href="#" onclick="javascript: deletePendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a></div>
+                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1 })"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a></div>
+                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1, reverse = 1 })"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a></div>
                         </div>
                     </div>
                 </td>
