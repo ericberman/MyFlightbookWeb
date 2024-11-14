@@ -27,7 +27,7 @@
                 @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
                 {
                     <div style="display:inline-block; vertical-align:middle; ">
-                        <div id="@("tabID" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
+                        <div id="@("area" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
                         <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
                             <div class="featureAreaDescriptionHeader"><a href='@aad.Link'>@aad.Title</a></div>
                             <div class="featureAreaDescriptionBody">@aad.Description</div>

@@ -216,30 +216,30 @@ html[xmlns] #menu-bar {
     padding-left: 20pt;
 }
 
-#menu-bar #tabIDtabHome, #tabIDtabHome.featureDescriptorIcon {
+#menu-bar #tabIDtabHome, #areatabHome.featureDescriptorIcon {
     padding-left: 8px;
 }
 
-#menu-bar #tabIDtabLogbook, #tabIDtabLogbook.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabLogbook, #areatabLogbook.featureAreaDescriptorIcon {
     background-image: url('../tabimages/LogbookTab.png');
 }
 
-#menu-bar #tabIDtabAircraft, #tabIDtabAircraft.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabAircraft, #areatabAircraft.featureAreaDescriptorIcon {
     background-image: url('../tabimages/AircraftTab.png');
 }
 
-#menu-bar #tabIDtabMaps, #tabIDtabMaps.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabMaps, #areatabMaps.featureAreaDescriptorIcon {
     background-image: url('../tabimages/AirportTab.png');
 }
 
-#menu-bar #tabIDtabTraining, #tabIDtabTraining.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabTraining, #areatabTraining.featureAreaDescriptorIcon {
     background-image: url('../tabimages/TrainingTab.png');
 }
 
-#menu-bar #tabIDtabProfile, #tabIDtabProfile.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabProfile, #areatabProfile.featureAreaDescriptorIcon {
     background-image: url('../tabimages/ProfileTab.png');
 }
 
-#menu-bar #tabIDtabAdmin, #tabIDtabAdmin.featureAreaDescriptorIcon {
+#menu-bar #tabIDtabAdmin, #areatabAdmin.featureAreaDescriptorIcon {
     background-image: url('../tabimages/AdminTab.png');
 }
