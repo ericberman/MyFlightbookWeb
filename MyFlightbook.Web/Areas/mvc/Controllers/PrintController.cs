@@ -185,7 +185,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private void RenderPDF(PrintingOptions printingOptions, string viewName, string szUser)
         {
-            Profile pf = MyFlightbook.Profile.GetUser(Request["u"]);
+            Profile pf = MyFlightbook.Profile.GetUser(szUser);
             PDFFooterOptions footerOptions = new PDFFooterOptions()
             {
                 fCover = printingOptions.Sections.IncludeCoverPage,

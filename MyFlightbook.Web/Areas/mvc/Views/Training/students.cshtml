@@ -173,7 +173,7 @@
                         <td>
                             @if (student.CanViewLogbook)
                             {
-                                <div id="pnlViewProgress" style="border-left: 1px solid black; padding-left:8px; margin-left:8px;">
+                                <div style="border-left: 1px solid black; padding-left:8px; margin-left:8px;">
                                     <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Training/RatingsProgress?user={0}", student.UserName))">@Resources.MilestoneProgress.ViewStudentProgress</a>
                                 </div>
                             }
