@@ -2,7 +2,6 @@
     Inherits="MyFlightbook.Web.Member.EditAircraft" Title="" Codebehind="EditAircraft.aspx.cs" %>
 <%@ Register Src="../Controls/mfbEditAircraft.ascx" TagName="mfbEditAircraft" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc4" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblAddEdit1" runat="server" Text="Label"></asp:Label>
     <asp:Localize ID="locAircraftHeader" Text="<%$ Resources:Aircraft, AircraftHeader %>" runat="server"></asp:Localize> 
