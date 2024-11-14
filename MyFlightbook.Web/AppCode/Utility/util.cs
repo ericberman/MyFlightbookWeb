@@ -257,21 +257,30 @@ namespace MyFlightbook
             };
             Dictionary<string, object> dOuter = new Dictionary<string, object>() { { "event", dInner } };
 
+            string szResult = string.Empty;
             using (StringContent sc = new StringContent(JsonConvert.SerializeObject(dOuter)))
             {
-                string r = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(LocalConfig.SettingForKey("recaptchaValidateEndpoint")), null, HttpMethod.Post, sc, (response) =>
+                try
                 {
-                    string szResult = response.Content.ReadAsStringAsync().Result;
-                    response.EnsureSuccessStatusCode();
-                    return szResult;
-                }, new Dictionary<string, string> { { "referer", referringDomain } });
+                    string r = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(LocalConfig.SettingForKey("recaptchaValidateEndpoint")), null, HttpMethod.Post, sc, (response) =>
+                    {
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        return szResult;
+                    }, new Dictionary<string, string> { { "referer", referringDomain } });
 
-                dynamic d = JsonConvert.DeserializeObject<dynamic>(r);
+                    dynamic d = JsonConvert.DeserializeObject<dynamic>(r);
 
-                if (d?.riskAnalysis?.score == null) // let's debug this
-                    util.NotifyAdminEvent("Unrecognized recaptcha response", r, ProfileRoles.maskSiteAdminOnly);
+                    if (d?.riskAnalysis?.score == null) // let's debug this
+                        util.NotifyAdminEvent("Unrecognized recaptcha response", r, ProfileRoles.maskSiteAdminOnly);
 
-                return d?.riskAnalysis?.score ?? 1.0;   // if null, pass 1 - treat as accepted.
+                    return d?.riskAnalysis?.score ?? 1.0;   // if null, pass 1 - treat as accepted.
+                }
+                catch (HttpRequestException e)
+                {
+                    // pass up the exception, along with whatever detail we can.
+                    throw new HttpRequestException($"{e.Message} - szResult = {szResult ?? "(not set)"}, referringDomain = '{referringDomain}'", e);
+                }
             }
         }
     }

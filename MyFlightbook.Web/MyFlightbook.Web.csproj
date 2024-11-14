@@ -565,7 +565,6 @@
     <Content Include="HTTP403.htm" />
     <Content Include="HTTP404.htm" />
     <Content Include="HTTP500.htm" />
-    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
     <Content Include="images\1536 full.png" />
     <Content Include="images\1536 with white.png" />
     <Content Include="images\1536xparent.png" />

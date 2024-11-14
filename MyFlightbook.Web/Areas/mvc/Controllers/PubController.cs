@@ -294,8 +294,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host)) < 0.5)
                     throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
+                message += $"\r\n\r\nCaptcha failed - {ex.Message}";
                 // couldn't reach google to validate the captcha - go ahead and eat the error; better to allow the occassional bot than to disallow a user.
             }
             catch (Exception ex) when (ex is InvalidOperationException || ex is ArgumentNullException)
