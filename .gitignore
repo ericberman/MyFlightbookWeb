@@ -420,3 +420,4 @@ MigrationBackup/
 **/.idea/**/modules.xml. i d e a 
 **/.idea/*
 .idea/
+MyFlightbook.Web/ILLink/ILLink.Descriptors.LibraryBuild.xml

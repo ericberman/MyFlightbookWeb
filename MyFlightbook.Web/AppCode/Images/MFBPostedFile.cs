@@ -168,7 +168,7 @@ namespace MyFlightbook.Image
                         // If we got here then the content is Drawing Compatible - i.e., not HEIC; just return contentdata
                         fs.Seek(0, SeekOrigin.Begin);
                         byte[] rgb = new byte[fs.Length];
-                        fs.Read(rgb, 0, rgb.Length);
+                        _ = fs.Read(rgb, 0, rgb.Length);
                         return rgb;
                     }
                 }

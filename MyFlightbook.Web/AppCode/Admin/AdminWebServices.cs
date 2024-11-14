@@ -441,7 +441,7 @@ namespace MyFlightbook.Web.Ajax
                 throw new InvalidOperationException("No file uploaded");
             HttpPostedFile pf = HttpContext.Current.Request.Files[0];
             byte[] rgbytes = new byte[pf.ContentLength];
-            pf.InputStream.Read(rgbytes, 0, pf.ContentLength);
+            _ = pf.InputStream.Read(rgbytes, 0, pf.ContentLength);
             pf.InputStream.Close();
             HttpContext.Current.Session[AntipodesSessionKey(HttpContext.Current.Request.Files[0].FileName)] = rgbytes;
         }
