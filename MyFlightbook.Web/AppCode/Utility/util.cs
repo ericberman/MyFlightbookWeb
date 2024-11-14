@@ -264,7 +264,7 @@ namespace MyFlightbook
                     string szResult = response.Content.ReadAsStringAsync().Result;
                     response.EnsureSuccessStatusCode();
                     return szResult;
-                }, new Dictionary<string, string> { { "Referer", referringDomain } });
+                }, new Dictionary<string, string> { { "referer", referringDomain } });
 
                 dynamic d = JsonConvert.DeserializeObject<dynamic>(r);
 

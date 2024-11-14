@@ -291,7 +291,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             double score = -1.0;
             try
             {
-                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Branding.CurrentBrand.HostName)) < 0.5)
+                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host)) < 0.5)
                     throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
             }
             catch (HttpRequestException)

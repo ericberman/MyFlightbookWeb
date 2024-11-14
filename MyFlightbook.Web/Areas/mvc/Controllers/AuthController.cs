@@ -200,7 +200,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult NewUser(string firstName, string lastName, string accountEmail, string accountPass, string accountQAQuestionCustom, string accountQAQuestionCanned, string accountQAAnswer)
+        public async Task<ActionResult> NewUser(string firstName, string lastName, string accountEmail, string accountPass, string accountQAQuestionCustom, string accountQAQuestionCanned, string accountQAAnswer)
         {
             try
             {
@@ -220,9 +220,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new InvalidOperationException(Resources.LocalizedText.AccountQuestionRequired);
                 if (String.IsNullOrEmpty(accountQAAnswer))
                     throw new ArgumentNullException(nameof(accountQAAnswer), Resources.Preferences.errAccountQAAnswerMissing);
-
-                if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && String.IsNullOrEmpty(Request["g-recaptcha-response"]))
-                    throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
+                double score = -1.0;
+                try
+                {
+                    if (!string.IsNullOrEmpty(LocalConfig.SettingForKey("recaptchaKey")) && (score = await RecaptchaUtil.ValidateRecaptcha(Request["g-recaptcha-response"], "Contact", Request.Url.Host)) < 0.5)
+                        throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaFailed);
+                }
+                catch (HttpRequestException)
+                {
+                    // couldn't reach google to validate the captcha - go ahead and eat the error; better to allow the occassional bot than to disallow a user.
+                }
 
                 string szUser = Membership.GetUserNameByEmail(accountEmail);
                 if (!String.IsNullOrEmpty(szUser))
@@ -236,6 +243,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 ProfileAdmin.FinalizeUser(szUser, firstName ?? string.Empty, lastName ?? string.Empty);
                 FormsAuthentication.SetAuthCookie(szUser, false);
+
+                EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, $"User created on website with score {score}.");
 
                 Response.Cookies[MFBConstants.keyNewUser].Value = true.ToString(CultureInfo.InvariantCulture);
 
