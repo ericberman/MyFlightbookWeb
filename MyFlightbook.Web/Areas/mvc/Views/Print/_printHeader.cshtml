@@ -1,9 +1,11 @@
-﻿@{
-    MyFlightbook.Profile pf = ((MyFlightbook.Printing.PrintLayout) ViewBag.pl).CurrentUser;
+﻿@using MyFlightbook.Printing
+@{
+    PrintLayout pl = ViewBag.pl;
+    MyFlightbook.Profile pf = pl.CurrentUser;
 }
 <table style="width:100%;">
     <tr>
-        <td class="printHeaderLeft">@pf.Address</td>
+        <td class="printHeaderLeft">@(pl.Options.Sections.IncludeAddress ? pf.Address : string.Empty)</td>
         <td class="printHeaderCenter" colspan="7">
             <img style="max-width: 120px;" src="@Branding.CurrentBrand.LogoHRef.ToAbsoluteURL(Request)" />
         </td>

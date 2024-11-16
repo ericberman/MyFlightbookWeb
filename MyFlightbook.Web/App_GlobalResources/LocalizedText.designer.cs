@@ -4316,6 +4316,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include Mailing Address in cover sheet and header (if provided).
+        /// </summary>
+        internal static string PrintViewIncludeAddress {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show column totals.
         /// </summary>
         internal static string PrintViewIncludeColumnTotals {
@@ -4330,6 +4339,15 @@ namespace Resources {
         internal static string PrintViewIncludeCoverSheet {
             get {
                 return ResourceManager.GetString("PrintViewIncludeCoverSheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include Date of Birth (if provided).
+        /// </summary>
+        internal static string PrintViewIncludeDOB {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeDOB", resourceCulture);
             }
         }
         

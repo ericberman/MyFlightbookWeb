@@ -39,12 +39,7 @@ function printingSections(container, options) {
     }
 
     this.initForm = function () {
-        $("#ckPrintSectionsCoverSheet").on("change", updPrntSects);
-        $("#ckPrintSectionFlights").on("change", updPrntSects);
-        $("#ckPrintSectionTotals").on("change", updPrntSects);
-        $("#ckPrintSectionCompactTotals").on("change", updPrntSects);
-        $("#ckPrintSectionEndorsements").on("change", updPrntSects);
-        $("#ckPrintSectionEndorsementImages").on("change", updPrntSects);
+        $("#divPrefPrintingSections").find("input[type='checkbox']").on("change", updPrntSects);
     }
 
     this.initForm();

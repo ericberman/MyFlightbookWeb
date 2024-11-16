@@ -67,7 +67,7 @@
         $("#divPrintSearch").toggle();
     }
 </script>
-<script type="text/javascript" src="@("~/public/scripts/printing.js?v=2".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/printing.js?v=3".ToAbsolute())"></script>
 @if (!ViewBag.isPDF)
 {
     <div class="noprint">
@@ -109,8 +109,11 @@
                 <p>@pf.UserFullName</p>
                 <p>@Resources.LocalizedText.PrintViewCoverSheetNameTemplate</p>
             </div>
-            <div style="white-space:pre-line">@pf.Address</div>
-            <div>@(pf.DateOfBirth.HasValue && pf.DateOfBirth.Value.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.dateOfBirthFormat, pf.DateOfBirth.Value) : string.Empty)</div>
+            @if (po.Sections.IncludeAddress)
+            {
+                <div style="white-space:pre-line">@pf.Address</div>
+            }
+            <div>@(po.Sections.IncludeDOB && pf.DateOfBirth.HasValue && pf.DateOfBirth.Value.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.dateOfBirthFormat, pf.DateOfBirth.Value) : string.Empty)</div>
             <div>@pf.LicenseDisplay</div>
             <div><img src="@(Branding.CurrentBrand.LogoHRef.ToAbsolute())" style="max-width: 300px;" /></div>
             <p>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now)</p>

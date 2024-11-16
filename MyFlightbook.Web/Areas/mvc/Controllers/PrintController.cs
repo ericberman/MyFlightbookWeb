@@ -91,6 +91,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IncludeCoverPage = Request["poSectCover"] != null,
                 IncludeFlights = Request["poSectFlights"] != null,
                 IncludeTotals = Request["poSectTotals"] != null,
+                IncludeDOB = Request["poSectDOB"] != null,
+                IncludeAddress = Request["poSectAddress"] != null,
                 CompactTotals = Request["poSectTotalsCompact"] != null,
                 Endorsements = Request["poSectEndorsements"] != null ? (Request["poSectEndorsementsJPG"] != null ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None
             };

@@ -2433,7 +2433,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\mvc\Data\" />
-    <Folder Include="Areas\mvc\Views\MFBFooter\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />
   </ItemGroup>

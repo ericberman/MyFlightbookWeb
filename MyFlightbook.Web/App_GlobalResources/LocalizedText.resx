@@ -2072,4 +2072,10 @@
   <data name="ShuntHeader" xml:space="preserve">
     <value>Scheduled Maintenance Underway</value>
   </data>
+  <data name="PrintViewIncludeAddress" xml:space="preserve">
+    <value>Include Mailing Address in cover sheet and header (if provided)</value>
+  </data>
+  <data name="PrintViewIncludeDOB" xml:space="preserve">
+    <value>Include Date of Birth (if provided)</value>
+  </data>
 </root>

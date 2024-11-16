@@ -834,6 +834,17 @@ namespace MyFlightbook.Printing
         public bool IncludeFlights { get; set; } = true;
 
         /// <summary>
+        /// True to display date of birth
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeDOB { get; set; } = true;
+
+        /// <summary>
+        /// True to display mailing address
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool IncludeAddress { get; set; } = true;
+        /// <summary>
         /// Whether to include digital images.
         /// </summary>
         [System.ComponentModel.DefaultValue(EndorsementsLevel.DigitalAndPhotos)]
