@@ -142,6 +142,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private PartialViewResult RenderNumericFieldInternal(EditMode mode, string id, string name, decimal value, bool fRequired, CrossFillDescriptor cfd)
         {
+            string regexDecimalORHHMM = String.Format(CultureInfo.InvariantCulture, "^\\d*(([{0}]\\d*)|(:[0-5]\\d))?$", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
             ViewBag.value = value;
             switch (mode)
             {
@@ -149,7 +150,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 case EditMode.Currency:
                     ViewBag.placeholder = 0.FormatDecimal(false, true);
                     ViewBag.textValue = (value == 0.0M) ? string.Empty : value.ToString("0.0#", CultureInfo.CurrentCulture);
-                    ViewBag.regexp = String.Format(CultureInfo.InvariantCulture, "^\\d*([{0}]\\d*)?$", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                    ViewBag.regexp = regexDecimalORHHMM;
                     ViewBag.inputMode = "decimal";
                     break;
                 case EditMode.Integer:
@@ -161,7 +162,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 case EditMode.HHMMFormat:
                     ViewBag.placeholder = 0.FormatDecimal(true, true);
                     ViewBag.textValue = (value == 0.0M) ? string.Empty : value.FormatDecimal(true);
-                    ViewBag.regexp = "^\\d*(:[0-5][\\d])?$";
+                    ViewBag.regexp = regexDecimalORHHMM;
                     ViewBag.inputMode = "text";
                     break;
             }
