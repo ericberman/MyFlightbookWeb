@@ -631,7 +631,11 @@ namespace MyFlightbook
 
                     // Whew!  Now add the properties that exists, for each column
                     foreach (CustomPropertyType cpt in lst)
-                        dr[i++] = le.CustomProperties[cpt.PropTypeID]?.ValueString;
+                    {
+                        CustomFlightProperty cfp = le.CustomProperties[cpt.PropTypeID];
+                        // Issue #1348 - format all datetimes as zulu dates.
+                        dr[i++] = cfp == null ? string.Empty : cfp.PropertyType.Type == CFPPropertyType.cfpDateTime ? cfp.DateValue.FormatDateZulu() : le.CustomProperties[cpt.PropTypeID]?.ValueString;
+                    }
                     #endregion
 
                     dt.Rows.Add(dr);
