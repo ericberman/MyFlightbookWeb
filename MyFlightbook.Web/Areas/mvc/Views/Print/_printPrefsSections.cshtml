@@ -14,13 +14,15 @@
         var params = new Object();
         params.szExisting = lnk.href;
         params.ps = sects;
+        $("#imgPrgUpdPrintLink").show();
 
         $.ajax(
             {
                 url: '@("~/Member/Ajax.asmx/PrintLink".ToAbsolute())',
                 type: "POST", data: JSON.stringify(params), dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                success: function (response) { lnk.href = response.d }
+                success: function (response) { lnk.href = response.d },
+                complete: function () { $("#imgPrgUpdPrintLink").hide(); }
             });
     }
 
@@ -37,7 +39,7 @@
             <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" name="poSectCover" /></td>
             <td>
                 <label for="ckPrintSectionsCoverSheet">@Resources.LocalizedText.PrintViewIncludeCoverSheet</label>
-                <label><input type="checkbox" name="poSectDOB" @po.Sections.IncludeDOB.ToChecked() @(po.Sections.IncludeCoverPage ? string.Empty : "disabled") />@Resources.LocalizedText.PrintViewIncludeDOB</label>
+                <label><input type="checkbox" name="poSectDOB" id="ckPrintSectionsDOB" @po.Sections.IncludeDOB.ToChecked() @(po.Sections.IncludeCoverPage ? string.Empty : "disabled") />@Resources.LocalizedText.PrintViewIncludeDOB</label>
             </td>
         </tr>
         <tr>
@@ -82,7 +84,10 @@
     @if (String.IsNullOrEmpty(ViewBag.onChange))
     {
         <ul class="nextStep">
-            <li><a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a></li>
+            <li>
+                <a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a>
+                <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 14px; width: 14px;" id="imgPrgUpdPrintLink" />
+            </li>
         </ul>
     }
 </div>

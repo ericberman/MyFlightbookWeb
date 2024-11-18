@@ -34,6 +34,8 @@ function printingSections(container, options) {
         sects["IncludeFlights"] = !options.includeFlightsSection || ($("#ckPrintsectionFlights").length > 0 && $("#ckPrintSectionFlights")[0].checked);
         sects["IncludeTotals"] = $('#ckPrintSectionTotals')[0].checked;
         sects["CompactTotals"] = ckPrintSectionCompactTotals.checked;
+        sects["IncludeDOB"] = $("#ckPrintSectionsDOB")[0].checked;
+        sects["IncludeAddress"] = $("#ckPrintSectionsAddress")[0].checked;
         options.onChangeFunc(sects)
         return false;
     }
