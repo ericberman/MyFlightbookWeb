@@ -476,8 +476,10 @@ function prefsCustCurrencyEditor(baseEndpoint, options) {
     * fShared - true to create a shared deadline
 */
 function prefsDeadlineEditor(baseEndpoint, options) {
-    this.deleteDeadline = function (sender, form) {
+    this.deleteDeadline = function (root, idDeadline) {
         if (confirm(options.deleteConfirmation)) {
+            var form = root.find("form");
+            form.find("input[name='idDeadline']").val(idDeadline);
             $.ajax({
                 url: baseEndpoint + "DeleteDeadline",
                 type: "POST", data: form.serialize(), dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -491,10 +493,11 @@ function prefsDeadlineEditor(baseEndpoint, options) {
         }
     }
 
-    this.editDeadline = function (sender, id) {
+    this.editDeadline = function (sender, id, idAircraft) {
         var params = new Object();
         params.idDeadline = id;
         params.fShared = options.fShared;
+        params.idAircraft = idAircraft;
         var d = JSON.stringify(params);
         $.ajax({
             url: baseEndpoint + "DeadlineEditor",
@@ -565,10 +568,12 @@ function prefsDeadlineEditor(baseEndpoint, options) {
         });
     }
 
-    this.getDeadlineList = function (destination) {
+    this.getDeadlineList = function (destination, idAircraft) {
+        var params = new Object();
+        params.idAircraft = idAircraft;
         $.ajax({
             url: baseEndpoint + "DeadlineList",
-            type: "POST", data: JSON.stringify(new Object()), dataType: "text", contentType: "application/json",
+            type: "POST", data: JSON.stringify(params), dataType: "text", contentType: "application/json",
             error: function (xhr, status, error) {
                 $("#" + options.errorID).text(xhr.responseText);
             },

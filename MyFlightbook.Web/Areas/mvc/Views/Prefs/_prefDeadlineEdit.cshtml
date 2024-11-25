@@ -2,11 +2,12 @@
 @{
     MyFlightbook.Profile m_pf = ViewBag.pf;
     int idDeadline = ViewBag.idDeadline;
-    DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline) ?? new DeadlineCurrency();
+    int aircraftID = ViewBag.AircraftID ?? Aircraft.idAircraftUnknown;
+    DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, aircraftID) ?? new DeadlineCurrency();
     bool fShared = ViewBag.fShared;
     if (fShared)
     {
-        dc.AircraftID = ViewBag.idAircraft;
+        dc.AircraftID = aircraftID;
     }
     UserAircraft ua = new UserAircraft(User.Identity.Name);
 }
@@ -42,7 +43,7 @@
                     <option value="" @((dc.AircraftID <= 0).ToSelected())>@Resources.LocalizedText.None</option>
                     @foreach (Aircraft ac in ua.GetAircraftForUser())
                     {
-                        if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && (!ac.HideFromSelection || ac.AircraftID == dc.AircraftID))
+                        if (ac.InstanceType == AircraftInstanceTypes.RealAircraft && !ac.IsAnonymous && (!ac.HideFromSelection || ac.AircraftID == dc.AircraftID))
                         {
                             <option value="@ac.AircraftID" @((dc.AircraftID == ac.AircraftID).ToSelected())>@ac.TailNumber</option>
                         }
@@ -87,7 +88,7 @@
         </div>
         <div style="text-align: center;">
             <button type="button" onclick="javascript: dlEditor.cancelDeadlineEdit();">@Resources.LocalizedText.Cancel</button>
-            <button type="button" id="btnAddDeadline" onclick="javascript: dlEditor.submitDeadline($('#frmEditDeadline'));">@Resources.Currency.CustomCurrencyAddRule</button>
+            <button type="button" id="btnAddDeadline" onclick="javascript: dlEditor.submitDeadline($('#frmEditDeadline'));">@Resources.Currency.DeadlineAddDeadline</button>
         </div>
     </div>
 }

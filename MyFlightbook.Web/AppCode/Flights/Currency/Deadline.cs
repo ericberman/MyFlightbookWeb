@@ -355,10 +355,11 @@ GROUP BY d.iddeadlines";
         /// </summary>
         /// <param name="szUser">The user</param>
         /// <param name="id">The id of the deadline</param>
+        /// <param name="idAircraft">The id of the aircraft, in case this is a shared deadline</param>
         /// <returns></returns>
-        public static DeadlineCurrency DeadlineForUser(string szUser, int id)
+        public static DeadlineCurrency DeadlineForUser(string szUser, int id, int idAircraft)
         {
-            List<DeadlineCurrency> lst = DeadlinesForUser(szUser, fIncludeSharedDeadlines: true) as List<DeadlineCurrency>;
+            List<DeadlineCurrency> lst = DeadlinesForUser(szUser, idAircraft, true) as List<DeadlineCurrency>;
             return lst.Find(dc => dc.ID == id);
         }
 

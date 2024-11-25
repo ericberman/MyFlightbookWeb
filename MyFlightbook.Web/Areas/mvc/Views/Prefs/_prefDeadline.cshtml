@@ -1,8 +1,14 @@
 ﻿<script type="text/javascript">
     var dlEditor = new prefsDeadlineEditor("@("~/mvc/Prefs/".ToAbsolute())", {
+        fShared: @Json.Encode(ViewBag.fShared ?? false),
         deleteConfirmation: "@Resources.Currency.deadlineDeleteConfirmation",
-        onCancel: cancelEditDeadeline,
-        onCommit: deadlineCommitted,
+        onCancel: function () {
+            cancelEditDeadline();
+        },
+        onCommit: function () {
+            cancelEditDeadline();
+            dlEditor.getDeadlineList($("#divListDeadlines"), @(ViewBag.aircraftID ?? Aircraft.idAircraftUnknown));
+        },
         onEdit: function (r) {
             $("#divListDeadlines").hide();
             $("#divEditDeadline").show();
@@ -11,16 +17,11 @@
         errorID: "lblDeadlineErr"
     });
 
-    function cancelEditDeadeline() {
+    function cancelEditDeadline() {
         $("#divListDeadlines").show();
         $("#divEditDeadline").hide();
         $("#divEditDeadline").html("");
         $("#lblDeadlineErr").text("");
-    }
-
-    function deadlineCommitted() {
-        cancelEditDeadeline();
-        dlEditor.getDeadlineList($("#divListDeadlines"));
     }
 
 </script>
