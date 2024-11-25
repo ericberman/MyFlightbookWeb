@@ -188,7 +188,7 @@
     <div>
         <div class="calloutSmall calloutBackground shadowed">
             <p>@Resources.Club.LabelNotAMember</p>
-            <p>@Resources.Club.LabelSendMessage <a href="javascript:showModalById('divContactClub', '@Resources.Club.LabelMessagePrompt', 450);">@Resources.Club.LinkSendMessage</a></p>
+            <p>@Resources.Club.LabelSendMessage <a href="#" onclick="javascript:showModalById('divContactClub', '@Resources.Club.LabelMessagePrompt', 450);">@Resources.Club.LinkSendMessage</a></p>
         </div>
         <div id="divContactClub" style="display:none; width: 450px;">
             <p><textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea></p>
@@ -226,7 +226,7 @@
             {
                 @Html.AntiForgeryToken();
                 <input type="hidden" name="idClub" value="@club.ID" />
-                <div><a style="cursor:pointer;" href="javascript:if (confirm('@Resources.Club.errConfirmLeaveClub')) $('#frmLeaveClub')[0].submit();">@Resources.Club.ButtonLeaveClub</a></div>
+                <div><a href="#" onclick="javascript:if (confirm('@Resources.Club.errConfirmLeaveClub')) $('#frmLeaveClub')[0].submit();">@Resources.Club.ButtonLeaveClub</a></div>
             }
         }
         <p><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Club?noredir=1")">@Resources.Club.LabelViewAllClubs</a></p>
