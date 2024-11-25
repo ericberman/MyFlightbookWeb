@@ -162,11 +162,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteDeadline(int idDeadline)
+        public ActionResult DeleteDeadline(int idDeadline, int idAircraft)
         {
             return SafeOp(() =>
             {
-                DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
+                DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, idAircraft) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
                 dc.FDelete();
                 return new EmptyResult();
             });
@@ -175,11 +175,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateDeadline(int idDeadline)
+        public ActionResult UpdateDeadline(int idDeadline, int idAircraft)
         {
             return SafeOp(() =>
             {
-                DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
+                DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, idAircraft) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
                 if (dc.AircraftHours > 0)
                     dc.AircraftHours = dc.NewHoursBasedOnHours(decimal.Parse(Request["deadlineNewHours"], CultureInfo.CurrentCulture));
                 else
@@ -192,9 +192,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult DeadlineList()
+        public ActionResult DeadlineList(int idAircraft = Aircraft.idAircraftUnknown)
         {
-            return SafeOp(() => { return PartialView("_prefDeadlineList"); });
+            return SafeOp(() => {
+                ViewBag.aircraftID = idAircraft;
+                return PartialView("_prefDeadlineList"); 
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult AddAircraftOilDeadline(int idAircraft, int interval, int curValue)
+        {
+            return SafeOp(() =>
+            {
+                DeadlineCurrency dc = new DeadlineCurrency(User.Identity.Name, Resources.Aircraft.DeadlineOilChangeTitle, DateTime.MinValue, interval, DeadlineCurrency.RegenUnit.Hours, idAircraft, curValue + interval);
+                dc.FCommit();
+
+                MaintenanceLog ml = new MaintenanceLog() { AircraftID = idAircraft, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, Resources.Aircraft.DeadlineOilChangeTitle), Comment = string.Empty };
+                ml.FAddToLog();
+
+                return AircraftDeadlineSection(idAircraft);
+            });
         }
 
         [HttpPost]
@@ -730,6 +749,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             ViewBag.rgcs = ProfileCurrency.MedicalStatus(dtMedical, monthsToMedical, mt, dob, fUseICAOMedical);
             return PartialView("_pilotInfoNextMedical");
+        }
+        #endregion
+
+        #region deadlines
+        [ChildActionOnly]
+        public ActionResult AircraftDeadlineSection(int idAircraft)
+        {
+            ViewBag.aircraftID = idAircraft;
+            ViewBag.fShared = true;
+            return PartialView("_prefDeadline");
         }
         #endregion
         #endregion
