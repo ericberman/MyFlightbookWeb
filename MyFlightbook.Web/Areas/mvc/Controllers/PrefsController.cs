@@ -724,6 +724,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 else if (pi?.IsValid ?? false)
                     Session[szID] = pi;
 
+                BasicMedEvent.ClearCache(User.Identity.Name);
                 return Content(pi.URLThumbnail.ToAbsolute());
             });
         }

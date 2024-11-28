@@ -245,7 +245,7 @@ namespace MyFlightbook.BasicmedTools
         #region caching
         private const string szCacheKey = "basicMedEvents";
 
-        private static void ClearCache(string szUser)
+        public static void ClearCache(string szUser)
         {
             if (!String.IsNullOrEmpty(szUser))
                 Profile.GetUser(szUser).AssociatedData.Remove(szCacheKey);
