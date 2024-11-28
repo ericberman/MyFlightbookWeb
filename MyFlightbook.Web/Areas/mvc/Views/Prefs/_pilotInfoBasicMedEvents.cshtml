@@ -16,9 +16,6 @@
     {
         string idImgDragDropBM = String.Format(CultureInfo.InvariantCulture, "divDropBasicMedImg{0}", bme.ID);
         string idDivImgListBM = String.Format(CultureInfo.InvariantCulture, "divLstBasicMedImg{0}", bme.ID);
-        il.Key = bme.ID.ToString(CultureInfo.InvariantCulture);
-        il.Refresh();
-        bme.Images = il.ImageArray;
         <div class="endorsement" style="padding: 3pt; margin-top: 8pt; margin-bottom: 8pt; margin-left: auto; margin-right: auto; width: 80%">
             <div>
                 <img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: $('#hdnBasicMed').val(@bme.ID); piEditor.deleteBasicMedEvent($('#frmDeleteBME'), '@Resources.Profile.BasicMedConfirmDelete'); return false;" title="@Resources.Profile.BasicMedDeleteTooltip" alt="@Resources.Profile.BasicMedDeleteTooltip" />

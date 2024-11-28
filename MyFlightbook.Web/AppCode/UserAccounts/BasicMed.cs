@@ -182,191 +182,191 @@ namespace MyFlightbook.BasicmedTools
                         throw new InvalidOperationException("Can't compute an expiration date for an unknown basicmedeventtype");
                 }
             }
-}
+        }
 
-/// <summary>
-/// Description of the event, any comments
-/// </summary>
-public string Description { get; set; }
+        /// <summary>
+        /// Description of the event, any comments
+        /// </summary>
+        public string Description { get; set; }
 
-/// <summary>
-/// Username for which this event is associated
-/// </summary>
-public string User { get; set; }
+        /// <summary>
+        /// Username for which this event is associated
+        /// </summary>
+        public string User { get; set; }
 
-/// <summary>
-/// Any images (scans or PDFs) that document the event.
-/// </summary>
-public IEnumerable<MFBImageInfo> Images { get; set; }
+        /// <summary>
+        /// Any images (scans or PDFs) that document the event.
+        /// </summary>
+        public IEnumerable<MFBImageInfo> Images { get; set; }
 
-/// <summary>
-/// Last error, if validation fails
-/// </summary>
-public string LastError { get; private set; }
+        /// <summary>
+        /// Last error, if validation fails
+        /// </summary>
+        public string LastError { get; private set; }
 
-/// <summary>
-/// Key to use for images.
-/// </summary>
-public string ImageKey
-{
-get { return ID.ToString(CultureInfo.InvariantCulture); }
-}
-#endregion
+        /// <summary>
+        /// Key to use for images.
+        /// </summary>
+        public string ImageKey
+        {
+            get { return ID.ToString(CultureInfo.InvariantCulture); }
+        }
+        #endregion
 
-#region Instantiation
-private BasicMedEvent()
-{
-EventDate = DateTime.Now;
-EventType = BasicMedEventType.Unknown;
-User = Description = LastError = string.Empty;
-ID = -1;
-Images = Array.Empty<MFBImageInfo>();
-}
+        #region Instantiation
+        private BasicMedEvent()
+        {
+            EventDate = DateTime.Now;
+            EventType = BasicMedEventType.Unknown;
+            User = Description = LastError = string.Empty;
+            ID = -1;
+            Images = Array.Empty<MFBImageInfo>();
+        }
 
-public BasicMedEvent(BasicMedEventType eventType, string szUser) : this()
-{
-User = szUser;
-EventType = eventType;
-}
+        public BasicMedEvent(BasicMedEventType eventType, string szUser) : this()
+        {
+            User = szUser;
+            EventType = eventType;
+        }
 
-private BasicMedEvent(MySqlDataReader dr) : this((BasicMedEventType) dr["eventtype"], (string) dr["username"])
-{
-ID = (int)dr["idbasicmedevent"];
-EventDate = (DateTime)dr["eventdate"];
-Description = (string)dr["description"];
+        private BasicMedEvent(MySqlDataReader dr) : this((BasicMedEventType)dr["eventtype"], (string)dr["username"])
+        {
+            ID = (int)dr["idbasicmedevent"];
+            EventDate = (DateTime)dr["eventdate"];
+            Description = (string)dr["description"];
 
-// Populate the images
-ImageList il = new ImageList(MFBImageInfo.ImageClass.BasicMed, ImageKey);
-il.Refresh(true, null, false);
-Images = il.ImageArray;
-}
-#endregion
+            // Populate the images
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.BasicMed, ImageKey);
+            il.Refresh(true, null, false);
+            Images = il.ImageArray;
+        }
+        #endregion
 
-#region caching
-private const string szCacheKey = "basicMedEvents";
+        #region caching
+        private const string szCacheKey = "basicMedEvents";
 
-private static void ClearCache(string szUser)
-{
-if (!String.IsNullOrEmpty(szUser))
-Profile.GetUser(szUser).AssociatedData.Remove(szCacheKey);
-}
+        private static void ClearCache(string szUser)
+        {
+            if (!String.IsNullOrEmpty(szUser))
+                Profile.GetUser(szUser).AssociatedData.Remove(szCacheKey);
+        }
 
-private static void AddToCache(string szUser, IEnumerable<BasicMedEvent> lst)
-{
-if (String.IsNullOrEmpty(szUser) || lst == null)
-return;
+        private static void AddToCache(string szUser, IEnumerable<BasicMedEvent> lst)
+        {
+            if (String.IsNullOrEmpty(szUser) || lst == null)
+                return;
 
-Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
-}
+            Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
+        }
 
-private static IEnumerable<BasicMedEvent> CachedEvents(string szUser)
-{
-if (String.IsNullOrEmpty(szUser))
-return null;
-return (IEnumerable<BasicMedEvent>) Profile.GetUser(szUser).CachedObject(szCacheKey);
-}
-#endregion
+        private static IEnumerable<BasicMedEvent> CachedEvents(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                return null;
+            return (IEnumerable<BasicMedEvent>)Profile.GetUser(szUser).CachedObject(szCacheKey);
+        }
+        #endregion
 
-#region database
-public bool IsValid()
-{
-LastError = string.Empty;
+        #region database
+        public bool IsValid()
+        {
+            LastError = string.Empty;
 
-try
-{
-if (String.IsNullOrEmpty(User))
-throw new MyFlightbookValidationException("No username specified");
+            try
+            {
+                if (String.IsNullOrEmpty(User))
+                    throw new MyFlightbookValidationException("No username specified");
 
-if (EventType == BasicMedEventType.Unknown)
-throw new MyFlightbookValidationException("Must specify a valid eventtype");
+                if (EventType == BasicMedEventType.Unknown)
+                    throw new MyFlightbookValidationException("Must specify a valid eventtype");
 
-if (!EventDate.HasValue())
-throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrNoDate);
+                if (!EventDate.HasValue())
+                    throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrNoDate);
 
-if (EventDate.Subtract(DateTime.Now).TotalDays > 3) // allow up to 3 days in the future
-throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrEventInFuture);
+                if (EventDate.Subtract(DateTime.Now).TotalDays > 3) // allow up to 3 days in the future
+                    throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrEventInFuture);
 
-if (EventDate.CompareTo(BasicMed.EarliestEventDate) < 0)
-throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrEventTooFarBack);
-}
-catch (MyFlightbookValidationException ex)
-{
-LastError = ex.Message;
-return false;
-}
+                if (EventDate.CompareTo(BasicMed.EarliestEventDate) < 0)
+                    throw new MyFlightbookValidationException(Resources.Profile.BasicMedErrEventTooFarBack);
+            }
+            catch (MyFlightbookValidationException ex)
+            {
+                LastError = ex.Message;
+                return false;
+            }
 
-return true;
-}
+            return true;
+        }
 
-public void Commit()
-{
-if (!IsValid())
-throw new MyFlightbookException(LastError);
+        public void Commit()
+        {
+            if (!IsValid())
+                throw new MyFlightbookException(LastError);
 
-string szQ = String.Format(CultureInfo.InvariantCulture, "{0} basicmedevent SET eventtype=?et, eventdate=?ed, username=?us, description=?desc {1}",
-ID > 0 ? "UPDATE" : "INSERT INTO",
-ID > 0 ? "WHERE idbasicmedevent=?id" : string.Empty);
+            string szQ = String.Format(CultureInfo.InvariantCulture, "{0} basicmedevent SET eventtype=?et, eventdate=?ed, username=?us, description=?desc {1}",
+            ID > 0 ? "UPDATE" : "INSERT INTO",
+            ID > 0 ? "WHERE idbasicmedevent=?id" : string.Empty);
 
-DBHelper dbh = new DBHelper(szQ);
-dbh.DoNonQuery((comm) =>
-{
-comm.Parameters.AddWithValue("et", (int)EventType);
-comm.Parameters.AddWithValue("ed", EventDate);
-comm.Parameters.AddWithValue("us", User);
-comm.Parameters.AddWithValue("desc", Description.LimitTo(255));
-comm.Parameters.AddWithValue("id", ID);
-});
-if (ID < 0)
-ID = dbh.LastInsertedRowId;
-ClearCache(User);
-}
+            DBHelper dbh = new DBHelper(szQ);
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("et", (int)EventType);
+                comm.Parameters.AddWithValue("ed", EventDate);
+                comm.Parameters.AddWithValue("us", User);
+                comm.Parameters.AddWithValue("desc", Description.LimitTo(255));
+                comm.Parameters.AddWithValue("id", ID);
+            });
+            if (ID < 0)
+                ID = dbh.LastInsertedRowId;
+            ClearCache(User);
+        }
 
-public void Delete()
-{
-// Delete any images
-// Now delete any associated images.
-try
-{
-ImageList il = new ImageList(MFBImageInfo.ImageClass.BasicMed, ImageKey);
-il.Refresh();
-foreach (MFBImageInfo mfbii in il.ImageArray)
-mfbii.DeleteImage();
+        public void Delete()
+        {
+            // Delete any images
+            // Now delete any associated images.
+            try
+            {
+                ImageList il = new ImageList(MFBImageInfo.ImageClass.BasicMed, ImageKey);
+                il.Refresh();
+                foreach (MFBImageInfo mfbii in il.ImageArray)
+                    mfbii.DeleteImage();
 
-DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
-di.Delete(true);
-}
-catch (Exception ex) when (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException || ex is IOException) { }
+                DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+                di.Delete(true);
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException || ex is IOException) { }
 
-new DBHelper("DELETE FROM basicmedevent WHERE idbasicmedevent=?id").DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
-ClearCache(User);
-}
+            new DBHelper("DELETE FROM basicmedevent WHERE idbasicmedevent=?id").DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
+            ClearCache(User);
+        }
 
-/// <summary>
-/// Returns the basicmed events for the specified user
-/// </summary>
-/// <param name="szUser"></param>
-public static IEnumerable<BasicMedEvent> EventsForUser(string szUser)
-{
-if (szUser == null)
-throw new ArgumentNullException(nameof(szUser));
+        /// <summary>
+        /// Returns the basicmed events for the specified user
+        /// </summary>
+        /// <param name="szUser"></param>
+        public static IEnumerable<BasicMedEvent> EventsForUser(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
 
-IEnumerable<BasicMedEvent> cached = CachedEvents(szUser);
-if (cached != null)
-return cached;
+            IEnumerable<BasicMedEvent> cached = CachedEvents(szUser);
+            if (cached != null)
+                return cached;
 
-List<BasicMedEvent> lst = new List<BasicMedEvent>();
-DBHelper dbh = new DBHelper("SELECT * FROM basicmedevent WHERE username=?us ORDER BY eventdate DESC");
-dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("us", szUser); },
-(dr) => { lst.Add(new BasicMedEvent(dr)); });
+            List<BasicMedEvent> lst = new List<BasicMedEvent>();
+            DBHelper dbh = new DBHelper("SELECT * FROM basicmedevent WHERE username=?us ORDER BY eventdate DESC");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("us", szUser); },
+            (dr) => { lst.Add(new BasicMedEvent(dr)); });
 
-AddToCache(szUser, lst);
-return lst;
-}
-#endregion
+            AddToCache(szUser, lst);
+            return lst;
+        }
+        #endregion
 
-public override string ToString()
-{
-return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1} {2} (Expiration: {3:d}", EventDate, EventTypeDescription, Description, ExpirationDate);
-}
-}
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1} {2} (Expiration: {3:d}", EventDate, EventTypeDescription, Description, ExpirationDate);
+        }
+    }
 }
