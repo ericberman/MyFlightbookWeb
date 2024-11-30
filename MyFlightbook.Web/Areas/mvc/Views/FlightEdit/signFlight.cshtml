@@ -16,7 +16,6 @@
     int copyPref = (int)(pfSigner?.GetPreferenceForKey(MFBConstants.keyPrefCopyFlightToCFI) ?? 0);
     bool showNext = !fAdhoc && pfSigner.UserName.CompareCurrentCulture(User.Identity.Name) == 0 && le != null && LogbookEntryBase.PendingSignaturesForStudent(pfSigner, MyFlightbook.Profile.GetUser(le.User)).Count() > 1;
     DateTime dtNow = DateTime.Now.Date;
-    bool fExpirationOptional = dtNow.CompareTo(new DateTime(2024, 12, 1, 0, 0, 0)) >= 0; // as of Dec 1 2024, expiration dates are optional for CFIs, at least in the US.
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, pfTarget.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
@@ -71,11 +70,11 @@ else if (fPickSigner)
                 IDictionary<string, LogbookEntry> adHocInstructors = LogbookEntryBase.PreviouslySignedAdhocFlightsForUser(pfTarget.UserName);
                 List<string> adHocNames = new List<string>(adHocInstructors.Keys);
                 adHocNames.Sort();
-                int cExpired = fExpirationOptional ? instructors.Count() + adHocInstructors.Count : instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
+                int cExpired = instructors.Count(inst => inst.CertificateExpiration.CompareTo(dtNow) < 0) + adHocInstructors.Values.Count(l => l.CFIExpiration.CompareTo(dtNow) < 0);
                 int cInstructors = instructors.Count() + adHocNames.Count;
                 bool fShowMore = cExpired > 0 && cExpired < cInstructors;
 
-                if (fShowMore && !fExpirationOptional)
+                if (fShowMore)
                 {
                     <style type="text/css">
                         .expiredCert {
@@ -86,7 +85,7 @@ else if (fPickSigner)
 
                 foreach (InstructorStudent instructor in instructors)
                 {
-                    bool fExpired = !fExpirationOptional && instructor.CertificateExpiration.CompareTo(dtNow) < 0;
+                    bool fExpired = instructor.CertificateExpiration.CompareTo(dtNow) < 0;
                     <div class="signFlightInstructorChoice @(fExpired ? "expiredCert" : string.Empty)">
                         <img src="@("~/images/signaturesm.png".ToAbsolute())" style="visibility:hidden" />
                         <a href="#" onclick="javascript: selectInstructor('@instructor.UserName'); return false;">@instructor.UserFullName</a>
@@ -202,7 +201,7 @@ else
                 cfiEmail: "required",
                 cfiCert: "required",
                 hdnSigData: "required",
-                cfiExpiration: { @(le.IsGroundOnly || fExpirationOptional ? string.Empty : "required : true,") validDate: true }
+                cfiExpiration: { @(le.IsGroundOnly ? string.Empty : "required : true,") validDate: true }
             }, {
                 cfiName: "@Resources.SignOff.errProvideNameToSign",
                 cfiEmail: {
@@ -217,7 +216,7 @@ else
             v.settings.ignore = ":hidden:not('#hdnSigData')";
 
             $("#txtCFIExpiration").width(280);
-            $("#txtCFIExpiration").attr("required", @Json.Encode(!fExpirationOptional && !le.IsGroundOnly));
+            $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
         });
     </script>
     <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>
@@ -244,7 +243,8 @@ else
                 {
                     <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementCFIPrompt</span> @(fAdhoc || !fValidCFIInfo ? string.Empty : ViewBag.cfiCert)</div>
                     <div><input type="text" required style="width: 280px;" id="txtCFICert" name="cfiCert" value="@ViewBag.cfiCert" /></div>
-                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span><label><input type="checkbox" id="ckATP" name="ckATP" onchange="javascript: updateDateState(this);" />@Resources.SignOff.SignFlightATP</label></div>
+                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span></div>
+                    <div><label><input type="checkbox" id="ckATP" name="ckATP" onchange="javascript: updateDateState(this);" />@Resources.SignOff.SignFlightATP</label></div>
                     <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtCFIExpiration", name = "cfiExpiration", value = ViewBag.cfiExpiration }); }</div>
                 }
                 else

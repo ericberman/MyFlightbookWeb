@@ -310,7 +310,7 @@
     <value>calendar months</value>
   </data>
   <data name="CertificateExpiration" xml:space="preserve">
-    <value>CFI Certificate</value>
+    <value>CFI Cert. Exp./Recent Experience End</value>
   </data>
   <data name="NextLanguageProficiency" xml:space="preserve">
     <value>English Proficiency Check</value>

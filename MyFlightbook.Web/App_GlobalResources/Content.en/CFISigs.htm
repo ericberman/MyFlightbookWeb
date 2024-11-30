@@ -1,12 +1,9 @@
 <p>A method is needed by which an instructor can sign a student’s logbook, or by which an instructor can endorse a student.   Reference is made to <a href="https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1029747" target="_blank">FAA circular AC No: 120-78A</a>, which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA.</p>
 <p>This document describes the implementation used by %APP_NAME%.   It has NOT been vetted by the FAA (indeed, the FAA does not appear to certify compliance); it is a description of how I have chosen to implement my interpretation of the requirements.</p>
-<h1>
-    2
-    Definitions
-</h1>
+<h1>2Definitions</h1>
 <p>
-    <b>CFI</b> = The instructor (&quot;Certified Flight Instructor).  
-    The CFI must have a CFI certificate with an expiration date in the future.
+    <b>CFI</b> = The instructor (&quot;Certified Flight Instructor&quot;).  
+    The CFI must have a CFI certificate with an expiration date or recent-experience expiration date in the future.
 </p>
 <p><b>Student</b> = The pilot wishing to have an entry signed.   A student need not be a not-yet-licensed pilot; the student is ANY pilot who receives instruction from a CFI. </p>
 <p>
@@ -22,24 +19,23 @@
 <p><b>Hash</b> = A deterministic unique output of an operation performed on an object which changes if the underlying object changes.   In most applications of a hash, the hash is small relative to the size of the object being hashed, but is highly sensitive to changes in the underlying object.   The key attribute of a hash is that you can compare the hash of an original object and the hash of the new object, and if the new object differs even slightly from the old, the hashes will be different with an exceedingly high probability (or, stated another way, the odds of the underlying objects being different but the hashes being the same is vanishingly small), and hashes are much quicker to compare than entire objects.</p>
 <p><strong>Encryption</strong> = The transformation of data into an encoded form that obscures the underlying data.&nbsp; Encrypted data requires a key to decrypt.</p>
 <p><b>Electronic Signature</b> = <b>CFI Signature</b> = proof that the specified CFI has signed the specified object, and that the object has not been modified since that time.</p>
-<p><b>Digitized Signature </b>= an image of a handwritten signature. Not to be confused with an Electronic Signature.</p>
+<p><b>Digitized Signature </b> = an image of a handwritten signature. Not to be confused with an Electronic Signature.</p>
+<p><b>Expiration Date</b> = a CFI certificate expiration, if it has one, otherwise the "recent experience expiration" date.  See <a target="_blank" href="https://www.faa.gov/documentlibrary/media/advisory_circular/ac_61-65J.pdf">AC 61-65J</a></p>
 <h1>3 Signed Flights</h1>
 <p>A signed flight is an attestation by a CFI that they gave instruction to another individual on a given day.</p>
-<h2>
-    3.1
-    User Flow
+<h2>3.1 User Flow
 </h2>
 <p>There are 4 basic scenarios to support.   In descending order of importance, these are:</p>
 <ol>
-    <li><b>Student Initiated – Mobile Device, Ad-Hoc:</b>   In this scenario, the student has an account on %APP_NAME% and the instructor may or may not have one, but we bypass the establishment of an account/relationship in order to quickly perform an on-the-spot signing.   This is called “Ad-hoc” because no relationship is established.   This might be a typical scenario after a check-out flight at an FBO.   Because we cannot authenticate the CFI in any other way, but the student has a mobile device, a digitized handwritten signature is captured.   This is the only scenario we allow where a digitized handwritten signature is used, because it is the only one where we can assume that the CFI has physical access to the mobile device that is signed in to the student’s account.   </li>
-    <li><b>Student Initiated – Mobile Device, Authenticated</b>: In this scenario, the CFI has both a %APP_NAME% account AND the student and CFI have established a student/CFI relationship.   This might be a typical scenario for right after an instruction flight during primary training.   Because the instructor is known to %APP_NAME%, a digitized handwritten signature is not necessary.   However, the CFI must still authenticate themselves to the device by providing their password.</li>
-    <li><b>Student Initiated – Remote, Authenticated. </b>Again, the CFI and Student are both on %APP_NAME% and have a relationship, but this addresses the scenario where they are not together but a signature is required.   For example, if they took a training flight and then went home and then the student realizes that the CFI forgot to sign the logbook.   The Student sends a request by email to the CFI to sign the entry; the CFI then authenticates to %APP_NAME% and signs the record.   This can also be used to “fix” a signature that is invalidated by an edit to the underlying flight, but for which the CFI agrees that the edit was OK.</li>
-    <li><b>CFI Initiated – Remote, Authenticated.</b>The CFI and Student are both on %APP_NAME% and have a relationship, and the student has given the CFI permission to view their logbook.   In viewing the logbook, the CFI may choose to sign entries that do not already have valid signatures, or to re-sign ones that have been broken (as above).<b></b></li>
+    <li><b>Student Initiated - Mobile Device, Ad-Hoc:</b>   In this scenario, the student has an account on %APP_NAME% and the instructor may or may not have one, but we bypass the establishment of an account/relationship in order to quickly perform an on-the-spot signing.   This is called &quot;Ad-hoc&quot; because no relationship is established.   This might be a typical scenario after a check-out flight at an FBO.   Because we cannot authenticate the CFI in any other way, but the student has a mobile device, a digitized handwritten signature is captured.   This is the only scenario we allow where a digitized handwritten signature is used, because it is the only one where we can assume that the CFI has physical access to the mobile device that is signed in to the student’s account.   </li>
+    <li><b>Student Initiated - Mobile Device, Authenticated</b>: In this scenario, the CFI has both a %APP_NAME% account AND the student and CFI have established a student/CFI relationship.   This might be a typical scenario for right after an instruction flight during primary training.   Because the instructor is known to %APP_NAME%, a digitized handwritten signature is not necessary.   However, the CFI must still authenticate themselves to the device by providing their password.</li>
+    <li><b>Student Initiated - Remote, Authenticated. </b>Again, the CFI and Student are both on %APP_NAME% and have a relationship, but this addresses the scenario where they are not together but a signature is required.   For example, if they took a training flight and then went home and then the student realizes that the CFI forgot to sign the logbook.   The Student sends a request by email to the CFI to sign the entry; the CFI then authenticates to %APP_NAME% and signs the record.   This can also be used to &quot;fix&quot; a signature that is invalidated by an edit to the underlying flight, but for which the CFI agrees that the edit was OK.</li>
+    <li><b>CFI Initiated - Remote, Authenticated.</b>The CFI and Student are both on %APP_NAME% and have a relationship, and the student has given the CFI permission to view their logbook.   In viewing the logbook, the CFI may choose to sign entries that do not already have valid signatures, or to re-sign ones that have been broken (as above).<b></b></li>
 </ol>
 <p>These scenarios are discussed in more detail below</p>
 <h3>
     3.1.1
-    Student Initiated – Mobile Device, Ad-Hoc
+    Student Initiated - Mobile Device, Ad-Hoc
 </h3>
 <ol>
     <li>Student OR Instructor fills out and submits flight.</li>
@@ -52,7 +48,7 @@
 </ol>
 <p>In the current implementation, this is done via web page served (securely) from the %APP_NAME% server, and requires authentication from the STUDENT’s account.</p>
 <p>The digitized signature is stored as a <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics" target="_blank">PNG</a> file with the flight record.</p>
-<h3>3.1.2 Student Initiated – Mobile Device, Authenticated</h3>
+<h3>3.1.2 Student Initiated - Mobile Device, Authenticated</h3>
 <ol>
     <li>Student OR Instructor fills out and submits flight.</li>
     <li>View flight on mobile device.</li>
@@ -62,7 +58,7 @@
     <li>To verify that it is in fact the CFI who is signing, we require the CFI to enter their password as well.</li>
     <li>Signature is submitted. CFIUsername is captured, but DigitizedSignature is empty.</li>
 </ol>
-<h3>3.1.3 Student Initiated – Remote, Authenticated</h3>
+<h3>3.1.3 Student Initiated - Remote, Authenticated</h3>
 <ol>
     <li>The student fills out their own entry for their logbook. </li>
     <li>
@@ -143,8 +139,8 @@
     <li>Additional instructor comments.</li>
     <li>Date that the signature was created.   THIS MAY NOT BE THE DATE OF THE FLIGHT BEING SIGNED</li>
     <li>CFI Certificate</li>
-    <li>CFI Certificate Expiration Date</li>
-    <li>CFI Username (system username) – this links to the account of the CFI, if they have an account.</li>
+    <li>CFI Certificate Expiration Date or Recent Experience expiration Date)</li>
+    <li>CFI Username (system username) - this links to the account of the CFI, if they have an account.</li>
     <li>CFI Email as of the date that the flight was signed</li>
     <li>CFI Name as of the date that the flight was signed</li>
     <li>Digitized Signature from the CFI, if they don’t have an account (ad hoc scenario)</li>
@@ -170,7 +166,7 @@
 <p>A CFI is only allowed to sign student flights if they have provided in their profile:</p>
 <ul>
     <li>A certificate number (which is currently an unverified string of text)</li>
-    <li>An expiration date that is in the future.</li>
+    <li>A certificate expiratio or recent experience expiration date that is in the future.</li>
 </ul>
 <p>Due to potential time-zone issues between the time zone of the %APP_NAME% server (currently Pacific time zone) and where the CFI may be, we allow a 24-hour grace period before deeming an expiration date to have passed.</p>
 <p>A CFI is only allowed to sign a specific flight if:</p>
@@ -263,8 +259,8 @@
 
         </td>
         <td valign="top">
-            If your signature is shown, you can’t say “it wasn’t
-            me.”
+            If your signature is shown, you can’t say &quot;it wasn’t
+            me.&quot;
 
         </td>
         <td valign="top">
@@ -361,7 +357,7 @@
             they are distinct accounts with distinct email addresses, but we cannot
             actually know anything about the people who created the accounts beyond
             that.   It is possible for a student to
-            create two accounts and use one as a “CFI” account.  
+            create two accounts and use one as a &quot;CFI&quot; account.  
 
         </td>
         <td valign="top">
@@ -429,7 +425,7 @@
 <p>%APP_NAME% performs two integrity checks to detect tampering with or forging of the signature:</p>
 <ol style="list-style-type: lower-alpha">
     <li>The hash of the salient flight details (as described above) is stored in an encrypted form, and validity checks are made by comparing an encrypted hash to this stored encrypted hash. &nbsp; This makes tampering with the flight hash hard to do and easy to detect. &nbsp; We also never need to bother decrypting it, since we can compare a newly computed/encrypted hash with the encrypted hash stored in the database.</li>
-    <li>A hash is also provided of the salient signature details (CFI username, CFI Certificate, CFI Expiration date, and date of signature) so that we can detect modifications there; this provides the integrity that the system itself did in fact sign the user’s entry.&nbsp; Like the hash of the flight details, this is also stored in encrypted form, and like its flight counterpart, we never need to decrypt it.</li>
+    <li>A hash is also provided of the salient signature details (CFI username, CFI Certificate, CFI certificate/recent experience Expiration date, and date of signature) so that we can detect modifications there; this provides the integrity that the system itself did in fact sign the user’s entry.&nbsp; Like the hash of the flight details, this is also stored in encrypted form, and like its flight counterpart, we never need to decrypt it.</li>
 </ol>
 <p>
     So, if a malicious user were to gain access to the database, they could not forge a signature because they could not store a propertly compute and encrypted hash that would match subsequent comparisons.&nbsp; Nor could they modify an existing signature for the same reason.
@@ -438,7 +434,7 @@
     3.5
     Handwritten signatures
 </h2>
-<p>With the proliferation of touch-sensitive smartphones and tablets (particularly among pilots), and the fact that the student and pilot are together at the end of a lesson, the convenience of capturing a digitized signature right then in there is certainly much greater than forcing the CFI to both create a %APP_NAME% account and to set up a relationship with the student.   This is why we have the “Ad-hoc” scenario described above.</p>
+<p>With the proliferation of touch-sensitive smartphones and tablets (particularly among pilots), and the fact that the student and pilot are together at the end of a lesson, the convenience of capturing a digitized signature right then in there is certainly much greater than forcing the CFI to both create a %APP_NAME% account and to set up a relationship with the student.   This is why we have the &quot;Ad-hoc&quot; scenario described above.</p>
 <p>AC120-78A does allow for digitized handwritten signatures, and %APP_NAME% supports this functionality.</p>
 <p>To do that, however, requires addressing the non-repudiation and traceability issues above.   An image of a signature is easily reproduced, and also easily forged.   Stated another way, the FAA circular requires some way to authenticate that the signer is the signer.   (Ironically, this is a tougher requirement than for paper signatures.)   </p>
 <p>
@@ -464,7 +460,7 @@
 </p>
 <h3>Instructor doesn’t have CFI certificate # or expiration, or has expired</h3>
 <p>
-    This instructor cannot sign.&nbsp; By design.
+    This instructor cannot sign.&nbsp; By design.  UPDATE Dec 2024: The FAA has removed the expiration for an instructor certificate; instead, there is now a &quot;Recent Experience&quot; expiration.  A CFI must have done one of a number of activities (see <a target="_blank" href="https://www.faa.gov/documentlibrary/media/advisory_circular/ac_61-65J.pdf">AC 61-65J</a>) to maintain their certificate.
 </p>
 <h1>
     4
@@ -482,9 +478,9 @@
 </h2>
 <p>Endorsements largely follow the same model as for signing flights (above), but with a few small differences:</p>
 <ol>
-    <li><b>Student Initiated – Mobile Device, Ad-Hoc:</b>   In this scenario, the student has an account on %APP_NAME% and the instructor may or may not have one, but we bypass the establishment of an account/relationship in order to quickly issue an endorsement on-the-spot.   This is called “Ad-hoc” because no relationship is established.   Because we cannot authenticate the CFI in any other way, but the student has a mobile device, a digitized handwritten signature is captured.   This is the only scenario we allow where a digitized handwritten signature is used, because it is the only one where we can assume that the CFI has physical access to the mobile device that is signed in to the student’s account.   </li>
-    <li><b>Student Initiated – Mobile Device, Authenticated</b>: In this scenario, the CFI has both a %APP_NAME% account AND the student and CFI have established a student/CFI relationship.   This might be a typical scenario for primary flight training.   Because the instructor is known to %APP_NAME%, a digitized handwritten signature is not necessary.   However, the CFI must still authenticate themselves to the device by providing their password.</li>
-    <li><b>CFI Initiated – Remote, Authenticated.</b>The CFI and Student are both on %APP_NAME% and have a relationship.   The CFI may choose, from within their own account, to issue an endorsement directly to a student.</li>
+    <li><b>Student Initiated - Mobile Device, Ad-Hoc:</b>   In this scenario, the student has an account on %APP_NAME% and the instructor may or may not have one, but we bypass the establishment of an account/relationship in order to quickly issue an endorsement on-the-spot.   This is called &quot;Ad-hoc&quot; because no relationship is established.   Because we cannot authenticate the CFI in any other way, but the student has a mobile device, a digitized handwritten signature is captured.   This is the only scenario we allow where a digitized handwritten signature is used, because it is the only one where we can assume that the CFI has physical access to the mobile device that is signed in to the student’s account.   </li>
+    <li><b>Student Initiated - Mobile Device, Authenticated</b>: In this scenario, the CFI has both a %APP_NAME% account AND the student and CFI have established a student/CFI relationship.   This might be a typical scenario for primary flight training.   Because the instructor is known to %APP_NAME%, a digitized handwritten signature is not necessary.   However, the CFI must still authenticate themselves to the device by providing their password.</li>
+    <li><b>CFI Initiated - Remote, Authenticated.</b>The CFI and Student are both on %APP_NAME% and have a relationship.   The CFI may choose, from within their own account, to issue an endorsement directly to a student.</li>
     <li><strong>CFI Initiated - Offline Student.</strong>&nbsp; This is more of a record keeping task than it is an official endorsement.&nbsp; The CFI creates a record of an endorsement given to a student that is not on %APP_NAME%.&nbsp; This is entirely for recordkeeping within the CFI&#39;s account; the student receives nothing from this process.&nbsp; As such, this is not an &quot;official&quot; endorsement.</li>
 </ol>
 <p>Endorsements cannot be deleted or edited, and since they are not validating an underlying object such as a flight, there is no need to even encrypt them or compute a hash, and there is no notion of endorsement becoming invalid.</p>
@@ -504,7 +500,7 @@
     <li>The name of the instructor</li>
     <li>Either the username (in the database) of the instructor, if it is digitally issued, or a digitized scribble-signature.</li>
     <li>The Instructor’s CFI (or other appropriate certificate) number (cannot be empty)</li>
-    <li>The instructor’s CFI Expiration (must be after the date of the endorsement, if present; some certificates such as ground instructor, allow for issuance of endorsements, but do not expire)</li>
+    <li>The instructor’s CFI Expiration or Recent Experience expiration date (must be after the date of the endorsement, if present; some certificates such as ground instructor, allow for issuance of endorsements, but do not expire)</li>
     <li>The date that the endorsement is given</li>
     <li>The date that the endorsement is created</li>
     <li>(Optional) the relevant FAR for the endorsement.</li>
@@ -514,7 +510,7 @@
     Other considerations
 </h2>
 <p>All of the other discussion above concerning signatures applies here as well.</p>
-<p>To be clear, an endorsement on %APP_NAME% technically does not mean “CFI A endorsed student B”, but rather “The person who has authenticated access to account A and the person who has authenticated access to account B have identified A as being a CFI for B, and has endorsed B”</p>
+<p>To be clear, an endorsement on %APP_NAME% technically does not mean &quot;CFI A endorsed student B&quot;, but rather &quot;The person who has authenticated access to account A and the person who has authenticated access to account B have identified A as being a CFI for B, and has endorsed B&quot;</p>
 <h1>5 Revision History</h1>
 <ul>
     <li>2012-12: Initial draft</li>
@@ -522,4 +518,5 @@
     <li>2014-03: Added a bit more clarity around encryption of hashes/tamper detection.</li>
     <li>2016-10: Updated to reference AC120-78A (previously had been AC120-78).</li>
     <li>2018-08: Updated to reference endorsement updates</li>
+    <li>2024-11: Updated to reference recent-experience expiration</li>
 </ul>

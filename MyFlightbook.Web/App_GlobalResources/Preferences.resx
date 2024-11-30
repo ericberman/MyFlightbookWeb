@@ -395,7 +395,7 @@
     <value>Certificate #</value>
   </data>
   <data name="PilotInfoCFIExpiration" xml:space="preserve">
-    <value>Expiration</value>
+    <value>Certificate or Recent Experience Expiration</value>
   </data>
   <data name="PilotInfoCFIExpirationNote" xml:space="preserve">
     <value>(Only necessary if you want to have records of student endorsements)</value>

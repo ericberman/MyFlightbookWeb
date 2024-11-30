@@ -130,7 +130,7 @@
     <value>Error committing endorsement: </value>
   </data>
   <data name="errExpiredCertificate" xml:space="preserve">
-    <value>Instructor's certificate has expired or is missing an expiration date.</value>
+    <value>Instructor's certificate has expired or is past its recent experience end date, or is missing an expiration date.</value>
   </data>
   <data name="errGetFailed" xml:space="preserve">
     <value>Unable to get endorsements for student {1} and/or instructor {2}; exception: {2}</value>
@@ -199,10 +199,10 @@
     <value>Cancel</value>
   </data>
   <data name="errSignExpiredCertificate" xml:space="preserve">
-    <value>You must have an unexpired CFI Certificate to sign a flight.</value>
+    <value>You must have a valid CFI Certificate to sign a flight.</value>
   </data>
   <data name="errSignNoCertificate" xml:space="preserve">
-    <value>You must have an unexpired CFI Certificate to sign a flight.</value>
+    <value>You must have a valid CFI Certificate to sign a flight.</value>
   </data>
   <data name="errSignNotInstructorOfStudent" xml:space="preserve">
     <value>You are not authorized to sign this student's logbook entries.  Please set up a student-instructor relationship first.</value>
@@ -220,7 +220,7 @@
     <value>Flight has been modified since being signed; signature is no longer valid.</value>
   </data>
   <data name="FlightSignatureTemplate" xml:space="preserve">
-    <value>Signed on {0} by {1} (Certificate #{2}, Expiration {3})</value>
+    <value>Signed on {0} by {1} (Certificate #{2}, Exp./RE {3})</value>
     <comment>e.g. "Signed on {date} by {CFI Name} (CFI #1234, Expiration Mar 22, 2013)"</comment>
   </data>
   <data name="errSignNotAuthorized" xml:space="preserve">
@@ -263,7 +263,7 @@
     <value>Endorsement:</value>
   </data>
   <data name="EditEndorsementExpirationPrompt" xml:space="preserve">
-    <value>Expiration:</value>
+    <value>Expiration (cert./recent exp.):</value>
   </data>
   <data name="EditEndorsementFARPrompt" xml:space="preserve">
     <value>Relevant FAR:</value>
@@ -465,7 +465,7 @@
     <value>The requested flight does not exist.  Perhaps it has been deleted?</value>
   </data>
   <data name="errCertificateExpired" xml:space="preserve">
-    <value>To sign, your CFI certificate must not be expired.</value>
+    <value>To sign, your CFI certificate must not be expired, or must have a recent-experience end date in the future.</value>
   </data>
   <data name="errEmailMissing" xml:space="preserve">
     <value>You must provide a valid e-mail address to sign a flight.</value>
@@ -577,5 +577,12 @@
   </data>
   <data name="SignThisFlight" xml:space="preserve">
     <value>Sign this flight</value>
+  </data>
+  <data name="tipInstructorExpiration" xml:space="preserve">
+    <value>On December 1 2024, the FAA dropped formal expiration dates for instructor certificates, replacing them instead with the requirement for recent experience;  See [61.197](https://www.law.cornell.edu/cfr/text/14/61.197) and [AC 61-65J](https://www.faa.gov/documentlibrary/media/advisory_circular/ac_61-65J.pdf) for more details.
+
+The net effect is the expiration date hasn't gone away so much as the process for renewal has changed.
+
+Anywhere that you see an expiration date, use either your certificate's expiration, if it has one, or the expiration date of your recent experience, per AC 61-65J.</value>
   </data>
 </root>

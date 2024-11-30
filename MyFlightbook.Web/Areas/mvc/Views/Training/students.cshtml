@@ -206,25 +206,26 @@
                 <img src="@("~/images/rightarrow.png".ToAbsolute())" style="vertical-align:middle;" /><a href="@VirtualPathUtility.ToAbsolute("~/mvc/training/EndorseStudent")">@Resources.SignOff.EndorsementsViewAll</a>
             </p>
         }
-        <div id="pnlAddStudent" style="margin-top: 36pt; margin-bottom: 36pt;">
-            @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddStudent", name = "frmAddStudent" }))
-            {
-                <p>@Resources.SignOff.RoleAddStudentPrompt</p>
-                <p style="font-weight: bold;">@Resources.SignOff.RoleAddEmailDisclaimer</p>
-                <div id="pnlCertificate" style="@(String.IsNullOrEmpty(pf.Certificate) ? string.Empty : "display: none;")">
-                    @Html.AntiForgeryToken()
-                    <input id="txtCertificate" value="@pf.Certificate" type="text" name="pilotCertificate" required placeholder="@Resources.Preferences.PilotInfoCertificateCFIWatermark" />
-                    @Resources.Preferences.PilotInfoCFIExpiration
-                    <input type="date" value="@(pf.CertificateExpiration.HasValue() ? pf.CertificateExpiration.YMDString() : string.Empty)" name="pilotCertificateExpiration" />
-                </div>
-                <div>&nbsp;</div>
-                <div>
-                    <input type="email" required name="studentEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtStudentEmail" />
-                    <button id="btnAddStudent" type="button" onclick="javascript: addStudent();">@Resources.SignOff.RoleAddStudent</button>
-                </div>
-            }
-            <div id="lblAddStudentSuccess" class="success"></div>
-        </div>
+    <div id="pnlAddStudent" style="margin-top: 36pt; margin-bottom: 36pt;">
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddStudent", name = "frmAddStudent" }))
+        {
+            <p>@Resources.SignOff.RoleAddStudentPrompt</p>
+            <p style="font-weight: bold;">@Resources.SignOff.RoleAddEmailDisclaimer</p>
+            <div id="pnlCertificate" style="@(String.IsNullOrEmpty(pf.Certificate) ? string.Empty : "display: none;")">
+                @Html.AntiForgeryToken()
+                <input id="txtCertificate" value="@pf.Certificate" type="text" name="pilotCertificate" required placeholder="@Resources.Preferences.PilotInfoCertificateCFIWatermark" />
+                @Resources.Preferences.PilotInfoCFIExpiration @Resources.Preferences.PilotInfoCFIExpiration @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "divTipCFIExpiration" }); }
+                <input type="date" value="@(pf.CertificateExpiration.HasValue() ? pf.CertificateExpiration.YMDString() : string.Empty)" name="pilotCertificateExpiration" />
+            </div>
+            <div class="callout calloutSmall calloutBackground shadowed" style="white-space: pre-line; display: none;" id="divTipCFIExpiration">@Html.Raw(Resources.SignOff.tipInstructorExpiration.Linkify(true))</div>
+            <div>&nbsp;</div>
+            <div>
+                <input type="email" required name="studentEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtStudentEmail" />
+                <button id="btnAddStudent" type="button" onclick="javascript: addStudent();">@Resources.SignOff.RoleAddStudent</button>
+            </div>
+        }
+        <div id="lblAddStudentSuccess" class="success"></div>
+    </div>
     </div>
     <h3>@Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt)</h3>
     <div>

@@ -749,14 +749,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, fForceLoad: true);
 
                 DateTime dtExp = DateTime.TryParse(cfiExpiration, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MinValue;
-                bool fExpirationOptional = DateTime.Now.Date.CompareTo(new DateTime(2024, 12, 1, 0, 0, 0)) >= 0;    // Issue #1322: CFI expiration goes away (in the US) after Dec 1 2024
 
                 bool fATP = Request["ckATP"] != null;
                 bool fIsGroundOrATP = fATP || le.IsGroundOnly;
                 bool fSIC = Request["ckSIC"] != null;
 
                 if (String.IsNullOrWhiteSpace(cfiUserName)) // empty user name is aka "ad-hoc"
-                    le.SignFlightAdHoc(cfiName, cfiEmail, cfiCert, dtExp, cfiComments, hdnSigData.DataURLBytes(), fSIC || fIsGroundOrATP || fExpirationOptional);
+                    le.SignFlightAdHoc(cfiName, cfiEmail, cfiCert, dtExp, cfiComments, hdnSigData.DataURLBytes(), fSIC || fIsGroundOrATP);
                 else
                 {
                     string szPendingSigUsername = le.PendingSignatureUserName();
@@ -774,7 +773,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         throw new UnauthorizedAccessException(Resources.SignOff.errIncorrectPasswordForSigning);
 
                     string szError = String.Empty;
-                    bool needProfileRefresh = !pfSigner.CanSignFlights(out szError, le.IsGroundOnly || fExpirationOptional);
+                    bool needProfileRefresh = !pfSigner.CanSignFlights(out szError, le.IsGroundOnly);
                     if (needProfileRefresh)
                     {
                         pfSigner.Certificate = cfiCert;
@@ -782,7 +781,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     }
 
                     // Do ANOTHER check to see if you can sign - setting these above may have fixed the problem.
-                    if (!pfSigner.CanSignFlights(out szError, fIsGroundOrATP || fExpirationOptional))
+                    if (!pfSigner.CanSignFlights(out szError, fIsGroundOrATP))
                         throw new UnauthorizedAccessException(szError);
 
                     // If we are here, then we were successful - update the profile if it needed it
@@ -791,7 +790,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     
                     // Do the actual signing
                     le.SetPendingSignature(pfSigner.UserName);  // indicate that we are authorized to sign this flight - this will NOT be persisted.
-                    le.SignFlightAuthenticated(pfSigner.UserName, cfiComments, fIsGroundOrATP || fExpirationOptional);
+                    le.SignFlightAuthenticated(pfSigner.UserName, cfiComments, fIsGroundOrATP);
 
                     // Preserve the CFI's preferences for copying flights
                     string copyToInstructor = Request["fCopyFlight"] == null ? string.Empty : (Request["copyOpt"] ?? string.Empty);  // will be empty, "live", or "pending"

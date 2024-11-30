@@ -889,7 +889,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expiration.
+        ///   Looks up a localized string similar to Certificate or Recent Experience Expiration.
         /// </summary>
         internal static string PilotInfoCFIExpiration {
             get {

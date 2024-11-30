@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI Certificate.
+        ///   Looks up a localized string similar to CFI Cert. Exp./Recent Experience End.
         /// </summary>
         internal static string CertificateExpiration {
             get {

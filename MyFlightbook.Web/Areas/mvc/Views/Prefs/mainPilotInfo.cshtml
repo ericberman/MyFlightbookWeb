@@ -295,10 +295,10 @@
                 <h3>@Resources.Preferences.PilotInfoInstructorCertificatePrompt</h3>
                 <div>
                     <input id="txtCertificate" name="pilotInfoCertificateCFI" placeholder="@Resources.Preferences.PilotInfoCertificateCFIWatermark" value="@m_pf.Certificate" /> &nbsp;
-                    @Resources.Preferences.PilotInfoCFIExpiration
+                    @Resources.Preferences.PilotInfoCFIExpiration @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "divTipCFIExpiration" }); }
                     @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoCFIExp", name = "pilotInfoCFIExp", value = m_pf.CertificateExpiration }); }
                 </div>
-                <div class="fineprint">@Resources.Preferences.PilotInfoCFIExpirationNote</div>
+                <div class="callout calloutSmall calloutBackground shadowed" style="white-space: pre-line; display: none;" id="divTipCFIExpiration">@Html.Raw(Resources.SignOff.tipInstructorExpiration.Linkify(true))</div>
                 <h3>@Resources.Preferences.PilotInfoEnglishProficiencyExpiration</h3>
                 <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoEnglishProficiency", name = "pilotInfoEnglishProficiency", value = m_pf.EnglishProficiencyExpiration }); }</div>
 

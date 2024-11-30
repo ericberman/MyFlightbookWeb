@@ -268,7 +268,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expiration:.
+        ///   Looks up a localized string similar to Expiration (cert./recent exp.):.
         /// </summary>
         internal static string EditEndorsementExpirationPrompt {
             get {
@@ -547,7 +547,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To sign, your CFI certificate must not be expired..
+        ///   Looks up a localized string similar to To sign, your CFI certificate must not be expired, or must have a recent-experience end date in the future..
         /// </summary>
         internal static string errCertificateExpired {
             get {
@@ -574,7 +574,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instructor&apos;s certificate has expired or is missing an expiration date..
+        ///   Looks up a localized string similar to Instructor&apos;s certificate has expired or is past its recent experience end date, or is missing an expiration date..
         /// </summary>
         internal static string errExpiredCertificate {
             get {
@@ -781,7 +781,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must have an unexpired CFI Certificate to sign a flight..
+        ///   Looks up a localized string similar to You must have a valid CFI Certificate to sign a flight..
         /// </summary>
         internal static string errSignExpiredCertificate {
             get {
@@ -790,7 +790,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must have an unexpired CFI Certificate to sign a flight..
+        ///   Looks up a localized string similar to You must have a valid CFI Certificate to sign a flight..
         /// </summary>
         internal static string errSignNoCertificate {
             get {
@@ -898,7 +898,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signed on {0} by {1} (Certificate #{2}, Expiration {3}).
+        ///   Looks up a localized string similar to Signed on {0} by {1} (Certificate #{2}, Exp./RE {3}).
         /// </summary>
         internal static string FlightSignatureTemplate {
             get {
@@ -1377,6 +1377,19 @@ namespace Resources {
         internal static string StudentNameTemplate {
             get {
                 return ResourceManager.GetString("StudentNameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  On December 1 2024, the FAA dropped formal expiration dates for instructor certificates, replacing them instead with the requirement for recent experience;  See [61.197](https://www.law.cornell.edu/cfr/text/14/61.197) and [AC 61-65J](https://www.faa.gov/documentlibrary/media/advisory_circular/ac_61-65J.pdf) for more details.
+        ///
+        ///The net effect is the expiration date hasn&apos;t gone away so much as the process for renewal has changed.
+        ///
+        ///Anywhere that you see an expiration date, use either your certificate&apos;s expi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string tipInstructorExpiration {
+            get {
+                return ResourceManager.GetString("tipInstructorExpiration", resourceCulture);
             }
         }
         
