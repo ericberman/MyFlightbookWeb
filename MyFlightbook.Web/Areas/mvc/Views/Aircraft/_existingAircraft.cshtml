@@ -1,0 +1,333 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@{
+    Aircraft ac = ViewBag.aircraft;
+    MakeModel mm = ViewBag.model;
+    bool fAdminMode = ViewBag.fAdminMode;
+    string registrationLink = Aircraft.LinkForTailnumberRegistry(ac.TailNumber);
+    int[] oilIntervals = new int[] { 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 60, 75, 100 };
+
+    AircraftStats stats = ViewBag.stats;
+    List<LinkedString> statsList = new List<LinkedString>() {
+        new LinkedString(ac.IsRegistered ?
+            Resources.Aircraft.AircraftInstanceRealRegistered :
+            (ac.IsAnonymous ? Resources.Aircraft.AircraftInstanceRealAnonymous : AircraftInstance.DisplayNameForType(ac.InstanceType))) };
+
+    if (mm != null)
+    {
+        if (!String.IsNullOrEmpty(mm.FamilyName))
+        {
+            statsList.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
+        }
+        foreach (string sz in mm.AttributeList())
+        {
+            statsList.Add(new LinkedString(sz));
+        }
+    }
+    bool fCanEdit = ac.IsRegistered && (fAdminMode || !ac.IsLocked);
+    bool fEditMode = fCanEdit && (!String.IsNullOrEmpty(ac.ErrorString) || stats.Users == 1);
+
+    string modelDisplay = mm.ManufacturerDisplay + Resources.LocalizedText.LocalizedSpace + mm.ModelDisplayName;
+    bool fShowNotes = !String.IsNullOrWhiteSpace(ac.PublicNotes) || !String.IsNullOrEmpty(ac.PrivateNotes);
+
+    MaintenanceLog[] rgml = MaintenanceLog.ChangesByAircraftID(ac.AircraftID);
+    bool fShowMaintenance = rgml.Any(ml => ml.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0);
+}
+<script type="text/javascript">
+    function editExistingModel() {
+        if (@Json.Encode(stats.Users < 10 && stats.Flights < 10) || confirm('@Html.Raw(String.Format(CultureInfo.CurrentCulture, "{0} {1}", String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, stats.Users, stats.Flights), Resources.Aircraft.EditPopularAircraftPrompt))')) {
+            $("#divEditModel").show();
+            $("#divStaticModel").hide();
+            onModelChangeExistingAircraft();
+        }
+    }
+
+    function onModelChangeExistingAircraft() {
+        var f = $("#frmEditAircraft");
+        $("#imgUpdateModelProg").show();
+        $.ajax({
+            url: "@Url.Action("UpdateForModelExistingAircraft", "Aircraft")",
+            type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { $("#imgUpdateModelProg").hide(); },
+            success: function (response) {
+                $("#divModelDropdowns").html(response);
+            }
+        });
+    }
+
+    $(() => {
+        $("#divNotesTabs").tabs();
+        defaultButtonForDiv("pnlEditAircraft", "btnUpdateAircraft");
+
+        if (@Json.Encode(ac.IsRegistered)) {
+            updateSchedules(@ac.AircraftID, "#divClubSchedulesNew");
+            updateHighWatermarks(@ac.AircraftID, "#divHighWater");
+        }
+
+        validateForm($("#frmEditAircraft"), { aircraftSelectedModel: { required: true } }, { aircraftSelectedModel: { required: "@Resources.Aircraft.errModelRequired" } });
+    });
+</script>
+@if (ac.IsLocked)
+{
+    <div class="callout">
+        <p>@Resources.LocalizedText.LabelWhyCantEditSims</p>
+        <p>@Resources.LocalizedText.AnswerWhyCantEditLockedAircraft</p>
+    </div>
+}
+@using (Html.BeginForm($"Edit/{ac.AircraftID}", "Aircraft", FormMethod.Post, new { id = "frmEditAircraft", name = "frmEditAircraft" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="aircraftID" value="@ac.AircraftID" />
+    <input type="hidden" name="aircraftRev" value="@ac.Revision" />
+    <input type="hidden" name="aircraftTail" value="@ac.TailNumber" />
+    <input type="hidden" name="aircraftType" value="@(ac.IsRegistered ? "Registered" : (ac.IsAnonymous ? "Anonymous" : "Sim"))" />
+    <input type="hidden" name="a" value="@(fAdminMode ? 1 : 0)" />
+    <input type="hidden" name="aircraftInstanceType" value="@ac.InstanceType" />
+    <input type="hidden" name="onModelChange" value="onModelChangeExistingAircraft" />
+    <input type="hidden" name="returnURL" value="@(ViewBag.ret)" />
+    <div id="pnlEditAircraft">
+        <div id="divEditAircraftFormBody">
+            <div>
+                <span style="font-size: x-large; font-weight: bold;">@(ac.IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ac.TailNumber, ac.DisplayTailnumber) : ac.TailNumber)</span>
+                @if (fAdminMode && ac.IsRegistered)
+                {
+                    <label><input type="checkbox" @ac.IsLocked.ToChecked() onclick="javascript: toggleLock(this, @ac.AircraftID);" />@Resources.Aircraft.editAircraftAdminLocked</label>
+                }
+                <img id="imgUpdateModelProg" style="display: none; height: 16px; width: 16px;" src="@("~/images/progress.gif".ToAbsolute())" />
+                <button type="submit" id="btnUpdateAircraft" style="display: none;"></button>
+
+                <div style="@(fEditMode ? string.Empty : "display: none;")" id="divEditModel">
+                    <div style="margin-bottom: 8pt;" id="divModelDropdowns">
+                        @if (fEditMode)
+                        {
+                            Html.RenderAction("ModelDropdowns", "Aircraft", new { idModel = ac.ModelID, onModelChange = "onModelChangeExistingAircraft", idAircraft = ac.AircraftID });
+                        }
+                        else
+                        {
+                            <input type="hidden" name="aircraftSelectedModel" value="@ac.ModelID" />
+                            <img src="@("~/images/progress.gif".ToAbsolute())" style="width: 16pt; height: 16pt;" />
+                        }
+                    </div>
+                </div>
+                <div style="@(fEditMode ? "display: none" : string.Empty)" id="divStaticModel">
+                    <div>
+                        @if (fAdminMode)
+                        {
+                            <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID).ToAbsolute()" style="font-size: larger; font-weight: bold;">@modelDisplay</a>
+                        }
+                        else
+                        {
+                            <span style="font-size: larger; font-weight: bold">@modelDisplay</span>
+                        }
+                        @if (fCanEdit)
+                        {
+                            <img src="@("~/images/pencilsm.png".ToAbsolute())" title="@Resources.Aircraft.editAircraftModelPrompt" onclick="javascript: editExistingModel();" />
+                        }
+                    </div>
+                    <div><a href="@("~/mvc/faq?q=68#68".ToAbsolute())">@Resources.Aircraft.EditPopularAircraftFAQLink</a></div>
+                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = statsList }); }
+                </div>
+                <div>
+                    <h3>@Resources.Aircraft.editAircraftStats</h3>
+                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = stats.StatsForUserInAircraft(util.GetIntParam(Request, "listUsers", 0) != 0) }); }
+                </div>
+            </div>
+            <h3>@Resources.Aircraft.editAircraftTailNumberPrompt</h3>
+            @if (ac.IsRegistered)
+            {
+                <table>
+                    <tr>
+                        <td>@Resources.Aircraft.editAircraftCountryPrompt</td>
+                        <td>@CountryCodePrefix.BestMatchCountryCode(ac.TailNumber).CountryName</td>
+                    </tr>
+                    <tr>
+                        <td>@Resources.Aircraft.editAircraftTailNumberPrompt</td>
+                        <td>
+                            <span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span>
+                            @if (!String.IsNullOrEmpty(registrationLink))
+                            {
+                                <a href="@registrationLink" target="_blank">@Resources.Aircraft.editAircraftRegistrationPrompt</a>
+                            }
+                        </td>
+                    </tr>
+                </table>
+                if ((mm?.AvionicsTechnology ?? MakeModel.AvionicsTechnologyType.None) != MakeModel.AvionicsTechnologyType.TAA)
+                {
+                    <h3>@Resources.Aircraft.editAircraftGlassUpgradeType</h3>
+                    Html.RenderPartial("_avionicsUpgrade");
+                }
+            }
+            else if (ac.IsAnonymous)
+            {
+                <ul>
+                    <li><span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span></li>
+                    <li class="fineprint">@Resources.Aircraft.AnonymousTailNote</li>
+                </ul>
+            }
+            else
+            {
+                <ul>
+                    <li><span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span></li>
+                    <li class="fineprint">@Resources.Aircraft.editAircraftAutoAssignedNote</li>
+                </ul>
+            }
+            <h3>@Resources.Aircraft.editAircraftImagesPrompt</h3>
+            <div class="fineprint"><span style="font-weight: bold">@Resources.LocalizedText.Note</span> @Resources.Aircraft.editAircraftSharedImagesNote</div>
+            <div>
+                <div id="divUploadAircraftImages" style="display: inline-block;"></div>
+                <div id="divAircraftImages" style="display: inline;">
+                    @{
+                        ac.PopulateImages();
+                        Html.RenderAction("ImageListDisplay", "Image", new
+                        {
+                            il = new ImageList(ac.AircraftImages.ToArray()),
+                            zoomLinkType = GeoLinkType.None,
+                            fCanEdit = true,
+                            fCanDelete = true,
+                            fCanMakeDefault = true,
+                            fIsDefault = true,
+                            defaultImage = ac.DefaultImage,
+                            confirmText = stats.Users == 1 ? string.Empty : Resources.Aircraft.errDeleteImageConfirm,
+                            onMakeDefault = "makeImageDefault",
+                            onDelete = "deleteAircraftImage",
+                            onAnnotate = "updateAircraftImage",
+                        });
+                    }
+                </div>
+            </div>
+            <div class="header">@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fShowNotes, targetID = "divAcNotes", labelText = Resources.Aircraft.locNotesPrompt });}</div>
+            <div style="@(fShowNotes ? string.Empty : "display: none;")" id="divAcNotes">
+                <div id="divNotesTabs" style="border: 1px solid lightgray;">
+                    <ul>
+                        <li><a href="#divPubNotes">@Resources.Aircraft.locPublicNotesTab</a></li>
+                        <li><a href="#divPrivNotes">@Resources.Aircraft.locPrivateNotesTab</a></li>
+                    </ul>
+                    <div id="divPubNotes">
+                        <div>@Resources.Aircraft.locPublicNotesPrompt</div>
+                        <textarea style="width: 90%;" dir="auto" maxlength="4096" rows="4" name="aircraftPublicNotes">@(ac.PublicNotes ?? string.Empty)</textarea>
+                    </div>
+                    <div id="divPrivNotes">
+                        <div>@Resources.Aircraft.locPrivateNotesPrompt</div>
+                        <textarea style="width: 90%;" dir="auto" maxlength="4096" rows="4" name="aircraftPrivateNotes">@(ac.PrivateNotes ?? string.Empty)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="divClubSchedulesNew"></div>
+            @if (ac.IsRegistered)
+            {
+                <script type="text/javascript">
+                    function onMaintExp() {
+                        $("#divDeadlines").show();
+                    }
+                    function onMaintCol() {
+                        $("#divDeadlines").hide();
+                    }
+                    function reloadMaintLog() {
+                        getMaintenancePage(@ac.AircraftID, 0, 10, $("#divMaintHistory"));
+                    }
+                </script>
+                <div style="margin-top: 5pt;" class="header">
+                    @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new
+                        {
+                            fExpanded = fShowMaintenance,
+                            targetID = "divMaint",
+                            labelText = Resources.Aircraft.editAircraftMaintenanceHeader,
+                            onExpand = "onMaintExp",
+                            onCollapse = "onMaintCol"
+                        });}
+                </div>
+                <div id="divMaint" style="@(fShowMaintenance ? string.Empty : "display: none;")">
+                    <div id="divHighWater"></div>
+                    <table>
+                        <tr class="header">
+                            <td></td>
+                            <td>@Resources.Aircraft.MaintenanceLastDone</td>
+                            <td>@Resources.Aircraft.MaintenanceNextDue</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceAnnualPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastAnnual", name = "aircraftAnnual", value = ac.LastAnnual });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextAnnual });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceXPonderPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastXPonder", name = "aircraftXPonder", value = ac.LastTransponder });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextTransponder });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenancePitotPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastStatic", name = "aircraftStatic", value = ac.LastStatic });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextStatic });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceAltimeterPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastAltimeter", name = "aircraftAltimeter", value = ac.LastAltimeter });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextAltimeter });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceELTPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastELT", name = "aircraftELT", value = ac.LastELT });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextELT });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceVORPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastVOR", name = "aircraftVOR", value = ac.LastVOR });}</td>
+                            <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextVOR });}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.Maintenance100HrPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txt100Hour", name = "aircraftLast100", value = ac.Last100 });}</td>
+                            <td>@ac.Maintenance.Next100.FormatDecimal(false)</td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceOilPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txtLastOil", name = "aircraftLastOil", value = ac.LastOilChange });}</td>
+                            <td>
+                                <a href="#" onclick="javascript: addOilInterval(@ac.AircraftID, $('#cmbOilInterval').val(), @ac.LastOilChange, $('#divDeadlineListContainer'), $('#divMaintHistory'), 'reloadMaintLog'); return false;">@Resources.Aircraft.AddDeadlineMaintenancePrompt</a>
+                                <select id="cmbOilInterval" name="deadlineOilInterval">
+                                    @foreach (int oilInterval in oilIntervals)
+                                    {
+                                        <option value="@oilInterval">@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AddDeadlineIntervalTemplate, oilInterval)</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceEnginePrompt</td>
+                            <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txtLastEngine", name = "aircraftLastEngine", value = ac.LastNewEngine });}</td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceRegistrationPrompt</td>
+                            <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtRegistrationDue", name = "aircraftRegistration", value = ac.RegistrationDue });}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="label">@Resources.Aircraft.MaintenanceNotesPrompt @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipMaintNote", tipTextHTML = Resources.Aircraft.MaintenanceNotesWatermark }); }</td>
+                            <td colspan="2"><input type="text" style="width:280px;" id="txtNotes" name="aircraftMaintenanceNotes" /></td>
+                        </tr>
+                    </table>
+                    <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divMaintHistory", labelText = Resources.Aircraft.MaintenanceChangeHistoryPrompt });}</h3>
+                    <div id="divMaintHistory" style="display: none;">
+                        @{ Html.RenderAction("MaintenanceLogTable", "Aircraft", new { rgml = rgml, idAircraft = ac.AircraftID, start = 0, pageSize = 10 }); }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+@if (ac.IsRegistered)
+{
+    // This needs to be outside of the divs above because you can't put a form in a form, and aircraftdeadlinesection is a separate form.
+    <div id="divDeadlines" style="@(fShowMaintenance ? string.Empty : "display: none;")">
+        <h3>@Resources.Currency.deadlinesHeaderDeadlines @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipDeadlines", tiptextHTML = Resources.Currency.DeadlineDescription }); }</h3>
+        <div id="divDeadlineListContainer">
+            @{ Html.RenderAction("AircraftDeadlineSection", "Prefs", new { idAircraft = ac.AircraftID, postEdit = "reloadMaintLog" }); }
+        </div>
+    </div>
+}
+<div>&nbsp;</div>
+<div><button onclick="javascript:$('#btnUpdateAircraft')[0].click()">@Resources.LocalizedText.EditAircraftUpdateAircraft</button></div>
+<div class="error">@(ViewBag.error ?? string.Empty)</div>

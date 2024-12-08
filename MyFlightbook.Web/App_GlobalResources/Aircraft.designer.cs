@@ -497,6 +497,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please do NOT make up a tail number.  If you don&apos;t have a specific tail number, or are using this to encapsulate multiple flights in a specific model of aircraft, please use an &quot;anonymous&quot; aircraft instead..
+        /// </summary>
+        internal static string editAircraftAnonymousAvoid {
+            get {
+                return ResourceManager.GetString("editAircraftAnonymousAvoid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This aircraft is anonymous (no tailnumber).
         /// </summary>
         internal static string editAircraftAnonymousCheck {
@@ -551,7 +560,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Date of upgrade, if avionics are not factory-installed:.
+        ///   Looks up a localized string similar to Date of upgrade, if avionics are not factory-installed.
         /// </summary>
         internal static string editAircraftGlassUpgradeDate {
             get {
@@ -569,7 +578,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Avionics upgrade or factory option:.
+        ///   Looks up a localized string similar to Avionics upgrade or factory option.
         /// </summary>
         internal static string editAircraftGlassUpgradeType {
             get {
@@ -758,6 +767,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stats for this aircraft.
+        /// </summary>
+        internal static string editAircraftStats {
+            get {
+                return ResourceManager.GetString("editAircraftStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My flights are in this aircraft.
         /// </summary>
         internal static string editAircraftSwitchOtherVersion {
@@ -915,7 +933,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please provide a complete tail number, including country prefix (or choose &quot;Other&quot; from the list of countries)..
+        ///   Looks up a localized string similar to Please provide a complete tail number, including country prefix.  Choose &quot;Other&quot; from the list of countries for no prefix..
         /// </summary>
         internal static string errInvalidTail {
             get {
@@ -983,6 +1001,15 @@ namespace Resources {
         internal static string errMissingTail {
             get {
                 return ResourceManager.GetString("errMissingTail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An aircraft requires a model to be specified.  Please use the drop-downs or search to pick one.  If necessary, you can create one..
+        /// </summary>
+        internal static string errModelRequired {
+            get {
+                return ResourceManager.GetString("errModelRequired", resourceCulture);
             }
         }
         
@@ -1842,7 +1869,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change History:.
+        ///   Looks up a localized string similar to Change History.
         /// </summary>
         internal static string MaintenanceChangeHistoryPrompt {
             get {
@@ -1919,6 +1946,15 @@ namespace Resources {
         internal static string MaintenanceNextDue {
             get {
                 return ResourceManager.GetString("MaintenanceNextDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (No changes found).
+        /// </summary>
+        internal static string maintenanceNoChanges {
+            get {
+                return ResourceManager.GetString("maintenanceNoChanges", resourceCulture);
             }
         }
         
@@ -2216,6 +2252,15 @@ namespace Resources {
         internal static string RegistrationRenewal {
             get {
                 return ResourceManager.GetString("RegistrationRenewal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates that the deadline is shared amongst all pilots who fly this aircraft, not just you..
+        /// </summary>
+        internal static string SharedDeadlineIndicator {
+            get {
+                return ResourceManager.GetString("SharedDeadlineIndicator", resourceCulture);
             }
         }
         

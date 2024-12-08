@@ -3,6 +3,7 @@
 @{
     int idAircraft = ViewBag.aircraftID ?? Aircraft.idAircraftUnknown;
     IEnumerable<DeadlineCurrency> rgdc = DeadlineCurrency.DeadlinesForUser(User.Identity.Name, idAircraft, true);
+    bool fHasShared = false;
 }
 <div>
     @if (rgdc.Any())
@@ -10,11 +11,14 @@
         <table cellpadding="3">
             @foreach (DeadlineCurrency dc in rgdc)
             {
+                fHasShared = fHasShared || dc.IsSharedAircraftDeadline;
                 <tr>
-                    <td style="vertical-align:top;"><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" 
-                            onclick="javascript: dlEditor.deleteDeadline($(this).closest('tr'), @dc.ID);" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
+                    <td style="vertical-align:top;">
+                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip"
+                             onclick="javascript: dlEditor.deleteDeadline($(this).closest('tr'), @dc.ID);" title="@Resources.Currency.CustomCurrencyDeleteTooltip" />
+                    </td>
                     <td>
-                        <div><span style="font-weight: bold">@dc.DisplayName</span> @dc.ExpirationDisplay</div>
+                        <div><span style="font-weight: bold">@dc.DisplayName@(dc.IsSharedAircraftDeadline ? "*" : string.Empty)</span> @dc.ExpirationDisplay</div>
                         <div class="fineprint staticDeadlineView">@dc.RegenDescription</div>
                         <div style="display: none;" class="editDeadlineView">
                             @using (Html.BeginForm(string.Empty, "Pref", FormMethod.Post))
@@ -53,3 +57,7 @@
         <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" alt="@Resources.Preferences.PrefAddDeadline" />&nbsp;&nbsp;@Resources.Preferences.PrefAddDeadline
     </a>
 </div>
+@if (fHasShared)
+{
+    <div class="fineprint" style="margin-top: 10pt;">*@Resources.Aircraft.SharedDeadlineIndicator</div>
+}

@@ -1,0 +1,139 @@
+﻿@{ 
+    Aircraft ac = ViewBag.aircraft;
+    MakeModel mm = (MakeModel)ViewBag.model;
+    CountryCodePrefix bestGuessCountry = CountryCodePrefix.BestMatchCountryCode(ac.TailNumber);
+    string returnURL = ViewBag.ret;
+}
+<script type="text/javascript">
+    $(() => {
+        setUpNewAircraft($("#divNewAcBody"), {
+            majorTypeName: "aircraftType",
+            simTypeName: "aircraftSimType",
+            tailNumberInput: $("#txtTail"),
+            autoCompleteHREF: "@Url.Action("SuggestAircraft", "Aircraft")",
+            autoCompleteProg: $("#imgAutofillProgress"),
+            onModelChange: function () {
+                onModelChangeNewAircraft();
+            },
+            onAircraftSelected(event, ui) {
+                $("#imgAutofillProgress").show();
+                addAutocompletedAircraft(ui.item.value);
+                return false;
+            }
+        });
+    });
+</script>
+<div id="divNewAcBody">
+    <div>
+        <span class="bigNumberSection">1</span>
+        <h3 class="numberedStep">@Resources.Aircraft.editAircraftMakeModelPrompt</h3>
+        <img id="imgUpdateModelProg" style="display: none; height: 16px; width: 16px;" src="@("~/images/progress.gif".ToAbsolute())" />
+    </div>
+    <div style="margin-bottom: 8pt;" id="divModelDropdowns">
+        @{ Html.RenderAction("ModelDropdowns", "Aircraft", new { idModel = ac.ModelID, onModelChange = "onModelChangeNewAircraft", idAircraft = ac.AircraftID }); }
+    </div>
+    <div>
+        <span class="bigNumberSection">2</span>
+        <h3 class="numberedStep">@Resources.Aircraft.editAircraftInstanceTypePrompt</h3>
+    </div>
+    <table>
+        <tr style="vertical-align:top">
+            <td><input type="radio" name="aircraftType" onchange="javascript: onModelChangeNewAircraft();" value="Registered" @((mm?.AllowedTypes ?? AllowedAircraftTypes.Any) != AllowedAircraftTypes.Any ? "disabled" : string.Empty) @((ac.InstanceType == AircraftInstanceTypes.RealAircraft && !ac.IsAnonymous).ToChecked()) id="ckTypeRealRegistered" /></td>
+            <td><label for="ckTypeRealRegistered">@Resources.Aircraft.AircraftInstanceRealRegistered</label></td>
+        </tr>
+        <tr style="vertical-align:top">
+            <td><input type="radio" name="aircraftType" onchange="javascript: onModelChangeNewAircraft();" value="Anonymous" @((mm?.AllowedTypes ?? AllowedAircraftTypes.Any) == AllowedAircraftTypes.SimulatorOnly ? "disabled" : string.Empty) id="ckTypeAnonymous" @((ac.InstanceType == AircraftInstanceTypes.RealAircraft && ac.IsAnonymous).ToChecked()) /></td>
+            <td>
+                <label for="ckTypeAnonymous">@Resources.Aircraft.AircraftInstanceRealAnonymous</label>
+                <div class="fineprint">@Resources.Aircraft.editAircraftAnonymousNote</div>
+            </td>
+        </tr>
+        <tr style="vertical-align:top">
+            <td><input type="radio" name="aircraftType" onchange="javascript: onModelChangeNewAircraft();" value="Sim" @((ac.InstanceType != AircraftInstanceTypes.RealAircraft).ToChecked()) id="ckTypeSim" /></td>
+            <td>
+                <label for="ckTypeSim">@Resources.Aircraft.AircraftInstanceTrainingDevice</label>
+                <div style="@(ac.InstanceType == AircraftInstanceTypes.RealAircraft ? "display: none;" : string.Empty)" id="divSimSubType">
+                    @foreach (AircraftInstance ai in AircraftInstance.GetInstanceTypes())
+                    {
+                        if (!ai.IsRealAircraft)
+                        {
+                            <div><label><input type="radio" onchange="javascript: onModelChangeNewAircraft();" value="@ai.InstanceTypeInt" name="aircraftSimType" @((ai.InstanceType == ac.InstanceType || (ac.InstanceType == AircraftInstanceTypes.RealAircraft && ai.InstanceType == AircraftInstanceTypes.UncertifiedSimulator)).ToChecked()) />@ai.DisplayName</label></div>
+                        }
+                    }
+                    @{ Html.RenderPartial("_noteATDFTD"); }
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div>
+        <span class="bigNumberSection">3</span>
+        <h3 class="numberedStep">@Resources.Aircraft.editAircraftTailNumberPrompt</h3>
+    </div>
+    <div>
+        <div id="vwRealAircraft" style="@(ac.InstanceType == AircraftInstanceTypes.RealAircraft && !ac.IsAnonymous ? string.Empty : "display: none;")">
+            <p>@Resources.Aircraft.editAircraftAnonymousAvoid</p>
+            <table>
+                <tr style="vertical-align: baseline">
+                    <td>@Resources.Aircraft.editAircraftCountryPrompt</td>
+                    <td>
+                        <select name="aircraftCountryCode" onchange="javascript: updateCountry(this, $('#txtTail'));">
+                            @foreach (CountryCodePrefix ccp in CountryCodePrefix.CountryCodes())
+                            {
+                                <option value="@ccp.HyphenatedPrefix" @((ccp.ID == bestGuessCountry.ID).ToSelected())>@ccp.CountryName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Resources.Aircraft.editAircraftTailNumberPrompt</td>
+                    <td>
+                        <div>
+                            <input type="text" pattern="[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]" required name="aircraftTail" id="txtTail" value="@(ac.IsAnonymous || ac.InstanceType != AircraftInstanceTypes.RealAircraft ? string.Empty : ac.TailNumber)" />
+                            <img id="imgAutofillProgress" style="display: none; height: 16px; width: 16px;" src="@("~/images/progress.gif".ToAbsolute())" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div class="fineprint" style="max-width:400px"><span style="font-weight: bold">@Resources.LocalizedText.Note</span>&nbsp;@Resources.LocalizedText.EditAircraftReuseAdvice</div></td>
+                </tr>
+            </table>
+        </div>
+        <div id="vwAnonTail" style="@(ac.InstanceType == AircraftInstanceTypes.RealAircraft && ac.IsAnonymous ? string.Empty : "display: none;")">
+            <ul>
+                @if (mm == null)
+                {
+                    <li><span class="fineprint">@Resources.Aircraft.editAircraftTailNumberPending</span></li>
+                }
+                else
+                {
+                    <li><span id="lblAnonTailDisplay" style="font-size: larger; font-weight: bold;">@ac.TailNumber</span></li>
+                    <li><span class="fineprint">@Resources.Aircraft.AnonymousTailNote</span></li>
+                }
+            </ul>
+        </div>
+        <div id="vwSimTail" style="@(ac.InstanceType != AircraftInstanceTypes.RealAircraft ? string.Empty : "display: none;")">
+            <ul>
+                @if (mm == null)
+                {
+                    <li><span class="fineprint">@Resources.Aircraft.editAircraftTailNumberPending</span></li>
+                }
+                else
+                {
+                    <li><span id="lblSimTail" style="font-size: larger; font-weight: bold;">@ac.TailNumber</span></li>
+                    <li><span class="fineprint">@Resources.Aircraft.editAircraftAutoAssignedNote</span></li>
+                }
+            </ul>
+        </div>
+    </div>
+    @if (ac.IsRegistered && (mm?.AvionicsTechnology ?? MakeModel.AvionicsTechnologyType.None) != MakeModel.AvionicsTechnologyType.TAA)
+    {
+        <div id="pnlGlassCockpit">
+            <div>
+                <span class="bigNumberSection">4</span>
+                <h3 class="numberedStep">@Resources.Aircraft.editAircraftGlassUpgradeType</h3>
+            </div>
+        </div>
+        Html.RenderPartial("_avionicsUpgrade");
+    }
+</div>

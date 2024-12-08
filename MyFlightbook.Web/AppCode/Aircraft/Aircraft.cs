@@ -75,6 +75,19 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Returns the display name given an instance type.
+        /// </summary>
+        /// <param name="ait"></param>
+        /// <returns></returns>
+        public static string DisplayNameForType(AircraftInstanceTypes ait)
+        {
+            foreach (AircraftInstance ai in GetInstanceTypes())
+                if (ai.InstanceType == ait)
+                    return ai.DisplayName;
+            return string.Empty;
+        }
+
+        /// <summary>
         /// InstanceType as an integer.
         /// </summary>
         public int InstanceTypeInt
@@ -395,6 +408,89 @@ WHERE
 
             foreach (Aircraft ac in lstAc)
                 ac.Stats = new AircraftStats(szUser, ac.AircraftID);
+        }
+
+        /// <summary>
+        /// Populate statistics for a specific user in a specific aircraft.
+        /// </summary>
+        /// <param name="listUsers">true to list all of the users (admin only!)</param>
+        /// <returns>An enumerable of linked strings.</returns>
+        public IEnumerable<LinkedString> StatsForUserInAircraft(bool listUsers)
+        {
+            List<LinkedString> lst = new List<LinkedString>
+            {
+                // Add overall stats
+                new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Users, Flights)),
+
+                // And add personal stats
+                UserStatsDisplay
+            };
+
+            if (listUsers)
+                lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", UserNames))));
+
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets details for who has which flights in a given aircraft.
+        /// </summary>
+        /// <param name="aircraftID"></param>
+        /// <returns></returns>
+        public static IEnumerable<Dictionary<string, object>> AdminAircraftUsersDetails(int aircraftID)
+        {
+            List<Dictionary<string, object>> lst = new List<Dictionary<string, object>>();
+            /* Union of an inner join with a not-exists is orders of magnitude faster than a single left join, for reasons I don't quite understand */
+            DBHelper dbh = new DBHelper(@"SELECT 
+    u.email AS 'Email Address',
+    u.username AS User,
+    u.FirstName,
+    u.LastName,
+    COUNT(f.idflight) AS 'Number of Flights'
+FROM
+    Useraircraft ua
+        INNER JOIN
+    users u ON ua.username = u.username
+        LEFT JOIN
+    flights f ON (f.username = ua.username)
+WHERE
+    ua.idaircraft = ?idaircraft
+        AND f.idaircraft = ?idaircraft
+GROUP BY ua.username 
+UNION SELECT 
+    u.email AS 'Email Address',
+    u.username AS User,
+    u.FirstName,
+    u.LastName,
+    0 AS 'Number of Flights'
+FROM
+    Useraircraft ua
+        INNER JOIN
+    users u ON ua.username = u.username
+WHERE
+    ua.idaircraft = ?idaircraft
+        AND NOT EXISTS( SELECT 
+            *
+        FROM
+            flights f
+        WHERE
+            f.username = u.username
+                AND f.idaircraft = ?idaircraft)
+GROUP BY ua.username
+ORDER BY user ASC");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("idaircraft", aircraftID); },
+                (dr) =>
+                {
+                    lst.Add(new Dictionary<string, object>()
+                    {
+                        {"User", (string) dr["User"] },
+                        { "FirstName", util.ReadNullableString(dr, "FirstName") },
+                        { "LastName", util.ReadNullableString(dr, "LastName") },
+                        { "Email Address", (string) dr["Email Address"] },
+                        { "Number of Flights", Convert.ToInt32(dr["Number of Flights"], CultureInfo.InvariantCulture) }
+                    });
+                });
+            return lst;
         }
     }
 
@@ -849,6 +945,12 @@ WHERE
         }
 
         /// <summary>
+        /// Is this a registered real flying machine?
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public bool IsRegistered => InstanceType == AircraftInstanceTypes.RealAircraft && !TailNumber.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Used pretty much exclusively for group-by in aircraft view; don't rely on it for much - use the model as normative.
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -912,6 +1014,7 @@ WHERE
             PublicNotes = PrivateNotes = string.Empty;
             IsLocked = false;
             AircraftID = idAircraftUnknown;
+            InstanceType = AircraftInstanceTypes.RealAircraft;  // by default
             ErrorString = ModelCommonName = ModelDescription = InstanceTypeDescription = TailNumber = string.Empty;
             MaintenanceChanges = new List<MaintenanceLog>();
             m_mr = new MaintenanceRecord();
@@ -1390,17 +1493,73 @@ WHERE
             return ErrorString.Length == 0;
         }
 
+        private void FixTail()
+        {
+            if (IsAnonymous)
+                TailNumber = Aircraft.AnonymousTailnumberForModel(ModelID);
+            if (InstanceType != AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
+                TailNumber = Aircraft.SuggestSims(ModelID, InstanceType)[0].TailNumber;
+        }
+
+        /// <summary>
+        /// Cleans up a badly specified aircraft, ensuring that the tail conforms, upgrades conform, etc.
+        /// </summary>
+        public void FixUpPossibleInvalidAircraft(string defaultTail)
+        {
+            if (ModelID > 0)
+            {
+                MakeModel mm = MakeModel.GetModel(ModelID);
+
+                // if this needs to be a sim or anonymous, coerce the aircraft to match the model.
+                switch (mm.AllowedTypes)
+                {
+                    case AllowedAircraftTypes.Any:
+                        break;
+                    case AllowedAircraftTypes.SimulatorOnly:
+                        if (InstanceType == AircraftInstanceTypes.RealAircraft)
+                        {
+                            TailNumber = CountryCodePrefix.szSimPrefix;
+                            InstanceType = AircraftInstanceTypes.UncertifiedSimulator;
+                        }
+                        break;
+                    case AllowedAircraftTypes.SimOrAnonymous:
+                        if (InstanceType == AircraftInstanceTypes.RealAircraft)
+                            TailNumber = CountryCodePrefix.szAnonPrefix;
+                        break;
+                }
+
+                switch (mm.AvionicsTechnology)
+                {
+                    case MakeModel.AvionicsTechnologyType.None:
+                        break;
+                    case MakeModel.AvionicsTechnologyType.Glass:
+                        if (AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.Glass)
+                        {
+                            AvionicsTechnologyUpgrade = MakeModel.AvionicsTechnologyType.None;
+                            GlassUpgradeDate = null;
+                        }
+                        break;
+                    case MakeModel.AvionicsTechnologyType.TAA:
+                        AvionicsTechnologyUpgrade = MakeModel.AvionicsTechnologyType.None;
+                        GlassUpgradeDate = null;
+                        break;
+                }
+            }
+            FixTail();
+            if (String.IsNullOrEmpty(TailNumber))
+                TailNumber = defaultTail ?? string.Empty;
+
+            CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(TailNumber);
+            TailNumber = (cc.HyphenPref == CountryCodePrefix.HyphenPreference.None) ? TailNumber.ToUpperInvariant() : Aircraft.NormalizeTail(TailNumber, CountryCodePrefix.BestMatchCountryCode(TailNumber));
+        }
+
         /// <summary>
         /// Validates the aircraft, fixing the tail if needed for anonymous/sim aircraft
         /// </summary>
         /// <returns>true if all valid</returns>
         public Boolean FixTailAndValidate()
         {
-            if (IsAnonymous)
-                TailNumber = Aircraft.AnonymousTailnumberForModel(ModelID);
-            if (InstanceType != AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
-                TailNumber = Aircraft.SuggestSims(ModelID, InstanceType)[0].TailNumber;
-
+            FixTail();
             return IsValid(true);
         }
         #endregion
@@ -1874,6 +2033,19 @@ WHERE
 
             // now that we've logged the diffs, update the maintenance record with the new data
             m_mr = mr;
+        }
+
+        /// <summary>
+        /// Update the maintenance for the aircraft, providing the original record for diffs.  Calls UpdateMaintenanceForUser.
+        /// </summary>
+        /// <param name="mr"></param>
+        /// <param name="mrOriginal"></param>
+        /// <param name="szUser"></param>
+        public void UpdateMaintenanceForUser(MaintenanceRecord mr, MaintenanceRecord mrOriginal, string szUser)
+        {
+            if (mrOriginal != null)
+                m_mr = mrOriginal;
+            UpdateMaintenanceForUser(mr, szUser);
         }
         #endregion
 
@@ -2881,9 +3053,10 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
         /// <param name="szUser">The user's name</param>
         /// <param name="prefixText">Prefix text</param>
         /// <param name="count">Max # of results to return</param>
+        /// <param name="fRegisteredOnly">If true, filters out any models that are sim-only or sim/anonymous-only</param>
         /// <returns>Matching completions</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<IDictionary<string, object>> SuggestFullModelsWithTargets(string szUser, string prefixText, int count)
+        public static IEnumerable<IDictionary<string, object>> SuggestFullModelsWithTargets(string szUser, string prefixText, int count, bool fRegisteredOnly = false)
         {
             if (String.IsNullOrWhiteSpace(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -2894,7 +3067,10 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
             List<Dictionary<string, object>> lst = new List<Dictionary<string, object>>();
             foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
-                lst.Add(new Dictionary<string, object>() { { "label", mm.DisplayName }, { "value", mm.MakeModelID } });
+            {
+                if (!fRegisteredOnly || mm.AllowedTypes == AllowedAircraftTypes.Any)
+                    lst.Add(new Dictionary<string, object>() { { "label", mm.DisplayName }, { "value", mm.MakeModelID } });
+            }
             return lst;
         }
         #endregion

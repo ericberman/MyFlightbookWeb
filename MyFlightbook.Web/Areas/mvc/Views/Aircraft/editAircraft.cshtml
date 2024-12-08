@@ -1,0 +1,175 @@
+﻿@using System.Globalization
+@using MyFlightbook.Image
+@{
+    Aircraft ac = ViewBag.aircraft;
+    MakeModel mm = ViewBag.model;
+    CountryCodePrefix bestGuessCountry = CountryCodePrefix.BestMatchCountryCode(ac.TailNumber);
+
+    bool fAdminMode = ViewBag.fAdminMode;
+    AircraftStats stats = ViewBag.stats;
+
+    List<string> lstTitlePieces = new List<string>();
+    lstTitlePieces.Add(ac.IsNew ? Resources.Aircraft.AircraftEditAdd : Resources.Aircraft.AircraftEditEdit);
+    lstTitlePieces.Add(Resources.Aircraft.AircraftHeader);
+    if (!ac.IsNew)
+    {
+        lstTitlePieces.Add(ac.DisplayTailnumberWithModel);
+        if (fAdminMode)
+        {
+            lstTitlePieces.Add(" - ADMIN MODE");
+        }
+        if (ac.IsRegistered)
+        {
+            <script src='@("~/Public/Scripts/daypilot-all.min.js?v=20210821".ToAbsolute())'></script>
+            <script src='@("~/Public/Scripts/mfbcalendar.js?v=4".ToAbsolute())'></script>
+            <script src="@("~/Public/Scripts/prefs.js?v=4".ToAbsolute())" type="text/javascript"></script>
+        }
+    }
+
+    ViewBag.Title = String.Join(" ", lstTitlePieces);
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    if (fAdminMode)
+    {
+        <script type="text/javascript" src="@("~/Public/Scripts/adminajax.js".ToAbsolute())"></script>
+    }
+}
+<script type="text/javascript" src="@("~/Public/Scripts/aircraftedit.js?v=0".ToAbsolute())"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=9")"></script>
+<script type="text/javascript">
+    $(() => {
+
+        ajaxFileUpload($("#divUploadAircraftImages"), {
+            uploadURL: "@Url.Action(String.Format(CultureInfo.InvariantCulture, "UploadAircraftImages/{0}", ac.AircraftID), "Aircraft")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
+            additionalParams: [{ name: "szKey", value: @ac.AircraftID }, { name: "fCanDoVideo", value: @Json.Encode(false) }],
+            onUpload: function () {
+                var params = new Object();
+                params.imageClass = "@MFBImageInfo.ImageClass.Aircraft";
+                params.szKey = "@ac.AircraftID";
+                params.fCanEdit = true;
+                params.fCanDelete = true;
+                params.fIncludeDocs = true;
+                params.confirmText = `@((stats?.Users ?? 0) <= 1 ? string.Empty : Resources.Aircraft.errDeleteImageConfirm)`;
+                params.onDelete = "deleteAircraftImage";
+                params.onAnnotate = "updateAircraftImage";
+                var d = JSON.stringify(params);
+                $.ajax({
+                    url: '@Url.Action("ImagesForClassAndKey", "Image")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    complete: function (response) { },
+                    success: function (response) {
+                        $("#divAircraftImages").html(response);
+                        $(".fileInQueueContainer").hide();
+                    }
+                });
+            },
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    });
+</script>
+@if (ac.IsNew)
+{
+    <div>
+        @{ Html.RenderPartial("_newAircraft"); }
+    </div>
+}
+else
+{
+    Html.RenderPartial("_existingAircraft");
+    List<Aircraft> lstAllVersions = Aircraft.AircraftMatchingTail(ac.TailNumber);
+    List<Aircraft> lstAlternates = lstAllVersions.FindAll(a => a.AircraftID != ac.AircraftID);
+    if (lstAlternates.Any())
+    {
+        using (Html.BeginForm("SwitchAircraft", "Aircraft", FormMethod.Post, new { id = "frmSwitchAlternate", name = "frmSwitchAlternate" }))
+        {
+            <div>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="hdnSwitchSrcAircraft" name="switchSrcAircraftID" value="@ac.AircraftID" />
+                <input type="hidden" id="hdnSwitchTargetAircraft" name="switchTargetAircraftID" value="" />
+                <input type="hidden" id="hdnSwitchMigrateFlights" name="switchMigrateFlights" value="" />
+            </div>
+        }
+        <h2>@Resources.Aircraft.editAircraftOtherVersionsHeader</h2>
+        <p>@Resources.Aircraft.editAicraftOtherVersionsDescription</p>
+        <table>
+            @foreach (Aircraft acAlt in lstAlternates)
+            {
+                acAlt.PopulateImages();
+                <tr>
+                    <td class="gvAcImage" style="width: 160px;">
+                        @{ Html.RenderAction("HoverImageList", "Image", new { rgmfbii = acAlt.AircraftImages, imageClasses = string.Empty }); }
+                    </td>
+                    <td><a target="_blank" style="vertical-align: middle;" href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/aircraft/edit/{0}{1}", acAlt.AircraftID, fAdminMode ? "?a=1" : string.Empty).ToAbsolute()">@acAlt.TailNumber</a></td>
+                    <td>@MakeModel.GetModel(acAlt.ModelID).ModelDisplayName</td>
+                    <td>
+                        <ul>
+                            <li><a href="#" onclick="javascript: switchAircraft($('#frmSwitchAlternate'), @acAlt.AircraftID, true); return false;">@Resources.Aircraft.editAircraftSwitchOtherVersion</a></li>
+                            <li><a href="#" onclick="javascript: switchAircraft($('#frmSwitchAlternate'), @acAlt.AircraftID, false); return false;">@Resources.Aircraft.editAircraftAddOtherVersion</a></li>
+                        </ul>
+                    </td>
+                    @if (fAdminMode)
+                    {
+                        <td><button style="vertical-align: middle;" onclick="javascript: mergeMain(this, @acAlt.AircraftID, @ac.AircraftID); return false;">Merge into main (Admin)</button></td>
+                    }
+                </tr>
+            }
+        </table>
+    }
+    if (fAdminMode)
+    {
+        IEnumerable<Dictionary<string, object>> lstUsers = AircraftStats.AdminAircraftUsersDetails(ac.AircraftID);
+        bool fCanMigrate = !String.IsNullOrEmpty(util.GetStringParam(Request, "genCandidate"));
+
+        <p>Clone an aircraft if the tailnumber can represent more than just this aircraft.  E.g., if N12345 used to be a piper cub and was re-assigned to a C-172, clone it to assign to the new aircraft.</p>
+        <p>When cloning an aircraft:</p>
+        <ul>
+            <li>Select the NEW model above, then hit "Create new version".  The new version will be created using the specified model above.</li>
+            <li>If you know that specific users belong in the newly created version, select them below PRIOR to cloning; they will be migrated automatically.</li>
+        </ul>
+        using (Html.BeginForm("", "Aircraft", FormMethod.Post, new { id = "frmAdminClone", name = "frmAdminClone" }))
+        {
+            <input type="hidden" id="hdnAdminCloneTargetModel" name="adminCloneTargetModel" />
+            <input type="hidden" name="adminCloneAircraftID" value="@ac.AircraftID" />
+            @Html.AntiForgeryToken()
+            <div>
+                @if (fCanMigrate && ac.IsRegistered)
+                {
+                    <button onclick="javascript:migrateGeneric(this, @ac.AircraftID, x => location.reload()); return false;">Migrate to Generic</button>
+                    if (AircraftUtility.CouldBeSim(ac))
+                    {
+                        <button onclick="javascript:migrateSim(this, @ac.AircraftID, x => location.reload()); return false;">Migrate to Sim</button>
+                    }
+                }
+                <button onclick="javascript: $('#hdnAdminCloneTargetModel').val($('#cmbModels').val()); clone($('#frmAdminClone')); return false;">Create New Version</button>
+                @if (lstAlternates.Any())
+                {
+                    <button onclick="javascript:makeDefault(this, @ac.AircraftID);  return false;" @(lstAllVersions[0].AircraftID == ac.AircraftID ? "disabled" : string.Empty)>Make Default</button>
+                }
+            </div>
+            <table class="stickyHeaderTable stickyHeaderAlternate" style="width: auto; margin-left: auto; margin-right: auto;">
+                <thead>
+                    <tr>
+                        <th class="headerBase gvhDefault">User</th>
+                        <th class="headerBase gvhDefault">Name and Email</th>
+                        <th class="headerBase gvhDefault">Number of Flights</th>
+                        <th class="headerBase gvhDefault">Migrate to new aircraft?</th>
+                    </tr>
+                </thead>
+                @foreach (Dictionary<string, object> d in lstUsers)
+                {
+                    <tr>
+                        <td>@d["User"]</td>
+                        <td>@d["FirstName"] @d["LastName"] &lt;@(d["Email Address"])&gt;</td>
+                        <td>@(d["Number of Flights"].FormatInt())</td>
+                        <td><input type="checkbox" value="@d["User"]" name="adminUserToMigrate" /></td>
+                    </tr>
+                }
+            </table>
+        }
+    }
+}

@@ -7,13 +7,12 @@
     bool fCanEdit = ViewBag.fCanEdit;
     bool fCanMakeDefault = ViewBag.fCanMakeDefault && rgmfbii.Count() > 1;
     GeoLinkType zoomLinkType = ViewBag.zoomLinkType;
-    bool fIsDefault = ViewBag.fIsDefault;
     string confirmText = ViewBag.confirmText;
     string defaultImage = ViewBag.defaultImage ?? string.Empty;
 }
 @foreach (MFBImageInfo mfbii in rgmfbii)
 {
-    <div runat="server" class="ilItem">
+    <div class="ilItem">
         @{
             Html.RenderAction("EditableImage", "Image", new
             {

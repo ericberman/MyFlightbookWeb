@@ -2,7 +2,7 @@
 @{
     MyFlightbook.Profile m_pf = ViewBag.pf;
     int idDeadline = ViewBag.idDeadline;
-    int aircraftID = ViewBag.AircraftID ?? Aircraft.idAircraftUnknown;
+    int aircraftID = ViewBag.idAircraft ?? Aircraft.idAircraftUnknown;
     DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, aircraftID) ?? new DeadlineCurrency();
     bool fShared = ViewBag.fShared;
     if (fShared)
@@ -49,7 +49,10 @@
                         }
                     }
                 </select>
-                <label id="lblUseHours" style="@(dc.AircraftID > 0 ? string.Empty : "display: none;")"><input type="checkbox" @dc.UsesHours.ToChecked() id="ckDeadlineUseHours" name="deadlineUsesHours" onchange="javascript: dlEditor.setUseHours(this.checked, 'divDeadline');" />@Resources.Preferences.PrefDeadlineUseHours</label>
+            </p>
+        </div>
+        <div>
+            <label id="lblUseHours" style="@(dc.AircraftID > 0 ? string.Empty : "display: none;")"><input type="checkbox" @dc.UsesHours.ToChecked() id="ckDeadlineUseHours" name="deadlineUsesHours" onchange="javascript: dlEditor.setUseHours(this.checked, 'divDeadline');" />@Resources.Preferences.PrefDeadlineUseHours</label>
         </div>
         <p>@Resources.Currency.DeadlineDueDate</p>
         <div>

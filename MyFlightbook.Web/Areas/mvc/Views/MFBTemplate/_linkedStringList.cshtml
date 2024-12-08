@@ -1,0 +1,13 @@
+﻿<ul>
+    @foreach (LinkedString ls in ViewBag.lst)
+    {
+        if (String.IsNullOrEmpty(ls.Link))
+        {
+            <li>@ls.Value</li>
+        }
+        else
+        {
+            <li><a href="@(ls.Link.StartsWith("~") ? ls.Link.ToAbsolute() : ls.Link)">@ls.Value</a></li>
+        }
+    }
+</ul>

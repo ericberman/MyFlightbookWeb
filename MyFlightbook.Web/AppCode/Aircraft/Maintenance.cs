@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2023 MyFlightbook LLC
+ * Copyright (c) 2009-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -233,6 +233,8 @@ namespace MyFlightbook
         /// <returns>True for success</returns>
         public void FAddToLog()
         {
+            if (String.IsNullOrWhiteSpace(Description) && String.IsNullOrWhiteSpace(Comment))
+                return; // don't both logging unhelpful content-free changes.
             DBHelper dbh = new DBHelper();
             dbh.DoNonQuery("INSERT INTO maintenancelog SET idaircraft=?idAircraft, Description=?Description, Date=?Date, User=?User, Comment = ?Comment",
                 (comm) =>

@@ -1,0 +1,50 @@
+﻿@{
+    int idModel = ViewBag.idModel;
+    int idManufacturer = ViewBag.idManufacturer;
+
+    IEnumerable<Manufacturer> lstMan = ViewBag.manufacturers;
+    IEnumerable<MakeModel> lstMakes = ViewBag.models;
+    MakeModel selectedModel = ViewBag.selectedModel;
+    List<LinkedString> attributes = ViewBag.attributes;
+    string onModelChange = ViewBag.onModelChange;
+}
+<script type="text/javascript">
+    $(() => {
+        setUpAutocompleteModels({
+            manDrop: $("#cmbManufacturers"),
+            modelDrop: $("#cmbModels"),
+            searchInput: $("#txtSearchModel"),
+            fRegisteredOnly: @Json.Encode(!ViewBag.fNew),
+            autoCompleteHREF: "@Url.Action("SuggestModels", "Aircraft")",
+            onModelSelected: function (idModel) {
+                $("#hdnSelectedModel").val(idModel);
+            },
+            onModelChange: function () {
+                @(onModelChange)();
+            }
+        });
+    })
+</script>
+<div class="searchBox">
+    <img src="@("~/images/Search.png".ToAbsolute())" style="vertical-align: middle; height: 20px;" />
+    <input type="text" style="width: 240px; font-size: 8pt; border: none; vertical-align:middle; margin-right: 2px;" id="txtSearchModel" class="noselect" placeholder="@Resources.Makes.searchTipQuick" />
+    <input type="hidden" name="aircraftAutoCompleteModel" value="" id="hdnSelectedModel" />
+</div>
+<div style="margin-top: 4pt;">
+    <select id="cmbManufacturers" required name="aircraftManufacturer">
+        <option @((idManufacturer == Manufacturer.UnsavedID).ToSelected()) value="@Manufacturer.UnsavedID">@Resources.Aircraft.editAircraftSelectManufacturer</option>
+        @foreach (Manufacturer m in lstMan)
+        {
+            <option value="@m.ManufacturerID" @((m.ManufacturerID == idManufacturer).ToSelected())>@m.ManufacturerName</option>
+        }
+    </select>
+    <select id="cmbModels" required name="aircraftSelectedModel">
+        <option value="" @((idModel == MakeModel.UnknownModel).ToSelected())>@Resources.Aircraft.editAircraftSelectModel</option>
+        @foreach (MakeModel mm in lstMakes)
+        {
+            <option value="@mm.MakeModelID" @((mm.MakeModelID == idModel).ToSelected())>@mm.ModelDisplayName</option>
+        }
+    </select>
+    <a href="@("~/mvc/Aircraft/ViewModel/-1".ToAbsolute())">@Resources.Aircraft.editAircraftAddModelPrompt</a>
+</div>
+<div>@{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = attributes }); }</div>

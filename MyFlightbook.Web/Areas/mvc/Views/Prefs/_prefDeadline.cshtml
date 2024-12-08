@@ -8,11 +8,19 @@
         onCommit: function () {
             cancelEditDeadline();
             dlEditor.getDeadlineList($("#divListDeadlines"), @(ViewBag.aircraftID ?? Aircraft.idAircraftUnknown));
+            @if (!String.IsNullOrEmpty(ViewBag.postEdit))
+            {
+                @(ViewBag.postEdit)@:();
+            }
         },
         onEdit: function (r) {
             $("#divListDeadlines").hide();
             $("#divEditDeadline").show();
             $("#divEditDeadline").html(r);
+            @if (!String.IsNullOrEmpty(ViewBag.postEdit))
+            {
+                @(ViewBag.postEdit)@:();
+            }
         },
         errorID: "lblDeadlineErr"
     });

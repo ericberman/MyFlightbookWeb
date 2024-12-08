@@ -1,0 +1,8 @@
+﻿@{
+    DateTime dt = ViewBag.dt;
+    if (dt.HasValue())
+    {
+        string c = dt.CompareTo(DateTime.Now) < 0 ? "currencyexpired" : (dt.AddDays(-31).CompareTo(DateTime.Now) < 0 ? "currencynearlydue" : string.Empty);
+        <span class="@c">@dt.ToShortDateString()</span>
+    }
+}

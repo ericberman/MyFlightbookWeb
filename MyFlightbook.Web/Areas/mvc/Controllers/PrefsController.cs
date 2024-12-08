@@ -168,6 +168,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, idAircraft) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
                 dc.FDelete();
+                if (dc.IsSharedAircraftDeadline)
+                    new MaintenanceLog() { AircraftID = idAircraft, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineDeleted, dc.DisplayName), Comment = string.Empty }.FAddToLog();
+
                 return new EmptyResult();
             });
         }
@@ -180,12 +183,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 DeadlineCurrency dc = DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, idAircraft) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Deadline {0} doesn't exist for user {1}", idDeadline, User.Identity.Name));
+                DeadlineCurrency dcOriginal = dc.IsSharedAircraftDeadline ? DeadlineCurrency.DeadlineForUser(User.Identity.Name, idDeadline, idAircraft) : null; 
+
                 if (dc.AircraftHours > 0)
                     dc.AircraftHours = dc.NewHoursBasedOnHours(decimal.Parse(Request["deadlineNewHours"], CultureInfo.CurrentCulture));
                 else
                     dc.Expiration = dc.NewDueDateBasedOnDate(DateTime.Parse(Request["deadlineNewDate"], CultureInfo.CurrentCulture));
                 if (!dc.IsValid() || !dc.FCommit())
                     throw new InvalidOperationException(dc.ErrorString);
+
+                if (dc.IsSharedAircraftDeadline)
+                    new MaintenanceLog() { AircraftID = dc.AircraftID, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = dc.DifferenceDescription(dcOriginal), Comment = string.Empty }.FAddToLog();
                 return new EmptyResult();
             });
         }
@@ -202,17 +210,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult AddAircraftOilDeadline(int idAircraft, int interval, int curValue)
+        public ActionResult AddAircraftOilDeadline(int idAircraft, int interval, int curValue, string postEdit)
         {
             return SafeOp(() =>
             {
-                DeadlineCurrency dc = new DeadlineCurrency(User.Identity.Name, Resources.Aircraft.DeadlineOilChangeTitle, DateTime.MinValue, interval, DeadlineCurrency.RegenUnit.Hours, idAircraft, curValue + interval);
-                dc.FCommit();
+                DeadlineCurrency dc = new DeadlineCurrency(null, Resources.Aircraft.DeadlineOilChangeTitle, DateTime.MinValue, interval, DeadlineCurrency.RegenUnit.Hours, idAircraft, curValue + interval);
+                if (dc.FCommit())
+                {
+                    MaintenanceLog ml = new MaintenanceLog() { AircraftID = idAircraft, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, Resources.Aircraft.DeadlineOilChangeTitle), Comment = string.Empty };
+                    ml.FAddToLog();
 
-                MaintenanceLog ml = new MaintenanceLog() { AircraftID = idAircraft, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, Resources.Aircraft.DeadlineOilChangeTitle), Comment = string.Empty };
-                ml.FAddToLog();
-
-                return AircraftDeadlineSection(idAircraft);
+                    return AircraftDeadlineSection(idAircraft, postEdit);
+                }
+                else
+                    throw new InvalidOperationException(dc.ErrorString);
             });
         }
 
@@ -251,6 +262,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 };
                 if (!dc.IsValid() || !dc.FCommit())
                     throw new InvalidOperationException(dc.ErrorString);
+
+                if (dc.IsSharedAircraftDeadline)
+                    new MaintenanceLog() { AircraftID = dc.AircraftID, ChangeDate = DateTime.Now, User = User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, dc.DisplayName), Comment = string.Empty }.FAddToLog();
+
                 return new EmptyResult();
             });
         }
@@ -755,10 +770,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region deadlines
         [ChildActionOnly]
-        public ActionResult AircraftDeadlineSection(int idAircraft)
+        public ActionResult AircraftDeadlineSection(int idAircraft, string postEdit = null)
         {
             ViewBag.aircraftID = idAircraft;
             ViewBag.fShared = true;
+            ViewBag.postEdit = postEdit;
             return PartialView("_prefDeadline");
         }
         #endregion

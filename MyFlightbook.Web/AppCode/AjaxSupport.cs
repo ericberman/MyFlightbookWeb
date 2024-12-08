@@ -120,7 +120,7 @@ namespace MyFlightbook.Web.Ajax
         }
 
         /// <summary>
-        /// Autocompletion for aircraft tails
+        /// Autocompletion for aircraft tails - TODO: this will be obsolete after MVC Migration.
         /// </summary>
         /// <param name="prefixText"></param>
         /// <param name="count"></param>

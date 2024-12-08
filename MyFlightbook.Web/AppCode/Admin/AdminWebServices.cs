@@ -196,6 +196,9 @@ namespace MyFlightbook.Web.Ajax
             dbh.CommandText = "SELECT isLocked FROM aircraft WHERE idaircraft=?id";
             dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("id", idAircraft); },
                 (dr) => { result = Convert.ToInt32(dr["isLocked"], CultureInfo.InvariantCulture) != 0; });
+
+            util.FlushCache();  // so that everybody picks up the new lock state
+
             return result;
         }
 

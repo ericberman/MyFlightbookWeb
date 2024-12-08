@@ -88,9 +88,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageClass"></param>
+        /// <param name="szKey"></param>
+        /// <param name="altText"></param>
+        /// <param name="fCanDelete"></param>
+        /// <param name="fCanEdit"></param>
+        /// <param name="fCanMakeDefault"></param>
+        /// <param name="zoomLinkType"></param>
+        /// <param name="fIsDefault"></param>
+        /// <param name="confirmText"></param>
+        /// <param name="defaultImage"></param>
+        /// <param name="onMakeDefault"></param>
+        /// <param name="onDelete"></param>
+        /// <param name="onAnnotate"></param>
+        /// <param name="fIncludeDocs"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
-        public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false)
+        public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false)
         {
             return SafeOp(() =>
             {
@@ -103,7 +121,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il = new ImageList(imageClass, szKey);
                     il.Refresh(fIncludeDocs);
                 }
-                return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, fIsDefault, confirmText = "", defaultImage, onMakeDefault, onDelete, onAnnotate);
+                return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, confirmText, defaultImage, onMakeDefault, onDelete, onAnnotate);
             });
         }
 
@@ -176,7 +194,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region displaying of images
         [ChildActionOnly]
-        public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
+        public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
         {
             if (il == null)
                 throw new ArgumentNullException(nameof(il));
@@ -186,7 +204,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.fCanEdit = fCanEdit;
             ViewBag.fCanMakeDefault = fCanMakeDefault;
             ViewBag.zoomLinkType = zoomLinkType;
-            ViewBag.fIsDefault = fIsDefault;
             ViewBag.confirmText = confirmText;
             ViewBag.defaultImage = defaultImage;
             ViewBag.onDelete = onDelete;

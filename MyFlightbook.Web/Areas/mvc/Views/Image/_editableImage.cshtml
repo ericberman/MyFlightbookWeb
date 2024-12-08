@@ -30,42 +30,43 @@
                <img src="@mfbii.URLThumbnail"  @thumbWidth @thumbHeight title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)"
                     onclick="@(String.IsNullOrEmpty(mfbii.URLFullImage) ? string.Empty : String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", VirtualPathUtility.ToAbsolute(mfbii.URLFullImage)))" />
             }
-        <div class="imageMenu">
-            @if (fCanDelete && !String.IsNullOrEmpty(onDelete))
-            {
+    <div class="imageMenu">
+        @if (fCanDelete && !String.IsNullOrEmpty(onDelete))
+        {
             <div>
-                <img class="ilToolbarItem" src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" title="@Resources.LocalizedText.EditableImageDelete" alt="@Resources.LocalizedText.EditableImageDelete" 
-                     onclick="javascript:@(onDelete)(this, '@confirmText', '@mfbii.Class', '@mfbii.Key', '@mfbii.ThumbnailFile')" />
+                <img class="ilToolbarItem" src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" title="@Resources.LocalizedText.EditableImageDelete" alt="@Resources.LocalizedText.EditableImageDelete"
+                     onclick="javascript:@(onDelete)(this, `@confirmText`, '@mfbii.Class', '@mfbii.Key', '@mfbii.ThumbnailFile')" />
             </div>
-            }
-            @if (mfbii.Location != null && zoomLinkType != GeoLinkType.None)
-            {
-                <div>
-                    <a class="ilToolbarItem" style="cursor:pointer" href="@((zoomLinkType == GeoLinkType.ZoomOnLocalMap) ? 
+        }
+        @if (mfbii.Location != null && zoomLinkType != GeoLinkType.None)
+        {
+            <div>
+                <a class="ilToolbarItem" style="cursor:pointer" href="@((zoomLinkType == GeoLinkType.ZoomOnLocalMap) ?
                         String.Format(CultureInfo.InvariantCulture, "javascript:getGMap().setCenter(new google.maps.LatLng({0}, {1}));getGMap().setZoom(12);", mfbii.Location.Latitude, mfbii.Location.Longitude):
-                        String.Format(CultureInfo.InvariantCulture, "https://maps.google.com?q={0},{1}", mfbii.Location.LatitudeString, mfbii.Location.LongitudeString))" 
-                       target="@(zoomLinkType == GeoLinkType.ZoomOnGoogleMaps ? "_blank" : string.Empty)"> 
-                       <img src="@VirtualPathUtility.ToAbsolute("~/images/mapmarkersm.png")" title="@Resources.LocalizedText.EditableImageViewOnMap" alt="@Resources.LocalizedText.EditableImageViewOnMap" /></a>
-                </div>
-            }
-            @if (fCanMakeDefault && !String.IsNullOrEmpty(ViewBag.onMakeDefault))
-            {
-                <div>
-                    <img src="@VirtualPathUtility.ToAbsolute("~/images/favoritesm.png")" class="ilToolbarItem" 
-                         title="@Resources.LocalizedText.EditableImageMakeFavorite" 
-                         alt="@Resources.LocalizedText.EditableImageMakeFavorite" 
-                         onclick="javascript:@(onMakeDefault)(this, '@mfbii.Class', '@mfbii.Key', '@mfbii.ThumbnailFile'))" />
-                </div>
-            }
-            @if (fCanEdit && !String.IsNullOrEmpty(onAnnotate))
-            {
-                <div>
-                    <a class="ilToolbarItem" style="cursor:pointer" onclick="javascript:editImageComment(this);">
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.LocalizedText.EditableImageEditPrompt" alt="@Resources.LocalizedText.EditableImageEditPrompt" />
-                    </a>
-                </div>
-            }
-        </div>
+                        String.Format(CultureInfo.InvariantCulture, "https://maps.google.com?q={0},{1}", mfbii.Location.LatitudeString, mfbii.Location.LongitudeString))"
+                   target="@(zoomLinkType == GeoLinkType.ZoomOnGoogleMaps ? "_blank" : string.Empty)">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/mapmarkersm.png")" title="@Resources.LocalizedText.EditableImageViewOnMap" alt="@Resources.LocalizedText.EditableImageViewOnMap" />
+                </a>
+            </div>
+        }
+        @if (fCanMakeDefault && !String.IsNullOrEmpty(ViewBag.onMakeDefault))
+        {
+            <div>
+                <img src="@VirtualPathUtility.ToAbsolute(fIsDefault ? "~/images/favoritefilledsm.png" : "~/images/favoritesm.png")" class="ilToolbarItem favoriteIcon"
+                        title="@Resources.LocalizedText.EditableImageMakeFavorite"
+                        alt="@Resources.LocalizedText.EditableImageMakeFavorite"
+                        onclick="javascript:@(onMakeDefault)(this, '@mfbii.Class', '@mfbii.Key', '@mfbii.ThumbnailFile');" />
+            </div>
+        }
+        @if (fCanEdit && !String.IsNullOrEmpty(onAnnotate))
+        {
+            <div>
+                <a class="ilToolbarItem" style="cursor:pointer" onclick="javascript:editImageComment(this);">
+                    <img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.LocalizedText.EditableImageEditPrompt" alt="@Resources.LocalizedText.EditableImageEditPrompt" />
+                </a>
+            </div>
+        }
+    </div>
     </div>
 
     <div name="statComment" style="max-width: @(isVideo ? "320px" : (mfbii.WidthThumbnail > 0 ? mfbii.WidthThumbnail : "200px")); text-align:center;" >

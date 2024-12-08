@@ -1,0 +1,78 @@
+﻿@using MyFlightbook.Image
+@{
+    Aircraft ac = ViewBag.aircraft;
+}
+<script type="text/javascript">
+    function onModelChangeNewAircraft() {
+        var f = $("#frmNewAircraft");
+        $("#imgUpdateModelProg").show();
+        $.ajax({
+            url: "@Url.Action("UpdateForModelNewAircraft", "Aircraft")",
+            type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (response) { $("#imgUpdateModelProg").hide(); },
+            success: function (response) {
+                $("#divAddAircraftFormBody").html(response);
+            }
+        });
+    }
+
+    function addAutocompletedAircraft(idAircraft) {
+        $("#hdnAutocompleteAircraftID").val(idAircraft);
+        newAircraftValidator.destroy();
+        $("#frmNewAircraft")[0].submit();
+    }
+
+    var newAircraftValidator = null;
+
+    $(() => {
+        defaultButtonForDiv("pnlAddAircraft", "btnAddAircraft");
+
+        $.validator.addMethod("regexTail", function (value, element) {
+            return this.optional(element) || /^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]$/.test(value);
+        }, "@Resources.Aircraft.errInvalidTailChars");
+
+        
+        newAircraftValidator = validateForm($("#frmNewAircraft"), {
+            aircraftSelectedModel: { required: true },
+            aircraftTail: { required: true, regexTail: true }
+        }, {
+            aircraftSelectedModel: { required: "@Resources.Aircraft.errModelRequired" },
+            aircraftTail: { required: "@Resources.Aircraft.errMissingTail", regexTail: "@Resources.Aircraft.errInvalidTail" }
+        });
+    });
+</script>
+@using (Html.BeginForm("New", "Aircraft", FormMethod.Post, new { id = "frmNewAircraft", name = "frmNewAircraft" }))
+{
+    <input type="hidden" name="returnURL" value="@(ViewBag.ret)" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="aircraftID" id="hdnAutocompleteAircraftID" value="@ac.AircraftID" />
+    <input type="hidden" name="aircraftRev" value="@ac.Revision" />
+    <div id="pnlAddAircraft">
+        <div id="divAddAircraftFormBody">
+            @{ Html.RenderPartial("_newAircraftBody"); }
+        </div>
+        <h3>@Resources.Aircraft.editAircraftImagesPrompt</h3>
+        <div>
+            <div id="divUploadAircraftImages" style="display: inline-block;"></div>
+            <div id="divAircraftImages" style="display: inline;">
+                @{
+                    Html.RenderAction("ImageListDisplay", "Image", new
+                    {
+                        il = new ImageList(MFBPendingImage.PendingImagesInSession(Session).ToArray()),
+                        zoomLinkType = GeoLinkType.None,
+                        fCanEdit = true,
+                        fCanDelete = true,
+                        fCanMakeDefault = true,
+                        onDelete = "deleteAircraftImage",
+                        onAnnotate = "updateAircraftImage",
+                        onMakeDefault = "makeDefault"
+                    });
+                }
+            </div>
+        </div>
+        <div>&nbsp;</div>
+        <div><button type="submit" name="btnAddAircraft" value="add" id="btnAddAircraft">@Resources.LocalizedText.EditAircraftAddAircraft</button></div>
+        <div class="error">@(ac.ErrorString ?? string.Empty)</div>
+    </div>
+}

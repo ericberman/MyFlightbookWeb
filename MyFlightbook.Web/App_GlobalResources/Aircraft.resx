@@ -370,7 +370,7 @@
     <value>Country</value>
   </data>
   <data name="editAircraftGlassUpgradeDate" xml:space="preserve">
-    <value>Date of upgrade, if avionics are not factory-installed:</value>
+    <value>Date of upgrade, if avionics are not factory-installed</value>
   </data>
   <data name="editAircraftGlassUpgrade" xml:space="preserve">
     <value>Glass PFD</value>
@@ -570,7 +570,7 @@
     <value>ICAO designation</value>
   </data>
   <data name="errInvalidTail" xml:space="preserve">
-    <value>Please provide a complete tail number, including country prefix (or choose "Other" from the list of countries).</value>
+    <value>Please provide a complete tail number, including country prefix.  Choose "Other" from the list of countries for no prefix.</value>
   </data>
   <data name="errInvalidTailChars" xml:space="preserve">
     <value>Please enter a valid tail number (numbers and letters and, optionally, a dash)</value>
@@ -588,7 +588,7 @@
     <value>No upgrade beyond factory minimum</value>
   </data>
   <data name="editAircraftGlassUpgradeType" xml:space="preserve">
-    <value>Avionics upgrade or factory option:</value>
+    <value>Avionics upgrade or factory option</value>
   </data>
   <data name="AircraftStatsHours" xml:space="preserve">
     <value> ({0})</value>
@@ -609,7 +609,7 @@
     <value>Annual:</value>
   </data>
   <data name="MaintenanceChangeHistoryPrompt" xml:space="preserve">
-    <value>Change History:</value>
+    <value>Change History</value>
   </data>
   <data name="MaintenanceELTPrompt" xml:space="preserve">
     <value>ELT:</value>
@@ -870,5 +870,20 @@ Do you still want to delete?</value>
   </data>
   <data name="ImportAircraftNewAircraftHeader" xml:space="preserve">
     <value>These aircraft are new</value>
+  </data>
+  <data name="errModelRequired" xml:space="preserve">
+    <value>An aircraft requires a model to be specified.  Please use the drop-downs or search to pick one.  If necessary, you can create one.</value>
+  </data>
+  <data name="maintenanceNoChanges" xml:space="preserve">
+    <value>(No changes found)</value>
+  </data>
+  <data name="editAircraftAnonymousAvoid" xml:space="preserve">
+    <value>Please do NOT make up a tail number.  If you don't have a specific tail number, or are using this to encapsulate multiple flights in a specific model of aircraft, please use an "anonymous" aircraft instead.</value>
+  </data>
+  <data name="editAircraftStats" xml:space="preserve">
+    <value>Stats for this aircraft</value>
+  </data>
+  <data name="SharedDeadlineIndicator" xml:space="preserve">
+    <value>Indicates that the deadline is shared amongst all pilots who fly this aircraft, not just you.</value>
   </data>
 </root>

@@ -79,6 +79,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region shared Partial views
         [ChildActionOnly]
+        public ActionResult RenderLinkedStringList(IEnumerable<LinkedString> lst)
+        {
+            ViewBag.lst = lst;
+            return PartialView("_linkedStringList");
+        }
+
+        [ChildActionOnly]
         public ActionResult RenderSponsoredAd(int id)
         {
             ViewBag.sponsoredAd = SponsoredAd.GetAd(id) ?? new SponsoredAd();

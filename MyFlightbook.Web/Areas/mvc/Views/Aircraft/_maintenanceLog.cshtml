@@ -1,0 +1,49 @@
+﻿@using System.Globalization;
+@{
+    IEnumerable<MaintenanceLog> rgml = ViewBag.rgml;
+    int idAircraft = ViewBag.idAircraft;
+    int start = ViewBag.start;
+    int pageSize = ViewBag.pageSize;
+    int fullCount = rgml.Count();
+    if (fullCount > 0)
+    {
+        List<MaintenanceLog> page = new List<MaintenanceLog>(rgml).GetRange(ViewBag.start, Math.Min(pageSize, fullCount - start));
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault gvhLeft" style="width: 10em;">@Resources.LogbookEntry.PrintHeaderDate</th>
+                    <th class="headerBase gvhDefault gvhLeft">@Resources.LogbookEntry.TemplateDescriptionPrompt</th>
+                </tr>
+            </thead>
+            @foreach (MaintenanceLog ml in page)
+            {
+                <tr>
+                    <td>@ml.ChangeDate.ToShortDateString()</td>
+                    <td>
+                        <div><span style="font-weight: bold">@ml.FullDisplayName</span> @ml.Description</div>
+                        <div>@ml.Comment</div>
+                    </td>
+                </tr>
+            }
+            <tr style="background-color: none; border: none;">
+                <td colspan="2" style="text-align: center; border: none;">
+                    @if (ViewBag.start > 0)
+                    {
+                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript: getMaintenancePage(@idAircraft, 0, @pageSize, $(this).closest('table').parent()); return false;">&lt;&lt;</a>@:&nbsp;&nbsp;
+                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @(start - pageSize), @pageSize, $(this).closest('table').parent()); return false;">&lt;</a>@:&nbsp;
+                    }
+                    @String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, (start + pageSize) / pageSize, (fullCount + pageSize - 1) / pageSize)&nbsp;
+                    @if (start + pageSize < fullCount)
+                    {
+                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @(start + pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;</a>@:&nbsp;&nbsp;
+                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @((fullCount / pageSize) * pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;&gt;</a>
+                    }
+                </td>
+            </tr>
+        </table>
+    }
+    else
+    {
+        <div>@Resources.Aircraft.maintenanceNoChanges</div>
+    }
+}

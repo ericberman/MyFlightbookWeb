@@ -559,7 +559,6 @@
     <Content Include="Controls\mfbTooltip.ascx" />
     <Content Include="Controls\mfbTypeInDate.ascx" />
     <Content Include="Controls\popmenu.ascx" />
-    <Content Include="Controls\SponsoredAd.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="HTTP403.htm" />
@@ -762,6 +761,7 @@
     <Content Include="Public\CSS\printHongKong.css" />
     <Content Include="Public\Scripts\accordionproxy.js" />
     <Content Include="Public\Scripts\adminajax.js" />
+    <Content Include="Public\Scripts\aircraftedit.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\Scripts\flightedit.js" />
     <Content Include="Public\Scripts\import.js" />
@@ -1620,6 +1620,16 @@
     <Content Include="Areas\mvc\Views\Print\HongKong.cshtml" />
     <Content Include="Areas\mvc\Views\Print\_footerUTCDisclaimer.cshtml" />
     <Content Include="Areas\mvc\Views\Print\_footerEASA.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\editAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_newAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_selectMake.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_modelDrops.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_avionicsUpgrade.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_existingAircraft.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_maintenanceDate.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_maintenanceLog.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\_newAircraftBody.cshtml" />
+    <Content Include="Areas\mvc\Views\MFBTemplate\_linkedStringList.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -2107,13 +2117,6 @@
     </Compile>
     <Compile Include="Controls\popmenu.ascx.designer.cs">
       <DependentUpon>popmenu.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SponsoredAd.ascx.cs">
-      <DependentUpon>SponsoredAd.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\SponsoredAd.ascx.designer.cs">
-      <DependentUpon>SponsoredAd.ascx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

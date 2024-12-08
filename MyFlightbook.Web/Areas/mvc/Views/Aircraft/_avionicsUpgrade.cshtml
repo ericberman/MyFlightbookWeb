@@ -1,0 +1,29 @@
+﻿@{
+    Aircraft ac = ViewBag.aircraft;
+    MakeModel mm = ViewBag.model;
+    bool fAdminMode = ViewBag.fAdminMode ?? false;
+    MakeModel.AvionicsTechnologyType att = mm?.AvionicsTechnology ?? MakeModel.AvionicsTechnologyType.None;
+    <div><label><input type="radio" value="@MakeModel.AvionicsTechnologyType.None" onchange="$('#pnlGlassUpgradeDate').toggle(false);" name="aircraftAvionics" @((ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.None).ToChecked())>@Resources.Aircraft.editAircraftGlassUpgradeNone</label></div>
+    if (att != MakeModel.AvionicsTechnologyType.Glass)
+    {
+        <div><label><input type="radio" value="@MakeModel.AvionicsTechnologyType.Glass" onchange="javascript: $('#pnlGlassUpgradeDate').toggle(true);" name="aircraftAvionics" @((ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.Glass).ToChecked())>@Resources.Aircraft.editAircraftGlassUpgrade</label></div>
+    }
+    <div id="pnlTAA">
+        <div>
+            <label><input type="radio" value="@MakeModel.AvionicsTechnologyType.TAA" onchange="javascript: $('#pnlGlassUpgradeDate').toggle(true);" name="aircraftAvionics" @((ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA).ToChecked())>@Resources.Aircraft.editAircraftTAAUpgrade</label>
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "taaUpgradTip", tipTextHTML = Resources.Makes.TAADefinition });}
+        </div>
+    </div>
+    <div id="pnlGlassUpgradeDate" style="margin: 3px; @(ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.None ? "display: none;" : string.Empty)">
+        &nbsp;&nbsp;@Resources.Aircraft.editAircraftGlassUpgradeDate @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtUpgradeDate", name = "aircraftUpgradeDate", value = ac.GlassUpgradeDate ?? DateTime.MinValue });}
+    </div>
+    if (!fAdminMode && ac.IsLocked)
+    {
+        <script type="text/javascript">
+            $(() => {
+                $("input[name='aircraftAvionics']").attr("disabled", true);
+                $("#txtUpgradeDate").attr("disabled", true);
+            });
+        </script>
+    }
+}
