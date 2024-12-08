@@ -50,7 +50,9 @@
                 params.fCanEdit = true;
                 params.fCanDelete = true;
                 params.fIncludeDocs = true;
-                params.confirmText = `@((stats?.Users ?? 0) <= 1 ? string.Empty : Resources.Aircraft.errDeleteImageConfirm)`;
+                params.fCanMakeDefault = @Json.Encode(!ac.IsNew);
+                params.onMakeDefault = "@(ac.IsNew ? string.Empty : "makeImageDefault")";
+                params.confirmText = '@((stats?.Users ?? 0) <= 1 ? string.Empty : Resources.Aircraft.errDeleteImageConfirm.Replace("\r\n", "\\n"))';
                 params.onDelete = "deleteAircraftImage";
                 params.onAnnotate = "updateAircraftImage";
                 var d = JSON.stringify(params);
