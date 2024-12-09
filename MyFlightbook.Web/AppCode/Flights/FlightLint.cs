@@ -381,7 +381,8 @@ namespace MyFlightbook.Lint
         private readonly static HashSet<int> hsExcludedTimeProps = new HashSet<int>() {
             (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven,
             (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived,
-            (int) CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime
+            (int) CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime,
+            (int) CustomPropertyType.KnownProperties.IDPropPlannedBlock
         };
 
         private void CheckTimeIssues(LogbookEntryBase le)

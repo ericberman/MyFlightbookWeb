@@ -204,6 +204,7 @@ namespace MyFlightbook
             IDProp125287Competency = 700,
             IDProp125287Knowledge = 701,
             IDPropRole = 718,
+            IDPropPlannedBlock = 751,
             IDPropCrew4 = 754,
             IDPropXCMoreThan400nm = 770,
             IDPropXCNoLanding = 781,
