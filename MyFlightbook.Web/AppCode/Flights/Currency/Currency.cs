@@ -1261,7 +1261,7 @@ namespace MyFlightbook.Currency
 
         private static void ExamineFlightInContextIFR(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
         {
-            if (!cfr.fIsGlider)
+            if (!cfr.fIsGlider && ccc.pf.CurrencyJurisdiction != CurrencyJurisdiction.EASA)
             {
                 if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Australia)
                 {
@@ -1298,7 +1298,7 @@ namespace MyFlightbook.Currency
                     string szIFRCat = cfr.szCategory;
                     if (!ccc.dictIFRCurrency.ContainsKey(szIFRCat))
                     {
-                        CurrencyExaminer curr = ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Canada ? (CurrencyExaminer)new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency();
+                        CurrencyExaminer curr = ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.Canada ? new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency();
                         ccc.dictIFRCurrency[szIFRCat] = curr;
                         new CatClassContext(szIFRCat, szcategory: szIFRCat).AddContextToQuery(curr.Query, ccc.pf.UserName);
                     }
