@@ -439,11 +439,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trailing 120 days.
+        /// </summary>
+        internal static string DatesPrev120Days {
+            get {
+                return ResourceManager.GetString("DatesPrev120Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trailing 12 months.
         /// </summary>
         internal static string DatesPrev12Month {
             get {
                 return ResourceManager.GetString("DatesPrev12Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trailing 180 days.
+        /// </summary>
+        internal static string DatesPrev180Days {
+            get {
+                return ResourceManager.GetString("DatesPrev180Days", resourceCulture);
             }
         }
         
@@ -462,6 +480,15 @@ namespace Resources {
         internal static string DatesPrev30Days {
             get {
                 return ResourceManager.GetString("DatesPrev30Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trailing 60 days.
+        /// </summary>
+        internal static string DatesPrev60Days {
+            get {
+                return ResourceManager.GetString("DatesPrev60Days", resourceCulture);
             }
         }
         

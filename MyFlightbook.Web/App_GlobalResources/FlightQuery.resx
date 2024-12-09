@@ -421,4 +421,13 @@
   <data name="SaveQueryManage" xml:space="preserve">
     <value>Saved Searches</value>
   </data>
+  <data name="DatesPrev60Days" xml:space="preserve">
+    <value>Trailing 60 days</value>
+  </data>
+  <data name="DatesPrev120Days" xml:space="preserve">
+    <value>Trailing 120 days</value>
+  </data>
+  <data name="DatesPrev180Days" xml:space="preserve">
+    <value>Trailing 180 days</value>
+  </data>
 </root>

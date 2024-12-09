@@ -387,23 +387,27 @@ input[type=text].errorItem, input[type=password].errorItem, input[type=number].e
     border-collapse: collapse;
     margin-left: auto;
     margin-right: auto;
+    font-size: smaller;
 }
 
 .totalsByTimeCell {
     vertical-align: top;
     text-align: right;
     font-weight: bold;
-    width: 8em;
+    width: 6em;
     padding: 3px;
     border-right: 1px solid lightgray;
 }
 
 tr.totalsGroupHeaderRow {
     text-align: center;
-    margin-top: 8px;
     font-weight: bold;
     border-bottom: 1px solid lightgray;
     border-top: 1px solid lightgray;
+}
+
+tr.totalsGroupHeaderRow td {
+    padding-top: 6pt;
 }
 
 tr.totalsGroupHeaderRow:first-child {
@@ -436,13 +440,19 @@ tr.totalsGroupRow td {
 }
 
 .totalsDateRange {
+    padding-top: 6pt;
     font-weight: bold;
     text-align: center;
-    border-right: 1px solid lightgray;
+    background-color: none;
+    border-bottom: 1px solid lightgray;
 }
 
-td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
+td.totalsByTimeCell:nth-child(even) {
     background-color: #EFEFEF;
+}
+
+td.totalsDateRange:last-of-type {
+    border-right: 1px solid lightgray;
 }
 
 /* Autocomplete AJAX.  Insert Training uses "autoInsertxxx */

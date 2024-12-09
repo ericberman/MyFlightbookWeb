@@ -1377,7 +1377,11 @@ namespace MyFlightbook.Currency
         public IDictionary<string, TotalsItem> MonthToDate { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> PrevMonth { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> YTD { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing30 { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing60 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> Trailing90 { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing120 { get; private set; } = new Dictionary<string, TotalsItem>();
+        public IDictionary<string, TotalsItem> Trailing180 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> Trailing12 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> Trailing24 { get; private set; } = new Dictionary<string, TotalsItem>();
         public IDictionary<string, TotalsItem> PrevYear { get; private set; } = new Dictionary<string, TotalsItem>();
@@ -1389,7 +1393,11 @@ namespace MyFlightbook.Currency
         public bool IncludePreviousMonth { get; set; }
         public bool IncludePreviousYear { get; set; }
         public bool IncludeYearToDate { get; set; }
+        public bool IncludeTrailing30 { get; set; }
+        public bool IncludeTrailing60 { get; set; }
         public bool IncludeTrailing90 { get; set; }
+        public bool IncludeTrailing120 { get; set; }
+        public bool IncludeTrailing180 { get; set; }
         public bool IncludeTrailing12 { get; set; }
         public bool IncludeTrailing24 {get; set;}
 
@@ -1421,7 +1429,7 @@ namespace MyFlightbook.Currency
             IncludeMonthToDate = DateTime.Now.Day > 1;
             IncludePreviousMonth = true;
             IncludePreviousYear = true;
-            IncludeTrailing90 = true;
+            IncludeTrailing30 = IncludeTrailing60 = IncludeTrailing90 = IncludeTrailing120 = IncludeTrailing180 = true;
             IncludeTrailing12 = !fNewYearsDay;
             IncludeYearToDate = !fNewYearsDay;
         }
@@ -1496,21 +1504,28 @@ namespace MyFlightbook.Currency
         }
 
         /// <summary>
-        /// Renders the rollup to HTML.  This form is too complicated for a gridview
+        /// Counts the columns that have data.  Has the side effect of setting/resetting Includexxxx flags.
         /// </summary>
-        /// <param name="fLinkQuery">True to link to queries for items</param>
-        /// <param name="fUseHHMM">True to use HHMM</param>
-        public string RenderHTML(bool fUseHHMM, bool fLinkQuery)
+        /// <param name="initialCount">Starting count</param>
+        /// <returns></returns>
+        private int CountColumns(int initialCount)
         {
-            // Determine which columns we'll show
-            int ColumnCount = 2;   // All time is always shown, as are its labels (in adjacent table column)
+            int ColumnCount = initialCount;   
             if (IncludeLast7Days &= Last7.Any())
                 ColumnCount++;
             if (IncludeMonthToDate &= MonthToDate.Any())
                 ColumnCount++;
             if (IncludePreviousMonth &= PrevMonth.Any())
                 ColumnCount++;
+            if (IncludeTrailing30 &= Trailing30.Any())
+                ColumnCount++;
+            if (IncludeTrailing60 &= Trailing60.Any())
+                ColumnCount++;
             if (IncludeTrailing90 &= Trailing90.Any())
+                ColumnCount++;
+            if (IncludeTrailing120 &= Trailing120.Any())
+                ColumnCount++;
+            if (IncludeTrailing180 &= Trailing180.Any())
                 ColumnCount++;
             if (IncludeTrailing12 &= Trailing12.Any())
                 ColumnCount++;
@@ -1520,6 +1535,18 @@ namespace MyFlightbook.Currency
                 ColumnCount++;
             if (IncludeYearToDate &= YTD.Any())
                 ColumnCount++;
+            return ColumnCount;
+        }
+
+        /// <summary>
+        /// Renders the rollup to HTML.  This form is too complicated for a gridview
+        /// </summary>
+        /// <param name="fLinkQuery">True to link to queries for items</param>
+        /// <param name="fUseHHMM">True to use HHMM</param>
+        public string RenderHTML(bool fUseHHMM, bool fLinkQuery)
+        {
+            // Determine which columns we'll show
+            int ColumnCount = CountColumns(2);  // All time is always shown, as are its labels (in adjacent table column), so seed with 2 columns
 
             using (StringWriter sw = new StringWriter())
             {
@@ -1543,24 +1570,28 @@ namespace MyFlightbook.Currency
                             tw.AddAttribute("class", "totalsGroupHeaderRow");
                             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
                             tw.AddAttribute("colspan", ColumnCount.ToString(CultureInfo.InvariantCulture));
-                                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                                tw.WriteEncodedText(tic.GroupName);
-                                tw.RenderEndTag();  // TD - group name
+                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                            tw.WriteEncodedText(tic.GroupName);
+                            tw.RenderEndTag();  // TD - group name
                             tw.RenderEndTag();  // TR - header row
 
                             tw.AddAttribute("class", "totalsGroupDateRanges");
                             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                                const string cssDateRange = "totalsDateRange";
-                                AddTextCellToRow(tw, string.Empty, true); // no header above the total description itself.
-                                AddTextCellToRow(tw, SuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
-                                AddTextCellToRow(tw, Resources.Profile.EmailWeeklyTotalsLabel, IncludeLast7Days, cssDateRange);
-                                AddTextCellToRow(tw, Resources.FlightQuery.DatesThisMonth, IncludeMonthToDate, cssDateRange);
-                                AddTextCellToRow(tw, szPreviousMonth, IncludePreviousMonth, cssDateRange);
-                                AddTextCellToRow(tw, Resources.FlightQuery.DatesYearToDate, IncludeYearToDate, cssDateRange);
-                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev90Days, IncludeTrailing90, cssDateRange);
-                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev12Month, IncludeTrailing12, cssDateRange);
-                                AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev24Month, IncludeTrailing24, cssDateRange);
-                                AddTextCellToRow(tw, szPreviousYear, IncludePreviousYear, cssDateRange);
+                            const string cssDateRange = "totalsDateRange";
+                            AddTextCellToRow(tw, string.Empty, true); // no header above the total description itself.
+                            AddTextCellToRow(tw, SuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
+                            AddTextCellToRow(tw, Resources.Profile.EmailWeeklyTotalsLabel, IncludeLast7Days, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesThisMonth, IncludeMonthToDate, cssDateRange);
+                            AddTextCellToRow(tw, szPreviousMonth, IncludePreviousMonth, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesYearToDate, IncludeYearToDate, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev30Days, IncludeTrailing30, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev60Days, IncludeTrailing60, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev90Days, IncludeTrailing90, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev120Days, IncludeTrailing120, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev180Days, IncludeTrailing180, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev12Month, IncludeTrailing12, cssDateRange);
+                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev24Month, IncludeTrailing24, cssDateRange);
+                            AddTextCellToRow(tw, szPreviousYear, IncludePreviousYear, cssDateRange);
                             tw.RenderEndTag();  // tr
 
                             foreach (TotalsItem ti in tic.Items)
@@ -1570,20 +1601,24 @@ namespace MyFlightbook.Currency
                                     tw.AddAttribute("class", "totalsGroupRow");
                                     tw.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                                        // Add the description
-                                        tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                                        tw.WriteEncodedText(ti.Description);
-                                        tw.RenderEndTag();
+                                    // Add the description
+                                    tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                                    tw.WriteEncodedText(ti.Description);
+                                    tw.RenderEndTag();
 
-                                        AddCellForTotalsItem(tw, ti, true, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, Last7.TryGetValue(ti.Description, out TotalsItem last7Value) ? last7Value : null, IncludeLast7Days, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, MonthToDate.TryGetValue(ti.Description, out TotalsItem monthValue) ? monthValue : null, IncludeMonthToDate, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, PrevMonth.TryGetValue(ti.Description, out TotalsItem prevMonthValue) ? prevMonthValue : null, IncludePreviousMonth, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, YTD.TryGetValue(ti.Description, out TotalsItem ytdValue) ? ytdValue : null, IncludeYearToDate, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, Trailing90.TryGetValue(ti.Description, out TotalsItem t90Value) ? t90Value : null, IncludeTrailing90, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, Trailing12.TryGetValue(ti.Description, out TotalsItem t12Value) ? t12Value : null, IncludeTrailing12, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, Trailing24.TryGetValue(ti.Description, out TotalsItem t24Value) ? t24Value : null, IncludeTrailing24, fLinkQuery, fUseHHMM);
-                                        AddCellForTotalsItem(tw, PrevYear.TryGetValue(ti.Description, out TotalsItem pYearValue) ? pYearValue : null, IncludePreviousYear, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, ti, true, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Last7.TryGetValue(ti.Description, out TotalsItem last7Value) ? last7Value : null, IncludeLast7Days, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, MonthToDate.TryGetValue(ti.Description, out TotalsItem monthValue) ? monthValue : null, IncludeMonthToDate, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, PrevMonth.TryGetValue(ti.Description, out TotalsItem prevMonthValue) ? prevMonthValue : null, IncludePreviousMonth, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, YTD.TryGetValue(ti.Description, out TotalsItem ytdValue) ? ytdValue : null, IncludeYearToDate, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing30.TryGetValue(ti.Description, out TotalsItem t30Value) ? t30Value : null, IncludeTrailing30, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing60.TryGetValue(ti.Description, out TotalsItem t60Value) ? t60Value : null, IncludeTrailing60, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing90.TryGetValue(ti.Description, out TotalsItem t90Value) ? t90Value : null, IncludeTrailing90, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing120.TryGetValue(ti.Description, out TotalsItem t120Value) ? t120Value : null, IncludeTrailing120, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing180.TryGetValue(ti.Description, out TotalsItem t180Value) ? t180Value : null, IncludeTrailing180, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing12.TryGetValue(ti.Description, out TotalsItem t12Value) ? t12Value : null, IncludeTrailing12, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, Trailing24.TryGetValue(ti.Description, out TotalsItem t24Value) ? t24Value : null, IncludeTrailing24, fLinkQuery, fUseHHMM);
+                                    AddCellForTotalsItem(tw, PrevYear.TryGetValue(ti.Description, out TotalsItem pYearValue) ? pYearValue : null, IncludePreviousYear, fLinkQuery, fUseHHMM);
                                     tw.RenderEndTag();  // tr
                                 }
                             }
@@ -1608,13 +1643,17 @@ namespace MyFlightbook.Currency
             // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
             SuppliedQueryHasDates = fq.DateRange != FlightQuery.DateRanges.AllTime;
             if (SuppliedQueryHasDates)
-                IncludeLast7Days = IncludeMonthToDate = IncludePreviousMonth = IncludePreviousYear = IncludeYearToDate = IncludeTrailing12 = IncludeTrailing24 = false;
+                IncludeLast7Days = IncludeMonthToDate = IncludePreviousMonth = IncludePreviousYear = IncludeYearToDate = IncludeTrailing12 = IncludeTrailing24 = IncludeTrailing30 = IncludeTrailing60 = IncludeTrailing90 = IncludeTrailing120 = IncludeTrailing180 = false;
 
             // set up the queries synchronously; there may be a race condition there.
             FlightQuery fqThisMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.ThisMonth };
             FlightQuery fqPrevMonth = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevMonth };
             FlightQuery fqYTD = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.YTD };
+            FlightQuery fqTrailing30 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing30 };
+            FlightQuery fqTrailing60 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-60), DateMax = DateTime.Now.Date.AddDays(1) };
             FlightQuery fqTrailing90 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing90 };
+            FlightQuery fqTrailing120 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-120), DateMax = DateTime.Now.Date.AddDays(1) };
+            FlightQuery fqTrailing180 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-180), DateMax = DateTime.Now.Date.AddDays(1) };
             FlightQuery fqTrailing12 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Trailing12Months };
             FlightQuery fqTrailing24 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddMonths(-24), DateMax = DateTime.Now.Date.AddDays(1) };
             FlightQuery fqPrevYear = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.PrevYear };
@@ -1626,7 +1665,11 @@ namespace MyFlightbook.Currency
                 Task.Run(() => { TotalsForQuery(fqThisMonth, IncludeMonthToDate, MonthToDate); }),
                 Task.Run(() => { TotalsForQuery(fqPrevMonth, IncludePreviousMonth, PrevMonth); }),
                 Task.Run(() => { TotalsForQuery(fqYTD, IncludeYearToDate, YTD); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing30, IncludeTrailing30, Trailing30); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing60, IncludeTrailing60, Trailing60); }),
                 Task.Run(() => { TotalsForQuery(fqTrailing90, IncludeTrailing90, Trailing90); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing120, IncludeTrailing120, Trailing120); }),
+                Task.Run(() => { TotalsForQuery(fqTrailing180, IncludeTrailing180, Trailing180); }),
                 Task.Run(() => { TotalsForQuery(fqTrailing12, IncludeTrailing12, Trailing12); }),
                 Task.Run(() => { TotalsForQuery(fqTrailing24, IncludeTrailing24, Trailing24); }),
                 Task.Run(() => { TotalsForQuery(fqPrevYear, IncludePreviousYear, PrevYear); }),
