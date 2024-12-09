@@ -283,7 +283,11 @@
                         <tr>
                             <td class="label">@Resources.Aircraft.MaintenanceOilPrompt</td>
                             <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txtLastOil", name = "aircraftLastOil", value = ac.LastOilChange });}</td>
-                            <td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
                                 <a href="#" onclick="javascript: addOilInterval(@ac.AircraftID, $('#cmbOilInterval').val(), @ac.LastOilChange, $('#divDeadlineListContainer'), $('#divMaintHistory'), 'reloadMaintLog'); return false;">@Resources.Aircraft.AddDeadlineMaintenancePrompt</a>
                                 <select id="cmbOilInterval" name="deadlineOilInterval">
                                     @foreach (int oilInterval in oilIntervals)
