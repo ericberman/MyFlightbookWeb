@@ -1622,7 +1622,6 @@
     <Content Include="Areas\mvc\Views\Print\_footerEASA.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\editAircraft.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_newAircraft.cshtml" />
-    <Content Include="Areas\mvc\Views\Aircraft\_selectMake.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_modelDrops.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_avionicsUpgrade.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_existingAircraft.cshtml" />
