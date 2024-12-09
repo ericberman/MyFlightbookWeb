@@ -138,15 +138,6 @@ namespace MyFlightbook
         {
             return Value ?? string.Empty;
         }
-
-        /// <summary>
-        /// Returns the link as either plain text or as an HTML anchor link, with the value HtmlEncoded regardless.
-        /// </summary>
-        /// <returns></returns>
-        public string ToHtmlElement()
-        {
-            return String.IsNullOrEmpty(Link) ? HttpUtility.HtmlEncode(Value) : String.Format(CultureInfo.InvariantCulture, "<a href=\"{0}\">{1}</a>", VirtualPathUtility.ToAbsolute(Link), HttpUtility.HtmlEncode(Value));
-        }
     }
 
     /// <summary>
