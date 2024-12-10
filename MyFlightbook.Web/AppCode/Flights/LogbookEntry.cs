@@ -2763,15 +2763,15 @@ WHERE f1.username = ?uName ");
             {
                 CustomFlightProperty cfpNew = lstPropsNew.FirstOrDefault(c => c.PropTypeID == cfp.PropTypeID);
                 if (cfpNew == null)
-                    lst.Add(new PropertyDelta(cfp.PropertyType.Title, cfp.ValueString, string.Empty));
+                    lst.Add(new PropertyDelta(cfp.PropertyType.Title, cfp.ValueStringFormatted(fUseHHMM), string.Empty));
                 else
                 {
-                    PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, cfp.DisplayString, cfpNew.DisplayString, lst);
+                    PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, cfp.ValueStringFormatted(fUseHHMM), cfpNew.ValueStringFormatted(fUseHHMM), lst);
                     lstPropsNew.Remove(cfpNew);
                 }
             }
             foreach (CustomFlightProperty cfp in lstPropsNew)
-                PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, string.Empty, cfp.ValueString, lst);
+                PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, string.Empty, cfp.ValueStringFormatted(fUseHHMM), lst);
 
             lst.Sort();
 

@@ -1163,6 +1163,11 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             }
         }
 
+        public string ValueStringFormatted(bool fHHMM)
+        {
+            return (fHHMM && PropertyType.Type == CFPPropertyType.cfpDecimal && !PropertyType.IsBasicDecimal) ? DecValue.ToHHMM() : ValueString;
+        }
+
         /// <summary>
         /// Return a string containing just the relevant value - read-only, culture invariant
         /// </summary>
