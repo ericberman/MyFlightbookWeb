@@ -310,6 +310,37 @@ namespace MyFlightbook.Airports
                 throw new ArgumentNullException(nameof(szAirports));
             return ListsFromRoutes(new List<string>(szAirports.Split(new string[] { RouteSeparator }, StringSplitOptions.RemoveEmptyEntries)));
         }
+
+        /// <summary>
+        /// Returns a list of airportlists for the specified query, breaking into paths if the route is meant to be shown.  Just returns alMatches if not showing routes
+        /// </summary>
+        /// <param name="fq">The flight query</param>
+        /// <param name="alMatches">An airport list of all known matches</param>
+        /// <param name="fShowRoute">True to break it into separate routes</param>
+        /// <returns></returns>
+        public static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)
+        {
+            if (alMatches == null)
+                throw new ArgumentNullException(nameof(alMatches));
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            if (!fShowRoute)
+                return new AirportList[] { alMatches };
+
+            List<AirportList> lst = new List<AirportList>();
+
+            DBHelper dbh = new DBHelper(LogbookEntryBase.QueryCommand(fq, lto: LogbookEntryCore.LoadTelemetryOption.None));
+            dbh.ReadRows((comm) => { }, (dr) =>
+            {
+                object o = dr["Route"];
+                string szRoute = (string)(o == DBNull.Value ? string.Empty : o);
+
+                if (!String.IsNullOrEmpty(szRoute))
+                    lst.Add(alMatches.CloneSubset(szRoute));
+            });
+            return lst;
+        }
         #endregion
 
         #region Extracting airports

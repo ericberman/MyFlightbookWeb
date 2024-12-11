@@ -696,7 +696,7 @@ namespace MyFlightbook.RatingsProgress
             fs1000.ExamineFlight(cfr);
         }
 
-        public string FlyingCalendar()
+        public string FlyingCalendar(bool fLink = true)
         {
             DateTime dtMonthStart = new DateTime(StartDate.Year, StartDate.Month, 1);
             DateTime dtMonthEnd = new DateTime(EndDate.Year, EndDate.Month, 1);
@@ -765,10 +765,20 @@ namespace MyFlightbook.RatingsProgress
                                     {
                                         fq.DateMax = fq.DateMin = dtDay.Date;
                                         tw.AddAttribute("class", "dateContent dateContentValue");
-                                        tw.AddAttribute("href", szBaseURL + fq.ToBase64CompressedJSONString());
-                                        tw.RenderBeginTag(HtmlTextWriterTag.A);
-                                        tw.Write(cFlights.ToString(CultureInfo.CurrentCulture));
-                                        tw.RenderEndTag(); // Anchor
+                                        if (fLink)
+                                        {
+                                            tw.AddAttribute("href", szBaseURL + fq.ToBase64CompressedJSONString());
+                                            tw.RenderBeginTag(HtmlTextWriterTag.A);
+                                            tw.Write(cFlights.ToString(CultureInfo.CurrentCulture));
+                                            tw.RenderEndTag(); // Anchor
+
+                                        }
+                                        else
+                                        {
+                                            tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                                            tw.Write(cFlights.ToString(CultureInfo.CurrentCulture));
+                                            tw.RenderEndTag(); // Anchor
+                                        }
                                     }
                                 }
                                 dtDay = dtDay.AddDays(1);

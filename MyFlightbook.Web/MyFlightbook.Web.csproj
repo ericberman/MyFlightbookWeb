@@ -1629,6 +1629,7 @@
     <Content Include="Areas\mvc\Views\Aircraft\_maintenanceLog.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\_newAircraftBody.cshtml" />
     <Content Include="Areas\mvc\Views\MFBTemplate\_linkedStringList.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\yearInReview.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

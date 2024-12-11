@@ -420,25 +420,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_visitedAirportTable");
         }
 
-        private static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)
-        {
-            if (!fShowRoute)
-                return new AirportList[] { alMatches };
-
-            List<AirportList> lst = new List<AirportList>();
-
-            DBHelper dbh = new DBHelper(LogbookEntryBase.QueryCommand(fq, lto: LogbookEntryCore.LoadTelemetryOption.None));
-            dbh.ReadRows((comm) => { }, (dr) =>
-            {
-                object o = dr["Route"];
-                string szRoute = (string)(o == DBNull.Value ? string.Empty : o);
-
-                if (!String.IsNullOrEmpty(szRoute))
-                    lst.Add(alMatches.CloneSubset(szRoute));
-            });
-            return lst;
-        }
-
         private ViewResult VisitedAirportViewForQuery(FlightQuery fq)
         {
             ViewBag.query = fq;
@@ -448,7 +429,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fShowRoute = util.GetIntParam(Request, "path", 0) != 0;
             GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
             {
-                Airports = PathsForQuery(fq, alMatches,fShowRoute)
+                Airports = AirportList.PathsForQuery(fq, alMatches,fShowRoute)
             };
             map.Options.fShowRoute = fShowRoute;
             ViewBag.Map = map;

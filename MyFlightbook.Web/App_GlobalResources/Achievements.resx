@@ -478,4 +478,11 @@
   <data name="name2024EclipseChaser" xml:space="preserve">
     <value>2024 Eclipse Chaser</value>
   </data>
+  <data name="YearInReviewHeader" xml:space="preserve">
+    <value>{0} {1} Year in Review</value>
+    <comment>{0} is the user's name, {1} is the 4-digit year</comment>
+  </data>
+  <data name="YearInReviewShareThis" xml:space="preserve">
+    <value>*Share this page!*  The URL for this page is unique and private to you, but you can share it with others and they can see your year in review!</value>
+  </data>
 </root>

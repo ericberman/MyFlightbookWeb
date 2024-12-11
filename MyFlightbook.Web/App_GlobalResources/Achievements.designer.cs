@@ -1139,5 +1139,23 @@ namespace Resources {
                 return ResourceManager.GetString("RecentStatsTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} Year in Review.
+        /// </summary>
+        internal static string YearInReviewHeader {
+            get {
+                return ResourceManager.GetString("YearInReviewHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Share this page!*  The URL for this page is unique and private to you, but you can share it with others and they can see your year in review!.
+        /// </summary>
+        internal static string YearInReviewShareThis {
+            get {
+                return ResourceManager.GetString("YearInReviewShareThis", resourceCulture);
+            }
+        }
     }
 }
