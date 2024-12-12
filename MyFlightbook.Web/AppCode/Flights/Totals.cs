@@ -1206,6 +1206,7 @@ namespace MyFlightbook.Currency
         public decimal Total { get; private set; }
         public decimal PIC { get; private set; }
         public decimal SIC { get; private set; }
+        public decimal DualReceived { get; private set; }
         #endregion
 
         /// <summary>
@@ -1250,7 +1251,8 @@ namespace MyFlightbook.Currency
                                     ClassName = szCatClass,
                                     Total = Convert.ToDecimal(dr["TotalTime"], CultureInfo.InvariantCulture),
                                     PIC = Convert.ToDecimal(dr["PIC"], CultureInfo.InvariantCulture),
-                                    SIC = Convert.ToDecimal(dr["SIC"], CultureInfo.InvariantCulture)
+                                    SIC = Convert.ToDecimal(dr["SIC"], CultureInfo.InvariantCulture),
+                                    DualReceived = Convert.ToDecimal(dr["InstructionReceived"], CultureInfo.InvariantCulture)
                                 };
                                 lst.Add(ct);
                             }

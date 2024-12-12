@@ -166,11 +166,12 @@
                             {
                                 <table style="border-collapse: collapse; width: 100%; font-size: smaller">
                                     <thead>
-                                        <tr>
+                                        <tr style="vertical-align: bottom;">
                                             <th style="border-right: 1px solid darkgray;"></th>
                                             <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldTotal</th>
                                             <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldPIC</th>
-                                            <th>@Resources.LogbookEntry.FieldSIC</th>
+                                            <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldSIC</th>
+                                            <th>@Html.Raw(Resources.LogbookEntry.FieldDual.Replace(" ", "<br />"))</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -180,7 +181,8 @@
                                                 <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.ClassName</td>
                                                 <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.Total.FormatDecimal(fUseHHMM, false)</td>
                                                 <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.PIC.FormatDecimal(fUseHHMM, false)</td>
-                                                <td style="border-top: 1px solid darkgray;">@trow.SIC.FormatDecimal(fUseHHMM, false)</td>
+                                                <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.SIC.FormatDecimal(fUseHHMM, false)</td>
+                                                <td style="border-top: 1px solid darkgray;">@trow.DualReceived.FormatDecimal(fUseHHMM, false)</td>
                                             </tr>
                                         }
                                     </tbody>
