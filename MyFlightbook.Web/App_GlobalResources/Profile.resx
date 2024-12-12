@@ -836,4 +836,16 @@
   <data name="resetPassChooseNew" xml:space="preserve">
     <value>Reset Password: Choose a new password</value>
   </data>
+  <data name="EmailYearInReviewHeader" xml:space="preserve">
+    <value>Your Year in Review</value>
+  </data>
+  <data name="EmailYearInReviewEndOfYear" xml:space="preserve">
+    <value>View a review of your flying year to date and share it with your friends!</value>
+  </data>
+  <data name="EmailYearInReviewAnnual" xml:space="preserve">
+    <value>Happy New Year!  You can find a review of your flying for the whole year last year below.  Or, you can view a more comprehensive review of your flying year to date and share it with your friends!</value>
+  </data>
+  <data name="EmailYearInReviewVisit" xml:space="preserve">
+    <value>Review your {0} flights</value>
+  </data>
 </root>

@@ -1087,6 +1087,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Happy New Year!  You can find a review of your flying for the whole year last year below.  Or, you can view a more comprehensive review of your flying year to date and share it with your friends!.
+        /// </summary>
+        internal static string EmailYearInReviewAnnual {
+            get {
+                return ResourceManager.GetString("EmailYearInReviewAnnual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View a review of your flying year to date and share it with your friends!.
+        /// </summary>
+        internal static string EmailYearInReviewEndOfYear {
+            get {
+                return ResourceManager.GetString("EmailYearInReviewEndOfYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Year in Review.
+        /// </summary>
+        internal static string EmailYearInReviewHeader {
+            get {
+                return ResourceManager.GetString("EmailYearInReviewHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review your {0} flights.
+        /// </summary>
+        internal static string EmailYearInReviewVisit {
+            get {
+                return ResourceManager.GetString("EmailYearInReviewVisit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can issue an endorsement to a student, or record an endorsement that you have given to a student off-line.
         /// </summary>
         internal static string EndorsementDisclaimer {

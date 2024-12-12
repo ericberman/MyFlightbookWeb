@@ -2246,6 +2246,58 @@ namespace MyFlightbook
 
             return lstFlights;
         }
+
+        /// <summary>
+        /// Returns sample images for the user in the specified date range; used for year in review.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="dtStart"></param>
+        /// <param name="dtEnd"></param>
+        /// <returns></returns>
+        public static IEnumerable<MFBImageInfo> SampleImagesForUserInDateRange(string szUser, DateTime dtStart, DateTime dtEnd)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            List<MFBImageInfo> lst = new List<MFBImageInfo>();
+
+            FlightQuery fq = new FlightQuery(szUser) { IsPublic = true, DateRange = FlightQuery.DateRanges.Custom, DateMin = dtStart, DateMax = dtEnd };
+            DBHelper dbh = new DBHelper(QueryCommand(fq));
+
+            List<LogbookEntry> lstFlights = new List<LogbookEntry>();
+            dbh.ReadRows(
+                (comm) => { },
+                (dr) => { lstFlights.Add(new LogbookEntry(dr, szUser)); }
+            );
+
+            HashSet<int> acids = new HashSet<int>();
+            foreach (LogbookEntry le in lstFlights)
+            {
+                le.PopulateImages();
+                if (le.FlightImages.Count > 0)
+                    lst.AddRange(le.FlightImages);
+                acids.Add(le.AircraftID);
+            }
+
+            // Add in any aircraft images if no public images have been found.
+            if (!lst.Any())
+            {
+                UserAircraft ua = new UserAircraft(szUser);
+                foreach (int id in acids)
+                {
+                    Aircraft ac = ua[id];
+                    if (ac != null)
+                    {
+                        if (!ac.ImagesHaveBeenFilled)
+                            ac.PopulateImages();
+                        if (ac.AircraftImages.Any())
+                            lst.Add(ac.AircraftImages[0]);
+                    }
+                }
+            }
+
+            return lst;
+        }
         #endregion
 
         /// <summary>

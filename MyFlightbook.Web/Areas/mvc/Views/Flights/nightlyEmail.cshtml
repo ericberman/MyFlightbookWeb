@@ -73,8 +73,10 @@
     TimeRollup tr = new TimeRollup(Username, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };
     tr.Bind();
 
-    DateTime dtRAStart = fAnnual ? new DateTime(DateTime.Now.Year - 1, 1, 1) : new DateTime(DateTime.Now.Year, 1, 1);
-    DateTime dtRaEnd = fAnnual ? new DateTime(DateTime.Now.Year - 1, 12, 31) : DateTime.Now;
+    int year = fAnnual ? DateTime.Now.Year - 1 : DateTime.Now.Year;
+
+    DateTime dtRAStart = new DateTime(year, 1, 1);
+    DateTime dtRaEnd = fAnnual ? new DateTime(year, 12, 31) : DateTime.Now;
 
     RecentAchievements ra = new RecentAchievements(dtRAStart, dtRaEnd) { Username = Username, AutoDateRange = false };
 
@@ -106,6 +108,16 @@
                 <p><a style="font-weight:bold;" href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/donate"))">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></p>
             }
         </div>
+        @if (fAnnual || (DateTime.Now.Date.Month == 12 && DateTime.Now.Date.Day > 10))
+        {
+            <div style="max-width: 80%; margin-top: 20pt; margin-bottom: 20pt; margin-left: auto; margin-right: auto; border: 1px solid lightgray; border-radius: 5pt; padding: 5pt; text-align: center;">
+                <h2 style="font-size: 18pt; font-weight: bold;">@Resources.Profile.EmailYearInReviewHeader</h2>
+                <p>
+                    @(fAnnual ? Resources.Profile.EmailYearInReviewAnnual : Resources.Profile.EmailYearInReviewEndOfYear)
+                    <a href="@($"~/mvc/pub/yearinreview?year={year}".ToAbsoluteURL("https", Branding.CurrentBrand.HostName))">@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailYearInReviewVisit, fAnnual ? DateTime.Now.Year - 1 : DateTime.Now.Year)</a>
+                </p>
+            </div>
+        }
         @if (fHasCurrency || fMonthlySummary)
         {
             <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailCurrencyHeader, DateTime.Now.ToLongDateString())</h2>

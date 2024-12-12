@@ -2,6 +2,7 @@
 @using MyFlightbook.RatingsProgress
 @using MyFlightbook.Mapping
 @using MyFlightbook.Airports
+@using MyFlightbook.Image
 @{
     int year = ViewBag.year;
     string szUser = ViewBag.user;
@@ -19,6 +20,8 @@
 
     double distance = VisitedAirport.DistanceFlownByUser(fq, false, out string szErr);
 
+    IEnumerable<MFBImageInfo> lstImages = LogbookEntry.SampleImagesForUserInDateRange(szUser, dtStart, dtEnd);
+
     string szDistance = (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : string.Empty;
 
 
@@ -35,6 +38,7 @@
         line-height: 24pt;
         margin-top: 24pt;
     }
+
     .bigDate {
         font-size: 48pt;
         font-weight: bold;
@@ -42,17 +46,41 @@
         margin-left: auto;
         margin-right: auto;
         margin-top: 24pt;
+        margin-bottom: 24pt;
         width: 6em;
         text-align: center;
         background-color: lightgray;
         border-radius: 5pt;
     }
+    .ownerCallout {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: larger;
+        padding: 5pt;
+    }
 </style>
 @if (User.Identity.IsAuthenticated && szUser.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
 {
-    <p class="callout" style="margin-left: auto; margin-right: auto; font-size: larger;">@Html.Raw(Resources.Achievements.YearInReviewShareThis.Linkify())</p>
+    <div class="callout ownerCallout">
+        @Html.Raw(Resources.Achievements.YearInReviewShareThis.Linkify())
+        <div style="text-align: center;">
+            @using (Html.BeginForm("YearInReviewPub", "Pub", FormMethod.Get, new { id = "frmPickYear" }))
+            {
+                <input type="hidden" name="uid" value="@(Request["uid"])" />
+                <select name="year" onchange="javascript: $('#frmPickYear')[0].submit();">
+                    @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 20; i--)
+                    {
+                        <option value="@i" @((i == year).ToSelected())>@i</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
 }
 <div class="bigDate shadowed">@year.ToString(CultureInfo.InvariantCulture)</div>
+<div style="max-width:480px; margin-left:auto; margin-right:auto;">
+    @{ Html.RenderAction("ImageSlider", "Image", new { rgImages = lstImages, id = "divSlider" }); }
+</div>
 <div class="reviewSectionHead">
     <span id="lblRecentAchievementsTitle">@String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentStatsTitle, ra.StartDate, ra.EndDate)</span>
     <img style="vertical-align:text-bottom;" src="@VirtualPathUtility.ToAbsolute("~/images/copyflight.png")" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
@@ -76,17 +104,17 @@
 @if (regions.Any())
 {
     <div class="reviewSectionHead"><img src="@("~/Images/BadgeOverlays/globe.png".ToAbsolute())" style="vertical-align:middle;"> @Resources.Airports.ViewRegions <span style="font-weight: unset; font-size: unset;">@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }</span></div>
-  
+
     <div>
         @foreach (VisitedRegion vr in regions)
         {
-        <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
-            <div style="font-size: larger; font-weight: bold;">@vr.Name</div>
-            @foreach (VisitedRegion admin1 in vr.SubRegions)
-            {
-                <div>@admin1.Name</div>
-            }
-        </div>
+            <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
+                <div style="font-size: larger; font-weight: bold;">@vr.Name</div>
+                @foreach (VisitedRegion admin1 in vr.SubRegions)
+                {
+                    <div>@admin1.Name</div>
+                }
+            </div>
         }
     </div>
 }

@@ -171,7 +171,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Year in Review
         private static string YearInReviewPrefix(int year) => $"ReviewYear{year}";
 
-        private static int DefaultYear(int year) => (year < 0) ? DateTime.Now.Date.AddDays(-1).Year : year;
+        private static int DefaultYear(int year)
+        {
+            return (year < 0) ? DateTime.Now.Date.AddDays(-1).Year : year;
+        }
 
         [HttpGet]
         public ActionResult YearInReviewPub(string uid, int year = -1)
@@ -193,7 +196,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult YearInReview(int year = -1)
         {
-            return RedirectToAction("YearInReviewPub", new { uid = new SharedDataEncryptor(string.Empty).Encrypt($"{YearInReviewPrefix(DefaultYear(year))},{User.Identity.Name}"), year });
+            return RedirectToAction("YearInReviewPub", new { uid = new SharedDataEncryptor(string.Empty).Encrypt($"{YearInReviewPrefix(DefaultYear(year))},{User.Identity.Name}"), year = DefaultYear(year) });
         }
         #endregion
 
