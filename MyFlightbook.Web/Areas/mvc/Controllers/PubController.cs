@@ -182,7 +182,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             try
             {
                 string[] rgsz = new SharedDataEncryptor(string.Empty).Decrypt(uid).SplitCommas();
-                ViewBag.user = rgsz.Length == 2 ? rgsz[1] : null;
+                ViewBag.user = rgsz.Length == 2 ? rgsz[1] : throw new UnauthorizedAccessException();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
