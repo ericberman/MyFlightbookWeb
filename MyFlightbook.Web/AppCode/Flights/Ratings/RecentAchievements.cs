@@ -212,8 +212,9 @@ namespace MyFlightbook.RatingsProgress
         // Furthest flight
         protected double FurthestFlightDistance { get; set; }
         
+        protected UserAircraft userAircraft {get; private set;}
         // Distinct aircraft/models
-        protected HashSet<int> DistinctAircraft { get; private set; } = new HashSet<int>();
+        protected HashSet<string> DistinctAircraft { get; private set; } = new HashSet<string>();
         protected HashSet<int> DistinctModels { get; private set; } = new HashSet<int>();
         protected HashSet<string> DistinctICAO { get; private set; } = new HashSet<string>();
 
@@ -633,7 +634,11 @@ namespace MyFlightbook.RatingsProgress
             ExamineExtremes(szDateKey, cfr);
 
             // Distinct aircraft/models
-            DistinctAircraft.Add(cfr.idAircraft);
+            if (userAircraft == null)
+                userAircraft = new UserAircraft(Username);
+            Aircraft ac = userAircraft[cfr.idAircraft];
+            string szDisplay = cfr.FlightProps.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropAircraftRegistration);
+            DistinctAircraft.Add(ac.IsAnonymous && !String.IsNullOrEmpty(szDisplay) ? szDisplay : ac.NormalizedTail);
             DistinctModels.Add(cfr.idModel);
             DistinctICAO.Add(cfr.szFamily);
 
