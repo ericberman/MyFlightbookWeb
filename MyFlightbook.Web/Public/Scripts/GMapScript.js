@@ -165,6 +165,10 @@ function MFBMap()
 
             mfbMap.ShowOverlays();
             mfbMap.ZoomOut();
+            mfbMap.showHideLabels(mfbMap.gmap);
+        });
+        google.maps.event.addListener(this.gmap, 'idle', function () {
+            mfbMap.showHideLabels(mfbMap.gmap);
         });
 
         var zoomControl = document.createElement('div');
@@ -190,6 +194,7 @@ function MFBMap()
 
         google.maps.event.addListener(this.gmap, 'dragend', this.autofillPanZoom);
         google.maps.event.addListener(this.gmap, 'zoom_changed', this.autofillPanZoom);
+        google.maps.event.addListener(this.gmap, 'tilesloaded', () => { this.showHideLabels(this.gmap); });
 
         return this.gmap;
     };
@@ -226,6 +231,7 @@ function MFBMap()
                             mfbMap.rgAirports = new Array();
                             mfbMap.rgAirports.push(rgAirports);
                             mfbMap.ShowOverlays();
+                            mfbMap.showHideLabels(mfbMap.gmap);
                         }
                     });
             }
@@ -235,13 +241,13 @@ function MFBMap()
                 mfbMap.ShowOverlays();
             }
         }
-        mfbMap.showHideLabels();
+        mfbMap.showHideLabels(mfbMap.gmap);
     };
 
-    this.showHideLabels = function() {
+    this.showHideLabels = function(m) {
         // show/hide labels for airports
         var labels = $(".airportMapLabel");
-        if (getMfbMap().gmap.getZoom() > 6)
+        if (m.getZoom() > 6)
             labels.show(400);
         else
             labels.hide(400);
@@ -256,7 +262,7 @@ function MFBMap()
         else
             this.gmap.fitBounds(gBoundsMap);
         this.gmap.setCenter(gBoundsMap.getCenter());
-        this.showHideLabels();
+        this.showHideLabels(this.gmap);
     };
     
     this.showAirport = function (lat, lon) {
@@ -300,13 +306,13 @@ function MFBMap()
         if (name != '') {
             var labeledElement = document.createElement('div');
             labeledElement.style.padding = '4px';
-            labeledElement.style.backgroundColor = '#FFFFFFCC';
+            labeledElement.style.backgroundColor = '#DDDDDDDD';
             labeledElement.style.textAlign = "center";
             labeledElement.style.borderRadius = "5px";
             labeledElement.style.marginBottom = "-5px";
             labeledElement.innerText = name;
             labeledElement.className = "airportMapLabel";
-            if (this.defaultZoom <= 6)
+            if (this.gmap.getZoom() <= 6)
                 labeledElement.style.display = "none";
             contentRoot.appendChild(labeledElement);
         }
@@ -371,13 +377,13 @@ function MFBMap()
             if (airport.Type === "Airport") {
                 sz += "<a href=\"http://www.aopa.org/airports/" + airport.Code + "\" target=\"_blank\">Get Airport Info for " + airport.Code + "</a><br />";
                 sz += "<a href=\"http://www.aopa.org/wx/#a=" + airport.Code + "\" target=\"_blank\">Get Current weather at " + airport.Code + "</a><br />";
-                name = airport.Code;
             }
             else
                 sz += airport.Type + "<br />";
 
             sz += "<a href=\"javascript:gmapForMapID('" + mapID + "').showAirport(" + airport.latitude + ", " + airport.longitude + ")\">Zoom in</a>";
             icon = this.iconForType(airport.Type);
+            name = airport.Code;
         }
 
         return this.createMarker(point, name, icon, sz);

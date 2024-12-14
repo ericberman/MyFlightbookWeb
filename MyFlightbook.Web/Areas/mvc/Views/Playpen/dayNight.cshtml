@@ -39,7 +39,7 @@
         <tr>
             <td>Airport:<br /><span class="fineprint">(optional)</span></td>
             <td>
-                <input type="text" placeholder="Airport Code" id="txtAirport" name="airport" />
+                <input type="text" placeholder="Airport Code" id="txtAirport" name="airport" value="@(Request["airport"] ?? string.Empty)" />
                 <button id="btnSearch" type="button" onclick="javascript: findAirport();">Search</button>
                 <span id="lblNotFound"></span>
             </td>
@@ -99,6 +99,8 @@
             success: function (response) {
                 $("#txtLat")[0].valueAsNumber = response.Latitude;
                 $("#txtLon")[0].valueAsNumber = response.Longitude;
+                getMfbMap().clearMarkers();
+                dropPin(nll(response.Latitude, response.Longitude), '');
             }
         });
     }
@@ -113,7 +115,7 @@
 
     function dropPin(p, s) {
         var gm = getMfbMap();
-        gm.addEventMarker(p, s);
+        gm.createNavaidMarker(p, s, null, gm.id)
     }
 
     $(function () {
@@ -124,14 +126,18 @@
             }
         });
     });
-
-    @if (ViewBag.sunriseUTC != null)
-    {
-        @:$(document).ready(function() {
-            @:dropPin(nll(@ViewBag.latitude.ToString(System.Globalization.CultureInfo.InvariantCulture), @ViewBag.longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)), 'selected point');
-            @:$('#lblSunRise').text(new Date('@ViewBag.sunriseUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
-            @:$('#lblSunSet').text(new Date('@ViewBag.sunsetUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
-        @:});
-    }
         //]]>
 </script>
+@if (ViewBag.sunriseUTC != null)
+{
+    <script type="text/javascript">
+        $(() => {
+            deferMapLoad(() => {
+                dropPin(nll(@ViewBag.latitude.ToString(System.Globalization.CultureInfo.InvariantCulture), @ViewBag.longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)), '');
+            });
+            $('#lblSunRise').text(new Date('@ViewBag.sunriseUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
+            $('#lblSunSet').text(new Date('@ViewBag.sunsetUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture)').toLocaleTimeString());
+        });
+    </script>
+}
+

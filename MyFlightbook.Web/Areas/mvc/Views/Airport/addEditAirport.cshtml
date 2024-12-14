@@ -48,7 +48,7 @@
             form.validate();
             form.validate().element("#Latitude");
             form.validate().element("#Longitude");
-            getMfbMap().clickMarker(point, $("#txtFacilityName")[0].value, $("#cmbTypeCode").val(), "<a href=\"javascript:zoomForAirport();\">Zoom in</a>");
+            getMfbMap().clickMarker(point, $("#Code").val(), $("#cmbTypeCode").val(), "<a href=\"javascript:zoomForAirport();\">Zoom in</a>");
         }
     }
 
