@@ -307,6 +307,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ViewBag.WebinarText = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.LocalStart.ToShortDateString()).Linkify();
                 ViewBag.WebinarDetails = se.Body.Linkify(true);
             }
+            ViewBag.dtYearInReview = DateTime.Now.AddDays(-1).Date;
 
             return PartialView("_header");
         }

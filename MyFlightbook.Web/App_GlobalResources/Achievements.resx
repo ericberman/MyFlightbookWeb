@@ -485,4 +485,7 @@
   <data name="YearInReviewShareThis" xml:space="preserve">
     <value>*Share this page!*  The URL for this page is unique and private to you, but you can share it with others and they can see your year in review!</value>
   </data>
+  <data name="YearInReviewHeaderBanner" xml:space="preserve">
+    <value>Your *{0}* year in review is ready to view!</value>
+  </data>
 </root>

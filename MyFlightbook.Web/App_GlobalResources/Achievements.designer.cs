@@ -1150,6 +1150,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your *{0}* year in review is ready to view!.
+        /// </summary>
+        internal static string YearInReviewHeaderBanner {
+            get {
+                return ResourceManager.GetString("YearInReviewHeaderBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to *Share this page!*  The URL for this page is unique and private to you, but you can share it with others and they can see your year in review!.
         /// </summary>
         internal static string YearInReviewShareThis {
