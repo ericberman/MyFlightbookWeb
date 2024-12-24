@@ -64,11 +64,10 @@
     <div class="callout ownerCallout">
         @Html.Raw(Resources.Achievements.YearInReviewShareThis.Linkify())
         <div style="text-align: center;">
-            @using (Html.BeginForm("YearInReviewPub", "Pub", FormMethod.Get, new { id = "frmPickYear" }))
+            @using (Html.BeginForm("YearInReview", "Pub", FormMethod.Get, new { id = "frmPickYear" }))
             {
-                <input type="hidden" name="uid" value="@(Request["uid"])" />
                 <select name="year" onchange="javascript: $('#frmPickYear')[0].submit();">
-                    @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 20; i--)
+                    @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 40; i--)
                     {
                         <option value="@i" @((i == year).ToSelected())>@i</option>
                     }

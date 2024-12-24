@@ -183,6 +183,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 string[] rgsz = new SharedDataEncryptor(string.Empty).Decrypt(uid).SplitCommas();
                 ViewBag.user = rgsz.Length == 2 ? rgsz[1] : throw new UnauthorizedAccessException();
+                // Limit the sharing to the explicitly shared year
+                if (rgsz[0].CompareCurrentCultureIgnoreCase(YearInReviewPrefix(DefaultYear(year))) != 0)
+                    throw new UnauthorizedAccessException();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {

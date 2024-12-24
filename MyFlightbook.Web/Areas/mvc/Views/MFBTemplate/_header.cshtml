@@ -14,7 +14,7 @@
                             Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "searchBox", placeholder = Resources.LocalizedText.SearchBoxWatermark });
                         }
                     </div>
-                        </div>
+                </div>
                 <div id="headerLoginStatus">
                     @{
                         if (User.Identity.IsAuthenticated)
@@ -35,8 +35,8 @@
                                     <input type="submit" style="display:none;" id="signOut" />
                                 }
                             </div>
-                            }
                         }
+                    }
                     <div id="headerWelcome">
                         @{
                             if (User.Identity.IsAuthenticated)
@@ -58,37 +58,8 @@
         </div>
         <div id="headerMiddleContainer">
             @{
-                if (String.IsNullOrEmpty(ViewBag.WebinarText))
-                {
-                        <div id="headerMobileCrossSell">
-                            <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
-                            @{
-                                if (Request != null && Request.UserAgent != null)
-                                {
-                                    string s = Request.UserAgent.ToUpperInvariant();
-
-                                    if (s.Contains("IPHONE"))
-                                    {
-                                        <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPhone")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
-                                    }
-                                    else if (s.Contains("IPAD"))
-                                    {
-                                        <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPad")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
-                                    }
-                                    else if (s.Contains("DROID"))
-                                    {
-                                        <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=Android")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
-                                    }
-                                    else
-                                    {
-                                        <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
-                                        @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
-                                    }
-                                }
-                            }
-                        </div>
-                }
-                else
+                DateTime dtEndOfYear = ViewBag.dtYearInReview;
+                if (!String.IsNullOrEmpty(ViewBag.WebinarText))
                 {
                     <div class="calloutSmall calloutBackground shadowed" style="height: 32px; line-height: 32px; text-align: center;">
                         <span onclick="showWebinar();" class="displayPop" style="vertical-align:middle">@Html.Raw(ViewBag.WebinarText)</span>
@@ -102,6 +73,42 @@
                             $("#webinarPop").dialog({ autoOpen: true, closeOnEscape: true, width: 400, modal: true });
                         }
                     </script>
+                }
+                else if (User.Identity.IsAuthenticated && dtEndOfYear.Month == 12 && dtEndOfYear.Day > 14)
+                {
+                    <div class="calloutSmall calloutBackground shadowed" style="line-height: 18pt; font-size: larger; text-align: center;">
+                        <a href="@("~/mvc/pub/yearinreview".ToAbsolute())">@Html.Raw(String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Achievements.YearInReviewHeaderBanner, dtEndOfYear.Year).Trim().Linkify())</a>
+                    </div>
+                }
+                else
+                {
+                    <div id="headerMobileCrossSell">
+                        <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
+                        @{
+                            if (Request != null && Request.UserAgent != null)
+                            {
+                                string s = Request.UserAgent.ToUpperInvariant();
+
+                                if (s.Contains("IPHONE"))
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPhone")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
+                                }
+                                else if (s.Contains("IPAD"))
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPad")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
+                                }
+                                else if (s.Contains("DROID"))
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=Android")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
+                                }
+                                else
+                                {
+                                    <a href='@VirtualPathUtility.ToAbsolute("~/Public/MobileApps.aspx")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
+                                    @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
+                                }
+                            }
+                        }
+                    </div>
                 }
             }
             <div id="headerMenuContainer">
