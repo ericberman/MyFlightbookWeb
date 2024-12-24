@@ -165,6 +165,10 @@ function MFBMap()
 
             mfbMap.ShowOverlays();
             mfbMap.ZoomOut();
+            mfbMap.showHideLabels(mfbMap.gmap);
+        });
+        google.maps.event.addListener(this.gmap, 'idle', function () {
+            mfbMap.showHideLabels(mfbMap.gmap);
         });
 
         var zoomControl = document.createElement('div');
@@ -190,6 +194,7 @@ function MFBMap()
 
         google.maps.event.addListener(this.gmap, 'dragend', this.autofillPanZoom);
         google.maps.event.addListener(this.gmap, 'zoom_changed', this.autofillPanZoom);
+        google.maps.event.addListener(this.gmap, 'tilesloaded', () => { this.showHideLabels(this.gmap); });
 
         return this.gmap;
     };
@@ -226,6 +231,7 @@ function MFBMap()
                             mfbMap.rgAirports = new Array();
                             mfbMap.rgAirports.push(rgAirports);
                             mfbMap.ShowOverlays();
+                            mfbMap.showHideLabels(mfbMap.gmap);
                         }
                     });
             }
@@ -235,7 +241,17 @@ function MFBMap()
                 mfbMap.ShowOverlays();
             }
         }
+        mfbMap.showHideLabels(mfbMap.gmap);
     };
+
+    this.showHideLabels = function(m) {
+        // show/hide labels for airports
+        var labels = $(".airportMapLabel");
+        if (m.getZoom() > 6)
+            labels.show(400);
+        else
+            labels.hide(400);
+    }
     
     this.ZoomOut = function () {
         var gBoundsMap = new google.maps.LatLngBounds(new google.maps.LatLng(this.minLat, this.minLong),
@@ -246,6 +262,7 @@ function MFBMap()
         else
             this.gmap.fitBounds(gBoundsMap);
         this.gmap.setCenter(gBoundsMap.getCenter());
+        this.showHideLabels(this.gmap);
     };
     
     this.showAirport = function (lat, lon) {
@@ -283,12 +300,37 @@ function MFBMap()
     
     this.createMarker = function (point, name, icon, szHtml) {
         var mfbmarker = new MFBMarker();
+
+        var contentRoot = document.createElement('div');
+
+        if (name != '') {
+            var labeledElement = document.createElement('div');
+            labeledElement.style.padding = '4px';
+            labeledElement.style.backgroundColor = '#DDDDDDDD';
+            labeledElement.style.textAlign = "center";
+            labeledElement.style.borderRadius = "5px";
+            labeledElement.style.marginBottom = "-5px";
+            labeledElement.innerText = name;
+            labeledElement.className = "airportMapLabel";
+            if (this.gmap.getZoom() <= 6)
+                labeledElement.style.display = "none";
+            contentRoot.appendChild(labeledElement);
+        }
+
+        var iconDiv = document.createElement('div');
+        iconDiv.style.width = "100%";
+        iconDiv.style.textAlign = "center";
+        contentRoot.appendChild(iconDiv);
+
         var iconElement = document.createElement('img');
         iconElement.src = icon.url;
         iconElement.style.width = icon.scaledSize.width + "px";
         iconElement.style.height = icon.scaledSize.height + "px";
         iconElement.style.transform = "translate(" + icon.anchor.x + "px, " + icon.anchor.y + "px)";
-        mfbmarker.marker = new google.maps.marker.AdvancedMarkerElement({ position: point, content: iconElement, map: this.gmap, title: name });
+        iconElement.style.margin = "0";
+        iconDiv.appendChild(iconElement);
+
+        mfbmarker.marker = new google.maps.marker.AdvancedMarkerElement({ position: point, content: contentRoot, map: this.gmap, title: name });
         mfbmarker.bodyHTML = '<div style="min-width:250px;">' + szHtml + '</div>';
         mfbmarker.mfbMap = this;
 
@@ -325,6 +367,7 @@ function MFBMap()
     this.createNavaidMarker = function (point, title, airport, mapID) {
         var sz;
         sz = "<b>" + title + "</b><br />";
+        var name = '';
         var icon;
         if (!airport) {
             sz = title;
@@ -340,19 +383,19 @@ function MFBMap()
 
             sz += "<a href=\"javascript:gmapForMapID('" + mapID + "').showAirport(" + airport.latitude + ", " + airport.longitude + ")\">Zoom in</a>";
             icon = this.iconForType(airport.Type);
+            name = airport.Code;
         }
 
-        return this.createMarker(point, '', icon, sz);
+        return this.createMarker(point, name, icon, sz);
     };
     
     this.createImageMarker = function (point, i, mapID) {
         var szImg = "<a href=\"" + this.rgImages[i].hrefFull + "\" target=\"_blank\"><img src=\"" + this.rgImages[i].hrefThumb + "\"></a>";
         var szZoom = "<a href=\"javascript:gmapForMapID('" + mapID + "').showImage(" + i + ")\">Zoom in</a>";
         var szDiv = "<div style='text-align: center'>" + szZoom + "<br />" + szImg + "<br /><p>" + this.rgImages[i].comment + "</p></div>";
-        var szName = "Photograph";
         var img = this.rgImages[i];
         var icon = { url: this.rgImages[i].hrefThumb, scaledSize: new google.maps.Size(img.width, img.height), anchor: new google.maps.Point(img.width / 2, img.height / 2) };
-        return this.createMarker(point, szName, icon, szDiv);
+        return this.createMarker(point, '', icon, szDiv);
     };
     
     this.clickMarker = function (point, name, type, szHtml) {
