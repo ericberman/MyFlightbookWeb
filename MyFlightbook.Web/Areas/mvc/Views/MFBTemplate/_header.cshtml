@@ -77,7 +77,9 @@
                 else if (User.Identity.IsAuthenticated && dtEndOfYear.Month == 12 && dtEndOfYear.Day > 14)
                 {
                     <div class="calloutSmall calloutBackground shadowed" style="line-height: 18pt; font-size: larger; text-align: center;">
+                        <img src="@("~/images/BadgeOverlays/calendar.png".ToAbsolute())" style="vertical-align: middle; height: 18pt; width: 18pt;" />
                         <a href="@("~/mvc/pub/yearinreview".ToAbsolute())">@Html.Raw(String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Achievements.YearInReviewHeaderBanner, dtEndOfYear.Year).Trim().Linkify())</a>
+                        <img src="@("~/images/BadgeOverlays/calendar.png".ToAbsolute())" style="vertical-align: middle; height: 18pt; width: 18pt;" />
                     </div>
                 }
                 else
