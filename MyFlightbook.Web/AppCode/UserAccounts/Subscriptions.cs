@@ -200,6 +200,8 @@ namespace MyFlightbook.Subscriptions
         /// </summary>
         private async Task<bool> SendNightlyEmails()
         {
+            EventRecorder.LogCall("Sending nightly emails");
+
             // Find all users who qualify for expiring currency notifications - they may trigger an early email.
             List<EarnedGratuity> lstUsersWithExpiringCurrencies = EarnedGratuity.GratuitiesForUser(null, Gratuity.GratuityTypes.CurrencyAlerts);
             if (!String.IsNullOrEmpty(UserRestriction))
@@ -276,6 +278,8 @@ namespace MyFlightbook.Subscriptions
                         new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
                 }
             }
+
+            EventRecorder.LogCall("Done with nightly emails");
 
             return true;
         }
@@ -660,12 +664,14 @@ namespace MyFlightbook.Subscriptions
                     if (szResult.Contains("-- SuccessToken --"))
                     {
                         util.NotifyUser(szSubject, szResult, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
+                        EventRecorder.LogCall($"SendMailForUser - sent for {pf.UserName}");
                         return true;
                     }
                     return !String.IsNullOrEmpty(szResult);
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is MyFlightbookException || !(ex is OutOfMemoryException))  // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
                 {
+                    EventRecorder.LogCall($"SendMailForUser - FAILURE for {pf.UserName} - {ex.Message}");
                     return false;
                 }
             });
