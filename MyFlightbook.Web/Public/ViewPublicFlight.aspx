@@ -1,1 +1,1 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="ViewPublicFlight.aspx.cs" Inherits="MyFlightbook.PublicPages.ViewPublicFlight" Title="" %>
+<%@ Page Language="C#" AutoEventWireup="true" Codebehind="ViewPublicFlight.aspx.cs" Inherits="MyFlightbook.PublicPages.ViewPublicFlight" Title="" %>

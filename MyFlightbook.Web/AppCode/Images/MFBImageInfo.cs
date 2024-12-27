@@ -386,7 +386,7 @@ namespace MyFlightbook.Image
                 case MFBImageInfoBase.ImageClass.Flight:
                     return "~/mvc/flightedit/flight/{0}?a=1";
                 case MFBImageInfoBase.ImageClass.Aircraft:
-                    return "~/member/EditAircraft.aspx?a=1&id={0}";
+                    return AircraftUtility.EditLinkTemplate + "?a=1";
                 default:
                     return string.Empty;
             }

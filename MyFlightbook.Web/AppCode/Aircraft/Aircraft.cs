@@ -1289,9 +1289,9 @@ ORDER BY user ASC");
             Clone(idProposedModel, new string[] { szUser });
             Profile pf = Profile.GetUser(szUser);
             util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} cloned", DisplayTailnumber),
-                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}{9}?id={4}&a=1\r\n\r\nOld Model: {5}, (modelID: {6})\r\n\r\nNew Model: {7}, (modelID: {8})",
+                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}{9}/{4}?a=1\r\n\r\nOld Model: {5}, (modelID: {6})\r\n\r\nNew Model: {7}, (modelID: {8})",
                 pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName + " " + mmOld.ICAODisplay, mmOld.MakeModelID, mmNew.DisplayName + " " + mmNew.ICAODisplay, mmNew.MakeModelID,
-                VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx")), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
+                VirtualPathUtility.ToAbsolute("~/mvc/aircraft/edit")), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
             return true;
         }
 
@@ -1680,7 +1680,7 @@ ORDER BY user ASC");
                 return;
 
             util.NotifyAdminEvent(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName.Replace("_", "__"),
-                String.Format(CultureInfo.InvariantCulture,"https://{0}{1}?id={2}&a=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), AircraftID),
+                String.Format(CultureInfo.InvariantCulture,"https://{0}{1}{2}?a=1", Branding.CurrentBrand.HostName, "~/mvc/aircraft/edit/".ToAbsolute(), AircraftID),
                 String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), false), ProfileRoles.maskCanManageData);
 
             // If we're here, then there are other users - need to notify all of them of the change.
@@ -2415,6 +2415,19 @@ OR (aircraft.tailnormal IN ('{5}'))";
 
             return lst;
         }
+
+        /// <summary>
+        /// Return the link to edit an aircraft, optionally including an admin link.
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft</param>
+        /// <param name="fAdmin">True for the link to be admin-only</param>
+        /// <returns></returns>
+        public static string EditLink(int idAircraft, bool fAdmin = false)
+        {
+            return String.Format(CultureInfo.InvariantCulture, EditLinkTemplate, idAircraft).ToAbsolute() + (fAdmin ? "?a=1" : string.Empty);
+        }
+
+        public const string EditLinkTemplate = "~/mvc/Aircraft/edit/{0}";
 
         /// <summary>
         /// Admin function to merge an old aircraft into a new one

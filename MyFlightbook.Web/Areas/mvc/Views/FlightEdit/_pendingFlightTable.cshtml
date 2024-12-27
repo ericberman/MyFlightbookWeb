@@ -83,7 +83,7 @@
                     }
                     else
                     {
-                        <a class="popTrigger" href="@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID).ToAbsolute()">@ac.DisplayTailnumber</a>
+                        <a class="popTrigger" href="@AircraftUtility.EditLink(ac.AircraftID)">@ac.DisplayTailnumber</a>
                         <div class="popMenuContent popMenuHidden hintPopup" style="margin-top: -60px; margin-left: 50px">
                             <div style="text-align: center">@pf.ModelDisplay</div>
                             @foreach (MFBImageInfo img in ac.AircraftImages)

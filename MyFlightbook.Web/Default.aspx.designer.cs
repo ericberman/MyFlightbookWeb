@@ -11,18 +11,4 @@
 
 public partial class Public_Home
 {
-
-    /// <summary>
-    /// Master property.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated property.
-    /// </remarks>
-    public new MyFlightbook.Web.MasterPage Master
-    {
-        get
-        {
-            return ((MyFlightbook.Web.MasterPage)(base.Master));
-        }
-    }
 }

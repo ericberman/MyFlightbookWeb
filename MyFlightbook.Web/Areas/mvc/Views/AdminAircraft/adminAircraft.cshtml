@@ -433,7 +433,7 @@
                             <a target="_blank" href="@szLink">@amm.aircraft.TailNumber</a>
                         }
                     </td>
-                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/Member/EditAircraft.aspx?id={0}&a=1", amm.aircraft.AircraftID))">@amm.aircraft.DisplayTailnumber</a></td>
+                    <td><a target="_blank" href="@AircraftUtility.EditLink(amm.aircraft.AircraftID, true)">@amm.aircraft.DisplayTailnumber</a></td>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/mvc/Aircraft/ViewModel/{0}?a=1", amm.currentModel.MakeModelID))">@amm.currentModel.MakeModelID</a></td>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format("~/mvc/Aircraft/ViewModel/{0}?a=1", amm.targetModel.MakeModelID))">@amm.targetModel.MakeModelID</a></td>
                     <td><button type="button" onclick="javascript: mapModel(this, '@(JsonConvert.SerializeObject(amm, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling=NullValueHandling.Ignore }))');">Map it!</button></td>

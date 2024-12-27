@@ -84,7 +84,7 @@
         </div>
     </div>
     <div class="itemtime">
-        <div class="itemlabel">@Resources.Aircraft.AircraftHeader <a href="#" onclick="javascript: addAircraft('@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id=-1&Ret={0}", HttpUtility.UrlEncode(Request.Url.PathAndQuery)).ToAbsolute()'); return false;">@Resources.LogbookEntry.EditFlightAddAircraft</a></div>
+        <div class="itemlabel">@Resources.Aircraft.AircraftHeader <a href="#" onclick="javascript: addAircraft('@String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/new?Ret={0}", HttpUtility.UrlEncode(Request.Url.PathAndQuery)).ToAbsolute()'); return false;">@Resources.LogbookEntry.EditFlightAddAircraft</a></div>
         <div class="itemdata">
             <input type="hidden" id="hdnLastTail" value="@le.AircraftID" />
             <select id="cmbAircraft" name="flightAircraft" required style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" onchange="javascript: aircraftSelected(this, @Json.Encode(fHHMM), allAircraft)">

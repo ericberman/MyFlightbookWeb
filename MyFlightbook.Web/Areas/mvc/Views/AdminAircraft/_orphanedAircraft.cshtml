@@ -25,7 +25,7 @@ else
             {
                 <tr>
                     <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick="javascript: deleteOrphans(@ac.AircraftID);" /></td>
-                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.TailNumber</a></td>
+                    <td><a target="_blank" href="@AircraftUtility.EditLink(ac.AircraftID, true)">@ac.TailNumber</a></td>
                     <td>@ac.ModelCommonName</td>
                     <td>@ac.Version</td>
                     <td>@ac.InstanceTypeDescription</td>

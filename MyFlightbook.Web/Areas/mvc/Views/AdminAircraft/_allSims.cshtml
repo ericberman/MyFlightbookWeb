@@ -25,7 +25,7 @@ else
             {
                 string szNameID = String.Format(CultureInfo.InvariantCulture, "tdName{0}", ac.AircraftID);
                 <tr>
-                    <td><a target="_blank" id="@szNameID" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.TailNumber</a></td>
+                    <td><a target="_blank" id="@szNameID" href="@AircraftUtility.EditLink(ac.AircraftID, true)">@ac.TailNumber</a></td>
                     <td>@ac.ModelCommonName</td>
                     <td>@ac.InstanceTypeDescription</td>
                     <td>

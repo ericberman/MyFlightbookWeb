@@ -162,7 +162,7 @@ namespace MyFlightbook.Currency
                         break;
                     case CurrencyGroups.Aircraft:
                     case CurrencyGroups.AircraftDeadline:
-                        szResult = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
+                        szResult = AircraftUtility.EditLink(AssociatedResourceID);
                         break;
                     case CurrencyGroups.Certificates:
                         szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=certs");

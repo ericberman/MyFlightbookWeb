@@ -439,7 +439,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
                 LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.None, true);
-                return Json(new { href = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", le.AircraftID)), text = le.TailNumDisplay });
+                return Json(new { href = AircraftUtility.EditLink(le.AircraftID, true), text = le.TailNumDisplay });
             });
         }
         #endregion

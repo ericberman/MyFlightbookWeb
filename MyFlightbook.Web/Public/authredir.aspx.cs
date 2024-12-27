@@ -31,7 +31,7 @@ namespace MyFlightbook.PublicPages
                 { "8710", "~/mvc/training/reports/8710"},
                 { "MODELROLLUP", "~/mvc/training/reports/Model"},
                 { "TIMEROLLUP", "~/mvc/training/reports/Time" },
-                { "AIRCRAFTEDIT", "~/Member/EditAircraft.aspx"},
+                { "AIRCRAFTEDIT", "~/mvc/Aircraft/edit" },
                 { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
                 { "FAQ", "~/mvc/faq"},
                 { "REQSIGS", "~/mvc/Training/RequestSigs"},

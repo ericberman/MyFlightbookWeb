@@ -26,7 +26,7 @@ else
             @foreach (Aircraft ac in ViewBag.rgac)
             {
                 <tr>
-                    <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", ac.AircraftID))">@ac.AircraftID</a></td>
+                    <td><a target="_blank" href="@AircraftUtility.EditLink(ac.AircraftID, true)">@ac.AircraftID</a></td>
                     <td>@ac.TailNumber</td>
                     <td><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}?a=1", ac.ModelID))">@ac.ModelCommonName</a></td>
                     <td>@ac.Version</td>

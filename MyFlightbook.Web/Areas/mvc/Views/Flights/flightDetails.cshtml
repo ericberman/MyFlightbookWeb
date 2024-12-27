@@ -281,7 +281,7 @@
             </td>
             <td style="padding: 3px">
                 <div>
-                    <a style="font-size: larger; font-weight: bold;" href="@String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID).ToAbsolute()">@ac.DisplayTailnumber</a> - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
+                    <a style="font-size: larger; font-weight: bold;" href="@AircraftUtility.EditLink(ac.AircraftID)">@ac.DisplayTailnumber</a> - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
                 </div>
                 <div>@ac.InstanceTypeDescription</div>
                 <div class="activeRow">
