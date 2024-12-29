@@ -304,7 +304,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ..but only until 1997.
+        ///   Looks up a localized string similar to ...but only until 1997.
         /// </summary>
         internal static string editMakeHighPerf1997 {
             get {
@@ -574,7 +574,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E.g., &amp;quot;B737&amp;quot; for a Boeing 737, blank for a C-172..
+        ///   Looks up a localized string similar to E.g., &amp;quot;B-737&amp;quot; for a Boeing 737, blank for a C-172..
         /// </summary>
         internal static string editMakeTypeDesc2 {
             get {

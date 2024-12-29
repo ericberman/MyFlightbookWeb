@@ -317,7 +317,7 @@
     <value>High-Performance</value>
   </data>
   <data name="editMakeHighPerf1997" xml:space="preserve">
-    <value>..but only until 1997</value>
+    <value>...but only until 1997</value>
   </data>
   <data name="editMakeHighPerf1997Note" xml:space="preserve">
     <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp. &lt;br /&gt;&lt;br /&gt;So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.&lt;br /&gt;&lt;br /&gt;Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date.</value>
@@ -407,7 +407,7 @@
     <value>Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs).</value>
   </data>
   <data name="editMakeTypeDesc2" xml:space="preserve">
-    <value>E.g., &amp;quot;B737&amp;quot; for a Boeing 737, blank for a C-172.</value>
+    <value>E.g., &amp;quot;B-737&amp;quot; for a Boeing 737, blank for a C-172.</value>
   </data>
   <data name="editMakeTypeDesc3" xml:space="preserve">
     <value>Models that share a common type rating should use a common value here.</value>

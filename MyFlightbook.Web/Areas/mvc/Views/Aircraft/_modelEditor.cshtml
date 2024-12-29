@@ -4,6 +4,7 @@
     MakeModel mm = ViewBag.model;
     bool fAdmin = ViewBag.fAdmin;
     bool useArmyCurrency = ViewBag.useArmyCurrency;
+    bool hasEngine = CategoryClass.HasEngine(mm.CategoryClassID);
 }
 <script type="text/javascript">
     // <![CDATA[
@@ -236,8 +237,6 @@
         });
 
         validateForm($("form[name='frmNewMan']"), {}, {});
-
-        catClassChanged($("#cmbCatClass").val());   // ensure the correct things are shown for this category/class
     });
 
     // ]]>
@@ -266,7 +265,7 @@
         <div class="vfSection">
             <div class="vfPrompt"><span id=lblModel>@Resources.Makes.editMakeModelID</span></div>
             <div class="vfValue">
-                <input id="txtModel" name="model" type="text" autofocus required autocomplete="off" placeholder="@Resources.LocalizedText.EditMakeWatermarkModelName" value="@mm.Model" />
+                <input id="txtModel" name="model" type="text" autofocus required autocomplete="off" placeholder="@Resources.LocalizedText.EditMakeWatermarkModelName" value="@mm.Model" style="width: 15em;" />
             </div>
             <div class="vfDescription">
                 <div><span id=lblAboutModel>@Resources.Makes.editMakeModelNote</span></div>
@@ -279,10 +278,10 @@
                 <div class="vfSubDesc"><a href="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" target="_blank">@Resources.Makes.editMakeICAOCodeLookup"</a></div>
             </div>
             <div class="vfValue">
-                <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@mm.FamilyName" />
+                <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@(CategoryClass.HasICAO(mm.CategoryClassID) ? mm.FamilyName : string.Empty)" style="width: 15em;"  />
             </div>
             <div class="vfDescription">
-                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+                <span class="vfSubDesc">@Resources.LocalizedText.OptionalData</span>
                 <span id=lblFamilyDesc1>@Resources.Makes.editMakeICAOCodeNote</span><br />
                 <span id=lblFamilyDesc2>@Resources.Makes.editMakeICAOCodeNote2</span>
             </div>
@@ -292,33 +291,33 @@
                 <span id=lblModelName>@Resources.Makes.editMakeMarketingName</span>
             </div>
             <div class="vfValue">
-                <input type="text" id="txtModelMarketingName" name="modelName" placeholder="@Resources.LocalizedText.EditMakeWatermarkCommonName" value="@mm.ModelName" />
+                <input type="text" id="txtModelMarketingName" name="modelName" placeholder="@Resources.LocalizedText.EditMakeWatermarkCommonName" value="@mm.ModelName" style="width: 15em;"  />
             </div>
             <div class="vfDescription">
-                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+                <span class="vfSubDesc">@Resources.LocalizedText.OptionalData</span>
                 <span id=lblModelName1>@Resources.Makes.editMakeMarketingName1</span><br />
                 <span id=lblModelNameExample>@Html.Raw(Resources.Makes.editMakeMarketingName2)</span>
             </div>
         </div>
         <div class="vfSection">
-            <div class="vfPrompt">
+            <div class="vfPrompt" style="vertical-align: top;">
                 <span id=lblType>@Resources.Makes.editMakeTypeRatingPrompt</span>
-                <div class="vfSubDesc"><a href="https://registry.faa.gov/TypeRatings/">@Resources.Makes.promptLookUpTypes"</a></div>
+                <div class="vfSubDesc"><a href="https://registry.faa.gov/TypeRatings/">@Resources.Makes.promptLookUpTypes</a></div>
             </div>
-            <div class="vfValue">
-                <input type="text" id="txtType" name="typeName" placeholder="@Resources.LocalizedText.EditMakeWatermarkTypeName" value="@mm.TypeName" />
+            <div class="vfValue" style="vertical-align: top;">
+                <input type="text" id="txtType" name="typeName" placeholder="@Resources.LocalizedText.EditMakeWatermarkTypeName" value="@mm.TypeName" style="width: 15em;" />
             </div>
-            <div class="vfDescription">
+            <div class="vfDescription" style="vertical-align: top;">
                 <div><span style="font-weight:bold;">@Resources.Makes.editMakeTypeDesc1</span></div>
                 <div>@Html.Raw(Resources.Makes.editMakeTypeDesc2)</div>
                 <div>@Html.Raw(Resources.Makes.editMakeTypeDesc3)</div>
             </div>
         </div>
         <div class="vfSection" id="rowArmyCurrency" style="@(useArmyCurrency ? string.Empty : "display: none;")">
-            <div class="vfPrompt"><span style="font-weight:bold">@Resources.Makes.editMakeMDS</span></div>
-            <div class="vfValue"><input id="txtArmyMDS" name="armyMDS" value="@mm.ArmyMDS" placeholder="@Resources.LocalizedText.EditMakeWatermarkMDS" /></div>
-            <div class="vfDescription">
-                <div class="vfSubDesc">@Resources.LocalizedText.OptionalData</div>
+            <div class="vfPrompt" style="vertical-align: top;">@Resources.Makes.editMakeMDS</div>
+            <div class="vfValue" style="vertical-align: top;"><input id="txtArmyMDS" name="armyMDS" value="@mm.ArmyMDS" placeholder="@Resources.LocalizedText.EditMakeWatermarkMDS" style="width: 15em;" /></div>
+            <div class="vfDescription" style="vertical-align: top;">
+                <span class="vfSubDesc">@Resources.LocalizedText.OptionalData</span>
                 <span id=lblMDS1>@Resources.Makes.editMakeMDSNote1</span><br />
                 <span id=lblMDS2>@Resources.Makes.editMakeMDSNote2</span>
             </div>
@@ -334,25 +333,25 @@
                 </select>
             </div>
         </div>
-        <div class="vfSection">
+        <div class="vfSection" style="@(CategoryClass.IsLighterThanAir(mm.CategoryClassID) ? "display: none;" : string.Empty)">
             <div class="vfPrompt"><span style="font-weight:bold">@Resources.Makes.editMakeFeatures</span></div>
             <div>
-                <div style="display:inline-block; vertical-align:top" id="divComplex">
-                    <input type="checkbox" id="ckComplex" name="isComplex" @(mm.IsComplex ? "checked" : string.Empty) onclick="javascript: ComplexClicked();" /><label for="ckComplex">@Resources.Makes.editMakeComplex</label>
+                <div vertical-align:top" id="divComplex" style="@(hasEngine || mm.CategoryClassID == CategoryClass.CatClassID.Glider ? "display: inline-block;" : "display: none;")">
+                    <input type="checkbox" id="ckComplex" name="isComplex" @((hasEngine && mm.IsComplex).ToChecked()) @(hasEngine ? string.Empty : "disabled") onclick="javascript: ComplexClicked();" /><label for="ckComplex">@Resources.Makes.editMakeComplex</label>
                     <div style="margin-left:20px">
-                        <input type="checkbox" id="ckConstantProp" name="isConstantProp" @(mm.IsConstantProp ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckConstantProp">@Resources.Makes.editMakeCSP</label><br />
-                        <input type="checkbox" id="ckFlaps" name="hasFlaps" @(mm.HasFlaps ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckFlaps">@Resources.Makes.editMakeFlaps</label><br />
-                        <input type="checkbox" id="ckRetract" name="isRetract" @(mm.IsRetract ? "checked" : string.Empty) onclick="javascript: ComplexElementClicked();" /><label for="ckRetract">@Resources.Makes.editMakeRetract</label><br />
+                        <input type="checkbox" id="ckConstantProp" name="isConstantProp" @((hasEngine && mm.IsConstantProp).ToChecked()) @(hasEngine ? string.Empty : "disabled") onclick="javascript: ComplexElementClicked();" /><label for="ckConstantProp">@Resources.Makes.editMakeCSP</label><br />
+                        <input type="checkbox" id="ckFlaps" name="hasFlaps" @mm.HasFlaps.ToChecked() onclick="javascript: ComplexElementClicked();" /><label for="ckFlaps">@Resources.Makes.editMakeFlaps</label><br />
+                        <input type="checkbox" id="ckRetract" name="isRetract" @mm.IsRetract.ToChecked() onclick="javascript: ComplexElementClicked();" /><label for="ckRetract">@Resources.Makes.editMakeRetract</label><br />
                     </div>
                 </div>
                 <div style="display:inline-block;vertical-align:top">
-                    <div id="divTailwheel"><input type="checkbox" id="ckTailwheel" name="isTailwheel" @(mm.IsTailWheel ? "checked" : string.Empty) /><label for="ckTailwheel">@Resources.Makes.editMakeTailwheel</label></div>
+                    <div id="divTailwheel" style="@(mm.CategoryClassID == CategoryClass.CatClassID.ASEL || mm.CategoryClassID == CategoryClass.CatClassID.AMEL ? string.Empty : "display: none;")"><input type="checkbox" id="ckTailwheel" name="isTailwheel" @(mm.IsTailWheel ? "checked" : string.Empty) /><label for="ckTailwheel">@Resources.Makes.editMakeTailwheel</label></div>
                     <div id="divTMG" style="@(mm.CategoryClassID == CategoryClass.CatClassID.Glider ? string.Empty : "display : none;")"><input type="checkbox" id="ckTMG" name="isTMG" @(mm.IsMotorGlider ? "checked" : string.Empty) /><label for="ckTMG">@Resources.Makes.editMakeTMG</label></div>
-                    <div id="divMultiHeli" style="@(mm.CategoryClassID == CategoryClass.CatClassID.Helicopter ? string.Empty : "display: none")"><input type="checkbox" id="ckMultiHeli" name="isMulti" @(mm.IsMultiEngineHelicopter ? "checked" : string.Empty) /><label for="ckMultiHeli">@Resources.Makes.editMakeMultiHeli</label></div>
-                    <div id="pnlHighPerfBlock">
+                    <div id="divMultiHeli" style="@(mm.CategoryClassID == CategoryClass.CatClassID.Helicopter ? string.Empty : "display: none;")"><input type="checkbox" id="ckMultiHeli" name="isMulti" @(mm.IsMultiEngineHelicopter ? "checked" : string.Empty) /><label for="ckMultiHeli">@Resources.Makes.editMakeMultiHeli</label></div>
+                    <div id="pnlHighPerfBlock" style="@(hasEngine ? string.Empty : "display: none;")">
                         <input type="checkbox" id="ckHighPerf" name="isHighPerf" @(mm.PerformanceType == MakeModel.HighPerfType.NotHighPerf ? string.Empty : "checked") onclick="javascript: HighPerfClicked();" /><label for="ckHighPerf">@Resources.Makes.editMakeHighPerf</label>
                         <span id="pnlLegacyHighPerf" style="@(mm.CategoryClassID == CategoryClass.CatClassID.AMES || mm.CategoryClassID == CategoryClass.CatClassID.AMEL || mm.CategoryClassID == CategoryClass.CatClassID.Helicopter ? string.Empty : "display : none;")">
-                            &nbsp;<input type="checkbox" id="ckLegacyHighPerf" name="isLegacyHighPerf" @(mm.PerformanceType == MakeModel.HighPerfType.Is200HP ? "checked" : string.Empty) onclick="javascript: LegacyHighPerfClicked();" /><label for="ckLegacyHighPerf">@Resources.Makes.editMakeHighPerf1997</label>
+                            &nbsp;<input type="checkbox" id="ckLegacyHighPerf" name="isLegacyHighPerf" @((mm.PerformanceType == MakeModel.HighPerfType.Is200HP).ToChecked()) onclick="javascript: LegacyHighPerfClicked();" /><label for="ckLegacyHighPerf">@Resources.Makes.editMakeHighPerf1997</label>
                             @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "highPerfTip", tipTextHTML = Resources.Makes.editMakeHighPerf1997Note }); }
                         </span>
                     </div>
@@ -370,18 +369,18 @@
         </div>
         <div id="divIsSimOnly" class="vfSection" style="@(fAdmin ? string.Empty : "display: none;")">
             <span style="font-weight:bold">@Resources.Makes.editMakeSimOnly</span>
-            <div><input type="radio" name="allowedTypes" id="rbAnyType" value="@AllowedAircraftTypes.Any" @(mm.AllowedTypes == AllowedAircraftTypes.Any ? "checked" : string.Empty) /><label for="rbAnyType">@Resources.Makes.editMakeSimAny</label></div>
-            <div><input type="radio" name="allowedTypes" id="rbSimOnly" value="@AllowedAircraftTypes.SimulatorOnly" @(mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly ? "checked" : string.Empty) /><label for="rbSimOnly">@Resources.Makes.editMakeSimSimOnly</label></div>
-            <div><input type="radio" name="allowedTypes" id="rbSimOrGeneric" value="@AllowedAircraftTypes.SimOrAnonymous" @(mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous ? "checked" : string.Empty) /><label for="rbSimOrGeneric">@Resources.Makes.editMakeSimSimOrGeneric</label></div>
+            <div><input type="radio" name="allowedTypes" id="rbAnyType" value="@AllowedAircraftTypes.Any" @((mm.AllowedTypes == AllowedAircraftTypes.Any).ToChecked()) /><label for="rbAnyType">@Resources.Makes.editMakeSimAny</label></div>
+            <div><input type="radio" name="allowedTypes" id="rbSimOnly" value="@AllowedAircraftTypes.SimulatorOnly" @((mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly).ToChecked()) /><label for="rbSimOnly">@Resources.Makes.editMakeSimSimOnly</label></div>
+            <div><input type="radio" name="allowedTypes" id="rbSimOrGeneric" value="@AllowedAircraftTypes.SimOrAnonymous" @((mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous).ToChecked()) /><label for="rbSimOrGeneric">@Resources.Makes.editMakeSimSimOrGeneric</label></div>
         </div>
-        <div id="rowEngineType" class="vfSection">
+        <div id="rowEngineType" class="vfSection" style="@(hasEngine ? string.Empty : "display: none;")">
             <div class="vfPrompt"><span id=lblEngineType>@Resources.Makes.editMakeEngineType</span></div>
             <div>
-                <input type="radio" name="engineType" id="rbPiston" value="@MakeModel.TurbineLevel.Piston" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Piston ? "checked" : string.Empty) /><label for="rbPiston">@Resources.Makes.editMakeEngineTypePiston</label>
-                <input type="radio" name="engineType" id="rbTurboProp" value="@MakeModel.TurbineLevel.TurboProp" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.TurboProp ? "checked" : string.Empty) /><label for="rbTurboProp">@Resources.Makes.editMakeEngineTypeTurboProp</label>
-                <input type="radio" name="engineType" id="rbJet" value="@MakeModel.TurbineLevel.Jet" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Jet ? "checked" : string.Empty) /><label for="rbJet">@Resources.Makes.editMakeEngineTypeJet</label>
-                <input type="radio" name="engineType" id="rbTurbine" value="@MakeModel.TurbineLevel.UnspecifiedTurbine" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine ? "checked" : string.Empty) /><label for="rbTurbine">@Resources.Makes.editMakeEngineTypeTurbine</label>
-                <input type="radio" name="engineType" id="rbElectric" value="@MakeModel.TurbineLevel.Electric" onchange="javascript: engineChanged();" @(mm.EngineType == MakeModel.TurbineLevel.Electric ? "checked" : string.Empty) /><label for="rbElectric">@Resources.Makes.editMakeEngineTypeElectric</label>
+                <input type="radio" name="engineType" id="rbPiston" value="@MakeModel.TurbineLevel.Piston" onchange="javascript: engineChanged();" @((!hasEngine || mm.EngineType == MakeModel.TurbineLevel.Piston).ToChecked()) /><label for="rbPiston">@Resources.Makes.editMakeEngineTypePiston</label>
+                <input type="radio" name="engineType" id="rbTurboProp" value="@MakeModel.TurbineLevel.TurboProp" onchange="javascript: engineChanged();" @((hasEngine && mm.EngineType == MakeModel.TurbineLevel.TurboProp).ToChecked()) /><label for="rbTurboProp">@Resources.Makes.editMakeEngineTypeTurboProp</label>
+                <input type="radio" name="engineType" id="rbJet" value="@MakeModel.TurbineLevel.Jet" onchange="javascript: engineChanged();" @((hasEngine && mm.EngineType == MakeModel.TurbineLevel.Jet).ToChecked()) /><label for="rbJet">@Resources.Makes.editMakeEngineTypeJet</label>
+                <input type="radio" name="engineType" id="rbTurbine" value="@MakeModel.TurbineLevel.UnspecifiedTurbine" onchange="javascript: engineChanged();" @((hasEngine && mm.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine).ToChecked()) /><label for="rbTurbine">@Resources.Makes.editMakeEngineTypeTurbine</label>
+                <input type="radio" name="engineType" id="rbElectric" value="@MakeModel.TurbineLevel.Electric" onchange="javascript: engineChanged();" @((hasEngine && mm.EngineType == MakeModel.TurbineLevel.Electric).ToChecked()) /><label for="rbElectric">@Resources.Makes.editMakeEngineTypeElectric</label>
                 <div id="divSinglePilotOps" style="@(mm.EngineType.IsTurbine() ? string.Empty : "display: none;")">
                     <input type="checkbox" id="ckSinglePilot" name="isSinglePilot" @(mm.IsCertifiedSinglePilot ? "checked" : string.Empty) /><label for="ckSinglePilot">@Resources.Makes.editMakeCertifiedSingle</label>
                 </div>
