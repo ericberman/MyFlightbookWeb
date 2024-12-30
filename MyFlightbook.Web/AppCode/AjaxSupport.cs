@@ -99,46 +99,6 @@ namespace MyFlightbook.Web.Ajax
 
         #region Aircraft Methods
         /// <summary>
-        /// Autocompletion for modelnames
-        /// </summary>
-        /// <param name="prefixText"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        [WebMethod(EnableSession = true)]
-        public string[] SuggestFullModels(string prefixText, int count)
-        {
-            CheckAuth();
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-
-            ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
-            List<string> lst = new List<string>();
-            foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
-                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName), mm.MakeModelID.ToString(CultureInfo.InvariantCulture)));
-
-            return lst.ToArray();
-        }
-
-        /// <summary>
-        /// Autocompletion for aircraft tails - TODO: this will be obsolete after MVC Migration.
-        /// </summary>
-        /// <param name="prefixText"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        [WebMethod(EnableSession = true)]
-        public string[] SuggestAircraft(string prefixText, int count)
-        {
-            CheckAuth();
-            if (String.IsNullOrEmpty(prefixText))
-                return Array.Empty<string>();
-            IEnumerable<Aircraft> lstAircraft = Aircraft.AircraftWithPrefix(prefixText, count);
-            List<string> lst = new List<string>();
-            foreach (Aircraft ac in lstAircraft)
-                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", ac.TailNumber, ac.ModelDescription), ac.AircraftID.ToString(CultureInfo.InvariantCulture)));
-            return lst.ToArray();
-        }
-
-        /// <summary>
         /// Return the high-water mark for an aircraft's tach or hobbs
         /// </summary>
         /// <param name="idAircraft"></param>

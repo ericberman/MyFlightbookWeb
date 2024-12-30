@@ -85,21 +85,6 @@ namespace MyFlightbook.Image
             }
         }
 
-        public MFBPostedFile(AjaxControlToolkit.AjaxFileUploadEventArgs e) : this()
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            using (Stream s = e.GetStreamContents())
-                WriteStreamToTempFile(s);
-
-            FileID = e.FileId;
-            FileName = e.FileName;
-
-            ContentType = e.ContentType;
-            ContentLength = e.FileSize;
-        }
-
         ~MFBPostedFile()
         {
             // We can't make MFBPostedFile be disposable because we hold it indefinitely in the session
