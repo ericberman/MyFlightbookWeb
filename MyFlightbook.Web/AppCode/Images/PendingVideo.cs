@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Web.Hosting;
 
 /******************************************************
@@ -139,19 +140,64 @@ namespace MyFlightbook.Image
             if (szBasePath == null)
                 throw new ArgumentNullException(nameof(szBasePath));
 
-            string szThumbFile = String.Format(CultureInfo.InvariantCulture, "{0}{1}00001{2}", MFBImageInfo.ThumbnailPrefixVideo, GUID, FileExtensions.JPG);
-
             if (szBasePath.StartsWith("/", StringComparison.Ordinal))
                 szBasePath = szBasePath.Substring(1);
-            string srcFile = szBasePath + szThumbFile;
+
             // Copy the thumbnail over
             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
             {
+                // Get everything that's in the folder with this guid
+                List<S3Object> lstS3Objects = new List<S3Object>();
+                ListObjectsRequest loRequest = new ListObjectsRequest() { BucketName = Bucket, Prefix = szBasePath };
+                S3Object thumbnail = null;
+                S3Object originalVideo = null;
+                S3Object mp4Video = null;
+
+                // Get the list of S3 objects that contain the guid
+                // This should be 3 objects:
+                //  * the original uploade .vid file
+                //  * a .jpg thumbnail file
+                //  * an .mp4 video.
+                do
+                {
+                    ListObjectsResponse response = s3.ListObjects(loRequest);
+                    foreach (S3Object o in response.S3Objects)
+                    {
+                        if (o.Key.Contains(GUID))
+                        {
+                            lstS3Objects.Add(o);
+                            switch (Path.GetExtension(o.Key).ToLowerInvariant())
+                            {
+                                case FileExtensions.JPEG:
+                                case FileExtensions.JPG:
+                                    thumbnail = o;
+                                    break;
+                                case FileExtensions.VidInProgress:
+                                    originalVideo = o;
+                                    break;
+                                case FileExtensions.MP4:
+                                    mp4Video = o;
+                                    break;
+                            }
+                        }
+                    }
+
+                    // If response is truncated, set the marker to get the next 
+                    // set of keys.
+                    if (response.IsTruncated)
+                        loRequest.Marker = response.NextMarker;
+                    else
+                        loRequest = null;
+                } while (loRequest != null);
+
+                if (thumbnail == null)
+                    throw new InvalidOperationException($"Thumbnail not found for pending video {GUID} in bucket {Bucket}");
+
                 try
                 {
-                    using (GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile }))
+                    using (GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = thumbnail.Key }))
                     {
-                        if (gor != null && gor.ResponseStream != null)
+                        if (gor?.ResponseStream != null)
                         {
 #pragma warning disable IDISP007 // Don't dispose injected
                             // Amazon documents EXPLICITLY say we should wrap in a using block.  See https://docs.aws.amazon.com/sdkfornet1/latest/apidocs/html/P_Amazon_S3_Model_S3Response_ResponseStream.htm
@@ -180,39 +226,27 @@ namespace MyFlightbook.Image
                             }
                         }
                     }
+
+                    // success?  Rename the thumbnail file to match the old elastic transcoder naming and delete the source .vid file
+                    string thumbFileName = Path.GetFileName(thumbnail.Key);
+                    string thumbFileNew = thumbnail.Key.Replace(thumbFileName, MFBImageInfoBase.ThumbnailPrefixVideo + GUID + "00001" + FileExtensions.JPG);
+                    CopyObjectRequest coreq = new CopyObjectRequest() { SourceBucket = Bucket, SourceKey = thumbnail.Key, DestinationBucket = Bucket, DestinationKey = thumbFileNew };
+                    CopyObjectResponse cor = s3.CopyObject(coreq);
+                    if (cor.ETag.CompareCurrentCultureIgnoreCase(thumbnail.ETag) == 0)
+                        s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = thumbnail.Key });
+
+                    if (originalVideo != null)
+                        s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = originalVideo.Key });
+
+                    // Now set the ACLs so that it's all public
+                    s3.PutACL(new PutACLRequest() { BucketName = Bucket, Key = thumbFileNew, CannedACL = S3CannedACL.PublicRead });
+                    s3.PutACL(new PutACLRequest() { BucketName = Bucket, Key = mp4Video.Key, CannedACL = S3CannedACL.PublicRead });
                 }
                 catch (AmazonS3Exception)
                 {
                     // Thumbnail was not found - audio file perhaps?  Use the generic audio file.
                     System.IO.File.Copy(HostingEnvironment.MapPath("~/images/audio.png"), szPhysicalPath);
                 }
-
-
-                // clean up the folder on S3 - anything that has the GUID but not .mp4 in it or the thumbnail in it.  (Save space!)  i.e., delete excess thumbnails and the source video file.
-                List<S3Object> lstS3Objects = new List<S3Object>();
-                ListObjectsRequest loRequest = new ListObjectsRequest() { BucketName = Bucket, Prefix = szBasePath };
-                // Get the list of S3 objects
-                do
-                {
-                    ListObjectsResponse response = s3.ListObjects(loRequest);
-                    foreach (S3Object o in response.S3Objects)
-                    {
-                        if (o.Key.Contains(GUID) && !o.Key.Contains(FileExtensions.MP4) && !o.Key.Contains(szThumbFile))
-                            lstS3Objects.Add(o);
-                    }
-
-                    // If response is truncated, set the marker to get the next 
-                    // set of keys.
-                    if (response.IsTruncated)
-                        loRequest.Marker = response.NextMarker;
-                    else
-                        loRequest = null;
-                } while (loRequest != null);
-
-                lstS3Objects.ForEach((o) =>
-                {
-                    s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = o.Key });
-                });
             }
         }
 
@@ -226,8 +260,7 @@ namespace MyFlightbook.Image
             dbh.ReadRows((comm) => { },
             (dr) =>
             {
-                AWSETSStateMessage etsNotification = new AWSETSStateMessage() { JobId = (string)dr["jobID"], State = "COMPLETED" };
-                SNSNotification sns = new SNSNotification() { Message = JsonConvert.SerializeObject(etsNotification) };
+                SNSNotification sns = new SNSNotification() { Message = JsonConvert.SerializeObject(new { detail = new { jobId = (string)dr["jobID"], status = "COMPLETE" } }) };
                 lstPending.Add(sns);
                 lstFlights.Add(Convert.ToInt32(dr["imagekey"], CultureInfo.InvariantCulture));
             });

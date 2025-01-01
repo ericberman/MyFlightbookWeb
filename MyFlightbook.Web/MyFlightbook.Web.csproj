@@ -60,6 +60,9 @@
     <Reference Include="AWSSDK.ElasticTranscoder, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
       <HintPath>..\packages\AWSSDK.ElasticTranscoder.3.7.400.70\lib\net45\AWSSDK.ElasticTranscoder.dll</HintPath>
     </Reference>
+    <Reference Include="AWSSDK.MediaConvert, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.MediaConvert.3.7.405.3\lib\net45\AWSSDK.MediaConvert.dll</HintPath>
+    </Reference>
     <Reference Include="AWSSDK.S3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
       <HintPath>..\packages\AWSSDK.S3.3.7.410.12\lib\net45\AWSSDK.S3.dll</HintPath>
     </Reference>
@@ -2275,6 +2278,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\AWSSDK.ElasticTranscoder.3.7.400.70\analyzers\dotnet\cs\AWSSDK.ElasticTranscoder.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.ElasticTranscoder.3.7.400.70\analyzers\dotnet\cs\SharedAnalysisCode.dll" />
+    <Analyzer Include="..\packages\AWSSDK.MediaConvert.3.7.405.3\analyzers\dotnet\cs\AWSSDK.MediaConvert.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.410.12\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.410.12\analyzers\dotnet\cs\SharedAnalysisCode.dll" />
     <Analyzer Include="..\packages\AWSSDK.SimpleNotificationService.3.7.400.70\analyzers\dotnet\cs\AWSSDK.SimpleNotificationService.CodeAnalysis.dll" />

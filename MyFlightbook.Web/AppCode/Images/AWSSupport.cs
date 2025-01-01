@@ -1,8 +1,8 @@
 ﻿using Amazon;
-using Amazon.ElasticTranscoder;
-using Amazon.ElasticTranscoder.Model;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.MediaConvert;
+using Amazon.MediaConvert.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,8 +44,7 @@ namespace MyFlightbook.Image
         {
             get
             {
-                if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null && HttpContext.Current.Request.Url.Host != null &&
-                    Branding.CurrentBrand != null && Branding.CurrentBrand.HostName != null)
+                if (HttpContext.Current?.Request?.Url?.Host != null && Branding.CurrentBrand?.HostName != null)
                     return !Branding.CurrentBrand.MatchesHost(HttpContext.Current.Request.Url.Host);
                 else
                     return false;
@@ -78,9 +77,30 @@ namespace MyFlightbook.Image
             return new AmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
         }
 
-        public static IAmazonElasticTranscoder ElasticTranscoderClient()
+        public static IAmazonMediaConvert MediaConvertClient()
         {
-            return new AmazonElasticTranscoderClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
+            return new AmazonMediaConvertClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
+        }
+
+        public static Input InputForBucketKey(string szBucket, string szKey)
+        {
+            return new Input
+            {
+                FileInput = $"s3://{szBucket}/{szKey}",
+                AudioSelectors = new Dictionary<string, AudioSelector>
+                {
+                    { "Audio Selector 1", new AudioSelector { Offset = 0, DefaultSelection = "DEFAULT", SelectorType = "LANGUAGE_CODE", ProgramSelection = 1, LanguageCode = "ENM" } }
+                },
+                VideoSelector = new VideoSelector
+                {
+                    Rotate = "AUTO" // Set to your desired rotation: DEGREE_0, DEGREE_90, DEGREE_180, or DEGREE_270 }
+                }
+            };
+        }
+
+        public static List<Output> DefaultVideoOutputs
+        {
+            get { return new List<Output>() { new Output { Preset = "MFB-Video-Preset" }, new Output { Preset = "MFB-Video-Thumbnail-Preset" } }; }
         }
     }
 
@@ -130,7 +150,7 @@ namespace MyFlightbook.Image
                     cor.DestinationKey = szDst;
                     cor.SourceKey = dor.Key = szSrc;
                     cor.CannedACL = S3CannedACL.PublicRead;
-                    cor.StorageClass = S3StorageClass.Standard; // vs. reduced
+                    cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
 
                     s3.CopyObject(cor);
                     s3.DeleteObject(dor);
@@ -280,7 +300,7 @@ namespace MyFlightbook.Image
                     AutoCloseStream = true,
                     Key = mfbii.S3Key,
                     CannedACL = S3CannedACL.PublicRead,
-                    StorageClass = S3StorageClass.Standard // vs. reduced
+                    StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 
                 if (fSynchronous)
@@ -305,14 +325,13 @@ namespace MyFlightbook.Image
         /// <param name="szFileName">Filename of the input stream</param>
         /// <param name="szContentType">Content type of the video file</param>
         /// <param name="szBucket">Bucket to use.  Specified as a parameter because CurrentBucket might return the wrong value when called on a background thread</param>
-        /// <param name="szPipelineID">PipelineID from amazon</param>
         /// <param name="mfbii">The MFBImageInfo that encapsulates the video</param>
-        public void UploadVideo(string szFileName, string szContentType, string szBucket, string szPipelineID, MFBImageInfo mfbii)
+        public void UploadVideo(string szFileName, string szContentType, string szBucket, MFBImageInfo mfbii)
         {
             if (mfbii == null)
                 throw new ArgumentNullException(nameof(mfbii));
 
-            using (var etsClient = AWSConfiguration.ElasticTranscoderClient())
+            using (var mcClient = AWSConfiguration.MediaConvertClient())
             {
                 string szGuid = Guid.NewGuid() + MFBImageInfo.szNewS3KeySuffix;
                 string szBasePath = mfbii.VirtualPath.StartsWith("/", StringComparison.Ordinal) ? mfbii.VirtualPath.Substring(1) : mfbii.VirtualPath;
@@ -325,7 +344,7 @@ namespace MyFlightbook.Image
                     AutoCloseStream = true,
                     Key = szBaseFile + FileExtensions.VidInProgress,
                     CannedACL = S3CannedACL.PublicRead,
-                    StorageClass = S3StorageClass.Standard // vs. reduced
+                    StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 
                 lock (lockObject)
@@ -346,27 +365,26 @@ namespace MyFlightbook.Image
                     }
                 }
 
-                var job = etsClient.CreateJob(new CreateJobRequest()
+                var job = mcClient.CreateJob(new CreateJobRequest()
                 {
-                    PipelineId = szPipelineID,
-                    Input = new JobInput()
+                    Role = LocalConfig.SettingForKey("AWSMediaConvertRoleArn"),
+                    UserMetadata = new Dictionary<string, string> { { "Debug", (szBucket.CompareCurrentCultureIgnoreCase(AWSConfiguration.S3BucketNameDebug) == 0).ToString() } },
+                    Settings = new JobSettings()
                     {
-                        AspectRatio = "auto",
-                        Container = "auto",
-                        FrameRate = "auto",
-                        Interlaced = "auto",
-                        Resolution = "auto",
-                        Key = por.Key,
-                    },
-                    Output = new CreateJobOutput()
-                    {
-                        ThumbnailPattern = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", szBasePath, MFBImageInfo.ThumbnailPrefixVideo, szGuid, "{count}"),
-                        Rotate = "auto",
-                        // Generic 720p: Go to http://docs.aws.amazon.com/elastictranscoder/latest/developerguide/create-job.html#PresetId to see a list of some
-                        // of the support presets or call the ListPresets operation to get the full list of available presets
-                        // PresetId = "1351620000000-000010",
-                        PresetId = "1423799228749-hsj7ba",
-                        Key = szBaseFile + FileExtensions.MP4
+                       
+                        Inputs = new List<Input>  { AWSConfiguration.InputForBucketKey(szBucket, por.Key) },
+                        OutputGroups = new List<OutputGroup>
+                        {
+                            new OutputGroup
+                            {
+                                OutputGroupSettings = new OutputGroupSettings()
+                                {
+                                    Type = OutputGroupType.FILE_GROUP_SETTINGS,
+                                    FileGroupSettings = new FileGroupSettings() { Destination = $"s3://{szBucket}/{szBasePath}"}
+                                },
+                                Outputs = AWSConfiguration.DefaultVideoOutputs
+                            }
+                        }
                     }
                 });
                 if (job != null)

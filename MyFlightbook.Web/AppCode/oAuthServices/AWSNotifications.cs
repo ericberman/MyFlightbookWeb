@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -8,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2023 MyFlightbook LLC
+ * Copyright (c) 2015-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -300,122 +299,5 @@ namespace AWSNotifications
 #pragma warning restore CA1507 // Use nameof to express symbol names
 
         public SNSUnsubscribeConfirmation() { }
-    }
-
-    public class ETSInput
-    {
-        #region properties
-        [JsonProperty("key")]
-        public string Key { get; set; }
-
-        [JsonProperty("frameRate")]
-        public string FrameRate { get; set; }
-
-        [JsonProperty("resolution")]
-        public string Resolution { get; set; }
-
-        [JsonProperty("aspectRatio")]
-        public string AspectRatio { get; set; }
-
-        [JsonProperty("interlaced")]
-        public string Interlaced { get; set; }
-
-        [JsonProperty("container")]
-        public string Container { get; set; }
-        #endregion
-
-        public ETSInput() { }
-    }
-
-    public class ETSOutput
-    {
-        #region Properties
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("presetId")]
-        public string PresetId { get; set; }
-
-        [JsonProperty("key")]
-        public string Key { get; set; }
-
-        [JsonProperty("thumbnailPattern")]
-        public string ThumbnailPattern { get; set; }
-
-        [JsonProperty("rotate")]
-        public string Rotate { get; set; }
-
-        [JsonProperty("status")]
-        public string Status { get; set; }
-
-        [JsonProperty("statusDetail")]
-        public string StatusDetail { get; set; }
-
-        [JsonProperty("duration")]
-        public int Duration { get; set; }
-
-        [JsonProperty("width")]
-        public int Width { get; set; }
-
-        [JsonProperty("height")]
-        public int Height { get; set; }
-
-        [JsonProperty("errorCode")]
-        public string ErrorCode { get; set; }
-        #endregion
-
-        public ETSOutput() { }
-    }
-
-    /// <summary>
-    /// JSON declaration for result of Elastic Transcoder Service (ETS) process
-    /// </summary>
-    public class AWSETSStateMessage
-    {
-        public enum ETSStates { COMPLETED, PROGRESSING, WARNING, ERROR }
-
-        #region properties
-        [JsonProperty("state")]
-        public string State { get; set; }
-
-        /// <summary>
-        /// Returns the state of the job as an ETSStates value
-        /// </summary>
-        public ETSStates JobState
-        {
-            get
-            {
-                if (Enum.TryParse<ETSStates>(State, out ETSStates s))
-                    return s;
-                return ETSStates.PROGRESSING;
-            }
-        }
-
-        [JsonProperty("version")]
-        public string Version { get; set; }
-
-        [JsonProperty("errorCode")]
-        public string ErrorCode { get; set; }
-
-        [JsonProperty("messageDetails")]
-        public string MessageDetails { get; set; }
-
-        [JsonProperty("jobId")]
-        public string JobId { get; set; }
-
-        [JsonProperty("pipelineId")]
-        public string PipelineId { get; set; }
-
-        [JsonProperty("input")]
-        public ETSInput Input { get; set; }
-
-        [JsonProperty("outputs")]
-        public Collection<ETSOutput> Outputs { get; private set; }
-        #endregion
-
-        public AWSETSStateMessage()
-        {
-            Outputs = new Collection<ETSOutput>();
-        }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1290,29 +1291,28 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Creates a video object from a completed Amazon elastic transponder notification
+        /// Creates a video object from a completed Amazon mediaconvert notification
         /// </summary>
-        /// <param name="notification">Notification of completion from Amazon Elastic Transponder - MUST have a corresponding PendingVideo</param>
+        /// <param name="notification">Notification of completion from Amazon mediaconvert - MUST have a corresponding PendingVideo</param>
         public MFBImageInfo(SNSNotification notification) : this()
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification));
-            AWSETSStateMessage etsNotification = JsonConvert.DeserializeObject<AWSETSStateMessage>(notification.Message);
+            dynamic etsNotification = JsonConvert.DeserializeObject<ExpandoObject>(notification.Message);
 
             lock (videoLockObject)   // avoid re-entrancy due to possible timeouts.
             {
-                PendingVideo pv = new PendingVideo(etsNotification.JobId);
+                PendingVideo pv = new PendingVideo(etsNotification.detail?.jobId ?? string.Empty);
 
-                switch (etsNotification.JobState)
+                switch (((string) (etsNotification.detail?.status ?? string.Empty)).ToUpperInvariant())
                 {
                     default:
-                    case AWSETSStateMessage.ETSStates.PROGRESSING:
                         break;
-                    case AWSETSStateMessage.ETSStates.WARNING:
-                    case AWSETSStateMessage.ETSStates.ERROR:
+                    case "ERROR":
+                    case "WARNING":
                         util.NotifyAdminEvent("Error from Elastic Transcoder", JsonConvert.SerializeObject(notification), ProfileRoles.maskSiteAdminOnly);
                         break;
-                    case AWSETSStateMessage.ETSStates.COMPLETED:
+                    case "COMPLETE":
                         if (!String.IsNullOrEmpty(pv.JobID))
                         {
                             Class = pv.Class;
@@ -1611,8 +1611,7 @@ namespace MyFlightbook.Image
                 return;
 
             string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
-            string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : Branding.CurrentBrand.AWSETSPipelineConfigKey);  // bind this as well, same reason
-            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
+            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, this); })).Start();
         }
 
         private void InitFileJPG(MFBPostedFile myFile, string szComment, LatLong ll)
