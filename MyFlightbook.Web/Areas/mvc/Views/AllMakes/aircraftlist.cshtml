@@ -28,7 +28,7 @@
             <td>
                 @foreach (MFBImageInfo mfbii in lst)
                 {
-                <div style="display:inline-block"><a href="@mfbii.URLFullImage"><img src="@mfbii.URLThumbnail" /></a></div>
+                <div style="display:inline-block"><a href="@(mfbii?.URLFullImage ?? string.Empty)"><img src="@(mfbii?.URLThumbnail ?? string.Empty)" /></a></div>
                     // DON'T cache this locally - could possibly be leading to memory leaks if crawler hits us hard?
                     mfbii.UnCache();
                 }
