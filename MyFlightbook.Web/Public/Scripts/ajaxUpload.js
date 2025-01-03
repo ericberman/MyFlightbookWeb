@@ -80,7 +80,7 @@ function ajaxFileUpload(container, options) {
                 if (options.onFileUploaded)
                     options.onFileUploaded(status, response);
                 else
-                    status.setThumbnail(response.responseText);
+                    status.setThumbnail(response);
             }
         }));
     }

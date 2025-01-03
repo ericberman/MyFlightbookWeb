@@ -44,6 +44,12 @@
             uploadURL: "@Url.Action(String.Format(CultureInfo.InvariantCulture, "UploadFlightImages/{0}", le.FlightID), "FlightEdit")",
             allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, fCanDoVideo)",
             additionalParams: [{ name: "szKey", value: @le.FlightID}, { name: "fCanDoVideo", value: @Json.Encode(fCanDoVideo) }],
+            onFileUploaded: function (status, response) {
+                status.setThumbnail(response);
+                if (@le.FlightID > 0 && response.endsWith("images/pendingvideo.png")) {
+                    $("#divPendingVids").append($(`<div class='fileUploadResult' style='width: 130px; height: 130px; text-align: center; vertical-align: middle; display: inline;'><img src='${response}' /></div>`));
+                }
+            },
             onUpload: function () {
                 var params = new Object();
                 params.imageClass = "@MFBImageInfo.ImageClass.Flight";
@@ -387,6 +393,7 @@
                 });
             }
         </div>
+        <div id="divPendingVids" class='fileUploadStatusbar'></div>
     </div>
     <div id="divGooglePhotoResult" class="error">
     </div>
