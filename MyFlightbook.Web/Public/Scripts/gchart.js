@@ -68,7 +68,7 @@ function drawGChart(chartdata) {
 
     var oneDay = (24 * 60 * 60 * 1000);
     var dateRange = data.getColumnRange(0);
-    if (data.getNumberOfRows() === 1) {
+    if (chartdata.XDataType == "date" && data.getNumberOfRows() === 1) {
         dateRange.min = new Date(dateRange.min.getTime() - oneDay);
         dateRange.max = new Date(dateRange.max.getTime() + oneDay);
         options["hAxis"]["viewWindow"] = dateRange;
