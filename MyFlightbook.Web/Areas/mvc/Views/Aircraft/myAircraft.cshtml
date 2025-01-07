@@ -14,7 +14,7 @@
     var userAircraft = [
         @foreach (Aircraft ac in rgac)
         {
-            @:{ t: '@ac.DisplayTailnumber', id: @ac.AircraftID },
+            @:{ t: '@ac.DisplayTailnumberWithModel', id: @ac.AircraftID },
         }
     ];
 
