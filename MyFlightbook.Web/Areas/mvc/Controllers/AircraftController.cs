@@ -621,6 +621,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 acNew.DefaultTemplates.Clear();
                 foreach (int idtemplate in acExisting.DefaultTemplates)
                     acNew.DefaultTemplates.Add(idtemplate);
+                // Issue #1379 - preserve any default image
+                acNew.DefaultImage = acInAccount.DefaultImage;
             }
 
             try
