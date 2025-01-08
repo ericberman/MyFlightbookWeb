@@ -80,6 +80,7 @@
     @Html.AntiForgeryToken()
     <input type="hidden" name="aircraftID" value="@ac.AircraftID" />
     <input type="hidden" name="aircraftRev" value="@ac.Revision" />
+    <input type="hidden" name="aircraftVersion" value="@ac.Version" />
     <input type="hidden" name="aircraftTail" value="@ac.TailNumber" />
     <input type="hidden" name="aircraftType" value="@(ac.IsRegistered ? "Registered" : (ac.IsAnonymous ? "Anonymous" : "Sim"))" />
     <input type="hidden" name="a" value="@(fAdminMode ? 1 : 0)" />

@@ -403,13 +403,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             Aircraft ac = new Aircraft()
             {
-                AircraftID = int.TryParse(Request["aircraftID"], out int acid) ? acid : Aircraft.idAircraftUnknown,
-                Revision = int.TryParse(Request["aircraftRev"], out int rev) ? rev : -1,
+                AircraftID = util.GetIntParam(Request, "aircraftID", Aircraft.idAircraftUnknown),
+                Revision = util.GetIntParam(Request, "aircraftRev", -1),
                 ModelID = modelID,
                 InstanceType = instanceType,
                 TailNumber = (instanceType == AircraftInstanceTypes.RealAircraft) ? (type.CompareCurrentCultureIgnoreCase("Anonymous") == 0 ? CountryCodePrefix.szAnonPrefix : Request["aircraftTail"] ?? DefaultTail) : CountryCodePrefix.szSimPrefix, // will be fixed up below
                 GlassUpgradeDate = avionicsTechnology == MakeModel.AvionicsTechnologyType.None ? null : ReadRequestDate("aircraftUpgradeDate").AsNulluble(),
-                AvionicsTechnologyUpgrade = avionicsTechnology
+                AvionicsTechnologyUpgrade = avionicsTechnology,
+                Version = util.GetIntParam(Request, "aircraftVersion", 0)
             };
 
             // fix up any obviously invalid things:
