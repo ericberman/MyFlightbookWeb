@@ -36,31 +36,36 @@
     }
     else if (fp.PropertyType.Type == CFPPropertyType.cfpDecimal)
     {
-        if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+        switch (fp.PropTypeID)
         {
-            cfd = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-        }
-        else if (fp.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropFlightMeterStart)
-        {
-            cfd = new CrossFillDescriptor(Resources.LogbookEntry.FlightMeterXFillTip, String.Format(CultureInfo.InvariantCulture, "getFlightMeterFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-        }
-        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTaxiTime)
-        {
-            cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-        }
-        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropAirborneTime)
-        {
-            cfd = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
-        }
-        else if (!fp.PropertyType.IsBasicDecimal)
-        {
-            cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
+            case (int)CustomPropertyType.KnownProperties.IDPropTachStart:
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                break;
+            case (int)CustomPropertyType.KnownProperties.IDPropFlightMeterStart:
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.FlightMeterXFillTip, String.Format(CultureInfo.InvariantCulture, "getFlightMeterFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                break;
+            case (int)CustomPropertyType.KnownProperties.IDPropTaxiTime:
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                break;
+            case (int)CustomPropertyType.KnownProperties.IDPropAirborneTime:
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                break;
+            case (int)CustomPropertyType.KnownProperties.IDPropDistanceFlown:
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.CrossFillDistanceTip, String.Format(CultureInfo.InvariantCulture, "getDistanceFill(currentRouteOfFlight, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                break;
+            default:
+                if (!fp.PropertyType.IsBasicDecimal)
+                {
+                    cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
+                }
+                break;
+
         }
     }
 
     string idCptTitle = String.Format(CultureInfo.InvariantCulture, "cptTitleLbl{0}", fp.PropTypeID);
     string idCptTip = String.Format(CultureInfo.InvariantCulture, "cptTitleTip{0}", fp.PropTypeID);
-}
+    }
 <div class="propItemFlow" style="@(ViewBag.hideByDefault ? Html.Raw("display: none;") : string.Empty)">
     <div style="display: none;" id="@idCptTip">
         <p style="font-weight:bold;">@fp.PropertyType.Title</p>

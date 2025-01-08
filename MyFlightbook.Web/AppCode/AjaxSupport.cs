@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Clubs;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
 using MyFlightbook.Currency;
 using MyFlightbook.Printing;
 using MyFlightbook.Schedule;
@@ -14,7 +15,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -216,6 +217,19 @@ namespace MyFlightbook.Web.Ajax
         }
 
         /// <summary>
+        /// Returns the distance (airport-to-airport) flown on a route, in nm
+        /// </summary>
+        /// <param name="route">The route field</param>
+        /// <returns>An integer in nm for the estimated distance</returns>
+        [WebMethod(EnableSession = true)]
+        public int GetDistanceFlown(string route)
+        {
+            CheckAuth();
+
+            return String.IsNullOrEmpty(route) ? 0 : (int)new AirportList(route).DistanceForRoute();
+        }
+
+        /// <summary>
         /// Returns the high-watermark starting hobbs for the specified aircraft.
         /// </summary>
         /// <param name="idAircraft"></param>
@@ -330,7 +344,7 @@ namespace MyFlightbook.Web.Ajax
 
             DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
             DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
-            decimal totalTime = fUseHHMM ? szTotal.DecimalFromHHMM() : decimal.Parse(szTotal, NumberStyles.Any, CultureInfo.CurrentCulture);
+            decimal totalTime = szTotal.SafeParseDecimal();
 
             decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
 

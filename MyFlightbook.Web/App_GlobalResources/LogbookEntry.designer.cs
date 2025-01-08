@@ -349,6 +349,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fills in the estimated distance (in nautical miles) based on the route of flight.
+        /// </summary>
+        internal static string CrossFillDistanceTip {
+            get {
+                return ResourceManager.GetString("CrossFillDistanceTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Row {0} has too many columns {1} to append to the prior row(s) (had {2} columns so far); will put that on a new row..
         /// </summary>
         internal static string csvAuditAppendedRowTooLong {

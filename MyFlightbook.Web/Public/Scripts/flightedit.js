@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,6 +63,10 @@ function aircraftSelected(sender, fHHMM, allAircraft) {
 
 function currentlySelectedAircraft() {
     return $('#cmbAircraft').val();
+}
+
+function currentRouteOfFlight() {
+    return $("#txtRoute").val();
 }
 
 function updatePropertyTuples(newPropTypeID) {

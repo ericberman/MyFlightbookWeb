@@ -2026,4 +2026,7 @@ Proceed with import?</value>
   <data name="ProSoftPartnership" xml:space="preserve">
     <value>For professional printing and binding, %APP_NAME% has partnered with ProSoft</value>
   </data>
+  <data name="CrossFillDistanceTip" xml:space="preserve">
+    <value>Fills in the estimated distance (in nautical miles) based on the route of flight</value>
+  </data>
 </root>

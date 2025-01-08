@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2021-2024 MyFlightbook LLC
+ * Copyright (c) 2021-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -114,6 +114,36 @@ function getHobbsFill(currentlySelectedAircraft, baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/HighWaterMarkHobbsForAircraft',
+                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    window.alert(xhr.responseJSON.Message);
+                    if (onError !== null)
+                        onError();
+                },
+                complete: function () { },
+                success: function (response) {
+                    onResult(response.d);
+                }
+            });
+    }
+}
+
+function getDistanceFill(currentRoute, baseUrl) {
+    return function (onResult) {
+        if (!currentRoute)
+            return;
+
+        var route = currentRoute();
+
+        if (route === null || route === '')
+            return;
+
+        var params = new Object();
+        params.route = route;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: baseUrl + '/GetDistanceFlown',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     window.alert(xhr.responseJSON.Message);
