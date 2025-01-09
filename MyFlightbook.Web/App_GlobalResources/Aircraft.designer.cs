@@ -749,7 +749,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Images for aircraft are shared among pilots who fly that aircraft.  Please respect this and do not delete any image unless it is off-topic, inappropriate, or truly does not represent the aircraft..
+        ///   Looks up a localized string similar to Images for aircraft are shared among pilots who fly that aircraft.  Please respect this and do not delete any image unless it is off-topic, inappropriate, or truly does not represent the aircraft.  PLEASE DO NOT UPLOAD IMAGES FOR WHICH YOU DO NOT HOLD THE COPYRIGHT.
         /// </summary>
         internal static string editAircraftSharedImagesNote {
             get {

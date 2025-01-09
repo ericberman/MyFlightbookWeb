@@ -412,7 +412,7 @@
     <value>(Select a model)</value>
   </data>
   <data name="editAircraftSharedImagesNote" xml:space="preserve">
-    <value>Images for aircraft are shared among pilots who fly that aircraft.  Please respect this and do not delete any image unless it is off-topic, inappropriate, or truly does not represent the aircraft.</value>
+    <value>Images for aircraft are shared among pilots who fly that aircraft.  Please respect this and do not delete any image unless it is off-topic, inappropriate, or truly does not represent the aircraft.  PLEASE DO NOT UPLOAD IMAGES FOR WHICH YOU DO NOT HOLD THE COPYRIGHT</value>
   </data>
   <data name="editAircraftShceduleHeader" xml:space="preserve">
     <value>Schedule for this aircraft</value>
