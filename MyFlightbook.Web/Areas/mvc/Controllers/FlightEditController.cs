@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -459,13 +459,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private bool CommitFlight(LogbookEntry le)
         {
+            // ensure that the aircraft is in their profile
+            UserAircraft ua = new UserAircraft(le.User);
+            if (ua[le.AircraftID] == null)
+            {
+                Aircraft ac = new Aircraft(le.AircraftID);
+                if (!ac.IsNew)
+                    ua.FAddAircraftForUser(ac);
+            }
+
             if (le.IsValid())
             {
-                // ensure that the aircraft is in their profile
-                UserAircraft ua = new UserAircraft(le.User);
-                if (ua[le.AircraftID] == null)
-                    ua.FAddAircraftForUser(new Aircraft(le.AircraftID));
-
                 // if a new flight and hobbs > 0, save it for the next flight
                 bool fIsNew = le.IsNewFlight;
                 if (fIsNew)
@@ -549,7 +553,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pf = pf;
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = pfViewer;
-            ViewBag.rgAircraft = new UserAircraft(pfTarget.UserName).GetAircraftForUser();
+            HashSet<Aircraft> aircraft = new HashSet<Aircraft>(new UserAircraft(pfTarget.UserName).GetAircraftForUser());
+
+            // issue #1374: instructor adding to student should be able to add using instructor's aircraft, not just student's.
+            if (fAddStudent)
+            {
+                IEnumerable<Aircraft> instructorAircraft = new UserAircraft(pfViewer.UserName).GetAircraftForUser();
+                foreach (Aircraft ac in instructorAircraft)
+                    aircraft.Add(ac);
+            }
+            ViewBag.rgAircraft = aircraft;
             return PartialView("_editFlightBody");
         }
 
