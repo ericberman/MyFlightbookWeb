@@ -7,6 +7,13 @@
     function pageSizeChanged(sender) {
         $("#rowCustomPage").toggle(sender.value === "Custom");
     }
+
+    $(() => {
+        $("#txtMarginTop").attr("min", "0");
+        $("#txtMarginLeft").attr("min", "0");
+        $("#txtMarginRight").attr("min", "0");
+        $("#txtMarginBottom").attr("min", "0");
+    });
 </script>
 <div style="float:right; width: 170px;">
     <div style="text-align:center;">@Branding.ReBrand(Resources.LogbookEntry.ProSoftPartnership)</div>
