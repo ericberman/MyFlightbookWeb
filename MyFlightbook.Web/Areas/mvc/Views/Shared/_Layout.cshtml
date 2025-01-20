@@ -7,21 +7,21 @@
         <link href="@VirtualPathUtility.ToAbsolute(ViewBag.PrintingCSS)" rel="Stylesheet" type="text/css" />
     }
 </head>
-    <body>
-        @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
-        @if (!(ViewBag.ForceNaked ?? false))
-        {
-            Html.RenderAction("RenderHeader", "MFBTemplate", new { selectedTab = ViewBag.defaultTab ?? tabID.tabHome });
-            <div class="noprint centeredBody">
-                <h1>@ViewBag.Title</h1>
-            </div>
-        }
-        <div class="topForm">
-            <div class="sidebarRight">
-                @RenderBody()
-            </div>
+<body>
+    @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
+    @if (!(ViewBag.ForceNaked ?? false))
+    {
+        Html.RenderAction("RenderHeader", "MFBTemplate", new { selectedTab = ViewBag.defaultTab ?? tabID.tabHome });
+        <div class="noprint centeredBody">
+            <h1>@ViewBag.Title</h1>
         </div>
-        <script type="text/javascript">
+    }
+    <div class="topForm">
+        <div class="sidebarRight">
+            @RenderBody()
+        </div>
+    </div>
+    <script type="text/javascript">
             function acceptCookies() {
                 $.ajax({
                     type: "POST",
@@ -60,17 +60,21 @@
             function toggleLabel(sender, targetID, expandText, collapseText, onExpand, onCollapse) {
                 sender.innerText = toggleItem(targetID, onExpand, onCollapse) ? expandText : collapseText;
             }
-        </script>
-        <div id="divViewImg" style="display:none; overflow: hidden;" class="modalpopup">
-            <button type="button" class="imgDismissBtn" id="imgDismissBtn"><img src="@VirtualPathUtility.ToAbsolute("~/images/closeimg.png")" /></button>
-            <img id="imgImgToView" />
-        </div>
-        @if (!(ViewBag.ForceNaked ?? false))
-        {
-            <footer>
-                @{ Html.RenderAction("RenderFooter", "MFBTemplate"); }
-            </footer>
-            Html.RenderAction("RenderPrivacyLink", "MFBTemplate");
-        }
-    </body>
+    </script>
+    <div id="divViewImg" style="display:none; overflow: hidden;" class="modalpopup">
+        <button type="button" class="imgDismissBtn" id="imgDismissBtn"><img src="@VirtualPathUtility.ToAbsolute("~/images/closeimg.png")" /></button>
+        <img id="imgImgToView" />
+    </div>
+    @if (!(ViewBag.ForceNaked ?? false))
+    {
+        <footer>
+            @{ Html.RenderAction("RenderFooter", "MFBTemplate"); }
+        </footer>
+        Html.RenderAction("RenderPrivacyLink", "MFBTemplate");
+    }
+    @if (Session["IsNaked"] != null && ((bool) Session["IsNaked"]))
+    {
+        <div style="line-height: 48pt;">&nbsp;</div>
+    }
+</body>
 </html>
