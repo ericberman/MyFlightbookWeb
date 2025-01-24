@@ -1693,12 +1693,21 @@ GROUP BY fp.idPropType;";
                 return lst;
 
             Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);
+
+            // Issue #1383 - pull all of the ranges to the top.
+            foreach (int proptypeID in d.Keys)
+            {
+                string s = d[proptypeID];
+                if (!String.IsNullOrEmpty(s))
+                    lst.Add(s);
+            }
+
             foreach (CustomFlightProperty cfp in rgprops)
             {
-                if (hsExclusion?.Contains(cfp.PropTypeID) ?? false)
+                if (d.ContainsKey(cfp.PropTypeID) || (hsExclusion?.Contains(cfp.PropTypeID) ?? false))
                     continue;
                 // if this has been coalesced into the dictionary, use that; otherwise, use the display string.
-                string sz = d.TryGetValue(cfp.PropTypeID, out string value) ? value : (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
+                string sz = (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
                 if (String.IsNullOrEmpty(sz))
                     continue;
                 if (fLinkify)
