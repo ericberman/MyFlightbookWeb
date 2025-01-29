@@ -25,7 +25,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2024 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1802,8 +1802,10 @@ namespace MyFlightbook.Telemetry
                             if (!HasStartedFlight)
                             {
                                 HasStartedFlight = true;
-                                ActiveFlight.Date = new DateTime(dtSample.Ticks);
-                                ActiveFlight.Date = ActiveFlight.Date.AddMinutes(Options.TimeZoneOffset);
+                                // Issue #1385 - since date-of-flight is in local time by default, only update it if it's more than 48 hours off.
+                                DateTime dtFlight = new DateTime(dtSample.Ticks).AddMinutes(Options.TimeZoneOffset);
+                                if (Math.Abs(DateTime.SpecifyKind(ActiveFlight.Date.Date, DateTimeKind.Utc).Subtract(dtFlight).TotalHours) > 48)
+                                    ActiveFlight.Date = DateTime.SpecifyKind(dtFlight.Date, DateTimeKind.Unspecified);
                             }
 
                             AppendNearest(RouteSoFar, po, Options.IncludeHeliports);
