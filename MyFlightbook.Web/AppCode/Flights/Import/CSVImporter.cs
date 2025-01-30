@@ -7,10 +7,11 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -116,6 +117,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
         private readonly static string[] colPilotRole = { "DS_ID", "DUTY", "Duty Posn", "Duty Position" };    // For CAFRS - specifies role of pilot ("Duty Position")
         private readonly static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
+
 
         /// <summary>
         /// Common aliases for property names
@@ -415,6 +417,44 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
+            private static readonly LazyRegex regexApproachDesc = new LazyRegex("^(?<count>\\d+);(?<desc>[^;]+);(?<rwy>\\d+);(?<airport>\\w+)$", true);
+            private static readonly LazyRegex regexApproachCount = new LazyRegex("^\\d+");
+            /// <summary>
+            /// Initializes/updates approaches and descriptions based on any descretely described approaches (issue #1386)
+            /// </summary>
+            /// <param name="colIndices">The indices of any discrete properties</param>
+            /// <param name="le">The flight</param>
+            /// <param name="lstProps">Current set of props.</param>
+            private void ReadDiscreteApproaches(LogbookEntry le, IEnumerable<int> colIndices, List<CustomFlightProperty> lstProps)
+            {
+                if (!colIndices.Any())
+                    return;
+
+                CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
+                string currentApproachDesc = cfp.TextValue;
+                foreach (int i in colIndices)
+                {
+                    string sz = GetMappedString(i);
+                    if (string.IsNullOrWhiteSpace(sz))
+                        continue;
+
+                    string szDesc = sz.Trim();
+                    Match m = regexApproachCount.Match(sz);
+                    if (m.Success && m.Groups.Count > 0 && int.TryParse(m.Groups[0].Value, NumberStyles.Integer, CultureInfo.CurrentCulture, out int describedApproaches))
+                    {
+                        le.Approaches += describedApproaches;
+                        m = regexApproachDesc.Match(sz);
+                        if (m.Success && m.Groups.Count > 0)
+                            szDesc = new ApproachDescription(m).ToCanonicalString();
+                    }
+                    currentApproachDesc = String.Format(CultureInfo.CurrentCulture, "{0} {1}", currentApproachDesc, szDesc).Trim();
+                }
+
+                cfp.TextValue = currentApproachDesc;
+                lstProps.RemoveAll(c => c.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropApproachName);
+                lstProps.Add(cfp);
+            }
+
             private static void CrossFillPIC(LogbookEntryCore le)
             {
                 if (le.PIC == 0)
@@ -612,6 +652,8 @@ namespace MyFlightbook.ImportFlights
                 SetCAFRSFlightCondition(le, GetMappedString(m_cm.iColFlightConditions), lstCustPropsForFlight);
                 SetCAFRSPilotRole(le, GetMappedString(m_cm.iColPilotRole), lstCustPropsForFlight);
                 SetCAFRSMissionRole(le, GetMappedString(m_cm.iColMission), lstCustPropsForFlight);
+
+                ReadDiscreteApproaches(le, m_cm.discreteApproachIndices, lstCustPropsForFlight);
 
                 // we now have, from above, a set of custom properties to import.
                 // BUT...if this is an existing flight, then some of those flights may already
@@ -896,6 +938,9 @@ namespace MyFlightbook.ImportFlights
 
             public int iColMission { get; set; }
             public int iColPublic { get; set; }
+
+            // columns for individual approaches (issue #1386)
+            public IEnumerable<int> discreteApproachIndices { get; set; } = Array.Empty<int>();
             #endregion
 
             #region public properties
@@ -997,6 +1042,8 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
+            private static readonly LazyRegex regexDiscreteApproachHeader = new LazyRegex("^Approach\\s+\\d+$", true, false);
+
             public ImportContext(string[] rgszHeader, string szUser, IDictionary<string, AircraftImportSpec> aircraftMapping)
             {
                 User = szUser;
@@ -1007,6 +1054,8 @@ namespace MyFlightbook.ImportFlights
                 OrphanedPropsByFlightID = new Dictionary<int, List<CustomFlightProperty>>();
                 CustomPropertiesToImport = new List<ImportColumn>();
 
+                List<int> approachCols = new List<int>();
+
                 for (int i = 0; i < rgszHeader.Length; i++)
                 {
                     if (String.IsNullOrWhiteSpace(rgszHeader[i]))
@@ -1015,7 +1064,13 @@ namespace MyFlightbook.ImportFlights
                     if (m_htHeader[szNormal] != null)
                         throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportDuplicateColumn, szNormal));
                     m_htHeader[szNormal] = i;    // set up to find each column by name
+
+                    // Find any discrete approach columns in the form 
+                    if (regexDiscreteApproachHeader.IsMatch(szNormal))
+                        approachCols.Add(i);
                 }
+
+                discreteApproachIndices = approachCols;
 
                 InitializeColumns();
             }
