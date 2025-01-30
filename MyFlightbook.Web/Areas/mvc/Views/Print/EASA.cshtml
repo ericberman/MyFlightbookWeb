@@ -113,6 +113,7 @@
                 int itemIndex = 0;
                 foreach (LogbookEntryDisplay led in stc.Subtotals)
                 {
+                    led.UseHHMM = pl.CurrentUser.UsesHHMM;
                     <tr class="subtotal">
                         @if (itemIndex++ == 0)
                         {
