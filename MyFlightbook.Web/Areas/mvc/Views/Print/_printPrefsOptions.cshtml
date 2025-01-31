@@ -54,6 +54,7 @@
 <script type="text/javascript">
     function toggleSelectAll(sender) {
         $("input[name='poExcludedProp']").attr('checked', sender.checked);
+        @(onChange)();
     }
 </script>
 <div id="divPrintPrefs">
@@ -159,15 +160,18 @@
         </div>
         @if (rgcptUser.Any())
         {
+            bool allExcluded = true;
             <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = po.ExcludedPropertyIDs.Any(), targetID = "divExcludedProps", labelText = Resources.LocalizedText.PrintViewPropertyInclusion });}</h3>
             <div id="divExcludedProps" style="@(po.ExcludedPropertyIDs.Any() ? string.Empty : "display: none;")">
                 @foreach (CustomPropertyType cpt in rgcptUser)
                 {
-                    <div style="display: inline-block; width: 25em; text-overflow: ellipsis;"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poExcludedProp" value="@cpt.PropTypeID" @po.ExcludedPropertyIDs.Contains(cpt.PropTypeID).ToChecked() />@cpt.Title</label></div>
+                    bool fExcluded = po.ExcludedPropertyIDs.Contains(cpt.PropTypeID);
+                    allExcluded = allExcluded && fExcluded;
+                    <div style="display: inline-block; width: 25em; text-overflow: ellipsis;"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poExcludedProp" value="@cpt.PropTypeID" @fExcluded.ToChecked() />@cpt.Title</label></div>
                 }
                 @if (rgcptUser.Count > 4)
                 {
-                    <div><label><input type="checkbox" onclick="javascript: toggleSelectAll(this);" />@Resources.LocalizedText.SelectAll</label> </div>
+                    <div><label><input type="checkbox" @allExcluded.ToChecked() onclick="javascript: toggleSelectAll(this);" />@Resources.LocalizedText.SelectAll</label> </div>
                 }
             </div>
         }
