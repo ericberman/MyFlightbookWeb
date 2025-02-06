@@ -15,7 +15,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1425,6 +1425,7 @@ FROM models
             if (!dbhDelete.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idOldModel", idModelToDelete); }))
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting model {0}: {1}", idModelToDelete, dbhDelete.LastError));
             lst.Add(String.Format(CultureInfo.CurrentCulture, "Deleted model {0}", idModelToDelete));
+            util.FlushCache();
             return lst;
         }
 
@@ -1468,6 +1469,7 @@ FROM models
         {
             DBHelper dbh = new DBHelper("DELETE FROM models WHERE idmodel=?idmodel");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idmodel", id); });
+            util.FlushCache();
         }
     }
 }
