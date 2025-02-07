@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -277,6 +277,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult ViewPic(string r, string k, string t)
         {
+            // issue #1389 - seeing a bunch of requests that include an encoded ampersand.  If we see that, redirect to notfound
+            if (t?.Contains('\\') ?? true)
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+
             if (Enum.TryParse(r, out MFBImageInfoBase.ImageClass ic) && !String.IsNullOrEmpty(k) && !String.IsNullOrEmpty(t) && !t.Contains("?"))  // Googlebot seems to be adding "?resize=300,300
             {
                 MFBImageInfo mfbii = new MFBImageInfo(ic, k, t);
