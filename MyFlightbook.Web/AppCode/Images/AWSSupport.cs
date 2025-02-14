@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -326,7 +326,8 @@ namespace MyFlightbook.Image
         /// <param name="szContentType">Content type of the video file</param>
         /// <param name="szBucket">Bucket to use.  Specified as a parameter because CurrentBucket might return the wrong value when called on a background thread</param>
         /// <param name="mfbii">The MFBImageInfo that encapsulates the video</param>
-        public void UploadVideo(string szFileName, string szContentType, string szBucket, MFBImageInfo mfbii)
+        /// <param name="fDelete">True to delete the file after upload</param>
+        public void UploadVideo(string szFileName, string szContentType, string szBucket, MFBImageInfo mfbii, bool fDelete)
         {
             if (mfbii == null)
                 throw new ArgumentNullException(nameof(mfbii));
@@ -389,6 +390,9 @@ namespace MyFlightbook.Image
                 });
                 if (job != null)
                     new PendingVideo(szGuid, job.Job.Id, mfbii.Comment, mfbii.Class, mfbii.Key, szBucket).Commit();
+
+                if (fDelete && File.Exists(szFileName))
+                    File.Delete(szFileName);
             }
         }
         #endregion

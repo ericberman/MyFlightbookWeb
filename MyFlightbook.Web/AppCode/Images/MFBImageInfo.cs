@@ -22,7 +22,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1610,8 +1610,16 @@ namespace MyFlightbook.Image
             if (String.IsNullOrEmpty(myFile.TempFileName) || !File.Exists(myFile.TempFileName))
                 return;
 
+            // Issue #1391: copy the temp file before upload.
+            string fileName = Path.GetTempFileName();
+            using (FileStream fs = File.OpenWrite(fileName))
+            {
+                using (Stream s = myFile.GetInputStream())
+                    s.CopyTo(fs);
+            }
+
             string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
-            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, this); })).Start();
+            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(fileName, myFile.ContentType, szBucket, this, true); })).Start();
         }
 
         private void InitFileJPG(MFBPostedFile myFile, string szComment, LatLong ll)
