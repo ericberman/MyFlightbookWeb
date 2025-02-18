@@ -10,7 +10,8 @@
     Html.RenderPartial("_printHeader");
     pl.StripRedundantOrExcludedProperties(new int[] {
                 (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
-                (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC
+                (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC,
+                (int) CustomPropertyType.KnownProperties.IDPropIFRTime
             }, lpp.Flights);
 
     <table class="pageTable">
