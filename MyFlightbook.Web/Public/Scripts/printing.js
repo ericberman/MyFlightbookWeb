@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,6 +27,11 @@ function printingSections(container, options) {
         if (!ckPrintSectionTotals.checked)
             ckPrintSectionCompactTotals.checked = false;
         ckPrintSectionCompactTotals.disabled = !ckPrintSectionTotals.checked;
+
+        var fCoverPage = $('#ckPrintSectionsCoverSheet')[0].checked;
+        var ckDOB = $("#ckPrintSectionsDOB");
+        ckDOB[0].disabled = !fCoverPage;
+        ckDOB[0].checked = ckDOB[0].checked && fCoverPage;
 
         var sects = new Object();
         sects["Endorsements"] = ckPrintSectionEndorsements.checked ? (ckIncludeImgs.checked ? "DigitalAndPhotos" : "DigitalOnly") : "None";

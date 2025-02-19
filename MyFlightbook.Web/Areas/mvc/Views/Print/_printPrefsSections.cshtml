@@ -39,8 +39,12 @@
             <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" name="poSectCover" /></td>
             <td>
                 <label for="ckPrintSectionsCoverSheet">@Resources.LocalizedText.PrintViewIncludeCoverSheet</label>
-                <label><input type="checkbox" name="poSectDOB" id="ckPrintSectionsDOB" @po.Sections.IncludeDOB.ToChecked() @(po.Sections.IncludeCoverPage ? string.Empty : "disabled") />@Resources.LocalizedText.PrintViewIncludeDOB</label>
+                
             </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label><input type="checkbox" name="poSectDOB" id="ckPrintSectionsDOB" @((po.Sections.IncludeDOB && po.Sections.IncludeCoverPage).ToChecked()) @(po.Sections.IncludeCoverPage ? string.Empty : "disabled") />@Resources.LocalizedText.PrintViewIncludeDOB</label></td>
         </tr>
         <tr>
             <td><input type="checkbox" id="ckPrintSectionsAddress" name="poSectAddress" @po.Sections.IncludeAddress.ToChecked() /></td>
@@ -64,9 +68,12 @@
             <td>
                 <input type="checkbox" @po.Sections.IncludeTotals.ToChecked() id="ckPrintSectionTotals" name="poSectTotals" />
             </td>
+            <td><label for="ckPrintSectionTotals">@Resources.LocalizedText.PrintViewIncludeTotals</label></td>
+        </tr>
+        <tr>
+            <td></td>
             <td>
-                <label for="ckPrintSectionTotals">@Resources.LocalizedText.PrintViewIncludeTotals</label>
-                <label><input type="checkbox" name="poSectTotalsCompact" @po.Sections.CompactTotals.ToChecked() id="ckPrintSectionCompactTotals" />@Resources.LocalizedText.PrintViewTotalsCompact</label>
+                <label><input type="checkbox" name="poSectTotalsCompact" @((po.Sections.CompactTotals && po.Sections.IncludeTotals).ToChecked()) @(po.Sections.IncludeTotals ? string.Empty : "disabled") id="ckPrintSectionCompactTotals" />@Resources.LocalizedText.PrintViewTotalsCompact</label>
                 <span class="fineprint">@Resources.LocalizedText.PrintViewTotalsCompactNote</span>
             </td>
         </tr>
@@ -74,10 +81,13 @@
             <td style="vertical-align:top;">
                 <input type="checkbox" name="poSectEndorsements" @((po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None).ToChecked()) id="ckPrintSectionEndorsements" />
             </td>
+            <td><label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label></td>
+        </tr>
+        <tr>
+            <td></td>
             <td>
-                <label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label>
                 <label><input type="checkbox" name="poSectEndorsementsJPG" @(po.Sections.Endorsements == PrintingSections.EndorsementsLevel.None ? "disabled" : string.Empty) @((po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos).ToChecked()) id="ckPrintSectionEndorsementImages" />@Resources.LocalizedText.PrintViewIncludeJPEGEndorsements</label>
-                <div class="fineprint">@Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote</div>
+                <span class="fineprint">@Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote</span>
             </td>
         </tr>
     </table>
