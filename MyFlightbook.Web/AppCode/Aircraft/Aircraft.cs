@@ -16,7 +16,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1623,6 +1623,9 @@ ORDER BY user ASC");
             { 
                 ModelID = modelIDRequested;
                 AircraftID = acMatch.AircraftID;
+                // Issue #1382 - if we think we're editing a new aircraft, getting revision errors
+                if (Revision < 0)   // 
+                    Revision = acMatch.Revision;
                 return null;    // we're going to edit the underlying aircraft
             }
             else
