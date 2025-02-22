@@ -13,6 +13,6 @@ Because this aircraft is already being used in flights by other pilots, %APP_NAM
 
 Sometimes, aircraft identifiers are reused, or the aircraft in the system is incorrect.  
 
-If you believe that the model you specified is correct, you can update it (or choose the correct version) at https://%APP_URL%, under the "Aircraft" section. 
+If you believe that the model you specified is correct, you can update it (or choose the correct version) on the %APP_NAME% website under [Aircraft/My Aircraft](https://%APP_URL%%APP_ROOT%/mvc/Aircraft). 
 
 Please [contact us](https://%APP_URL%%APP_ROOT%/mvc/pub/contact) if you need more assistance.
