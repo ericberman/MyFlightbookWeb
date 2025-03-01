@@ -7,7 +7,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2024 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,6 +16,7 @@ namespace MyFlightbook.Telemetry
 {
     /// <summary>
     /// Parses IGC files.  See http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html
+    /// and https://www.fai.org/sites/default/files/igc_fr_specification_2020-11-25_with_al6.pdf
     /// </summary>
     public class IGCParser : TelemetryParser
     {
@@ -125,7 +126,9 @@ namespace MyFlightbook.Telemetry
                     LatLong llSample = new LatLong(latsign * (latd + latm / 60000.0), lonsign * (lond + lonm / 60000.0));
                     DateTime dtSample = dtBase.AddSeconds(h * 3600 + m * 60 + s);
                     int altSample = fHasAlt ? palt : 0;
-                    lst.Add(new Position(llSample, altSample, dtSample));
+                    // 0.0/0.0 is almost certainly invalid.
+                    if (llSample.Latitude != 0 && llSample.Longitude != 0)
+                        lst.Add(new Position(llSample, altSample, dtSample));
                 }
             }
 
@@ -137,6 +140,6 @@ namespace MyFlightbook.Telemetry
 
         private static readonly LazyRegex rIGCPrefix = new LazyRegex("^A[a-zA-Z0-9]{6}[^,;]*$");
         private static readonly LazyRegex rIGCPosition = new LazyRegex("^B(?<hrs>[0-9]{2})(?<min>[0-9]{2})(?<sec>[0-9]{2})(?<latd>[0-9]{2})(?<latm>[0-9]{5})(?<latns>[NS])(?<lond>[0-9]{3})(?<lonm>[0-9]{5})(?<lonew>[EW])(?<val>[AV])(?<palt>[0-9]{5})(?<gpsalt>[0-9]{5})", RegexOptions.Multiline);
-        private static readonly LazyRegex rIGCDate = new LazyRegex("^HFDTE(?<day>[0-3][0-9])(?<month>[01][0-9])(?<year>[0-9]{2})", RegexOptions.Multiline);
+        private static readonly LazyRegex rIGCDate = new LazyRegex("^HFDTE(?:DATE:)?(?<day>[0-3][0-9])(?<month>[01][0-9])(?<year>[0-9]{2})", RegexOptions.Multiline | RegexOptions.IgnoreCase);
     }
 }
