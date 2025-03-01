@@ -1,0 +1,4 @@
+ALTER TABLE `logbook`.`usersinroles` 
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`Username`);
+;

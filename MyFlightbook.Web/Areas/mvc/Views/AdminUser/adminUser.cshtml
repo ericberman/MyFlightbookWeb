@@ -87,7 +87,8 @@
 <div id="userTableResult">
 
 </div>
-<br /><br />
+<br />
+<br />
 <h3>Duplicate Users:</h3>
 <div id="dupeUserContainer">
     @if (ViewBag.DupeUsers.Count != 0)
@@ -158,6 +159,74 @@
     <div><input type="button" id="btnCancelSend" onclick="$('#sendMessageDiv').dialog('close');" value="Cancel" /> <input type="button" Value="Send" onclick="javascript: sendMessage();" /></div>
 </div>
 
+@if (ProfileRoles.CanDoAllAdmin(MyFlightbook.Profile.GetUser(User.Identity.Name).Role))
+{
+    List<Profile> lstAdmins = new List<Profile>(ViewBag.adminUsers);
+    lstAdmins.Sort((p1, p2) => { return p1.Role == p2.Role ? p1.UserName.CompareCurrentCultureIgnoreCase(p2.UserName) : p1.Role.CompareTo(p2.Role); });
+    lstAdmins.Add(new Profile());
+    int iAdmin = 0;
+    <script type="text/javascript">
+        $(() => {
+            $("#tblAdmins").find("input[type='radio']").on("click", function (e) { setRoleForUserRow(e.target); });
+        });
 
+        function setRoleForUserRow(sender) {
+            var row = $(sender).closest("tr");
+            var params = new Object();
+            params.szRole = row.find("input[type='radio']:checked").val();
+            params.szTargetUser = row.find("input[name='adminName']").val();
+            params.szPass = $("#txtSiteAdminPass").val();
+            var d = JSON.stringify(params);
+            $.ajax(
+                {
+                    url: '@Url.Action("SetRoleForUser", "adminUser")',
+                    type: "POST", data: d, dataType: "html", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    success: function (response) { location.reload(); }
+                });
+            return false;
+        }
+    </script>
+
+    <h3>Admins on the site @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "divAdmins" }); }</h3>
+    <div id="divAdmins" style="display: none;">
+        <p>To make any change, you MUST include your password for security: <input type="password" id="txtSiteAdminPass" /></p>
+        <table id="tblAdmins" class="stickyHeaderTable">
+            <thead>
+                <tr>
+                    <th class="gvhDefault">User</th>
+                    <th class="gvhDefault" colspan="6">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Profile pfAdmin in lstAdmins)
+                {
+                    string rbName = $"{iAdmin++}rbAdminRole";
+                    bool fisSelf = pfAdmin.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0;
+                    string isSelf = fisSelf ? "disabled" : string.Empty;
+                    <tr>
+                        <td>
+                            @if (String.IsNullOrEmpty(pfAdmin.UserName))
+                            {
+                                <input name="adminName" type="text" placeholder="(New Username)" data-1p-ignore />
+                            }
+                            else
+                            {
+                                <input type="hidden" name="adminName" value="@pfAdmin.UserName" />
+                                <div style="@(fisSelf ? "font-weight: bold;" : string.Empty)">@pfAdmin.UserName (@pfAdmin.UserFullName)</div>
+                            }
+                        </td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.None" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.None).ToChecked()) />None</label></td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.Support" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.Support).ToChecked()) />Support Users</label></td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.DataManager" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.DataManager).ToChecked()) />Manage Data</label></td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.Reporter" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.Reporter).ToChecked()) />View Reports</label></td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.Accountant" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.Accountant).ToChecked()) />Manage Money</label></td>
+                        <td><label><input type="radio" @isSelf value="@ProfileRoles.UserRoles.SiteAdmin" name="@rbName" @((pfAdmin.Role == ProfileRoles.UserRoles.SiteAdmin).ToChecked()) />Site Admin</label></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 

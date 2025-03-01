@@ -27,7 +27,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -2148,6 +2148,73 @@ HAVING numaccounts > 1");
                 });
             });
             return lst;
+        }
+
+        /// <summary>
+        /// Returns the set of all users on the site who have greater than simple user privileges
+        /// </summary>
+        /// <returns></returns>
+        static public IEnumerable<Profile> ADMINAdminUsers()
+        {
+            List<Profile> lst = new List<Profile>();
+            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u INNER JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook')");
+
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Profile(dr)); });
+            return lst;
+        }
+
+        /// <summary>
+        /// Sets the specified role for the specified user.  Requires site admin privileges, and you can't demote the only site admin
+        /// </summary>
+        /// <param name="role">The desired role for the user</param>
+        /// <param name="targetUser">The target user to have their role changed</param>
+        /// <param name="callingUser">The calling user; MUST have site admin privileges</param>
+        /// <param name="callerPW">The calling user's password (MUST be provided on each call for security)</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        static public void SetRoleForUser(ProfileRoles.UserRoles role, string targetUser, string callingUser, string callerPW)
+        {
+            if (String.IsNullOrEmpty(targetUser))
+                throw new ArgumentNullException(nameof(targetUser));
+            if (String.IsNullOrEmpty(callingUser))
+                throw new ArgumentNullException(nameof(callingUser));
+
+            // Validate the caller
+            Profile pfCalling = Profile.GetUser(callingUser);
+            if (!Membership.ValidateUser(callingUser, callerPW))
+                throw new UnauthorizedAccessException("Incorrect credentials provided");
+
+            // Verify that the calling user can in fact perform this action - MUST be site admin
+            if (!ProfileRoles.CanDoAllAdmin(pfCalling.Role))
+                throw new UnauthorizedAccessException("Only a site admin can change the role of another user");
+
+            Profile pfTarget = Profile.GetUser(targetUser);
+            if (String.IsNullOrEmpty(pfTarget?.UserName))
+                throw new InvalidOperationException($"Invalid target username '{targetUser}' provided");
+
+            if (pfTarget.UserName.CompareCurrentCultureIgnoreCase(pfCalling.UserName) == 0)
+                throw new UnauthorizedAccessException("Can't change your own role.");
+
+            if (role != ProfileRoles.UserRoles.SiteAdmin && ProfileRoles.CanDoAllAdmin(pfTarget.Role))
+            {
+                // Can't demote only siteadmin.  Check that if we were to Remove non-siteadmins and the target user, we still have a remaining site admin
+                // Should never happen, since above we can't change our own role and we have to be site admin to even be here, but it's am extra double check.
+                List<Profile> lstSiteAdmins = new List<Profile>(ADMINAdminUsers());
+                lstSiteAdmins.RemoveAll(p => p.Role != ProfileRoles.UserRoles.SiteAdmin || p.UserName.CompareCurrentCultureIgnoreCase(targetUser) == 0);
+                if (lstSiteAdmins.Count == 0)
+                    throw new InvalidOperationException("Making this change would leave the site without any active site admins.  There must always be at least one.");
+            }
+
+            // If we're here, we should be good.
+            DBHelper dbh = new DBHelper(role == ProfileRoles.UserRoles.None ? "DELETE FROM usersinroles WHERE username=?uName;" : "REPLACE INTO usersinroles SET username=?uName, rolename=?role, ApplicationName='Logbook';");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("uName", targetUser);
+                comm.Parameters.AddWithValue("role", role.ToString());
+            });
+
+            util.FlushCache();  // need to reload everybody now.
         }
 
         static public void UnlockUser(string szUser)
