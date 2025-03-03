@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -940,8 +940,11 @@ namespace MyFlightbook.Currency
 
                         AddToList(new TotalsItem(Resources.Totals.CrossCountry, Convert.ToDecimal(util.ReadNullableField(dr, "XCountry", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasXC = true }, Group = TotalsGroup.CoreFields });
                         AddToList(new TotalsItem(Resources.Totals.Night, Convert.ToDecimal(util.ReadNullableField(dr, "Night", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasNight = true }, Group = TotalsGroup.CoreFields });
-                        AddToList(new TotalsItem(Resources.Totals.IMC, Convert.ToDecimal(util.ReadNullableField(dr, "IMC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasIMC = true }, Group = TotalsGroup.CoreFields });
-                        AddToList(new TotalsItem(Resources.Totals.SimIMC, Convert.ToDecimal(util.ReadNullableField(dr, "SimulatedInstrument", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasSimIMCTime = true }, Group = TotalsGroup.CoreFields });
+                        decimal imc = Convert.ToDecimal(util.ReadNullableField(dr, "IMC", 0.0M), CultureInfo.InvariantCulture);
+                        decimal siminst = Convert.ToDecimal(util.ReadNullableField(dr, "SimulatedInstrument", 0.0M), CultureInfo.InvariantCulture);
+                        AddToList(new TotalsItem(Resources.Totals.TotalInstrument, imc + siminst) { Query = new FlightQuery(Restriction) { HasAnyInstrument = true }, Group = TotalsGroup.CoreFields, SubDescription = String.Format(CultureInfo.CurrentCulture, Resources.Totals.TotalInstrumentNote, imc.FormatDecimal(pf.UsesHHMM, true), siminst.FormatDecimal(pf.UsesHHMM, true)) });
+                        AddToList(new TotalsItem(Resources.Totals.IMC, imc) { Query = new FlightQuery(Restriction) { HasIMC = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.SimIMC, siminst) { Query = new FlightQuery(Restriction) { HasSimIMCTime = true }, Group = TotalsGroup.CoreFields });
                         AddToList(new TotalsItem(Resources.Totals.Ground, Convert.ToDecimal(util.ReadNullableField(dr, "GroundSim", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasGroundSim = true }, Group = TotalsGroup.CoreFields });
                         AddToList(new TotalsItem(Resources.Totals.Dual, Convert.ToDecimal(util.ReadNullableField(dr, "Dualtime", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasDual = true }, Group = TotalsGroup.CoreFields });
                         AddToList(new TotalsItem(Resources.Totals.CFI, Convert.ToDecimal(util.ReadNullableField(dr, "cfi", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasCFI = true }, Group = TotalsGroup.CoreFields });

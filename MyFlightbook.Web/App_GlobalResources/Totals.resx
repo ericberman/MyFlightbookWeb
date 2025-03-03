@@ -361,4 +361,12 @@
     <value>Multi-engine Helicopter</value>
     <comment>Time in a multi-engine helicopter</comment>
   </data>
+  <data name="TotalInstrument" xml:space="preserve">
+    <value>Instrument Time</value>
+    <comment>Indicates total instrument time</comment>
+  </data>
+  <data name="TotalInstrumentNote" xml:space="preserve">
+    <value>(={0} Actual + {1} Simulated)</value>
+    <comment>Shows how total instrument time is computed</comment>
+  </data>
 </root>

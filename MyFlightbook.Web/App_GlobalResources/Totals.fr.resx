@@ -137,10 +137,6 @@
     <value>Navigation</value>
     <comment>Cross Country total</comment>
   </data>
-  <data name="DayLanding" xml:space="preserve">
-    <value>Jour</value>
-    <comment>Day landings - i.e., "14 landings (3 Day)"</comment>
-  </data>
   <data name="Dual" xml:space="preserve">
     <value>Double</value>
     <comment>Dual total</comment>
@@ -174,10 +170,6 @@
   <data name="Night" xml:space="preserve">
     <value>Nuit</value>
     <comment>Night total</comment>
-  </data>
-  <data name="NightLanding" xml:space="preserve">
-    <value>Nuit</value>
-    <comment>Night landings - i.e., "14 landings (2 Night)"</comment>
   </data>
   <data name="PIC" xml:space="preserve">
     <value>Commandant de bord</value>
@@ -223,6 +215,17 @@
     <value>Turbine</value>
     <comment>Time in turbine aircraft</comment>
   </data>
+  <data name="DayLanding" xml:space="preserve">
+    <value>Jour</value>
+    <comment>Day landings - i.e., "14 landings (3 Day)"</comment>
+  </data>
+  <data name="NightLanding" xml:space="preserve">
+    <value>Nuit</value>
+    <comment>Night landings - i.e., "14 landings (2 Night)"</comment>
+  </data>
+  <data name="NoTotals" xml:space="preserve">
+    <value>(Il n'y a pas de totaux)</value>
+  </data>
   <data name="EngineTime" xml:space="preserve">
     <value>Temps de moteur</value>
   </data>
@@ -231,6 +234,9 @@
   </data>
   <data name="Hobbs" xml:space="preserve">
     <value>Hobbs</value>
+  </data>
+  <data name="HiddenAlignment" xml:space="preserve">
+    <value>:00</value>
   </data>
   <data name="TotalGroupCapabilities" xml:space="preserve">
     <value>Caractéristiques par aéronef</value>
@@ -252,5 +258,18 @@
   </data>
   <data name="TotalGroupTotal" xml:space="preserve">
     <value>Temps total de vol</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Flights" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="MEHelicopter" xml:space="preserve">
+    <value>Hélicoptère multimoteur</value>
+  </data>
+  <data name="TotalInstrument" xml:space="preserve">
+    <value>Heure de l'instrument</value>
+  </data>
+  <data name="TotalInstrumentNote" xml:space="preserve">
+    <value>(={0} VSV + {1} Simulé)</value>
   </data>
 </root>

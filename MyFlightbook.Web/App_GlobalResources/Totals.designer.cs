@@ -520,6 +520,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instrument Time.
+        /// </summary>
+        internal static string TotalInstrument {
+            get {
+                return ResourceManager.GetString("TotalInstrument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (={0} Actual + {1} Simulated).
+        /// </summary>
+        internal static string TotalInstrumentNote {
+            get {
+                return ResourceManager.GetString("TotalInstrumentNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show as flat list.
         /// </summary>
         internal static string TotalsModeFlat {
