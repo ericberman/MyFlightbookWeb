@@ -1060,6 +1060,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hours Logged.
+        /// </summary>
+        internal static string RecentAchievementsHoursLogged {
+            get {
+                return ResourceManager.GetString("RecentAchievementsHoursLogged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0:#,##0.0} hours on {1:d}.
         /// </summary>
         internal static string RecentAchievementsLongestFlight {

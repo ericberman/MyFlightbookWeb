@@ -488,4 +488,7 @@
   <data name="YearInReviewHeaderBanner" xml:space="preserve">
     <value>Your *{0}* year in review is ready to view!</value>
   </data>
+  <data name="RecentAchievementsHoursLogged" xml:space="preserve">
+    <value>Hours Logged</value>
+  </data>
 </root>

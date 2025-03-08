@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2024 MyFlightbook LLC
+ * Copyright (c) 2018-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -172,6 +172,8 @@ namespace MyFlightbook.RatingsProgress
     public class RecentAchievements : MilestoneProgress
     {
         #region Properties
+        protected MyFlightbook.Profile User { get; set; }
+
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
 
@@ -229,6 +231,11 @@ namespace MyFlightbook.RatingsProgress
         protected FastestTimeToTotal fs1000 { get; set; } = new FastestTimeToTotal(1000);
 
         #region MilestoneItems
+        /// <summary>
+        /// Top-line hours logged
+        /// </summary>
+        protected RecentAchievementMilestone miHoursLogged { get; set; }
+
         /// <summary>
         /// Longest streak of consecutive flying dates
         /// </summary>
@@ -332,11 +339,13 @@ namespace MyFlightbook.RatingsProgress
         /// </summary>
         /// <param name="dtStart">Start Date of period</param>
         /// <param name="dtEnd">End date of period</param>
-        public RecentAchievements(DateTime dtStart, DateTime dtEnd) : base()
+        protected RecentAchievements(DateTime dtStart, DateTime dtEnd, string szUser) : base(szUser)
         {
+            User = MyFlightbook.Profile.GetUser(Username);
             StartDate = dtStart.Date;
             EndDate = dtEnd.Date;
 
+            miHoursLogged = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsHoursLogged, MilestoneItem.MilestoneType.Time, 1) { Category = RecentAchievementCategory.Trends };
             miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
             miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
@@ -410,7 +419,7 @@ namespace MyFlightbook.RatingsProgress
                     break;
             }
 
-            RecentAchievements ra = new RecentAchievements(dtMin, dtMax) { Username = szUser, AutoDateRange = autoDateRange };
+            RecentAchievements ra = new RecentAchievements(dtMin, dtMax, szUser) { AutoDateRange = autoDateRange };
             _ = ra.ComputedMilestones;  // force a refresh and caching of results
             return ra;
         }
@@ -425,6 +434,8 @@ namespace MyFlightbook.RatingsProgress
                     miLongestStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementFlyingStreak, (int)miLongestStreak.Progress, FirstFlyingDayOfStreak.Value, LastFlyingDayOfStreak.Value);
                     miLongestStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = FirstFlyingDayOfStreak.Value, DateMax = LastFlyingDayOfStreak.Value };
                 }
+
+                miHoursLogged.Query = miFlightCount.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = StartDate, DateMax = EndDate };
 
                 // No fly streak is trickier - you need to measure the flights you didn't see!
                 // issue #1169
@@ -447,6 +458,7 @@ namespace MyFlightbook.RatingsProgress
                     }
                 }
 
+                miHoursLogged.MatchingEventText = miHoursLogged.Progress.FormatDecimal(User.UsesHHMM);
                 miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).PrettyString();
 
                 miFlyingDates.Progress = FlightDates.Count;
@@ -481,6 +493,7 @@ namespace MyFlightbook.RatingsProgress
 
                 List<MilestoneItem> l = new List<MilestoneItem>()
                 {
+                    miHoursLogged,
                     miFlightCount,
                     miFlyingDates,
                     miLongestStreak,
@@ -627,6 +640,7 @@ namespace MyFlightbook.RatingsProgress
                 return;
 
             miFlightCount.AddEvent(1);
+            miHoursLogged.AddEvent(Math.Round(User.MathRoundingUnit * cfr.Total) / (decimal) User.MathRoundingUnit);
 
             string szDateKey = dtFlight.YMDString();
 
