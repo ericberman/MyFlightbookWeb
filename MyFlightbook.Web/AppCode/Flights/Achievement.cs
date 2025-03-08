@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2024 MyFlightbook LLC
+ * Copyright (c) 2014-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -361,6 +361,7 @@ namespace MyFlightbook.Achievements
             NumberOfStatesBrazil,
             NumberOfStatesAustralia,
             NumberOfStatesMexico,
+            NumberOfVisitsOSH,
 
             Antarctica = BadgeCategory.Miscellaneous,
             FlightsInJanuary,
@@ -786,6 +787,7 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeNightTime(),
                     new MultiLevelBadgeNightVision(),
                     new MultiLevelBadgeCountries(),
+                    new MultiLevelOshVisits(),
                     new VisitedStatesUS(),
                     new VisitedProvincesCanada(),
                     new VisitedStatesMexico(),
@@ -1645,6 +1647,56 @@ namespace MyFlightbook.Achievements
             base.PostFlight(context);
         }
     }
+
+
+    [Serializable]
+    public class MultiLevelOshVisits : MultiLevelCountBadgeBase
+    {
+        static private readonly LazyRegex rOSH = new LazyRegex("\\bK?OSH\\b", true);
+        private const string contextKeyOsh = "OSH visit years";
+
+        public MultiLevelOshVisits() : base(BadgeID.NumberOfVisitsOSH, Resources.Achievements.nameOSHVisits, 1, 5, 10, 20) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            int year = cfr.dtFlight.Year;
+
+            // quick reject anything that isn't last week of July
+            if (cfr.dtFlight.Month != 7 || year == 2020 || year < 1953)
+                return;
+
+            HashSet<int> hsYears = context.TryGetValue(contextKeyOsh, out object hs) ? (HashSet<int>)hs : new HashSet<int>();
+            context[contextKeyOsh] = hsYears;
+
+            // only one visit per year.
+            if (hsYears.Contains(year))
+                return;
+
+            // Now check for last week of the month
+            DateTime lastDayOfJuly = new DateTime(year, 7, 31);
+
+            // Find the last Sunday in July
+            DateTime lastSunday = lastDayOfJuly;
+            while (lastSunday.DayOfWeek != DayOfWeek.Sunday)
+                lastSunday = lastSunday.AddDays(-1);
+
+            // Calculate the start of the last full week (Monday)
+            DateTime lastMonday = lastSunday.AddDays(-6);
+
+            if (cfr.dtFlight.Date.CompareTo(lastMonday) >= 0 && cfr.dtFlight.Date.CompareTo(lastSunday) <= 0 && rOSH.IsMatch(cfr.Route))
+            {
+                hsYears.Add(year);
+                AddToCount(1, cfr);
+            }
+        }
+    }
+
 
     [Serializable]
     public class MultiLevelBadgeCountries : MultiLevelCountBadgeBase

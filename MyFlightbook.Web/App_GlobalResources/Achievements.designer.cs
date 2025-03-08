@@ -628,6 +628,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visited EAA AirVenture in OSH!.
+        /// </summary>
+        internal static string nameOSHVisits {
+            get {
+                return ResourceManager.GetString("nameOSHVisits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Rating: ATP!.
         /// </summary>
         internal static string nameRatingATP {

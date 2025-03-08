@@ -491,4 +491,7 @@
   <data name="RecentAchievementsHoursLogged" xml:space="preserve">
     <value>Hours Logged</value>
   </data>
+  <data name="nameOSHVisits" xml:space="preserve">
+    <value>Visited EAA AirVenture in OSH!</value>
+  </data>
 </root>
