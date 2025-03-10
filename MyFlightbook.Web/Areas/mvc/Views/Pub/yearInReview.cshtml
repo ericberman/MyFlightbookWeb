@@ -9,7 +9,7 @@
     MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(szUser);
     DateTime dtStart = new DateTime(year, 1, 1);
     DateTime dtEnd = new DateTime(year, 12, 31);
-    RecentAchievements ra = new RecentAchievements(dtStart, dtEnd) { Username = szUser };
+    RecentAchievements ra = new RecentAchievements(dtStart, dtEnd, szUser);
     ViewBag.UseMaps = true;
     FlightQuery fq = new FlightQuery(szUser) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtStart, DateMax = dtEnd };
 

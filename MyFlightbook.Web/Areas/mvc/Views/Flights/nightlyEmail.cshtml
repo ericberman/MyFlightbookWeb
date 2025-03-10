@@ -78,7 +78,7 @@
     DateTime dtRAStart = new DateTime(year, 1, 1);
     DateTime dtRaEnd = fAnnual ? new DateTime(year, 12, 31) : DateTime.Now;
 
-    RecentAchievements ra = new RecentAchievements(dtRAStart, dtRaEnd) { Username = Username, AutoDateRange = false };
+    RecentAchievements ra = new RecentAchievements(dtRAStart, dtRaEnd, Username) { AutoDateRange = false };
 
     string szTitle = @String.Format(CultureInfo.CurrentCulture, fMonthlySummary ? Resources.Profile.EmailMonthlyMailIntro : Resources.Profile.EmailWeeklyMailIntro, Branding.CurrentBrand.AppName);
 }

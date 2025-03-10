@@ -339,7 +339,7 @@ namespace MyFlightbook.RatingsProgress
         /// </summary>
         /// <param name="dtStart">Start Date of period</param>
         /// <param name="dtEnd">End date of period</param>
-        protected RecentAchievements(DateTime dtStart, DateTime dtEnd, string szUser) : base(szUser)
+        public RecentAchievements(DateTime dtStart, DateTime dtEnd, string szUser) : base(szUser)
         {
             User = MyFlightbook.Profile.GetUser(Username);
             StartDate = dtStart.Date;
