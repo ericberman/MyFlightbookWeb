@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -873,7 +873,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.NightTouchAndGo, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo); } },
             { CustomCurrencyEventType.GliderTow, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropGliderTow); } },
             { CustomCurrencyEventType.IPC, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsIPC)); } },
-            { CustomCurrencyEventType.FlightReview, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBFR)); } },
+            { CustomCurrencyEventType.FlightReview, (fq, lst, ap) => { fq.AddPropertyTypes(lst.FindAll(cpt => cpt.IsBFR)); fq.PropertiesConjunction = GroupConjunction.Any; } },
             { CustomCurrencyEventType.NightLandingAny, (fq, lst, ap) => { fq.HasNight = true; fq.HasLandings = true; } },
             { CustomCurrencyEventType.RestTime, (fq, lst, ap) => { } },
             { CustomCurrencyEventType.DutyTime, (fq, lst, ap) => { } },
