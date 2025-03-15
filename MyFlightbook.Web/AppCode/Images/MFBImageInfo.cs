@@ -2238,9 +2238,10 @@ namespace MyFlightbook.Image
         /// <param name="mfbii">The image</param>
         /// <param name="szuser">The user</param>
         /// <param name="requestedAction">The action that is requested.  We restrict deletion of aircraft images but anybody can update annotation</param>
+        /// <param name="fDeleteConfirmed">True if the deletion has already been confirmed by the user and thus we can delete even if non-admin and multiple people using the image</param>
         /// <exception cref="UnauthorizedAccessException">Throws UnauthorizedAccessException if user isn't authorized </exception>
         /// <exception cref="ArgumentNullException"></exception>"
-        public static void ValidateAuth(MFBImageInfo mfbii, string szuser, ImageAction requestedAction)
+        public static void ValidateAuth(MFBImageInfo mfbii, string szuser, ImageAction requestedAction, bool fDeleteConfirmed = false)
         {
             if (mfbii == null)
                 throw new ArgumentNullException(nameof(mfbii));
@@ -2258,7 +2259,8 @@ namespace MyFlightbook.Image
                         throw new UnauthorizedAccessException();
 
                     // Further restrict deletion of images if (a) aircraft is shared, or (b) is anonymous.  If it's just you, you're fine.
-                    if (requestedAction == ImageAction.Delete)
+                    // BUT if the user has already confirmed deletion (i.e., from the website, which enforces deletion), then allow it.
+                    if (requestedAction == ImageAction.Delete && !fDeleteConfirmed)
                     {
                         if (ac.IsAnonymous || new AircraftStats(szuser, ac.AircraftID).Users > 1)
                             throw new InvalidOperationException(Resources.Aircraft.errDontDeleteImageAnonymous);

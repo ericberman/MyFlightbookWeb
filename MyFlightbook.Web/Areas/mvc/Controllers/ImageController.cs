@@ -55,7 +55,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     // Check ownership.
                     bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
                     if (!fCanActAsAdmin)
-                        ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete);
+                        ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete, true);
                     mfbii.DeleteImage();
                 }
                 return new EmptyResult();
