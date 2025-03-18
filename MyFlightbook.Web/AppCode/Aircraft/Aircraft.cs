@@ -757,6 +757,7 @@ ORDER BY user ASC");
             if (ac == null)
                 throw new ArgumentNullException(nameof(ac));
             Flags = ac.Flags;
+            IsLocked = ac.IsLocked; // issue #1401 - locked isn't being preserved.
         }
 
         /// <summary>
