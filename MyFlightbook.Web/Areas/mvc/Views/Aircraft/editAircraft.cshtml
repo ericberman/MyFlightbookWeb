@@ -31,7 +31,7 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     if (fAdminMode)
     {
-        <script type="text/javascript" src="@("~/Public/Scripts/adminajax.js".ToAbsolute())"></script>
+        <script type="text/javascript" src="@MyFlightbook.Web.Ajax.AdminWebServices.AjaxScriptLink"></script>
     }
 }
 <script type="text/javascript" src="@("~/Public/Scripts/aircraftedit.js?v=0".ToAbsolute())"></script>

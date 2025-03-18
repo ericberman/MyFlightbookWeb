@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2022-2024 MyFlightbook LLC
+ * Copyright(c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  *
 *******************************************************/
@@ -130,6 +130,21 @@ function trimN0(sender, idAircraft) {
             success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
         });
 }
+
+function ReHyphenate(sender, idAircraft, newTail, successTarget) {
+    var params = new Object();
+    params.idAircraft = idAircraft;
+    params.newTail = newTail;
+    var d = JSON.stringify(params);
+    $.ajax(
+        {
+            url: '/logbook/Admin/AdminService.asmx/ReHyphenate',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
+            success: function (r) { successTarget.text(r.d); sender.val(r.d); }
+        });
+}
+
 function ignorePseudoGeneric(sender, idaircraft) {
     var params = new Object();
     params.idAircraft = idaircraft;

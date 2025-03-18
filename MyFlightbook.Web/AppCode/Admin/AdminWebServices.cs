@@ -15,7 +15,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ namespace MyFlightbook.Web.Ajax
     {
         public static string AjaxScriptLink
         {
-            get { return "~/public/Scripts/adminajax.js?v=2".ToAbsolute(); }
+            get { return "~/Public/Scripts/adminajax.js?v=5".ToAbsolute(); }
         }
 
         public AdminWebServices()
@@ -95,6 +95,26 @@ namespace MyFlightbook.Web.Ajax
 
             Aircraft.AdminRenameAircraft(ac, "N" + szTail.Substring(2));
         }
+
+        [WebMethod(EnableSession = true)]
+        public string ReHyphenate(int idAircraft, string newTail)
+        {
+            if (!Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException("Unauthenticated call to TrimN0");
+
+            Aircraft ac = new Aircraft(idAircraft);
+            if (ac.IsNew)
+                throw new InvalidOperationException("Aircraft was not found");
+            if (!ac.IsRegistered)
+                throw new InvalidOperationException("Cannot rehyphenate a sim or anonymous aircraft");
+            if (Aircraft.NormalizeTail(newTail).CompareCurrentCultureIgnoreCase(ac.SearchTail) != 0)
+                throw new InvalidOperationException("You can change hyphenation this way, but not a tail number");
+
+            ac.TailNumber = newTail.ToUpper(CultureInfo.InvariantCulture);
+            ac.Commit();
+            return ac.TailNumber;
+        }
+
 
         [WebMethod(EnableSession = true)]
         public void MigrateGeneric(int idAircraft)
