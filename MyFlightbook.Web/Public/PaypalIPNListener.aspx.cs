@@ -110,7 +110,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
                     Payment p = new Payment(DateTime.Now, szUser, d, fee, transType, string.Empty, szTransactionID, strRequest);
                     if (fSandbox)
                     {
-                        util.NotifyAdminEvent("Sandbox Trnasaction", "payment = " + Newtonsoft.Json.JsonConvert.SerializeObject(p), ProfileRoles.maskSiteAdminOnly);
+                        util.NotifyAdminEvent("Sandbox Transaction", "payment = " + Newtonsoft.Json.JsonConvert.SerializeObject(p), ProfileRoles.maskSiteAdminOnly);
                         return;
                     }
                     p.Commit();

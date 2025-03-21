@@ -1,12 +1,9 @@
-﻿
+﻿@using System.Globalization;
+@using MyFlightbook;
 @{
     ViewBag.defaultTab = tabID.tabProfile;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-
-@using System.Globalization;
-@using MyFlightbook;
-
 <h2>@Resources.Preferences.DonateHeader</h2>
 
 <div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray; display: @(!String.IsNullOrEmpty(Branding.CurrentBrand.SwagRef) ? "block" : "none")">
@@ -50,33 +47,66 @@
     }
 </table>
 <div style="margin-top: 15pt; margin-bottom: 15pt;">
-    <form id="form1" runat="server" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-        <div>
-            <input type="hidden" name="cmd" value="_s-xclick" />
-            <input type="hidden" name="hosted_button_id" value="YH8NJZL5W9HTU" />
-            <table>
-                <tr><td><input type="hidden" name="on0" value="Donation Levels:" />Donation Levels:</td></tr>
-                <tr>
-                    <td>
-                        <select name="os0">
-                            <option value="'Overnight parking fees'">US$10 - Overnight parking fees</option>
-                            <option value="'Twice around the pattern'">US$15 - Twice around the pattern</option>
-                            <option value="'Shockingly little avgas'">US$25 - Shockingly little avgas</option>
-                            <option value="'An hour of instruction'">US$40 - 1 (1/2?) hour of instruction</option>
-                            <option value="'VFR Eastbound'">US$75 - VFR Eastbound</option>
-                            <option value="'Hundred Dollar Hamburger'">US$100 - Hundred Dollar Hamburger</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <input type="hidden" name="custom" value="@User.Identity.Name" />
-            <input type="hidden" name="on1" value="ProductID" />
-            <input type="hidden" name="os1" value="MFBDonation" />
-            <input type="hidden" name="currency_code" value="USD" />
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+    @if (Request["useStripe"] == null)
+    {
+        <form id="form1" runat="server" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <div>
+                <input type="hidden" name="cmd" value="_s-xclick" />
+                <input type="hidden" name="hosted_button_id" value="YH8NJZL5W9HTU" />
+                <table>
+                    <tr><td><input type="hidden" name="on0" value="Donation Levels:" />Donation Levels:</td></tr>
+                    <tr>
+                        <td>
+                            <select name="os0">
+                                <option value="'Overnight parking fees'">US$10 - Overnight parking fees</option>
+                                <option value="'Twice around the pattern'">US$15 - Twice around the pattern</option>
+                                <option value="'Shockingly little avgas'">US$25 - Shockingly little avgas</option>
+                                <option value="'An hour of instruction'">US$40 - 1 (1/2?) hour of instruction</option>
+                                <option value="'VFR Eastbound'">US$75 - VFR Eastbound</option>
+                                <option value="'Hundred Dollar Hamburger'">US$100 - Hundred Dollar Hamburger</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" name="custom" value="@User.Identity.Name" />
+                <input type="hidden" name="on1" value="ProductID" />
+                <input type="hidden" name="os1" value="MFBDonation" />
+                <input type="hidden" name="currency_code" value="USD" />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+            </div>
+        </form>
+    }
+    else
+    {
+        string webhookkey = LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook");
+        <script type="text/javascript">
+            function submitStripe() {
+                $("#hdnDonationName").val($("#cmbDonation option:selected").text());
+                $("#formStripe").submit();
+            }
+        </script>
+        <div style="background-color: antiquewhite; padding: 4pt;">
+            <h2>****USING STRIPE****</h2>
+            @if (String.IsNullOrEmpty(webhookkey))
+                {
+                    <h2>NO WEBHOOK SIGNING SECRET IS CONFIGURED - IF DEBUG AND USING THE CLI, PUT THE WEBHOOK SIGNING SECRET INTO THE StripeTestWebhook VALUE OF THE LOCALCONFIG TABLE IN THE LOCAL DATABASE</h2>
+                }
+            <form action="@("~/mvc/donate/create-checkout-session".ToAbsolute())" method="POST" name="formStripe" id="formStripe">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="selectedDonationName" id="hdnDonationName" />
+                <select name="selectedDonation" id="cmbDonation">
+                    <option value="1000">US$10 - Overnight parking fees</option>
+                    <option value="1500">US$15 - Twice around the pattern</option>
+                    <option value="2500">US$25 - Shockingly little avgas</option>
+                    <option value="4000">US$40 - 1 (1/2?) hour of instruction</option>
+                    <option value="7500">US$75 - VFR Eastbound</option>
+                    <option value="10000">US$100 - Hundred Dollar Hamburger</option>
+                </select>
+                <button type="button" onclick="javascript: submitStripe();">Pay Now</button>
+            </form>
         </div>
-    </form>
+    }
 </div>
 <div>
     @Html.Raw(Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify())
@@ -88,29 +118,29 @@
     <p style="font-weight:bold">@Resources.Preferences.DonateThankYou</p>
     <p>@Resources.LocalizedText.GratuityEarnedHeader</p>
     <ul>
-        @foreach(MyFlightbook.Payments.EarnedGratuity eg in ViewBag.GratuityHistory)
-            {
-                <li>@Html.Raw(eg.ThankYou.Linkify())</li>
-            }
+        @foreach (MyFlightbook.Payments.EarnedGratuity eg in ViewBag.GratuityHistory)
+        {
+            <li>@Html.Raw(eg.ThankYou.Linkify())</li>
+        }
     </ul>
 </div>
 
-@if(ViewBag.PaymentHistory.Count > 0)
+@if (ViewBag.PaymentHistory.Count > 0)
 {
     <table cellpadding="4" cellspacing="0" style="border-collapse: collapse;">
-        @foreach(MyFlightbook.Payments.Payment p in ViewBag.PaymentHistory)
-                {
-                    <tr>
-                        <td style="font-weight:bold">@(p.Timestamp.ToShortDateString())</td>
-                        <td>@String.Format(CultureInfo.CurrentCulture, "US${0}", p.Amount)</td>
-                        <td>@p.Notes</td>
-                    </tr>
-                }
+        @foreach (MyFlightbook.Payments.Payment p in ViewBag.PaymentHistory)
+        {
+            <tr>
+                <td style="font-weight:bold">@(p.Timestamp.ToShortDateString())</td>
+                <td>@String.Format(CultureInfo.CurrentCulture, "US${0}", p.Amount)</td>
+                <td>@p.Notes</td>
+            </tr>
+        }
     </table>
 }
 else
 {
     <p>@Resources.Preferences.DonateNoDonations</p>
-} 
+}
 
 

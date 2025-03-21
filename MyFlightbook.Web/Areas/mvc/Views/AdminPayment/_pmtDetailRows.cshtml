@@ -24,8 +24,15 @@
                     @foreach (string szKey in nvc.AllKeys)
                     {
                         <tr>
-                            <td style="font-weight:bold">@szKey</td>
-                            <td>@nvc[szKey]</td>
+                            @if (szKey == null)
+                            {
+                                <td style="white-space: pre;">@p.TransactionNotes</td>
+                            }
+                            else
+                            {
+                                <td style="font-weight:bold">@szKey</td>
+                                <td>@nvc[szKey]</td>
+                            }
                         </tr>
                     }
                 </table>

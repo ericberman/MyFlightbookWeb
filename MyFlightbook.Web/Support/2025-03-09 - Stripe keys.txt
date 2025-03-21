@@ -1,0 +1,6 @@
+﻿INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('StripeTestKey', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('StripeLiveKey', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('StripeLiveWebhook', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('StripeTestWebhook', '');
+ALTER TABLE `logbook`.`payments` 
+CHANGE COLUMN `TransactionData` `TransactionData` TEXT CHARACTER SET 'utf8mb4' NOT NULL COMMENT 'Any additional data about the transaction from the provider.' ;

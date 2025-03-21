@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2024 MyFlightbook LLC
+ * Copyright (c) 2013-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -145,7 +145,7 @@ namespace MyFlightbook.Payments
                     comm.Parameters.AddWithValue("type", Type);
                     comm.Parameters.AddWithValue("notes", Notes);
                     comm.Parameters.AddWithValue("txID", TransactionID);
-                    comm.Parameters.AddWithValue("txNotes", TransactionNotes.LimitTo(1023));
+                    comm.Parameters.AddWithValue("txNotes", TransactionNotes);
                     comm.Parameters.AddWithValue("id", ID);
                 });
 
