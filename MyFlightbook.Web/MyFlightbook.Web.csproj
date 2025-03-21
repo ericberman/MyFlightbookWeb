@@ -231,6 +231,9 @@
     <Reference Include="Serilog.Sinks.File, Version=6.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.File.6.0.0\lib\net471\Serilog.Sinks.File.dll</HintPath>
     </Reference>
+    <Reference Include="Stripe.net, Version=47.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stripe.net.47.4.0\lib\net461\Stripe.net.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
@@ -1621,6 +1624,7 @@
     <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
     <Content Include="Support\2024-10-03 - Add recaptcha.txt" />
     <Content Include="Support\2025-02-25 - fix PK for usersinroles.txt" />
+    <Content Include="Support\2025-03-09 - Stripe keys.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
