@@ -91,7 +91,7 @@
                     <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td>@led.OptionalColumnDisplayValue(i)</td>
+                        <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     @if (pl.CurrentUser.IsInstructor)

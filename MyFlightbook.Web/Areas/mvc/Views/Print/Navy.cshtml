@@ -87,7 +87,7 @@
                     <td>@led.Approaches.FormatInt()</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>
                         <div>@((led.Airports.Any() ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route) : String.Empty))</div>

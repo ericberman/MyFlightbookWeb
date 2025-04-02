@@ -105,7 +105,7 @@
                         OptionalColumn oc = pl.Options.OptionalColumns[i];
                         if (oc.IsCatClass)
                         {
-                            <td>@led.OptionalColumnDisplayValue(i)</td>
+                            <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                         }
                     }
 
@@ -122,7 +122,7 @@
                         OptionalColumn oc = pl.Options.OptionalColumns[i];
                         if (!oc.IsCatClass)
                         {
-                            <td>@led.OptionalColumnDisplayValue(i)</td>
+                            <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                         }
                     }
                     <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

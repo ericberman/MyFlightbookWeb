@@ -45,7 +45,7 @@
                     <td class="clipped"><span style="font-weight:bold">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>@led.Landings.FormatInt()</td>
                     <td>@led.Approaches.FormatInt()</td>

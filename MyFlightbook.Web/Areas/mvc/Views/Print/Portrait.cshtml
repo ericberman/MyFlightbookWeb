@@ -61,7 +61,7 @@
                     <td class="row1" @Html.Raw(directColor)>@led.TailNumOrSimDisplay</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td class="numericColumn">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td class="numericColumn">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

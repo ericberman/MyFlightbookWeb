@@ -83,7 +83,7 @@
                     </td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td>@led.OptionalColumnDisplayValue(i)</td>
+                        <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>@((led.Dual - Math.Min(led.Dual, led.Nighttime)).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
                     <td class="nightCol">@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

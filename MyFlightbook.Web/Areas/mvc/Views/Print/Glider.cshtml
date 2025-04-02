@@ -73,7 +73,7 @@
 
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td>@led.OptionalColumnDisplayValue(i)</td>
+                        <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
 
                     <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

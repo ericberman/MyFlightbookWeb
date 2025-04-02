@@ -26,7 +26,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -4434,7 +4434,7 @@ WHERE f1.username = ?uName ");
         /// <param name="columnIndex">To which optional column does this belong?</param>
         /// <param name="fUseHHMM">Use HHMM or decimal?</param>
         /// <returns>Formatted string</returns>
-        public string OptionalColumnDisplayValue(decimal value, int columnIndex)
+        private string OptionalColumnDisplayValue(decimal value, int columnIndex, bool fUseHHMM)
         {
             if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Count)
                 return string.Empty;
@@ -4447,24 +4447,23 @@ WHERE f1.username = ?uName ");
                     return value.FormatDecimal(false);
                 default:
                 case OptionalColumnValueType.Time:
-                    return value.FormatDecimal(UseHHMM);
+                    return value.FormatDecimal(fUseHHMM);
             }
         }
 
-        public string OptionalColumnDisplayValue(int columnIndex)
+        public string OptionalColumnDisplayValue(int columnIndex, bool fUseHHMM)
         {
-            return OptionalColumnDisplayValue(OptionalColumnValue(columnIndex), columnIndex);
+            return OptionalColumnDisplayValue(OptionalColumnValue(columnIndex), columnIndex, fUseHHMM);
         }
 
-        public decimal OptionalColumnTotalValue(int columnIndex)
+        private decimal OptionalColumnTotalValue(int columnIndex)
         {
             return (OptionalColumnTotals == null || columnIndex < 0 || columnIndex > OptionalColumnTotals.Count) ? 0.0M : OptionalColumnTotals[columnIndex];
         }
 
         public string OptionalColumnTotalDisplayValue(int columnIndex, bool fUseHHMM)
         {
-            UseHHMM = fUseHHMM;
-            return OptionalColumnTotals == null || columnIndex < 0 || columnIndex >= OptionalColumnTotals.Count ? string.Empty : OptionalColumnDisplayValue(OptionalColumnTotals[columnIndex], columnIndex);
+            return OptionalColumnTotals == null || columnIndex < 0 || columnIndex >= OptionalColumnTotals.Count ? string.Empty : OptionalColumnDisplayValue(OptionalColumnTotals[columnIndex], columnIndex, fUseHHMM);
         }
         #endregion
         #endregion

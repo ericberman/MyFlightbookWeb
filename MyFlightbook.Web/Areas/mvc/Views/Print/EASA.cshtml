@@ -82,7 +82,7 @@
                     <td>@led.CatClassDisplay</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>@led.PICName</td>

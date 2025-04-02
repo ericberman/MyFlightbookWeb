@@ -72,7 +72,7 @@
                     </td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i)</td>
+                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                     }
                     <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

@@ -4,7 +4,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,6 +44,11 @@ namespace MyFlightbook.Printing
         public OptionalColumnValueType ValueType { get; set; }
         #endregion
 
+        private OptionalColumnValueType ValueTypeForColumnType(OptionalColumnType oct)
+        {
+            return (oct == OptionalColumnType.None || oct == OptionalColumnType.CustomProp) ? OptionalColumnValueType.Decimal : OptionalColumnValueType.Time;
+        }
+
         #region Constructors
         public OptionalColumn()
         {
@@ -59,7 +64,7 @@ namespace MyFlightbook.Printing
             if (type == OptionalColumnType.CustomProp || type == OptionalColumnType.None)
                 throw new ArgumentOutOfRangeException(nameof(type));
 
-            ValueType = OptionalColumnValueType.Decimal;
+            ValueType = ValueTypeForColumnType(type);
             Title = TitleForType(type);
         }
 

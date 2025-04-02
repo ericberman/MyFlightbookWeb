@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -66,11 +66,6 @@ namespace MyFlightbook.Printing
         /// The path to the stylesheet to use for the particular layout
         /// </summary>
         public abstract string CSSPath { get; }
-
-        /// <summary>
-        /// The path to the control to load to render this layout
-        /// </summary>
-        public abstract string ControlPath { get; }
 
         /// <summary>
         /// Perform any necessary initialization that is specific to this layout.
@@ -245,8 +240,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutNative.ascx";
-
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
@@ -281,8 +274,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/LayoutPortrait.ascx";
-
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
@@ -316,9 +307,6 @@ namespace MyFlightbook.Printing
         public override bool SupportsImages { get { return false; } }
 
         public override bool SupportsOptionalColumns { get { return true; } }
-
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutGlider.ascx";
-
 
         public override int RowHeight(LogbookEntryDisplay le)
         {
@@ -365,8 +353,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutEASAFCL.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printEASA.css?v=3"; } }
     }
 
@@ -390,8 +376,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutAirline.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printAirline.css?v=3"; } }
     }
 
@@ -408,8 +392,6 @@ namespace MyFlightbook.Printing
         public override bool SupportsImages { get { return true; } }
 
         public override bool SupportsOptionalColumns { get { return true; } }
-
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutCASA.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=3"; } }
     }
@@ -428,8 +410,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return false; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutSACAA.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printSACAA.css?v=3"; } }
     }
 
@@ -447,8 +427,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutNZ.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printNZ.css?v=3"; } }
     }
 
@@ -465,8 +443,6 @@ namespace MyFlightbook.Printing
         public override bool SupportsImages { get { return true; } }
 
         public override bool SupportsOptionalColumns { get { return true; } }
-
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutCanada.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=3"; } }
     }
@@ -487,8 +463,6 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutUSA.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printUSA.css?v=3"; } }
     }
 
@@ -508,8 +482,6 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutNavy.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printNavy.css?v=3"; } }
     }
 
@@ -520,8 +492,6 @@ namespace MyFlightbook.Printing
         public override bool SupportsOptionalColumns { get { return true; } }
 
         public override int RowHeight(LogbookEntryDisplay le) { return 1; }
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutCondensed.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printCondensed.css?v=3"; } }
 
         public override bool IsCondensed => true;
@@ -541,8 +511,6 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutPCAA.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=3"; } }
     }
 
@@ -559,8 +527,6 @@ namespace MyFlightbook.Printing
         public override bool SupportsImages { get { return true; } }
 
         public override bool SupportsOptionalColumns { get { return true; } }
-
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutHongKong.ascx";
 
         public override string CSSPath { get { return "~/Public/CSS/printHongKong.css?v=3"; } }
     }
@@ -581,8 +547,6 @@ namespace MyFlightbook.Printing
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
 
-        public override string ControlPath => "~/Controls/PrintingLayouts/layoutUASCivi.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/printUAS-civi.css?v=2"; } }
     }
 
@@ -601,8 +565,6 @@ namespace MyFlightbook.Printing
             int routeLine = le.Airports.Count() > 2 ? 1 : 0;
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
-        public override string ControlPath => "~/Controls/PrintingLayouts/layout2Page.ascx";
-
         public override string CSSPath { get { return "~/Public/CSS/print2Page.css?v=2"; } }
     }
     #endregion
