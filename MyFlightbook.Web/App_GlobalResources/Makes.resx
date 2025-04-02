@@ -481,4 +481,19 @@
   <data name="errInvalidICAO" xml:space="preserve">
     <value>ICAO/FAA codes may only be up to 4 alphanumeric characters</value>
   </data>
+  <data name="editMakeKeepSimsHighLevel" xml:space="preserve">
+    <value>&lt;div&gt;
+&lt;p&gt;When creating a new model of simulator, please first check that an appropriate model doesn't already exist (it likely does).&lt;/p&gt;
+&lt;p&gt;If not, then it's OK to create a new model, but please respect the following conventions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you are emulating a specific model of aircraft, you generally don't need to create a new model at all.  E.g., if you are emulating an Airbus A-320, just add an Airbus A-320 to your account and indicate that it is an ATD, FTD, or Full Flight Sim (FFS).  If you do want it under the simulator maker's name, then use the simulator maker (e.g., "Redbird") as the manufacturer and put the name of the model being emulated into the Model ID field, with "(SIM)" as the suffix.  E.g., "C-172 (SIM)". Fill in the remaining details as you would for the real aircraft.&lt;br /&gt;&amp;nbsp;&lt;/li&gt;
+&lt;li&gt;If you are not emulating a specific model of aircraft, describe it in the model name (e.g., "ASEL (Glass, Complex)").&lt;br /&gt;&amp;nbsp;&lt;/li&gt;
+&lt;li&gt;It's OK to create a sim that is a branded simulator model, if it's not already in the system.  E.g., Redbird makes an "FMX" model.&lt;br /&gt;&amp;nbsp;&lt;/li&gt;
+&lt;li&gt;If you have a specific device identifier, then &lt;strong&gt;please stop&lt;/strong&gt;. and  re-use an existing model and put the device identifier into the "Simulator/Training Device Identifier" field for individual entries in your logbook that use that sim.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="editMakeSimsWarningTitle" xml:space="preserve">
+    <value>Creating a new simulator model on %APP_NAME%</value>
+  </data>
 </root>

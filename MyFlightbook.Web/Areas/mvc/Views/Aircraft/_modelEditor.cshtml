@@ -50,10 +50,14 @@
 
     function engineChanged() {
         var engineType = $('input[name="engineType"]:checked').val();
-        if (engineType == '@MakeModel.TurbineLevel.Piston' || engineType == '@MakeModel.TurbineLevel.Electric')
-            $("#divSinglePilotOps").hide();
-        else
-            $("#divSinglePilotOps").show();
+        $("#divSinglePilotOps").toggle(engineType != '@MakeModel.TurbineLevel.Piston' && engineType != '@MakeModel.TurbineLevel.Electric');
+        var isJet = engineType == '@MakeModel.TurbineLevel.UnspecifiedTurbine' || engineType == '@MakeModel.TurbineLevel.Jet';
+        if (isJet) {
+            $("#ckComplex")[0].checked = $("#ckConstantProp")[0].checked = false;
+            ComplexElementClicked();
+
+        }
+        $("#ckConstantProp")[0].disabled = $("#ckComplex")[0].disabled = isJet;
     }
 
     function manufacturerChanged(newVal) {
@@ -64,10 +68,14 @@
         var d = JSON.stringify(params);
         $.ajax({
             url: "@Url.Action("GetManufacturerRestriction", "Aircraft")",
-            type: "POST", data: d, dataType: "html", contentType: "application/json",
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function (r) {
                 $("input[name='allowedTypes']")[r].checked = true;
+                // $("#divSimModelWarning").toggle(r == 1);
+                //  class="vfSection callout calloutSmall calloutBackground shadowed"
+                showModalById("divSimModelWarning", "@Branding.ReBrand(Resources.Makes.editMakeSimsWarningTitle)", 500);
+                $("#btnCloseSimWarning")[0].focus();
             }
         });
     }
@@ -100,10 +108,7 @@
     }
 
     function showIfTrue(id, f) {
-        if (f)
-            $(id).show();
-        else
-            $(id).hide();
+        $(id).toggle(f);
     }
 
     function catClassChanged(newVal) {
@@ -262,6 +267,10 @@
             </div>
             <div></div>
         </div>
+        <div style="display: none;" id="divSimModelWarning">
+            <div>@Html.Raw(Branding.ReBrand(Resources.Makes.editMakeKeepSimsHighLevel))</div>
+            <div style="text-align: center;"><button type="button" id="btnCloseSimWarning" onclick="javascript: $(this).closest('.ui-dialog-content').dialog('close');">@Resources.LocalizedText.OK</button></div>
+        </div>
         <div class="vfSection">
             <div class="vfPrompt"><span id=lblModel>@Resources.Makes.editMakeModelID</span></div>
             <div class="vfValue">
@@ -278,7 +287,7 @@
                 <div class="vfSubDesc"><a href="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" target="_blank">@Resources.Makes.editMakeICAOCodeLookup"</a></div>
             </div>
             <div class="vfValue">
-                <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@(CategoryClass.HasICAO(mm.CategoryClassID) ? mm.FamilyName : string.Empty)" style="width: 15em;"  />
+                <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@(CategoryClass.HasICAO(mm.CategoryClassID) ? mm.FamilyName : string.Empty)" style="width: 15em;" />
             </div>
             <div class="vfDescription">
                 <span class="vfSubDesc">@Resources.LocalizedText.OptionalData</span>
@@ -291,7 +300,7 @@
                 <span id=lblModelName>@Resources.Makes.editMakeMarketingName</span>
             </div>
             <div class="vfValue">
-                <input type="text" id="txtModelMarketingName" name="modelName" placeholder="@Resources.LocalizedText.EditMakeWatermarkCommonName" value="@mm.ModelName" style="width: 15em;"  />
+                <input type="text" id="txtModelMarketingName" name="modelName" placeholder="@Resources.LocalizedText.EditMakeWatermarkCommonName" value="@mm.ModelName" style="width: 15em;" />
             </div>
             <div class="vfDescription">
                 <span class="vfSubDesc">@Resources.LocalizedText.OptionalData</span>
@@ -389,7 +398,7 @@
         <div><span id="lblError" class="error">@(ViewBag.error ?? string.Empty)</span></div>
         <div><button type="button" id="btnCommitModel" onclick="javascript: submitForm(@Json.Encode(!mm.IsNew));">@(mm.IsNew ? Resources.LocalizedText.EditMakeAddMake : Resources.LocalizedText.EditMakeUpdateMake)</button></div>
     }
- </div>
+</div>
 
 <div id="pnlNewMan" style="display:none">
     <div>

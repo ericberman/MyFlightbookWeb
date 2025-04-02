@@ -358,6 +358,19 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  &lt;div&gt;
+        ///&lt;p&gt;When creating a new model of simulator, please first check that an appropriate model doesn&apos;t already exist (it likely does).&lt;/p&gt;
+        ///&lt;p&gt;If not, then it&apos;s OK to create a new model, but please respect the following conventions:&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///&lt;li&gt;If you are emulating a specific model of aircraft, you generally don&apos;t need to create a new model at all.  E.g., if you are emulating an Airbus A-320, just add an Airbus A-320 to your account and indicate that it is an ATD, FTD, or Full Flight Sim (FFS).  If you d [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string editMakeKeepSimsHighLevel {
+            get {
+                return ResourceManager.GetString("editMakeKeepSimsHighLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manufacturer:.
         /// </summary>
         internal static string editMakeManufacturerPrompt {
@@ -543,6 +556,15 @@ namespace Resources {
         internal static string editMakeSimSimOrGeneric {
             get {
                 return ResourceManager.GetString("editMakeSimSimOrGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating a new simulator model on %APP_NAME%.
+        /// </summary>
+        internal static string editMakeSimsWarningTitle {
+            get {
+                return ResourceManager.GetString("editMakeSimsWarningTitle", resourceCulture);
             }
         }
         
