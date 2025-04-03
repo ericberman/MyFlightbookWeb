@@ -82,9 +82,9 @@
             <a href="@VirtualPathUtility.ToAbsolute("~/mvc/faq?q=63#63")" target="_blank">@Resources.FlightQuery.SearchTipsToolTip</a>
         </div>
         <p class="header" id="AirportsHeader">
-            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.AirportList.Any(), targetID = "divAirports", labelText = Resources.FlightQuery.HeaderAirports }); }
+            @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fq.AirportList.Any() || fq.Distance != FlightQuery.FlightDistance.AllFlights, targetID = "divAirports", labelText = Resources.FlightQuery.HeaderAirports }); }
         </p>
-        <div id="divAirports" style="overflow:hidden; @(fq.AirportList.Any() ? string.Empty : "display: none;")">
+        <div id="divAirports" style="overflow:hidden; @(fq.AirportList.Any() || fq.Distance != FlightQuery.FlightDistance.AllFlights ? string.Empty : "display: none;")">
             <div>
                 <input type="text" id="txtAirports" style="width:50%" value="@String.Join(Resources.LocalizedText.LocalizedSpace, fq.AirportList)" />@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "airportTips", tipTextHTML = Resources.FlightQuery.SearchTipsAirportToolTip }); }
             </div>
