@@ -45,11 +45,11 @@ else
                 <td>@ap.UserName</td>
                 <td>
                     <div class="displayCell" name="lblcountry">@ap.Country</div>
-                    <div class="editCell"><input type="text" id="@idTxtCountry" name="txtCountry" value="@ap.Country" /></div>
+                    <div class="editCell"><input type="text" id="@idTxtCountry" name="txtCountry" data-1p-ignore value="@ap.Country" /></div>
                 </td>
                 <td>
                     <div class="displayCell" name="lbladmin1">@ap.Admin1</div>
-                    <div class="editCell"><input type="text" id="@idTxtAdmin1" name="txtAdmin1" value="@ap.Admin1" /></div>
+                    <div class="editCell"><input type="text" id="@idTxtAdmin1" name="txtAdmin1" data-1p-ignore value="@ap.Admin1" /></div>
                     <script type="text/javascript">
                     $(function () {
                         autocompleteCountry($("#@idTxtCountry"));

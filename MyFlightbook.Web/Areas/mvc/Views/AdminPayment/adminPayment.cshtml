@@ -18,7 +18,7 @@
         <table cellpadding="3">
             <tr>
                 <td>For donations for:</td>
-                <td>@Html.TextBox("szUser", "", new { placeholder = "(Username, empty for all)", id = "txtUserName", value = ViewBag.UserRestriction })</td>
+                <td><input type="text" name="szUser" data-1p-ignore placeholder="(Username, empty for all)" id="txtUserName" value = "@ViewBag.UserRestriction" /></td>
             </tr>
             <tr>
                 <td></td>
@@ -118,7 +118,7 @@
             </tr>
             <tr>
                 <td>Username:</td>
-                <td><input type="text" name="txtTestTransactionUsername" required /></td>
+                <td><input type="text" name="txtTestTransactionUsername" required data-1p-ignore /></td>
             </tr>
             <tr>
                 <td>Amount: </td>
