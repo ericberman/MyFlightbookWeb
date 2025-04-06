@@ -1,24 +1,26 @@
 ﻿<table class="featureTable">
-    <tr class="appHeader">
-        <td colspan="3"></td>
-        <td class="feature" style="font-style:italic; font-size:small; border-bottom: 2px solid gray;" colspan="3">Compare to...</td>
-    </tr>
-    <tr class="appHeader">
-        <td class="feature"></td>
-        <td class="feature"></td>
-        <td class="feature">
-            %APP_NAME%
-        </td>
-        <td class="feature">
-            ForeFlight
-        </td>
-        <td class="feature">
-            Garmin Pilot
-        </td>
-        <td class="feature">
-            CrewLounge Pilot Log<br />(formerly MccPilotLog)
-        </td>
-    </tr>
+    <thead>
+        <tr class="appHeader">
+            <th class="headerBase gvhDefault" colspan="3" style="border:none;"></th>
+            <th class="headerBase gvhDefault gvhCentered" style="font-style:italic; font-size:small; border-left: none; border-right: none; border-bottom: 2px solid gray;" colspan="3">Compare to...</th>
+        </tr>
+        <tr class="appHeader">
+            <th class="headerBase gvhDefault gvhCentered" style="border:none;"></th>
+            <th class="headerBase gvhDefault gvhCentered" style="border:none;"></th>
+            <th class="headerBase gvhDefault gvhCentered" style="border:none;">
+                <img src="%APP_LOGO%" style="height: 32pt;" alt="%APP_NAME%" title="%APP_NAME%" />
+            </th>
+            <th class="headerBase gvhDefault gvhCentered gvhBold" style="border:none;">
+                ForeFlight
+            </th>
+            <th class="headerBase gvhDefault gvhCentered gvhBold" style="border:none;">
+                Garmin Pilot
+            </th>
+            <th class="headerBase gvhDefault gvhCentered gvhBold" style="border:none;">
+                CrewLounge Pilot Log<br />(formerly MccPilotLog)
+            </th>
+        </tr>
+    </thead>
     <tr>
         <td class="featureGroup" colspan="6">
             Basics
@@ -140,23 +142,28 @@
     <tr>
         <td class="spacerColumn"></td>
         <td class="featureName">
-            Import From/Export To CloudAhoy
-        </td>
-        <td class="feature highlightedFeature">✔</td>
-        <td class="feature">✔</td>
-        <td class="feature">&nbsp;</td>
-    </tr>
-    <tr>
-        <td class="spacerColumn"></td>
-        <td class="featureName">
-            Import flights from company scheduling software
+            Import flights from company scheduling software exports
         </td>
         <td class="feature highlightedFeature">
-            CrewTrac, RosterBuster, TASC
+            CrewTrac, RosterBuster, TASC, AA, CrewLog, CrewLounge, eCrew
         </td>
         <td class="feature"></td>
         <td class="feature">&nbsp;</td>
         <td class="feature">Limited</td>
+    </tr>
+    <tr>
+        <td class="spacerColumn"></td>
+        <td class="featureName">
+            Direct import of upcoming flights from scheduling software
+        </td>
+        <td class="feature highlightedFeature">
+            <div><a href="https://flightcrewview.com/" target="_blank"><img style="width: 60px; height: 60px;" src='/logbook/images/flightcrewview.png' /><br />Flight Crew View</a></div>
+            <div><a href="https://www.leonsoftware.com/" target="_blank"><img style="width: 60px; height: 60px;" src='/logbook/images/LeonLogo.svg' /><br />Leon</a></div>
+            <div><a href="https://app.rosterbuster.aero/" target="_blank"><img style="width: 60px; height: 60px;" src='/logbook/images/rb_logo.png' /><br />RosterBuster</a></div>
+        </td>
+        <td class="feature"></td>
+        <td class="feature">&nbsp;</td>
+        <td class="feature"></td>
     </tr>
     <tr>
         <td class="spacerColumn"></td>
@@ -174,7 +181,10 @@
         <td class="spacerColumn"></td>
         <td class="featureName">Backup to 3rd-party cloud service</td>
         <td class="feature highlightedFeature">
-            Google Drive, OneDrive, Dropbox
+            <div><a href="https://dropbox.com/" target="_blank"><img style="height: 60px;" src='/logbook/images/dropbox-logos_dropbox-logotype-blue.png' alt="DropBox" title="DropBox" /></a></div>
+            <div><a href="https://drive.google.com/" target="_blank"><img style="height: 60px;" src='/logbook/images/google-drive-logo-lockup.png' alt="Google Drive" title="Google Drive" /></a></div>
+            <div><a href="https://onedrive.live.com/" target="_blank"><img style="height: 60px;" src='/logbook/images/OneDrive_rgb_Blue2728.png' alt="One Drive" title="One Drive" /></a></div>
+            <div><a href="https://box.com/" target="_blank"><span style="height: 60px;"><svg width="60" height="32" viewBox="0 0 461 244" class="CollapsibleSidebarLogo__StyledLogo-sc-6amevi-0 fuvpAc bdl-CollapsibleSidebar-logoIcon" focusable="false" aria-hidden="true" role="presentation"><path d="M17.142.304c9.379 0 17.001 7.482 17.171 16.828v72.33c14.39-10.786 32.224-17.171 51.528-17.171 32.876 0 61.451 18.479 75.853 45.611 14.398-27.132 42.987-45.611 75.84-45.611 47.399 0 85.85 38.427 85.85 85.839 0 47.434-38.451 85.87-85.85 85.87-32.853 0-61.442-18.496-75.84-45.602C147.292 225.504 118.717 244 85.841 244 38.884 244 .775 206.327.019 159.561H0V17.132C.215 7.786 7.763.304 17.142.304zm409.635 79.753c6.318-7.341 17.773-8.792 25.938-3.132 8.155 5.613 9.848 16.176 3.942 23.742l-46.723 57.351 46.666 57.24c5.918 7.587 4.217 18.12-3.939 23.755-8.164 5.637-19.617 4.202-25.941-3.15l-40.139-49.196-40.162 49.196c-6.252 7.352-17.779 8.787-25.919 3.15-8.14-5.635-9.841-16.168-3.905-23.755h-.016l46.638-57.24-46.638-57.351h.016c-5.936-7.566-4.235-18.124 3.905-23.742 8.14-5.66 19.667-4.209 25.919 3.132v-.012l40.162 49.264 40.196-49.264zm-189.243 26.605c-28.45 0-51.518 23.042-51.518 51.468 0 28.45 23.068 51.497 51.518 51.497 28.438 0 51.494-23.047 51.494-51.497 0-28.426-23.056-51.468-51.494-51.468zm-151.693 0c-28.444 0-51.528 23.042-51.528 51.479 0 28.445 23.084 51.486 51.528 51.486 28.441 0 51.477-23.047 51.477-51.497 0-28.426-23.036-51.468-51.477-51.468z" fill="#0061d5" fill-rule="evenodd"></path></svg></span></a></div>
         </td>
         <td class="feature"></td>
         <td class="feature">&nbsp;</td>
@@ -197,9 +207,7 @@
         <td class="featureName">
             Share flights with others (socially)
         </td>
-        <td class="feature highlightedFeature">
-            Facebook, Twitter, Email
-        </td>
+        <td class="feature highlightedFeature">✔</td>
         <td class="feature">✔</td>
         <td class="feature">&nbsp;</td>
         <td class="feature"></td>
@@ -233,6 +241,32 @@
         <td class="feature">(Manual)</td>
         <td class="feature">&nbsp;</td>
         <td class="feature">✔</td>
+    </tr>
+
+    <tr>
+        <td class="featureGroup" colspan="6">
+            Debriefing
+        </td>
+    </tr>
+    <tr>
+        <td class="spacerColumn"></td>
+        <td class="featureName" style="text-align: center">
+            <a href="https://cloudahoy.com" target="_blank"><img src="/logbook/images/CloudAhoyTrans.png" style="height: 60px;" alt="CloudAhoy" title="CloudAhoy" /></a>
+        </td>
+        <td class="feature highlightedFeature">Import/Export</td>
+        <td class="feature">✔</td>
+        <td class="feature">&nbsp;</td>
+        <td class="feature">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="spacerColumn"></td>
+        <td class="featureName" style="text-align: center">
+            <a href="https://flysto.net" target="_blank"><img src="/logbook/images/flysto.png" style="height: 60px;" alt="FlySto" title="FlySto" /></a>
+        </td>
+        <td class="feature highlightedFeature">Export</td>
+        <td class="feature"></td>
+        <td class="feature">&nbsp;</td>
+        <td class="feature">&nbsp;</td>
     </tr>
 
     <tr>
@@ -283,7 +317,7 @@
             Extensible fields
         </td>
         <td class="feature highlightedFeature">
-            Over 700, new ones added on request
+            Over 800, new ones added on request
         </td>
         <td class="feature">
             Yes, private
@@ -635,7 +669,7 @@
             Number of print layouts
         </td>
         <td class="feature highlightedFeature">
-            12
+            16
         </td>
         <td class="feature">
             1
