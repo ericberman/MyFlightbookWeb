@@ -2029,4 +2029,7 @@ Proceed with import?</value>
   <data name="CrossFillDistanceTip" xml:space="preserve">
     <value>Fills in the estimated distance (in nautical miles) based on the route of flight</value>
   </data>
+  <data name="FlightCrewViewRefreshFailed" xml:space="preserve">
+    <value>Unable to refresh access to Flight Crew View.  Please re-authorize %APP_NAME% to access your Flight Crew View account.</value>
+  </data>
 </root>

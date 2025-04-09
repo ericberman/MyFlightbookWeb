@@ -1501,6 +1501,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to refresh access to Flight Crew View.  Please re-authorize %APP_NAME% to access your Flight Crew View account..
+        /// </summary>
+        internal static string FlightCrewViewRefreshFailed {
+            get {
+                return ResourceManager.GetString("FlightCrewViewRefreshFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feet.
         /// </summary>
         internal static string flightDetailsAltUnitFeet {

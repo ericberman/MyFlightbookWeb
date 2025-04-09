@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,9 +37,17 @@ namespace MyFlightbook.OAuth.FlightCrewView
 
                 if (!CheckAccessToken() && !String.IsNullOrEmpty(AuthState.RefreshToken))
                 {
-                    AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString());
                     Profile pf = Profile.GetUser(username);
-                    pf.SetPreferenceForKey(AccessTokenPrefKey, AuthState);
+                    try
+                    {
+                        AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString());
+                        pf.SetPreferenceForKey(AccessTokenPrefKey, AuthState);
+                    }
+                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    {
+                        // Issue # 1403 - refresh token only lasts for 3 months, if not used.  So clear the authorization and tell the user.
+                        return Branding.ReBrand(Resources.LogbookEntry.FlightCrewViewRefreshFailed);
+                    }
                 }
 
                 IEnumerable<PendingFlight> _ = await FlightsFromDate(username, startDate, endDate);
