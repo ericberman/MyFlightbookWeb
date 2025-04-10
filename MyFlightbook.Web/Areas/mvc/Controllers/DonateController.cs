@@ -82,9 +82,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 json = await sr.ReadToEndAsync();
             }
 
+            string whsig = Request.Headers["Stripe-Signature"] ?? string.Empty;
+
             try
             {
-                var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook"));
+                var stripeEvent = EventUtility.ConstructEvent(json, whsig, LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook"));
 
                 // Handle the event
                 // If on SDK version < 46, use class Events instead of EventTypes
@@ -115,14 +117,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     // Unexpected event type
                     Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
                 }
-                return new EmptyResult();
             }
             catch (StripeException e)
             {
-                util.NotifyAdminException($"Unsuccessful Stripe notification: {e.Message}", e);
+                util.NotifyAdminException($"Unsuccessful Stripe notification: {e.Message}\r\n\r\n{json}\r\n\r\nStripe Sig: {whsig.LimitTo(8)}...{(whsig.Length > 15 ? whsig.Substring(whsig.Length - 5) : string.Empty)}", e);
+                /*
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Content(e.Message);
+                */
             }
+            return new EmptyResult();
         }
         #endregion
 
