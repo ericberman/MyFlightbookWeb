@@ -119,6 +119,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             catch (StripeException e)
             {
+                util.NotifyAdminException($"Unsuccessful Stripe notification: {e.Message}", e);
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Content(e.Message);
             }
