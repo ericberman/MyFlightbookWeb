@@ -1468,25 +1468,43 @@ table.tblAvailablityMap th.timeHeader {
     max-width: 300px;
 }
 
+.homePageUnauth h2 {
+    margin-top: 36pt;
+    margin-bottom: 12pt;
+}
+
+.homePageUnauth h2, .homePageUnauth.h3 {
+    text-align: center;
+}
+
 #homePagePromo.welcomeHeader {
     background-color: #00bcd4;
     padding: 4px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
-    max-width: 70%;
     color: white;
+    max-width: unset;
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border-radius: 15px;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 10px;
 }
 
 .welcomeHeader p {
-    font-size:larger;
+    font-size: larger;
     font-weight: bold;
-    text-align:center;
+    text-align: center;
+}
+
+.welcomeHeader div {
+    text-align: center;
+}
+
+.homepageRecentStats {
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 36pt;
 }
 
 #homePagePromo.welcomeHeader p {
@@ -1529,6 +1547,49 @@ table.tblAvailablityMap th.timeHeader {
     text-decoration:none;
 }
 
+.homePageUnauth .centeredImg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+}
+
+.testimonialBlock {
+    padding: 10pt;
+    margin: 10pt;
+    border: 1pt solid gray;
+    box-shadow: 2pt 2pt 3pt 0pt rgba(0,0,0,0.75);
+    border-radius: 5pt;
+}
+
+.testimonialQuote {
+}
+
+.testimonialQuote::before, .testimonialQuote::after {
+    content: "\"";
+}
+
+.testimonialAttribution::before {
+    content: " — "
+}
+
+.testimonialAttribution {
+    font-style: italic;
+    font-weight: normal;
+}
+
+.centered80 {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+}
+
+.featureAreaBlock {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+    text-align: center;
+}
 
 .featureAreaDescriptionHeader {
     font-weight:bold;
@@ -1716,7 +1777,9 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 .bigNumberSection {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 20pt;
     width: 20pt;
     background-color: #00bcd4;
@@ -1725,10 +1788,10 @@ table.tblAvailablityMap th.timeHeader {
     text-align: center;
     font-size: 16pt;
     border: 1px solid #00bcd4;
-    vertical-align:middle;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    border-radius: 5px;
+    margin-top: 2pt;
+    margin-bottom: 2pt;
+    margin-right: 4pt;
+    border-radius: 10pt;
 }
 
 h3.numberedStep {

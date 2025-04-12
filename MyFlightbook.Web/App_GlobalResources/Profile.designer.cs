@@ -376,7 +376,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage the aircraft that you fly, and add new models to the system.  You can also define new models of aircraft.  You can even create a flying club if you share aircraft with others!.
+        ///   Looks up a localized string similar to Manage the aircraft that you fly, and add new models to the system.  Define new models of aircraft.  Or create a flying club if you share aircraft with others!.
         /// </summary>
         internal static string appDescriptionAircraft {
             get {
@@ -385,7 +385,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View flight routes, see airports that you&amp;#39;ve visited, add missing airports.  You can even try your skills at identifying airports from satellite imagery..
+        ///   Looks up a localized string similar to View flight routes, see airports that you’ve visited, add missing airports.  Try your skills at identifying airports from satellite imagery.
         /// </summary>
         internal static string appDescriptionAirports {
             get {
@@ -394,7 +394,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage your flights and see your currency and totals. You can also upload or download your logbook, and get a printer-optimized view!.
+        ///   Looks up a localized string similar to Create or import your flights and see your currency and totals, and do deeper analysis. Download your logbook to a spreadsheet, or print your logbook.
         /// </summary>
         internal static string appDescriptionLogbook {
             get {
@@ -403,7 +403,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage your account and preferences for the site. You can even create custom currency rules or deadlines!.
+        ///   Looks up a localized string similar to Create custom currency rules or deadlines, link to cloud storage and airline scheduling systems.
         /// </summary>
         internal static string appDescriptionProfile {
             get {
@@ -412,7 +412,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Track your progress towards ratings, record endorsements, and manage relationships with students and instructors.  You can even earn badges for various achievements!.
+        ///   Looks up a localized string similar to Track progress towards ratings, record endorsements, and manage relationships with students and instructors.  Earn badges for flying achievements!.
         /// </summary>
         internal static string appDescriptionTraining {
             get {
@@ -1519,6 +1519,114 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your Currency.
+        /// </summary>
+        internal static string HomePromoCurrencyHeader {
+            get {
+                return ResourceManager.GetString("HomePromoCurrencyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Here&apos;s what pilots are saying about %APP_NAME%.
+        /// </summary>
+        internal static string HomePromoFeedbackHeader {
+            get {
+                return ResourceManager.GetString("HomePromoFeedbackHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting started is easy.  Here&apos;s how.
+        /// </summary>
+        internal static string HomePromoGetStartedHeader {
+            get {
+                return ResourceManager.GetString("HomePromoGetStartedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join 100,000+ pilots worldwide who trust their logbooks to %APP_NAME%.
+        /// </summary>
+        internal static string HomePromoJoinCommunity {
+            get {
+                return ResourceManager.GetString("HomePromoJoinCommunity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Features of %APP_NAME%.
+        /// </summary>
+        internal static string HomePromoKeyFeaturesHeader {
+            get {
+                return ResourceManager.GetString("HomePromoKeyFeaturesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about %APP_NAME%....
+        /// </summary>
+        internal static string HomePromoLearnMore {
+            get {
+                return ResourceManager.GetString("HomePromoLearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign up - it’s quick and free.
+        /// </summary>
+        internal static string HomePromoStep1 {
+            get {
+                return ResourceManager.GetString("HomePromoStep1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add your aircraft (it’s probably already in the system!) or import your flights from another source.
+        /// </summary>
+        internal static string HomePromoStep2 {
+            get {
+                return ResourceManager.GetString("HomePromoStep2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter flights - you can use the web site, or the iOS/Android apps.
+        /// </summary>
+        internal static string HomePromoStep3 {
+            get {
+                return ResourceManager.GetString("HomePromoStep3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Focus on your flying and let %APP_NAME% take care of tracking totals, currency, endorsements, and more!.
+        /// </summary>
+        internal static string HomePromoStep4 {
+            get {
+                return ResourceManager.GetString("HomePromoStep4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Totals.
+        /// </summary>
+        internal static string HomePromoTotalsHeader {
+            get {
+                return ResourceManager.GetString("HomePromoTotalsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to your logbook.
+        /// </summary>
+        internal static string HomePromoViewYourLogbook {
+            get {
+                return ResourceManager.GetString("HomePromoViewYourLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate: {0}.
         /// </summary>
         internal static string LicenseTemplate {
@@ -1528,19 +1636,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;p&gt;%APP_NAME% - Free Logbook for Pilots!&lt;/p&gt;
+        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% - The most popular FREE logbook for pilots&lt;/p&gt;
         ///&lt;ul&gt;
         ///	&lt;li&gt;Access your logbook from anywhere&lt;/li&gt;
         ///    &lt;li&gt;Ensure that you are current&lt;/li&gt;
         ///    &lt;li&gt;Get detailed totals&lt;/li&gt;
         ///	&lt;li&gt;Track progress towards ratings&lt;/li&gt;
-        ///	&lt;li&gt;Use your phone/tablet to fill in flights as you fly them&lt;/li&gt;
-        ///	&lt;li&gt;Share flights on Facebook or Twitter
-        ///    &lt;li&gt;Download your logbook into a spreadsheet&lt;/li&gt;
         ///    &lt;li&gt;View your flights on a map&lt;/li&gt;
-        ///	&lt;li&gt;And much more...&lt;/li&gt;
+        ///    &lt;li&gt;And much more...&lt;/li&gt;
         ///&lt;/ul&gt;
-        ///&lt;p style=&quot;font-size: medium&quot;&gt;&lt;a href=&quot;https://%APP_URL% [rest of string was truncated]&quot;;.
+        ///.
         /// </summary>
         internal static string NewAccountPromo {
             get {
@@ -1608,6 +1713,15 @@ namespace Resources {
         internal static string NewUserErrPasswordMismatch {
             get {
                 return ResourceManager.GetString("NewUserErrPasswordMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already have an account?.
+        /// </summary>
+        internal static string NewUserExistingAccount {
+            get {
+                return ResourceManager.GetString("NewUserExistingAccount", resourceCulture);
             }
         }
         

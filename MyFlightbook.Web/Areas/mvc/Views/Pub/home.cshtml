@@ -1,69 +1,94 @@
 ﻿@using MyFlightbook.FlightStatistics;
 @using System.Globalization
+@using MyFlightbook.Currency;
 @{
     ViewBag.Title = User.Identity.IsAuthenticated ?
         String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting) :
         String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabHome;
-    FlightStats fs = FlightStats.GetFlightStats();
     string fbfeed = Branding.CurrentBrand.FacebookFeed;
+    string comparePrompt = Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures);
 }
-@if (!String.IsNullOrEmpty(fbfeed))
+@if (!String.IsNullOrEmpty(fbfeed) && User.Identity.IsAuthenticated)
 {
     <script type="text/javascript">
         window.fbAsyncInit = function() { FB.init({appId: '@LocalConfig.SettingForKey("facebookAppId")', autoLogAppEvents: true, xfbml: true, version: 'v5.0'});};
     </script>
     <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <div style="min-width:250px; margin:5px; float: right;">
+        <div class="fb-page" data-href="@Branding.CurrentBrand.FacebookFeed" data-tabs="timeline" data-height="600" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">
+            <blockquote cite="@Branding.CurrentBrand.FacebookFeed" class="fb-xfbml-parse-ignore"><a href="@Branding.CurrentBrand.FacebookFeed">@Branding.CurrentBrand.AppName</a></blockquote>
+        </div>
+    </div>
 }
 @if (!User.Identity.IsAuthenticated)
 {
-    <div id="homePagePromo" class="welcomeHeader"><a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))</a></div>
-}
-<table style="width:100%">
-    <tr style="vertical-align:top">
-        <td>
-            <div style="margin-left: auto; margin-right:auto; max-width:700px; text-align:center;">
-                @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
-                {
-                    <div style="display:inline-block; vertical-align:middle; ">
-                        <div id="@("area" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
-                        <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
-                            <div class="featureAreaDescriptionHeader"><a href='@aad.Link'>@aad.Title</a></div>
-                            <div class="featureAreaDescriptionBody">@aad.Description</div>
-                        </div>
-                    </div>
-                }
-                <p>
-                    <span style="font-weight: bold;">@Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays))</span>
-                    @foreach (LinkedString ls in fs.Stats)
-                    {
-                        @:●
-                        if (String.IsNullOrEmpty(ls.Link))
-                        {
-                            @ls.Value
-                        }
-                        else
-                        {
-                            <a href="@ls.Link" target="_blank">@ls.Value</a>
-                        }
-                    }
-                </p>
-                <div style="max-width: 480px; margin-left:auto; margin-right:auto;">@{ Html.RenderAction("ImageSlider", "Image", new { rgImages = fs.RecentImages(), id = "divSlider" }); }</div>
-            </div>
-        </td>
-        <td>
-            @if (!String.IsNullOrEmpty(fbfeed))
+    <div class="homePageUnauth centered80">
+        <h2>@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity)</h2>
+        <div id="homePagePromo" class="welcomeHeader">
+            @Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))
+            <div style="font-weight: bold;"><a href="@("~/mvc/pub/about".ToAbsolute())">@Branding.ReBrand(Resources.Profile.HomePromoLearnMore)</a></div>
+            <p><a style="font-size: larger; font-weight: bold;" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
+            <div>@Resources.Profile.NewUserExistingAccount <a href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
+        </div>
+        <h2>@Branding.ReBrand(Resources.Profile.HomePromoKeyFeaturesHeader)</h2>
+        <div class="featureAreaBlock">
+            @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
             {
-                <div style="min-width:250px; margin:5px;">
-                    <div class="fb-page" data-href="@Branding.CurrentBrand.FacebookFeed" data-tabs="timeline" data-height="600" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">
-                        <blockquote cite="@Branding.CurrentBrand.FacebookFeed" class="fb-xfbml-parse-ignore"><a href="@Branding.CurrentBrand.FacebookFeed">@Branding.CurrentBrand.AppName</a></blockquote>
+                <div style="display:inline-block; vertical-align:middle; ">
+                    <div id="@("area" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
+                    <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
+                        <div class="featureAreaDescriptionHeader"><a href='@aad.Link'>@aad.Title</a></div>
+                        <div class="featureAreaDescriptionBody">@aad.Description</div>
                     </div>
                 </div>
             }
-        </td>
-    </tr>
-</table>
+        </div>
+        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@comparePrompt" title="@comparePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@comparePrompt</a></h2>
+        <h2>@Resources.Profile.HomePromoGetStartedHeader</h2>
+        <div class="centered80">
+            <h3><span class="bigNumberSection">1</span>@Resources.Profile.HomePromoStep1</h3>
+            <h3><span class="bigNumberSection">2</span>@Resources.Profile.HomePromoStep2</h3>
+            <h3><span class="bigNumberSection">3</span>@Resources.Profile.HomePromoStep3</h3>
+            <h3><span class="bigNumberSection">4</span>@Branding.ReBrand(@Resources.Profile.HomePromoStep4)</h3>
+        </div>
+        <h2>@Branding.ReBrand(Resources.Profile.HomePromoFeedbackHeader)</h2>
+        <div class="testimonialBlock">
+            <h3><span class="testimonialQuote">Over the years, I have been using MyFlightBook with great satisfaction, and I have enthusiastically recommended your platform to many pilots and aviation enthusiasts.</span><span class="testimonialAttribution">Maciej, CFI</span></h3>
+            <h3><span class="testimonialQuote">I’m going to recommend it to all my students.</span><span class="testimonialAttribution">Laurenz, CFI</span></h3>
+            <h3><span class="testimonialQuote">I am a huge fan of MyFlightbook</span><span class="testimonialAttribution">Jason, Airline Pilot</span></h3>
+            <h3><span class="testimonialQuote">Your software is a benefit to pilots, instructors and administrators</span><span class="testimonialAttribution">Wayne, MEI</span></h3>
+        </div>
+    </div>
+    <div class="homepageRecentStats">
+        @{ Html.RenderPartial("_recentStats"); }
+    </div>
+}
+else
+{
+    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    FlightQuery fq = new FlightQuery(User.Identity.Name);
+    UserTotals ut = new UserTotals(User.Identity.Name, fq, true);
+    ut.DataBind();
+                string szViewLogbookPrompt = Resources.Profile.HomePromoViewYourLogbook;
+<div class="centered80">
+    <div class="homepageRecentStats">
+        @{ Html.RenderPartial("_recentStats"); }
+    </div>
+    <br />
+    <h2>@Resources.Profile.HomePromoCurrencyHeader</h2>
+    <div class="centered80">
+        @{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(User.Identity.Name), userName = pf.UserName, linkItems = true }); }
+    </div>
+    <br />
+    <h2>@Resources.Profile.HomePromoTotalsHeader</h2>
+    <div>
+        @{ Html.RenderAction("TotalsForUser", "Flights", new { rgti = ut.Totals, userName = pf.UserName, linkItems = true, grouped = ut.DefaultGroupModeForUser, fq = fq }); }
+    </div>
+    <h2 style="text-align: center;"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
+</div>
+}
 <div style="text-align:center">
     @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = false }); }
 </div>

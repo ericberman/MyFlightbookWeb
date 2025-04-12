@@ -1674,7 +1674,7 @@
     <value>About %APP_NAME%</value>
   </data>
   <data name="AboutViewFeatures" xml:space="preserve">
-    <value>Learn more about what %APP_NAME% can do!</value>
+    <value>Compare %APP_NAME% to other logbooks</value>
   </data>
   <data name="StudentSigningDefaultScribbleAdd" xml:space="preserve">
     <value>Add Scribble</value>

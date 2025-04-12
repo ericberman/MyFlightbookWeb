@@ -95,7 +95,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about what %APP_NAME% can do!.
+        ///   Looks up a localized string similar to Compare %APP_NAME% to other logbooks.
         /// </summary>
         internal static string AboutViewFeatures {
             get {
@@ -775,8 +775,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;p&gt;A method is needed by which an instructor can sign a students logbook, or by which an instructor can endorse a student.   Reference is made to &lt;a href=&quot;https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1029747&quot; target=&quot;_blank&quot;&gt;FAA circular AC No: 120-78A&lt;/a&gt;, which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA.&lt;/p&gt;
-        ///&lt;p&gt;This document describes the implementation used by %APP_NAME%.   It has NOT been vetted  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  &lt;p&gt;
+        ///    A method is needed by which an instructor can sign a student&amp;#8216;s logbook, or by which an instructor can endorse a student. Reference is made to &lt;a href=&quot;https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1043396&quot; target=&quot;_blank&quot;&gt;FAA circular AC No: 120-78B&lt;/a&gt;,
+        ///    which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA. Note that AC-120-78B explicitly declares that it is not binding; it describes *an [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CFISigs {
             get {
@@ -2367,21 +2368,14 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to  &lt;table class=&quot;featureTable&quot;&gt;
-        ///    &lt;tr class=&quot;appHeader&quot;&gt;
-        ///        &lt;td colspan=&quot;3&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small; border-bottom: 2px solid gray;&quot; colspan=&quot;3&quot;&gt;Compare to...&lt;/td&gt;
-        ///    &lt;/tr&gt;
-        ///    &lt;tr class=&quot;appHeader&quot;&gt;
-        ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot;&gt;
-        ///            %APP_NAME%
-        ///        &lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot;&gt;
-        ///            ForeFlight
-        ///        &lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot;&gt;
-        ///            [rest of string was truncated]&quot;;.
+        ///    &lt;thead&gt;
+        ///        &lt;tr class=&quot;appHeader&quot;&gt;
+        ///            &lt;th class=&quot;headerBase gvhDefault&quot; colspan=&quot;3&quot; style=&quot;border:none;&quot;&gt;&lt;/th&gt;
+        ///            &lt;th class=&quot;headerBase gvhDefault gvhCentered&quot; style=&quot;font-style:italic; font-size:small; border-left: none; border-right: none; border-bottom: 2px solid gray;&quot; colspan=&quot;3&quot;&gt;Compare to...&lt;/th&gt;
+        ///        &lt;/tr&gt;
+        ///        &lt;tr class=&quot;appHeader&quot;&gt;
+        ///            &lt;th class=&quot;headerBase gvhDefault gvhCentered&quot; style=&quot;border:none;&quot;&gt;&lt;/th&gt;
+        ///            &lt;t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FeatureTable {
             get {

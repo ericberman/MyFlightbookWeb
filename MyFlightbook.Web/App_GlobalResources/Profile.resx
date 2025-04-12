@@ -468,19 +468,19 @@
     <value>{0} - Notification of password change</value>
   </data>
   <data name="appDescriptionAircraft" xml:space="preserve">
-    <value>Manage the aircraft that you fly, and add new models to the system.  You can also define new models of aircraft.  You can even create a flying club if you share aircraft with others!</value>
+    <value>Manage the aircraft that you fly, and add new models to the system.  Define new models of aircraft.  Or create a flying club if you share aircraft with others!</value>
   </data>
   <data name="appDescriptionAirports" xml:space="preserve">
-    <value>View flight routes, see airports that you&amp;#39;ve visited, add missing airports.  You can even try your skills at identifying airports from satellite imagery.</value>
+    <value>View flight routes, see airports that you’ve visited, add missing airports.  Try your skills at identifying airports from satellite imagery</value>
   </data>
   <data name="appDescriptionLogbook" xml:space="preserve">
-    <value>Manage your flights and see your currency and totals. You can also upload or download your logbook, and get a printer-optimized view!</value>
+    <value>Create or import your flights and see your currency and totals, and do deeper analysis. Download your logbook to a spreadsheet, or print your logbook</value>
   </data>
   <data name="appDescriptionProfile" xml:space="preserve">
-    <value>Manage your account and preferences for the site. You can even create custom currency rules or deadlines!</value>
+    <value>Create custom currency rules or deadlines, link to cloud storage and airline scheduling systems</value>
   </data>
   <data name="appDescriptionTraining" xml:space="preserve">
-    <value>Track your progress towards ratings, record endorsements, and manage relationships with students and instructors.  You can even earn badges for various achievements!</value>
+    <value>Track progress towards ratings, record endorsements, and manage relationships with students and instructors.  Earn badges for flying achievements!</value>
   </data>
   <data name="ProfileBulkDeleteConfirm" xml:space="preserve">
     <value>Are you sure you want to delete ALL of your flights?  This CANNOT be undone!</value>
@@ -847,5 +847,44 @@
   </data>
   <data name="EmailYearInReviewVisit" xml:space="preserve">
     <value>Review your {0} flights</value>
+  </data>
+  <data name="NewUserExistingAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="HomePromoJoinCommunity" xml:space="preserve">
+    <value>Join 100,000+ pilots worldwide who trust their logbooks to %APP_NAME%</value>
+  </data>
+  <data name="HomePromoGetStartedHeader" xml:space="preserve">
+    <value>Getting started is easy.  Here's how</value>
+  </data>
+  <data name="HomePromoStep1" xml:space="preserve">
+    <value>Sign up - it’s quick and free</value>
+  </data>
+  <data name="HomePromoStep2" xml:space="preserve">
+    <value>Add your aircraft (it’s probably already in the system!) or import your flights from another source</value>
+  </data>
+  <data name="HomePromoStep3" xml:space="preserve">
+    <value>Enter flights - you can use the web site, or the iOS/Android apps</value>
+  </data>
+  <data name="HomePromoStep4" xml:space="preserve">
+    <value>Focus on your flying and let %APP_NAME% take care of tracking totals, currency, endorsements, and more!</value>
+  </data>
+  <data name="HomePromoFeedbackHeader" xml:space="preserve">
+    <value>Here's what pilots are saying about %APP_NAME%</value>
+  </data>
+  <data name="HomePromoKeyFeaturesHeader" xml:space="preserve">
+    <value>Key Features of %APP_NAME%</value>
+  </data>
+  <data name="HomePromoCurrencyHeader" xml:space="preserve">
+    <value>Your Currency</value>
+  </data>
+  <data name="HomePromoTotalsHeader" xml:space="preserve">
+    <value>Your Totals</value>
+  </data>
+  <data name="HomePromoViewYourLogbook" xml:space="preserve">
+    <value>Go to your logbook</value>
+  </data>
+  <data name="HomePromoLearnMore" xml:space="preserve">
+    <value>Learn more about %APP_NAME%...</value>
   </data>
 </root>

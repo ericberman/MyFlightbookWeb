@@ -1,0 +1,22 @@
+﻿@using MyFlightbook.FlightStatistics;
+@using System.Globalization
+@{
+    FlightStats fs = FlightStats.GetFlightStats();
+}
+<p>
+    <span style="font-weight: bold;">@Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays))</span>
+    @foreach (LinkedString ls in fs.Stats)
+    {
+        @:●
+        if (String.IsNullOrEmpty(ls.Link))
+        {
+            @ls.Value
+        }
+        else
+        {
+            <a href="@ls.Link" target="_blank">@ls.Value</a>
+        }
+    }
+</p>
+<div style="max-width: 480px; margin-left:auto; margin-right:auto;">@{ Html.RenderAction("ImageSlider", "Image", new { rgImages = fs.RecentImages(), id = "divSlider" }); }</div>
+
