@@ -67,27 +67,50 @@
 }
 else
 {
-    MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-    FlightQuery fq = new FlightQuery(User.Identity.Name);
-    UserTotals ut = new UserTotals(User.Identity.Name, fq, true);
-    ut.DataBind();
-                string szViewLogbookPrompt = Resources.Profile.HomePromoViewYourLogbook;
-<div class="centered80">
-    <div class="homepageRecentStats">
-        @{ Html.RenderPartial("_recentStats"); }
-    </div>
-    <br />
-    <h2>@Resources.Profile.HomePromoCurrencyHeader</h2>
+    string szViewLogbookPrompt = Resources.Profile.HomePromoViewYourLogbook;
+    UserTotals ut = new UserTotals();
+<script type="text/javascript">
+    $(() => {
+        var params = new Object();
+        params.userName = "@User.Identity.Name";
+        params.linkItems = true;
+        $.ajax({
+            url: "@Url.Action("GetCurrencyForUser", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) { $("#divCurrency").html(r);}
+        });
+
+        params = new Object();
+        params.userName = "@User.Identity.Name";
+        params.linkItems = true;
+        params.grouped = @Json.Encode(ut.DefaultGroupModeForUser);
+        params.fq = @Html.Raw(new FlightQuery(User.Identity.Name).ToJSONString());
+        params.fUpdatePref = false;
+        $.ajax({
+            url: "@Url.Action("GetTotalsForUser", "Flights")",
+            type: "POST", data: JSON.stringify(params), dataType: "html", contentType: 'application/json',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) { $("#divTotals").html(r); }
+        });
+    });
+</script>
     <div class="centered80">
-        @{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(User.Identity.Name), userName = pf.UserName, linkItems = true }); }
+        <div class="homepageRecentStats">
+            @{ Html.RenderPartial("_recentStats"); }
+        </div>
+        <br />
+        <h2>@Resources.Profile.HomePromoCurrencyHeader</h2>
+        <div class="centered80" id="divCurrency">
+            <div style="text-align: center"><img src="@("~/images/progress.gif".ToAbsolute())" style="width: 20pt; height: 20pt;" /></div>
+        </div>
+        <br />
+        <h2>@Resources.Profile.HomePromoTotalsHeader</h2>
+        <div id="divTotals">
+            <div style="text-align: center"><img src="@("~/images/progress.gif".ToAbsolute())" style="width: 20pt; height: 20pt;" /></div>
+        </div>
+        <h2 style="text-align: center;"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
     </div>
-    <br />
-    <h2>@Resources.Profile.HomePromoTotalsHeader</h2>
-    <div>
-        @{ Html.RenderAction("TotalsForUser", "Flights", new { rgti = ut.Totals, userName = pf.UserName, linkItems = true, grouped = ut.DefaultGroupModeForUser, fq = fq }); }
-    </div>
-    <h2 style="text-align: center;"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
-</div>
 }
 <div style="text-align:center">
     @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = false }); }
