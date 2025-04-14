@@ -2438,7 +2438,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free Digital Logbook for Pilots | Track your flights | {0}.
+        ///   Looks up a localized string similar to {0} - The world&apos;s favorite free logbook.
         /// </summary>
         internal static string WelcomeTitle {
             get {
