@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1468,12 +1468,17 @@ table.tblAvailablityMap th.timeHeader {
     max-width: 300px;
 }
 
+.homePageUnauth h1 {
+    color: #323232;
+    background-color: unset;
+}
+
 .homePageUnauth h2 {
     margin-top: 36pt;
     margin-bottom: 12pt;
 }
 
-.homePageUnauth h2, .homePageUnauth.h3 {
+.homePageUnauth h2 {
     text-align: center;
 }
 
@@ -1556,10 +1561,14 @@ table.tblAvailablityMap th.timeHeader {
 
 .testimonialBlock {
     padding: 10pt;
-    margin: 10pt;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20pt; 
+    margin-bottom: 10pt;
     border: 1pt solid gray;
     box-shadow: 2pt 2pt 3pt 0pt rgba(0,0,0,0.75);
     border-radius: 5pt;
+    max-width: 80%;
 }
 
 .testimonialQuote {
@@ -1591,16 +1600,30 @@ table.tblAvailablityMap th.timeHeader {
     text-align: center;
 }
 
+.featureAreaBlockItem {
+    border: 3px solid #aaaaaa;
+    border-radius: 10pt;
+    margin: 8pt;
+    padding: 10pt;
+    height: 150pt;
+    width: 180pt;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .featureAreaDescriptionHeader {
     font-weight:bold;
     font-size: 12pt;
     text-align:center;
+    margin-bottom: 5pt;
 }
 
 .featureAreaDescriptionBody {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: normal;
-    font-size: 9pt;
+    font-size: 10pt;
+    text-align: left;
+    color: #323232;
 }
 
 .featureAreaDescriptorIcon {

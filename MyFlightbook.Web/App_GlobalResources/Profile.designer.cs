@@ -1519,6 +1519,123 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The most popular FREE logbook for pilots worldwide, created by pilots, for pilots.
+        /// </summary>
+        internal static string HomePageMostPopular {
+            get {
+                return ResourceManager.GetString("HomePageMostPopular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add flights (and images!) to your logbook from a browser or iOS/Android apps.  Sign flights and track endorsements.  Great for general aviation, airline, military, and even drone pilots!.
+        /// </summary>
+        internal static string homePromoAreaDesc1 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View up-to-date totals, 8710 forms, track your progress towards ratings..
+        /// </summary>
+        internal static string homePromoAreaDesc2 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track currency (FAA, EASA, others), including medicals flight reviews, duty periods, and maintenance on your aircraft.  Even create your own currency rules!.
+        /// </summary>
+        internal static string homePromoAreaDesc3 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slice and dice your flying by time or aircraft type, see where you&apos;ve flown, and view trends..
+        /// </summary>
+        internal static string homePromoAreaDesc4 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Safely and securely share your logbook with instructor, flight schools, employers, or other pilots, or choose from a wide variety of print/PDF layouts..
+        /// </summary>
+        internal static string homePromoAreaDesc5 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access your logbook securely from any device anywhere, backup to cloud storage providers, push flights to debriefing services, or pull schedules from airline scheduling systems..
+        /// </summary>
+        internal static string homePromoAreaDesc6 {
+            get {
+                return ResourceManager.GetString("homePromoAreaDesc6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simple Flight Logging.
+        /// </summary>
+        internal static string homePromoAreaHeader1 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powerful Reporting.
+        /// </summary>
+        internal static string homePromoAreaHeader2 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency and Compliance.
+        /// </summary>
+        internal static string homePromoAreaHeader3 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analytics and Ratings.
+        /// </summary>
+        internal static string homePromoAreaHeader4 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Easy Sharing.
+        /// </summary>
+        internal static string homePromoAreaHeader5 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Connected.
+        /// </summary>
+        internal static string homePromoAreaHeader6 {
+            get {
+                return ResourceManager.GetString("homePromoAreaHeader6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your Currency.
         /// </summary>
         internal static string HomePromoCurrencyHeader {
@@ -1528,7 +1645,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Here&apos;s what pilots are saying about %APP_NAME%.
+        ///   Looks up a localized string similar to %APP_NAME% Feedback.
         /// </summary>
         internal static string HomePromoFeedbackHeader {
             get {
@@ -1555,7 +1672,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key Features of %APP_NAME%.
+        ///   Looks up a localized string similar to Why pilots choose %APP_NAME%.
         /// </summary>
         internal static string HomePromoKeyFeaturesHeader {
             get {
@@ -1564,7 +1681,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about %APP_NAME%....
+        ///   Looks up a localized string similar to Learn more about %APP_NAME%.
         /// </summary>
         internal static string HomePromoLearnMore {
             get {
@@ -1632,24 +1749,6 @@ namespace Resources {
         internal static string LicenseTemplate {
             get {
                 return ResourceManager.GetString("LicenseTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% - The most popular FREE logbook for pilots&lt;/p&gt;
-        ///&lt;ul&gt;
-        ///	&lt;li&gt;Access your logbook from anywhere&lt;/li&gt;
-        ///    &lt;li&gt;Ensure that you are current&lt;/li&gt;
-        ///    &lt;li&gt;Get detailed totals&lt;/li&gt;
-        ///	&lt;li&gt;Track progress towards ratings&lt;/li&gt;
-        ///    &lt;li&gt;View your flights on a map&lt;/li&gt;
-        ///    &lt;li&gt;And much more...&lt;/li&gt;
-        ///&lt;/ul&gt;
-        ///.
-        /// </summary>
-        internal static string NewAccountPromo {
-            get {
-                return ResourceManager.GetString("NewAccountPromo", resourceCulture);
             }
         }
         

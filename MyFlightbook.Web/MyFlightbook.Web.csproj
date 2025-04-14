@@ -478,7 +478,6 @@
     <Content Include="App_GlobalResources\Content.en\ImportTableDescription.txt" />
     <Content Include="App_GlobalResources\Content.en\mapnavaidtip.htm" />
     <Content Include="App_GlobalResources\Content.en\MobileAppPromo.txt" />
-    <Content Include="App_GlobalResources\Content.en\NewAccountPromo.txt" />
     <Content Include="App_GlobalResources\Content.en\PrintOptionsEntriesPerPageDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Privacy.htm" />
     <Content Include="App_GlobalResources\Content.en\SharingDescription.htm" />
@@ -563,6 +562,12 @@
     <Content Include="images\flysto.png" />
     <Content Include="images\fulldeflection.png" />
     <Content Include="images\globe.png" />
+    <Content Include="images\Home\homeAnalytics.svg" />
+    <Content Include="images\Home\homeCloud.svg" />
+    <Content Include="images\Home\homeCurrency.svg" />
+    <Content Include="images\Home\homeLogging.svg" />
+    <Content Include="images\Home\homeSharing.svg" />
+    <Content Include="images\Home\homeTime.svg" />
     <Content Include="images\inop.png" />
     <Content Include="images\invertsel.png" />
     <Content Include="images\LeonLogo.svg" />

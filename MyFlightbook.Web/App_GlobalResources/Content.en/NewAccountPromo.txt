@@ -1,9 +1,0 @@
-<p>%APP_NAME% - The most popular FREE logbook for pilots</p>
-<ul>
-	<li>Access your logbook from anywhere</li>
-    <li>Ensure that you are current</li>
-    <li>Get detailed totals</li>
-	<li>Track progress towards ratings</li>
-    <li>View your flights on a map</li>
-    <li>And much more...</li>
-</ul>

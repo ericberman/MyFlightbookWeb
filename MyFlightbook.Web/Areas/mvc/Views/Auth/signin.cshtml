@@ -63,7 +63,7 @@
                     <div><input type="password" name="userPW" id="txtPW" style="width:20em;" /></div>
                 </div>
                 <div id="vwTFA" style="@(signinStep == 1 && fCollectTFA ? string.Empty : "display: none;")">
-                    <div style="max-width:300px;">
+                    <div>
                         <h3>@Resources.Profile.TFAIsSetUp</h3>
                         <p>@Resources.Profile.TFAUseYourApp</p>
                         <div><input type="text" maxlength="6" placeholder="######" pattern="^[0-9]{6}$" data-1p-ignore name="tfaCode" id="txtTfaCode" style="width: 6em;" /></div>
@@ -85,8 +85,4 @@
             </div>
         }
     </div>
-    @if (signinStep == 0)
-    {
-        <div class="welcomeHeader" id="signIn">@Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))</div>
-    }
 </div>

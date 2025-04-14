@@ -13,14 +13,12 @@
 
     <img src="@VirtualPathUtility.ToAbsolute("~/images/mfbicon.png")" style="vertical-align:middle;" />
     <a href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/FeatureChart")" style="vertical-align:middle; font-weight: bold;">@Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures)</a>
-</p>
-<div style="text-align:center;">
     @if (!String.IsNullOrEmpty(Branding.CurrentBrand.FacebookFeed))
     {
-        <img style="vertical-align:middle" src="@VirtualPathUtility.ToAbsolute("~/images/f_logo_32.png")" alt="Facebook" />
+        <img style="vertical-align:middle; margin-left: 8pt;" src="@VirtualPathUtility.ToAbsolute("~/images/f_logo_32.png")" alt="Facebook" />
         <a target="_blank" style="margin-right: 10px; font-weight:bold" href="@Branding.CurrentBrand.FacebookFeed">@Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook)</a>
     }
-</div>
+</p>
 <div style="margin-left:auto; margin-right:auto; max-width: 800px; margin-top: 10px; padding: 5px; border-radius: 5px; border: 1px solid gray;">
     <h2>@Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsHeader, fs.MaxDays))</h2>
     @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = fs.Stats }); }

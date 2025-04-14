@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -361,4 +361,17 @@ a.ui-button:active,
 .ui-widget-content .ui-state-error-text,
 .ui-widget-header .ui-state-error-text {
     color: #5f3f3f;
+}
+
+/* Home page */
+.featureAreaDescriptionBody {
+    color: #cdcdcd;
+}
+
+.homePageUnauth h1, #homePagePromo.welcomeHeader h1 {
+    color: #cdcdcd;
+}
+
+#homePagePromo.welcomeHeader h1 {
+    color: white;
 }

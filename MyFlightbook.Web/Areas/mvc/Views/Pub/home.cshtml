@@ -9,6 +9,7 @@
     ViewBag.defaultTab = tabID.tabHome;
     string fbfeed = Branding.CurrentBrand.FacebookFeed;
     string comparePrompt = Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures);
+    string learnMorePrompt = Branding.ReBrand(Resources.Profile.HomePromoLearnMore);
 }
 @if (!String.IsNullOrEmpty(fbfeed) && User.Identity.IsAuthenticated)
 {
@@ -25,41 +26,31 @@
 @if (!User.Identity.IsAuthenticated)
 {
     <div class="homePageUnauth centered80">
-        <h2>@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity)</h2>
-        <div id="homePagePromo" class="welcomeHeader">
-            @Html.Raw(Branding.ReBrand(Resources.Profile.NewAccountPromo))
-            <div style="font-weight: bold;"><a href="@("~/mvc/pub/about".ToAbsolute())">@Branding.ReBrand(Resources.Profile.HomePromoLearnMore)</a></div>
-            <p><a style="font-size: larger; font-weight: bold;" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
-            <div>@Resources.Profile.NewUserExistingAccount <a href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
-        </div>
-        <h2>@Branding.ReBrand(Resources.Profile.HomePromoKeyFeaturesHeader)</h2>
+        <h1>@Branding.ReBrand(Resources.Profile.HomePageMostPopular)</h1>
         <div class="featureAreaBlock">
             @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
             {
-                <div style="display:inline-block; vertical-align:middle; ">
-                    <div id="@("area" + aad.TabID.ToString())" class="featureAreaDescriptorIcon">&nbsp;</div>
-                    <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
-                        <div class="featureAreaDescriptionHeader"><a href='@aad.Link'>@aad.Title</a></div>
-                        <div class="featureAreaDescriptionBody">@aad.Description</div>
-                    </div>
+                <div class="featureAreaBlockItem">
+                    <div class="featureAreaDescriptorIcon"><img src="@aad.Icon.ToAbsolute()" alt="@aad.Title" title="@aad.Title" style="width: 36pt; height: 36pt;" /></div>
+                    <div class="featureAreaDescriptionHeader">@aad.Title</div>
+                    <div class="featureAreaDescriptionBody">@Branding.ReBrand(aad.Description)</div>
                 </div>
             }
         </div>
         <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@comparePrompt" title="@comparePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@comparePrompt</a></h2>
-        <h2>@Resources.Profile.HomePromoGetStartedHeader</h2>
-        <div class="centered80">
-            <h3><span class="bigNumberSection">1</span>@Resources.Profile.HomePromoStep1</h3>
-            <h3><span class="bigNumberSection">2</span>@Resources.Profile.HomePromoStep2</h3>
-            <h3><span class="bigNumberSection">3</span>@Resources.Profile.HomePromoStep3</h3>
-            <h3><span class="bigNumberSection">4</span>@Branding.ReBrand(@Resources.Profile.HomePromoStep4)</h3>
+        <div id="homePagePromo" class="welcomeHeader">
+            <h1>@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity)</h1>
+            <p><a style="font-size: larger; font-weight: bold;" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
+            <div>@Resources.Profile.NewUserExistingAccount <a href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
         </div>
-        <h2>@Branding.ReBrand(Resources.Profile.HomePromoFeedbackHeader)</h2>
+        <h2 style="display: none;">@Branding.ReBrand(Resources.Profile.HomePromoFeedbackHeader)</h2>
         <div class="testimonialBlock">
             <h3><span class="testimonialQuote">Over the years, I have been using MyFlightBook with great satisfaction, and I have enthusiastically recommended your platform to many pilots and aviation enthusiasts.</span><span class="testimonialAttribution">Maciej, CFI</span></h3>
             <h3><span class="testimonialQuote">I’m going to recommend it to all my students.</span><span class="testimonialAttribution">Laurenz, CFI</span></h3>
             <h3><span class="testimonialQuote">I am a huge fan of MyFlightbook</span><span class="testimonialAttribution">Jason, Airline Pilot</span></h3>
             <h3><span class="testimonialQuote">Your software is a benefit to pilots, instructors and administrators</span><span class="testimonialAttribution">Wayne, MEI</span></h3>
         </div>
+        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@learnMorePrompt" title="@learnMorePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/about".ToAbsolute())">@learnMorePrompt</a></h2>
     </div>
     <div class="homepageRecentStats">
         @{ Html.RenderPartial("_recentStats"); }

@@ -251,10 +251,6 @@
     <value>{0} - Free online logbook for pilots!</value>
     <comment>{0} is the app name</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="NewAccountPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\NewAccountPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
-  </data>
   <data name="AccountIsLockedSubject" xml:space="preserve">
     <value>{0} - Account is locked</value>
     <comment>{0} is the app name</comment>
@@ -674,6 +670,7 @@
   <data name="dateOfBirthFormat" xml:space="preserve">
     <value>Date of birth: {0:d}</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PendingFlightsReminder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\pendingflightsreminder.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -870,10 +867,10 @@
     <value>Focus on your flying and let %APP_NAME% take care of tracking totals, currency, endorsements, and more!</value>
   </data>
   <data name="HomePromoFeedbackHeader" xml:space="preserve">
-    <value>Here's what pilots are saying about %APP_NAME%</value>
+    <value>%APP_NAME% Feedback</value>
   </data>
   <data name="HomePromoKeyFeaturesHeader" xml:space="preserve">
-    <value>Key Features of %APP_NAME%</value>
+    <value>Why pilots choose %APP_NAME%</value>
   </data>
   <data name="HomePromoCurrencyHeader" xml:space="preserve">
     <value>Your Currency</value>
@@ -885,6 +882,45 @@
     <value>Go to your logbook</value>
   </data>
   <data name="HomePromoLearnMore" xml:space="preserve">
-    <value>Learn more about %APP_NAME%...</value>
+    <value>Learn more about %APP_NAME%</value>
+  </data>
+  <data name="homePromoAreaHeader1" xml:space="preserve">
+    <value>Simple Flight Logging</value>
+  </data>
+  <data name="homePromoAreaHeader2" xml:space="preserve">
+    <value>Powerful Reporting</value>
+  </data>
+  <data name="homePromoAreaHeader3" xml:space="preserve">
+    <value>Currency and Compliance</value>
+  </data>
+  <data name="homePromoAreaHeader4" xml:space="preserve">
+    <value>Analytics and Ratings</value>
+  </data>
+  <data name="homePromoAreaHeader5" xml:space="preserve">
+    <value>Easy Sharing</value>
+  </data>
+  <data name="homePromoAreaHeader6" xml:space="preserve">
+    <value>Cloud Connected</value>
+  </data>
+  <data name="homePromoAreaDesc1" xml:space="preserve">
+    <value>Add flights (and images!) to your logbook from a browser or iOS/Android apps.  Sign flights and track endorsements.  Great for general aviation, airline, military, and even drone pilots!</value>
+  </data>
+  <data name="homePromoAreaDesc2" xml:space="preserve">
+    <value>View up-to-date totals, 8710 forms, track your progress towards ratings.</value>
+  </data>
+  <data name="homePromoAreaDesc3" xml:space="preserve">
+    <value>Track currency (FAA, EASA, others), including medicals flight reviews, duty periods, and maintenance on your aircraft.  Even create your own currency rules!</value>
+  </data>
+  <data name="homePromoAreaDesc4" xml:space="preserve">
+    <value>Slice and dice your flying by time or aircraft type, see where you've flown, and view trends.</value>
+  </data>
+  <data name="homePromoAreaDesc5" xml:space="preserve">
+    <value>Safely and securely share your logbook with instructor, flight schools, employers, or other pilots, or choose from a wide variety of print/PDF layouts.</value>
+  </data>
+  <data name="homePromoAreaDesc6" xml:space="preserve">
+    <value>Access your logbook securely from any device anywhere, backup to cloud storage providers, push flights to debriefing services, or pull schedules from airline scheduling systems.</value>
+  </data>
+  <data name="HomePageMostPopular" xml:space="preserve">
+    <value>The most popular FREE logbook for pilots worldwide, created by pilots, for pilots</value>
   </data>
 </root>
