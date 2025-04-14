@@ -167,7 +167,7 @@
     <value>Expired {0:#,##0} day(s) ago</value>
   </data>
   <data name="WelcomeTitle" xml:space="preserve">
-    <value>Welcome to {0}</value>
+    <value>Free Digital Logbook for Pilots | Track your flights | {0}</value>
     <comment>{0} is replaced by the app name ("MyFlightbook")</comment>
   </data>
   <data name="EditProfileDeleteCFIConfirmation" xml:space="preserve">
@@ -922,5 +922,8 @@
   </data>
   <data name="HomePageMostPopular" xml:space="preserve">
     <value>The most popular FREE logbook for pilots worldwide, created by pilots, for pilots</value>
+  </data>
+  <data name="MetaDescription" xml:space="preserve">
+    <value>%APP_NAME%  is the most popular digital pilot logbook worldwide that helps you track flights, stay current, and securely access your logbook from anywhere. Sign up in seconds and focus on your flying, not your logging!</value>
   </data>
 </root>

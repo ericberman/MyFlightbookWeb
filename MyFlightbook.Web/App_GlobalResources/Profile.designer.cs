@@ -1753,6 +1753,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME%  is the most popular digital pilot logbook worldwide that helps you track flights, stay current, and securely access your logbook from anywhere. Sign up in seconds and focus on your flying, not your logging!.
+        /// </summary>
+        internal static string MetaDescription {
+            get {
+                return ResourceManager.GetString("MetaDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password:.
         /// </summary>
         internal static string NewUserConfirmPasswordPrompt {
@@ -2429,7 +2438,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to {0}.
+        ///   Looks up a localized string similar to Free Digital Logbook for Pilots | Track your flights | {0}.
         /// </summary>
         internal static string WelcomeTitle {
             get {
