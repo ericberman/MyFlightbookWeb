@@ -346,9 +346,9 @@
             <div class="vfPrompt"><span style="font-weight:bold">@Resources.Makes.editMakeFeatures</span></div>
             <div>
                 <div vertical-align:top" id="divComplex" style="@(hasEngine || mm.CategoryClassID == CategoryClass.CatClassID.Glider ? "display: inline-block;" : "display: none;")">
-                    <input type="checkbox" id="ckComplex" name="isComplex" @((hasEngine && mm.IsComplex).ToChecked()) @(hasEngine ? string.Empty : "disabled") onclick="javascript: ComplexClicked();" /><label for="ckComplex">@Resources.Makes.editMakeComplex</label>
+                    <input type="checkbox" id="ckComplex" name="isComplex" @((hasEngine && mm.IsComplex).ToChecked()) @(hasEngine && mm.EngineType != MakeModel.TurbineLevel.UnspecifiedTurbine && mm.EngineType != @MakeModel.TurbineLevel.Jet ? string.Empty : "disabled") onclick="javascript: ComplexClicked();" /><label for="ckComplex">@Resources.Makes.editMakeComplex</label>
                     <div style="margin-left:20px">
-                        <input type="checkbox" id="ckConstantProp" name="isConstantProp" @((hasEngine && mm.IsConstantProp).ToChecked()) @(hasEngine ? string.Empty : "disabled") onclick="javascript: ComplexElementClicked();" /><label for="ckConstantProp">@Resources.Makes.editMakeCSP</label><br />
+                        <input type="checkbox" id="ckConstantProp" name="isConstantProp" @((hasEngine && mm.IsConstantProp).ToChecked()) @(hasEngine ? string.Empty : "disabled") onclick="javascript: ComplexElementClicked();" @(hasEngine && mm.EngineType != MakeModel.TurbineLevel.UnspecifiedTurbine && mm.EngineType != @MakeModel.TurbineLevel.Jet ? string.Empty : "disabled") /><label for="ckConstantProp">@Resources.Makes.editMakeCSP</label><br />
                         <input type="checkbox" id="ckFlaps" name="hasFlaps" @mm.HasFlaps.ToChecked() onclick="javascript: ComplexElementClicked();" /><label for="ckFlaps">@Resources.Makes.editMakeFlaps</label><br />
                         <input type="checkbox" id="ckRetract" name="isRetract" @mm.IsRetract.ToChecked() onclick="javascript: ComplexElementClicked();" /><label for="ckRetract">@Resources.Makes.editMakeRetract</label><br />
                     </div>
