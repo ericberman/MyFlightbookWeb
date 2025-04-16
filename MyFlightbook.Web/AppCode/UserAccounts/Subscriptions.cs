@@ -16,7 +16,7 @@ using System.Net.Http;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -284,6 +284,19 @@ namespace MyFlightbook.Subscriptions
             return true;
         }
 
+        /// <summary>
+        /// Issue #1406 - strip off the query in the exception for nightly backups.
+        /// </summary>
+        /// <param name="msg">The exception message.</param>
+        /// <returns>Simple "MySQL error" if it's a MySQL error (i.e., doesn't include the actual query)</returns>
+        private static string SanitizeExceptionMsg(string msg)
+        {
+            if (String.IsNullOrEmpty(msg))
+                return string.Empty;
+            int i = msg.IndexOf(" thrown in ReadRows");
+            return i > 0 ? msg.Substring(0, i) : msg;
+        }
+
         private async Task<bool> BackupDropbox(LogbookBackup lb, Profile pf, StringBuilder sb, StringBuilder sbFailures)
         {
             try
@@ -374,7 +387,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.PreferredGreeting, SanitizeExceptionMsg(ex.Message), string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
             }
             catch (FileNotFoundException ex)
             {
@@ -413,7 +426,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (OneDriveException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message + " " + ex.Message);
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
-                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.PreferredGreeting, SanitizeExceptionMsg(ex.Message), string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -452,7 +465,7 @@ namespace MyFlightbook.Subscriptions
             catch (MyFlightbookException ex)
             {
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.BoxFailureSubject, ActiveBrand),
-                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.BoxFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.BoxFailure, pf.PreferredGreeting, SanitizeExceptionMsg(ex.Message), string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user: {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -489,7 +502,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
                 util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.GoogleDriveFailureSubject, ActiveBrand),
-                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.PreferredGreeting, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                    Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.PreferredGreeting, SanitizeExceptionMsg(ex.Message), string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
             }
             catch (UnauthorizedAccessException ex)
             {
