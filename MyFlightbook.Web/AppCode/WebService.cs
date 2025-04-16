@@ -2,6 +2,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
+using MyFlightbook.Lint;
 using MyFlightbook.Templates;
 using Serilog;
 using System;
@@ -17,7 +18,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -915,6 +916,26 @@ namespace MyFlightbook
                     return le.TelemetryAsGPX();
             }
             return null;
+        }
+
+        [WebMethod]
+        public string[] CheckFlight(string szAuthUserToken, LogbookEntry le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+
+            // slam in the authenticated user.
+            le.User = GetEncryptedUser(szAuthUserToken);
+
+            List<string> result = new List<string>();
+
+            foreach (FlightWithIssues f in (new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale)))
+                foreach (FlightIssue fi in f.Issues)
+                    result.Add(fi.IssueDescription);
+
+            return result.ToArray();
         }
 
         #region Pending Flights support
