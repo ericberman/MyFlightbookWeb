@@ -247,42 +247,42 @@
                             <td>@Resources.Aircraft.MaintenanceNextDue</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceAnnualPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceAnnual</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastAnnual", name = "aircraftAnnual", value = ac.LastAnnual });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextAnnual });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceXPonderPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceTransponder</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastXPonder", name = "aircraftXPonder", value = ac.LastTransponder });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextTransponder });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenancePitotPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenancePitotStatic</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastStatic", name = "aircraftStatic", value = ac.LastStatic });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextStatic });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceAltimeterPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceAltimeter</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastAltimeter", name = "aircraftAltimeter", value = ac.LastAltimeter });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextAltimeter });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceELTPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceELT</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastELT", name = "aircraftELT", value = ac.LastELT });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextELT });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceVORPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceVOR</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtLastVOR", name = "aircraftVOR", value = ac.LastVOR });}</td>
                             <td>@{ Html.RenderAction("MaintenanceDueDate", "Aircraft", new { dt = ac.Maintenance.NextVOR });}</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.Maintenance100HrPrompt</td>
+                            <td class="label">@Resources.Aircraft.Maintenance100</td>
                             <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txt100Hour", name = "aircraftLast100", value = ac.Last100 });}</td>
                             <td>@ac.Maintenance.Next100.FormatDecimal(false)</td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceOilPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceOil</td>
                             <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txtLastOil", name = "aircraftLastOil", value = ac.LastOilChange });}</td>
                             <td></td>
                         </tr>
@@ -299,13 +299,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceEnginePrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceEngine</td>
                             <td>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "txtLastEngine", name = "aircraftLastEngine", value = ac.LastNewEngine });}</td>
                             <td>
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">@Resources.Aircraft.MaintenanceRegistrationPrompt</td>
+                            <td class="label">@Resources.Aircraft.MaintenanceRegistration</td>
                             <td>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtRegistrationDue", name = "aircraftRegistration", value = ac.RegistrationDue });}</td>
                             <td></td>
                         </tr>
