@@ -220,7 +220,7 @@
     <value>72 Minutes displays as...</value>
   </data>
   <data name="DonateCrypto" xml:space="preserve">
-    <value>Prefer alternative means of payment?  %APP_NAME% now accepts *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*</value>
+    <value>Prefer alternative means of payment?  %APP_NAME% now accepts *Paypal*, *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*</value>
   </data>
   <data name="DonateCryptoContact" xml:space="preserve">
     <value>Contact us for details.</value>
@@ -231,11 +231,17 @@
   <data name="DonateNoDonations" xml:space="preserve">
     <value>You have not made any donations.</value>
   </data>
+  <data name="DonatePayNow" xml:space="preserve">
+    <value>Donate Now</value>
+  </data>
   <data name="DonateThankYou" xml:space="preserve">
     <value>Thank-you for your support!</value>
   </data>
   <data name="DonationHistoryHeader" xml:space="preserve">
     <value>Your donation history</value>
+  </data>
+  <data name="DonationLevelsPrompt" xml:space="preserve">
+    <value>Donation Levels:</value>
   </data>
   <data name="errAccountPasswordConfirmDoesNotMatch" xml:space="preserve">
     <value>The new password and its confirmation much match.  This reduces the likelihood of a typo.</value>

@@ -1,8 +1,11 @@
 ﻿@using System.Globalization;
 @using MyFlightbook;
+@using MyFlightbook.Payments;
 @{
     ViewBag.defaultTab = tabID.tabProfile;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    bool useStripe = Request["ppal"] == null;
+    IEnumerable<Gratuity> lstGratuities = ViewBag.Gratuities;
 }
 <h2>@Resources.Preferences.DonateHeader</h2>
 
@@ -18,43 +21,111 @@
 <div style="display: @(ViewBag.Cancelled ? "block" : "none")">
     <span class="error">@Resources.Preferences.PaymentCancelled</span>
 </div>
-<p>@Branding.ReBrand(Resources.LocalizedText.DonatePrompt)</p>
-<p>@Resources.LocalizedText.DonatePromptGratuity</p>
-<table style="border-spacing: 0px; border-collapse: collapse;">
-    <tr>
-        <td></td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$10</td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$75</td>
-        <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
-    </tr>
-    @foreach (MyFlightbook.Payments.Gratuity g in ViewBag.Gratuities)
-    {
-        string ttID = "tip" + g.GratuityType.ToString();
-        <tr>
-            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;">
-                @g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }
-            </td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
-            <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
-        </tr>
-    }
-</table>
 <div style="margin-top: 15pt; margin-bottom: 15pt;">
-    @if (Request["useStripe"] == null)
+    @if (useStripe)
     {
-        <form id="form1" runat="server" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        string webhookkey = LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook");
+        <script type="text/javascript">
+            function submitStripe() {
+                $("#hdnDonationName").val($("input[name='selectedDonation']:checked").parent().text());
+                $("#formStripe").submit();
+            }
+
+            function highlightSelected(column) {
+                $("#tblGratuity td.highlightedFeature").removeClass("highlightedFeature");
+                $("#tblGratuity tr td:nth-child(" + column + ")").addClass("highlightedFeature");
+            }
+
+            function selectLevel(i) {
+                $("input[name='selectedDonation']")[i].click();
+            }
+
+            $(() => {
+                highlightSelected(4);
+            });
+        </script>
+        <style type="text/css">
+            .gn {
+                font-size: smaller;
+                font-weight: normal;
+            }
+        </style>
+        if (String.IsNullOrEmpty(webhookkey))
+        {
+            <div style="background-color: antiquewhite; padding: 4pt;">
+                <h2>NO WEBHOOK SIGNING SECRET IS CONFIGURED - IF DEBUG AND USING THE CLI, PUT THE WEBHOOK SIGNING SECRET INTO THE StripeTestWebhook VALUE OF THE LOCALCONFIG TABLE IN THE LOCAL DATABASE</h2>
+            </div>
+        }
+        <form action="@("~/mvc/donate/create-checkout-session".ToAbsolute())" method="POST" name="formStripe" id="formStripe">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="selectedDonationName" id="hdnDonationName" />
+            <h3>@Branding.ReBrand(Resources.LocalizedText.DonatePrompt)</h3>
+            <h4>@Resources.LocalizedText.DonatePromptGratuity</h4>
+            <table class="stickyHeaderTable" id="tblGratuity">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><label><input type="radio" name="selectedDonation" value="1000" onclick="javascript: highlightSelected(2);" />US$10<br /><span class="gn">&quot;Overnight parking fees&quot;</span></label></th>
+                        <th><label><input type="radio" name="selectedDonation" value="1500" onclick="javascript: highlightSelected(3);" />US$15 <br /><span class="gn">&quot;Twice around the pattern&quot;</span></label></th>
+                        <th><label><input type="radio" name="selectedDonation" value="2500" onclick="javascript: highlightSelected(4);" checked />US$25 <br /><span class="gn">&quot;Shockingly little avgas&quot;</span></label></th>
+                        <th><label><input type="radio" name="selectedDonation" value="4000" onclick="javascript: highlightSelected(5);" />US$40 <br /><span class="gn">&quot;1 (1/2?) hour of instruction&quot;</span></label></th>
+                        <th><label><input type="radio" name="selectedDonation" value="7500" onclick="javascript: highlightSelected(6);" />US$75<br /><span class="gn">&quot;VFR Eastbound&quot;</span></label></th>
+                        <th><label><input type="radio" name="selectedDonation" value="10000" onclick="javascript: highlightSelected(7);" />US$100 <br /><span class="gn">&quot;Hundred Dollar Hamburger&quot;</span></label></th>
+                    </tr>
+                </thead>
+                @foreach (MyFlightbook.Payments.Gratuity g in lstGratuities)
+                {
+                    string ttID = "tip" + g.GratuityType.ToString();
+                    <tr>
+                        <td>@g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }</td>
+                        <td onclick="javascript: selectLevel(0);" style="text-align: center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(1);" style="text-align: center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(2);" style="text-align: center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(3);" style="text-align: center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(4);" style="text-align: center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(5);" style="text-align: center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
+                    </tr>
+                }
+            </table>
+            <h2 style="text-align: center;" onclick="javascript: submitStripe();"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@Resources.Preferences.DonatePayNow" title="@Resources.Preferences.DonatePayNow" style="vertical-align: middle;" /><a href="#">@Resources.Preferences.DonatePayNow</a></h2>
+        </form>
+    }
+    else
+    {
+        <p>@Branding.ReBrand(Resources.LocalizedText.DonatePrompt)</p>
+        <p>@Resources.LocalizedText.DonatePromptGratuity</p>
+        <table style="border-spacing: 0px; border-collapse: collapse;">
+            <tr>
+                <td></td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$10</td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$75</td>
+                <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
+            </tr>
+            @foreach (MyFlightbook.Payments.Gratuity g in ViewBag.Gratuities)
+            {
+                string ttID = "tip" + g.GratuityType.ToString();
+                <tr>
+                    <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;">
+                        @g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }
+                    </td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
+                    <td style="border: 1px solid gray; padding: 3px; text-align:center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
+                </tr>
+            }
+        </table>
+        <form id="frmPaypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <div>
                 <input type="hidden" name="cmd" value="_s-xclick" />
                 <input type="hidden" name="hosted_button_id" value="YH8NJZL5W9HTU" />
                 <table>
-                    <tr><td><input type="hidden" name="on0" value="Donation Levels:" />Donation Levels:</td></tr>
+                    <tr><td><input type="hidden" name="on0" value="Donation Levels:" />@Resources.Preferences.DonationLevelsPrompt</td></tr>
                     <tr>
                         <td>
                             <select name="os0">
@@ -77,44 +148,14 @@
             </div>
         </form>
     }
-    else
-    {
-        string webhookkey = LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook");
-        <script type="text/javascript">
-            function submitStripe() {
-                $("#hdnDonationName").val($("#cmbDonation option:selected").text());
-                $("#formStripe").submit();
-            }
-        </script>
-        <div style="background-color: antiquewhite; padding: 4pt;">
-            <h2>****USING STRIPE****</h2>
-            @if (String.IsNullOrEmpty(webhookkey))
-                {
-                    <h2>NO WEBHOOK SIGNING SECRET IS CONFIGURED - IF DEBUG AND USING THE CLI, PUT THE WEBHOOK SIGNING SECRET INTO THE StripeTestWebhook VALUE OF THE LOCALCONFIG TABLE IN THE LOCAL DATABASE</h2>
-                }
-            <form action="@("~/mvc/donate/create-checkout-session".ToAbsolute())" method="POST" name="formStripe" id="formStripe">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="selectedDonationName" id="hdnDonationName" />
-                <select name="selectedDonation" id="cmbDonation">
-                    <option value="1000">US$10 - Overnight parking fees</option>
-                    <option value="1500">US$15 - Twice around the pattern</option>
-                    <option value="2500">US$25 - Shockingly little avgas</option>
-                    <option value="4000">US$40 - 1 (1/2?) hour of instruction</option>
-                    <option value="7500">US$75 - VFR Eastbound</option>
-                    <option value="10000">US$100 - Hundred Dollar Hamburger</option>
-                </select>
-                <button type="button" onclick="javascript: submitStripe();">Pay Now</button>
-            </form>
-        </div>
-    }
 </div>
-<div>
+<div style="margin-top: 36pt; margin-bottom: 60pt;">
     @Html.Raw(Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify())
-    <a href="@("~/mvc/pub/contact".ToAbsoluteURL(HttpContext.Current.Request))">@Resources.Preferences.DonateCryptoContact</a>
+    <a href="@("~/mvc/pub/contact?subj=Donations".ToAbsoluteURL(HttpContext.Current.Request))">@Resources.Preferences.DonateCryptoContact</a>
 </div>
 <h2>@Resources.Preferences.DonationHistoryHeader</h2>
 
-<div class="callout" style="display:@(ViewBag.ShowGratuityHistory ? "block" : "none")">
+<div class="callout" style="display:@(ViewBag.ShowGratuityHistory ? "block" : "none"); margin-left: auto; margin-right: auto; width: 80%;">
     <p style="font-weight:bold">@Resources.Preferences.DonateThankYou</p>
     <p>@Resources.LocalizedText.GratuityEarnedHeader</p>
     <ul>
