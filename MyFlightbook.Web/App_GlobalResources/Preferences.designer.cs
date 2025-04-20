@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prefer alternative means of payment?  %APP_NAME% now accepts *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*.
+        ///   Looks up a localized string similar to Prefer alternative means of payment?  %APP_NAME% now accepts *Paypal*, *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*.
         /// </summary>
         internal static string DonateCrypto {
             get {
@@ -403,6 +403,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Donate Now.
+        /// </summary>
+        internal static string DonatePayNow {
+            get {
+                return ResourceManager.GetString("DonatePayNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thank-you for your support!.
         /// </summary>
         internal static string DonateThankYou {
@@ -417,6 +426,15 @@ namespace Resources {
         internal static string DonationHistoryHeader {
             get {
                 return ResourceManager.GetString("DonationHistoryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Donation Levels:.
+        /// </summary>
+        internal static string DonationLevelsPrompt {
+            get {
+                return ResourceManager.GetString("DonationLevelsPrompt", resourceCulture);
             }
         }
         
