@@ -1,7 +1,8 @@
 ﻿@using System.Globalization
 @{
-    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
+    ViewBag.Title = Branding.ReBrand(Resources.Profile.WelcomeGeneric);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.NoIndex = true;
     ViewBag.defaultTab = tabID.tabHome;
     int signinStep = ViewBag.step ?? 0;         // 0 = collect email, 1 = collect password
     bool fCollectTFA = ViewBag.usesTFA ?? false;
@@ -45,7 +46,7 @@
 </script>
 <div style="padding: 10px; margin-left:auto; max-width: 700px; margin-right: auto;" id="divSignIn">
     <div style="display:inline-block; margin:5px; vertical-align:top">
-        <h2>@Resources.LocalizedText.SignInPrompt</h2>
+        <h2></h2>
         @using (Html.BeginForm("", "Auth", String.IsNullOrEmpty(Request["ReturnUrl"]) ? new { } : new { ReturnUrl = Request["ReturnUrl"] }, FormMethod.Post, new { id = "frmSignIn", name = "frmSignIn" }))
         {
             <div id="vwSignIn">

@@ -17,6 +17,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" id="metaViewport" />
 <meta name="verify-v1" content="7D/8Uvt4SqfWiyxmBjdh6ee4Kmr8ckec9yCd8wGU9n0=" />
 <meta name="apple-itunes-app" content="app-id=349983064" />
+@if (ViewBag.NoIndex ?? false)
+{
+<meta name="robots" content="noindex, nofollow">
+}
 
 <title>@(String.IsNullOrEmpty(ViewBag.Title) ? Branding.CurrentBrand.AppName : ViewBag.Title)</title>
 <script src="@VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js")" type="text/javascript"></script>

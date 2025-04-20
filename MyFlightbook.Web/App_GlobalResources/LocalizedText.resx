@@ -944,9 +944,6 @@
   <data name="DropboxErrorDeAuthorized" xml:space="preserve">
     <value>%APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at https://%APP_URL%.</value>
   </data>
-  <data name="FAQPermaLink" xml:space="preserve">
-    <value>Link to this FAQ</value>
-  </data>
   <data name="DropboxErrorOutOfSpace" xml:space="preserve">
     <value>Insufficient space in your Dropbox account</value>
   </data>

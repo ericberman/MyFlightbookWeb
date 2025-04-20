@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps, AddBaseRef = ViewBag.AddBaseRef ?? false }); }
+    @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps, AddBaseRef = ViewBag.AddBaseRef ?? false, NoIndex = ViewBag.NoIndex ?? false }); }
     @if (!String.IsNullOrEmpty(ViewBag.PrintingCSS))
     {
         <link href="@VirtualPathUtility.ToAbsolute(ViewBag.PrintingCSS)" rel="Stylesheet" type="text/css" />

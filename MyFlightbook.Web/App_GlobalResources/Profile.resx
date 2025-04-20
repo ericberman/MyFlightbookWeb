@@ -926,4 +926,7 @@
     <value>{0} - The world's favorite free logbook</value>
     <comment>{0} is replaced by the app name ("MyFlightbook")</comment>
   </data>
+  <data name="WelcomeGeneric" xml:space="preserve">
+    <value>Welcome to %APP_NAME%</value>
+  </data>
 </root>

@@ -2331,15 +2331,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Link to this FAQ.
-        /// </summary>
-        internal static string FAQPermaLink {
-            get {
-                return ResourceManager.GetString("FAQPermaLink", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No matching FAQ&apos;s found.
         /// </summary>
         internal static string FAQSearchNoResults {
@@ -5497,15 +5488,10 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;p&gt;
-        ///	I built this site to meet my own needs and share it because I believe it can be very broadly useful.
-        ///	However, I cannot make any promises regarding service levels, accuracy of data or computations, or the quality of the software. (Although
-        ///	frankly I think it&apos;s pretty good and pretty bug free).
-        ///&lt;/p&gt;
-        ///&lt;p&gt;While I back up the database nightly, there is a feature to back-up your data to
-        ///a spreadsheet - it&apos;s not a bad idea to use that now and then just in case.&lt;/p&gt;
-        ///&lt;p&gt;
-        ///	If you find a bug or have a fe [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  &lt;p&gt;%APP_NAME% was created as an open source free service for the worldwide flying community.&lt;/p&gt;
+        ///&lt;p&gt;We respect your privacy and do NOT sell or share your data; see our &lt;a href=&quot;%APP_ROOT%/mvc/pub/privacy&quot;&gt;privacy policy&lt;/a&gt; for more information.&lt;/p&gt;
+        ///&lt;p&gt;As a free service, we cannot make any promises regarding service levels, accuracy of data or computations, or the quality of the software. (Although we believe it is all robust, accurate, and high quality).&lt;/p&gt;
+        ///&lt;p&gt;While the database is regularly backed up, [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TermsAndConditions {
             get {

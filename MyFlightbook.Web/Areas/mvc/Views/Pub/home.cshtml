@@ -26,7 +26,7 @@
 @if (!User.Identity.IsAuthenticated)
 {
     <div class="homePageUnauth centered80">
-        <h1>@Branding.ReBrand(Resources.Profile.HomePageMostPopular)</h1>
+        <h2>@Branding.ReBrand(Resources.Profile.HomePageMostPopular)</h2>
         <div class="featureAreaBlock">
             @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
             {
@@ -43,7 +43,6 @@
             <p><a style="font-size: larger; font-weight: bold;" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
             <div>@Resources.Profile.NewUserExistingAccount <a href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
         </div>
-        <h2 style="display: none;">@Branding.ReBrand(Resources.Profile.HomePromoFeedbackHeader)</h2>
         <div class="testimonialBlock">
             <h3><span class="testimonialQuote">Over the years, I have been using MyFlightBook with great satisfaction, and I have enthusiastically recommended your platform to many pilots and aviation enthusiasts.</span><span class="testimonialAttribution">Maciej, CFI</span></h3>
             <h3><span class="testimonialQuote">I’m going to recommend it to all my students.</span><span class="testimonialAttribution">Laurenz, CFI</span></h3>

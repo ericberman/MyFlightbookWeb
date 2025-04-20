@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Globalization;
+@{
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     int iGroup = 0;
 }
@@ -35,7 +36,7 @@
             <div>
                 <div style="float:right">
                     <a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/faq?q={0}#{0}", fi.idFAQ))">
-                        <img style="opacity: 0.5;" alt="@Resources.LocalizedText.FAQPermaLink" src="@VirtualPathUtility.ToAbsolute("~/images/Link.png")" />
+                        <img style="opacity: 0.5;" rel="nofollow" alt="" src="@VirtualPathUtility.ToAbsolute("~/images/Link.png")" />
                     </a>
                 </div>
                 @Html.Raw(fi.Answer)

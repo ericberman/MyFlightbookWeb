@@ -2438,6 +2438,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Welcome to %APP_NAME%.
+        /// </summary>
+        internal static string WelcomeGeneric {
+            get {
+                return ResourceManager.GetString("WelcomeGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} - The world&apos;s favorite free logbook.
         /// </summary>
         internal static string WelcomeTitle {
