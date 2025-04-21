@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -110,9 +110,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         // GET: mvc/AdminPayment
         [Authorize]
-        public ActionResult Index(string szUser = null, bool fPayments = false, bool fRefunds = false, bool fAdjustments = false, bool fTestTransactions = false)
+        public ActionResult Index(string uid = null, bool fPayments = false, bool fRefunds = false, bool fAdjustments = false, bool fTestTransactions = false)
         {
-            return CompositeView(szUser, fPayments, fRefunds, fAdjustments, fTestTransactions);
+            return CompositeView(uid, fPayments, fRefunds, fAdjustments, fTestTransactions);
         }
 
         // POST: mvc/AdminPayment/Create

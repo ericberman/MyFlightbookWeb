@@ -18,7 +18,7 @@
         <table cellpadding="3">
             <tr>
                 <td>For donations for:</td>
-                <td><input type="text" name="szUser" data-1p-ignore autocomplete="off" placeholder="(Username, empty for all)" id="txtUserName" value = "@ViewBag.UserRestriction" /></td>
+                <td><input type="text" name="uid" data-1p-ignore autocomplete="off" style="width: 40em;" placeholder="(Username, empty for all)" id="txtuid" value = "@ViewBag.UserRestriction" /></td>
             </tr>
             <tr>
                 <td></td>
@@ -40,7 +40,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <input type="button" onclick="javascript:resetGratuities($('#txtUserName')[0].value, $('#ckResetGratuities')[0].checked);" value="Reset Gratuities" />
+                    <input type="button" onclick="javascript:resetGratuities($('#txtuid')[0].value, $('#ckResetGratuities')[0].checked);" value="Reset Gratuities" />
                     @Html.CheckBox("includeReminders", false, new { id = "ckResetGratuities" })
                     <label for="ckResetGratuities">Reset gratuity reminders too</label>
                 </td>
@@ -165,7 +165,7 @@
 </table>
 <script type="text/javascript">
     var params = new Object();
-    params.szRestrict = $('#txtUserName').val();
+    params.szRestrict = $('#txtuid').val();
     params.szUser = "@ViewBag.UserRestriction";
     params.fPayments = @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.Payment));
     params.fRefunds= @Json.Encode(ViewBag.TypeRestriction.Contains(Payment.TransactionType.Refund));
