@@ -96,10 +96,18 @@ namespace MyFlightbook.OAuth.FlightCrewView
                     // Date is likely UTC at this point because it comes from a UTC value like departure time.
                     // Autofill will reset it to match the first (pseudo) time stamp, using the AutoFillOptions offset, but that's
                     // generally a bad offset to use because that's global, not based on the departure airport.
-                    DateTime dtSave = pf.Date;
-                    using (FlightData fd = new FlightData())
-                        fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(szUser));
-                    pf.Date = dtSave;
+                    if (pf.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead))
+                    {
+                        pf.TotalFlightTime = pf.PIC = pf.SIC = pf.Nighttime = 0;
+                        pf.Landings = pf.Approaches = pf.FullStopLandings = pf.NightLandings = 0;
+                    }
+                    else
+                    {
+                        DateTime dtSave = pf.Date;
+                        using (FlightData fd = new FlightData())
+                            fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(szUser));
+                        pf.Date = dtSave;
+                    }
 
                     lst.Add(pf);
                     pf.Commit();
