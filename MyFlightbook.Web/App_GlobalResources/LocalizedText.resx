@@ -879,13 +879,13 @@
     <value>As a thank-you for your support, you have earned the following gratuities:</value>
   </data>
   <data name="GratuityNameClub" xml:space="preserve">
-    <value>Create and manage flying clubs</value>
+    <value>Unlimited club creation/management</value>
   </data>
   <data name="GratuityNameDropbox" xml:space="preserve">
-    <value>Receive nightly backup to a cloud storage provider for a year</value>
+    <value>Nightly cloud storage backups for a year</value>
   </data>
   <data name="GratuityNameVideo" xml:space="preserve">
-    <value>Attach Videos to Flights</value>
+    <value>Videos on flights</value>
   </data>
   <data name="GratuityThanksClub" xml:space="preserve">
     <value>You can create flying clubs to schedule airplanes and report on flying (Expires {0:d})</value>
@@ -1590,7 +1590,7 @@
     <value>Videos are one of those few things where my costs go up the more they are used, so I ask for a contribution if you want videos.  With this gratuity, you can add videos to your flights for a year.  Videos remain after the year is up, but you can't upload new ones.</value>
   </data>
   <data name="GratuityNameEternalGratitude" xml:space="preserve">
-    <value>Enjoy a year's worth of eternal gratitude</value>
+    <value>Eternal gratitude...for a year!</value>
   </data>
   <data name="GratuityThanksEternalGratitude" xml:space="preserve">
     <value>You will enjoy our eternal gratitude...until {0:d}</value>
@@ -1608,7 +1608,7 @@
     <value>Each night we check your currency, including things like medical expiration and flight reviews.  If a currency gets close to its expiration - or expires - we'll send you an email notification!</value>
   </data>
   <data name="GratuityNameCurrencyNotifications" xml:space="preserve">
-    <value>Get notified when a currency will expire</value>
+    <value>Currency expiration email</value>
   </data>
   <data name="GratuityThanksCurrencyNotification" xml:space="preserve">
     <value>You can sign up to receive notifications when currencies near expiration (Expires {0:d})</value>

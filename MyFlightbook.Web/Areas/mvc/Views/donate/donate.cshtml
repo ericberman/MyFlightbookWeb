@@ -7,6 +7,12 @@
     bool useStripe = Request["ppal"] == null;
     IEnumerable<Gratuity> lstGratuities = ViewBag.Gratuities;
 }
+<div style="display: @(ViewBag.Success ? "block" : "none"); margin-top: 36pt; margin-bottom: 36pt; font-size: larger">
+    <span style="font-weight:bold;" class="success">@Resources.Preferences.PaymentSuccess</span>
+</div>
+<div style="display: @(ViewBag.Cancelled ? "block" : "none"); margin-top: 36pt; margin-bottom: 36pt; font-size: larger">
+    <span class="error">@Resources.Preferences.PaymentCancelled</span>
+</div>
 <h2>@Resources.Preferences.DonateHeader</h2>
 
 <div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray; display: @(!String.IsNullOrEmpty(Branding.CurrentBrand.SwagRef) ? "block" : "none")">
@@ -14,12 +20,6 @@
         <img src="https://i3.cpcache.com/product/1145595163/20_oz_ceramic_mega_mug.jpg?side=Back&color=White&height=48&width=48&cid=Najv2dtZhRo46F12FebBfg%3d%3d+%7c%7c+evWcdKm%2b6mRVx9OB6NguQQ%3d%3d&c=False" style="float: left; margin: 5px;" />
         <span style="font-weight: bold;">@Branding.ReBrand(Resources.LocalizedText.BuySwag)</span>
     </a>
-</div>
-<div style="display: @(ViewBag.Success ? "block" : "none")">
-    <span style="font-weight:bold;" class="success">@Resources.Preferences.PaymentSuccess</span>
-</div>
-<div style="display: @(ViewBag.Cancelled ? "block" : "none")">
-    <span class="error">@Resources.Preferences.PaymentCancelled</span>
 </div>
 <div style="margin-top: 15pt; margin-bottom: 15pt;">
     @if (useStripe)

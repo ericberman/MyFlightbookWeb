@@ -2780,7 +2780,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create and manage flying clubs.
+        ///   Looks up a localized string similar to Unlimited club creation/management.
         /// </summary>
         internal static string GratuityNameClub {
             get {
@@ -2789,7 +2789,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get notified when a currency will expire.
+        ///   Looks up a localized string similar to Currency expiration email.
         /// </summary>
         internal static string GratuityNameCurrencyNotifications {
             get {
@@ -2798,7 +2798,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Receive nightly backup to a cloud storage provider for a year.
+        ///   Looks up a localized string similar to Nightly cloud storage backups for a year.
         /// </summary>
         internal static string GratuityNameDropbox {
             get {
@@ -2807,7 +2807,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enjoy a year&apos;s worth of eternal gratitude.
+        ///   Looks up a localized string similar to Eternal gratitude...for a year!.
         /// </summary>
         internal static string GratuityNameEternalGratitude {
             get {
@@ -2825,7 +2825,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach Videos to Flights.
+        ///   Looks up a localized string similar to Videos on flights.
         /// </summary>
         internal static string GratuityNameVideo {
             get {
