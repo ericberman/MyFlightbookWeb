@@ -111,6 +111,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                     // And notify any money admins
                     util.NotifyAdminEvent($"{p.Type}: {p.Amount.ToString("C", CultureInfo.CurrentCulture)}!", $"User '{pf.UserName}' ({pf.UserFullName}, {pf.Email}) has donated {p.Amount.ToString("C", CultureInfo.CurrentCulture)}!\r\n\r\nAdditional Data:\r\n\r\n{json}", ProfileRoles.maskCanManageMoney);
+
+                    // Fix up the fee
+                    // Retrieve the Charge object
+                    var chargeService = new ChargeService();
+                    var charge = chargeService.Get(paymentIntent.LatestChargeId);
+
+                    // Retrieve the Balance Transaction
+                    var balanceTransactionService = new BalanceTransactionService();
+                    var balanceTransaction = balanceTransactionService.Get(charge.BalanceTransactionId);
+
+                    // Get the fee amount
+                    var stripeFee = balanceTransaction.Fee;
+                    Console.WriteLine($"Stripe Fee: {stripeFee}");
+
+                    p.Fee = stripeFee / 100.0M;
+                    p.Commit();
                 }
                 else
                 {
