@@ -1,6 +1,4 @@
 ﻿using MyFlightbook.Payments;
-using Stripe;
-using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,34 +32,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ActionName("create-checkout-session")]
         public ActionResult CreateCheckoutSession()
         {
-            StripeConfiguration.ApiKey = LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestKey" : "StripeLiveKey");
-
             if (!int.TryParse(Request["selectedDonation"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int price))
                 throw new InvalidOperationException($"Invalid selected donation amount: {Request["selectedDonation"]}");
-            string donationLevel = Request["selectedDonationName"];
 
-            var options = new SessionCreateOptions
-            {
-                LineItems = new List<SessionLineItemOptions> 
-                {
-                  new SessionLineItemOptions { PriceData = new SessionLineItemPriceDataOptions { UnitAmount = price, Currency = "usd", ProductData = new SessionLineItemPriceDataProductDataOptions { Name = donationLevel, }, }, Quantity = 1, },
-                },
-                Metadata = new Dictionary<string, string> { { "username", User.Identity.Name } },
-                Mode = "payment", 
-                CustomerEmail = MyFlightbook.Profile.GetUser(User.Identity.Name).Email,
-                PaymentIntentData = new SessionPaymentIntentDataOptions
-                {
-                    Metadata = new Dictionary<string, string> { { "username", User.Identity.Name } }
-                },
-                ClientReferenceId = User.Identity.Name,
-                SuccessUrl = $"https://{Request.Url.Host}{"~/mvc/Donate".ToAbsolute()}?pp=success",
-                CancelUrl = $"https://{Request.Url.Host}{"~/mvc/Donate".ToAbsolute()}?pp=canceled",
-            };
-
-            var service = new SessionService();
-            Session session = service.Create(options);
-
-            Response.Headers.Add("Location", session.Url);
+            Response.Headers.Add("Location", StripeUtility.StripeCheckoutSessionLink(
+                Request.IsLocal,
+                User.Identity.Name, Request["selectedDonationName"], price, 
+                $"https://{Request.Url.Host}{"~/mvc/Donate".ToAbsolute()}?pp=success",
+                $"https://{Request.Url.Host}{"~/mvc/Donate".ToAbsolute()}?pp=canceled"));
             Response.StatusCode = (int)HttpStatusCode.RedirectMethod;
             return new EmptyResult();
         }
@@ -82,66 +60,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 json = await sr.ReadToEndAsync();
             }
 
-            string whsig = Request.Headers["Stripe-Signature"] ?? string.Empty;
+            StripeUtility.ProcessStripeNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, json);
 
-            try
-            {
-                var stripeEvent = EventUtility.ConstructEvent(json, whsig, LocalConfig.SettingForKey(Request.IsLocal ? "StripeTestWebhook" : "StripeLiveWebhook"));
-
-                // Handle the event
-                // If on SDK version < 46, use class Events instead of EventTypes
-                if (stripeEvent.Type == EventTypes.PaymentIntentSucceeded)
-                {
-                    var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
-                    Payment p = new Payment(stripeEvent.Created, paymentIntent.Metadata["username"], paymentIntent.Amount / 100, paymentIntent.ApplicationFeeAmount ?? 0, Payment.TransactionType.Payment, string.Empty, paymentIntent.Id, json);
-
-                    // Then define and call a method to handle the successful payment intent.
-                    // handlePaymentIntentSucceeded(paymentIntent);
-                    p.Commit();
-
-                    EarnedGratuity.UpdateEarnedGratuities(p.Username, true);
-                    Profile pf = MyFlightbook.Profile.GetUser(p.Username);
-
-                    if (String.IsNullOrEmpty(pf.UserName))
-                        throw new InvalidOperationException($"Transaction request for invalid user: {p.Username}\r\n\r\n");
-
-                    // Send a thank-you for payment to the donor
-                    if (p.Type == Payment.TransactionType.Payment)
-                        util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle), util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DonationThankYou), pf.PreferredGreeting), false), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
-
-                    // And notify any money admins
-                    util.NotifyAdminEvent($"{p.Type}: {p.Amount.ToString("C", CultureInfo.CurrentCulture)}!", $"User '{pf.UserName}' ({pf.UserFullName}, {pf.Email}) has donated {p.Amount.ToString("C", CultureInfo.CurrentCulture)}!\r\n\r\nAdditional Data:\r\n\r\n{json}", ProfileRoles.maskCanManageMoney);
-
-                    // Fix up the fee
-                    // Retrieve the Charge object
-                    var chargeService = new ChargeService();
-                    var charge = chargeService.Get(paymentIntent.LatestChargeId);
-
-                    // Retrieve the Balance Transaction
-                    var balanceTransactionService = new BalanceTransactionService();
-                    var balanceTransaction = balanceTransactionService.Get(charge.BalanceTransactionId);
-
-                    // Get the fee amount
-                    var stripeFee = balanceTransaction.Fee;
-                    Console.WriteLine($"Stripe Fee: {stripeFee}");
-
-                    p.Fee = stripeFee / 100.0M;
-                    p.Commit();
-                }
-                else
-                {
-                    // Unexpected event type
-                    Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-                }
-            }
-            catch (StripeException e)
-            {
-                util.NotifyAdminException($"Unsuccessful Stripe notification: {e.Message}\r\n\r\n{json}\r\n\r\nStripe Sig: {whsig.LimitTo(8)}...{(whsig.Length > 15 ? whsig.Substring(whsig.Length - 5) : string.Empty)}", e);
-                /*
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Content(e.Message);
-                */
-            }
             return new EmptyResult();
         }
         #endregion
