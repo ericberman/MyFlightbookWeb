@@ -6,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,33 +17,34 @@ namespace MyFlightbook.PublicPages
     {
         private readonly static Dictionary<string, string> dictRedir = new Dictionary<string, string>()
         {
-                { "FLIGHTS", "~/mvc/flights"},
-                { "MINIFLIGHTS", "~/mvc/flights/minirecents"},
-                { "PROFILE", "~/mvc/prefs"},
-                { "DONATE", "~/mvc/Donate"},
-                { "ENDORSE", "~/mvc/Training/Endorsements"},
-                { "PROGRESS", "~/mvc/Training/RatingsProgress" },
-                { "BADGES", "~/mvc/Training/Achievements" },
-                { "STUDENTS", "~/mvc/training/students" },
-                { "STUDENTSFIXED", "~/mvc/training/students"},
-                { "INSTRUCTORS", "~/mvc/training/instructors" },
-                { "INSTRUCTORSFIXED", "~/mvc/training/instructors" },
-                { "8710", "~/mvc/training/reports/8710"},
-                { "MODELROLLUP", "~/mvc/training/reports/Model"},
-                { "TIMEROLLUP", "~/mvc/training/reports/Time" },
-                { "AIRCRAFTEDIT", "~/mvc/Aircraft/edit" },
-                { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
-                { "FAQ", "~/mvc/faq"},
-                { "REQSIGS", "~/mvc/Training/RequestSigs"},
-                { "FLIGHTREVIEW", "~/mvc/prefs/pilotinfo"},
-                { "CERTIFICATES", "~/mvc/prefs/pilotinfo"},
-                { "MEDICAL", "~/mvc/prefs/pilotinfo"},
-                { "DEADLINE", "~/mvc/prefs"},
-                { "CUSTOMCURRENCY", "~/mvc/prefs"},
-                { "ACCOUNT", "~/mvc/prefs/account"},
-                { "BIGREDBUTTONS", "~/mvc/prefs/account"},
-                { "CONTACT", "~/mvc/pub/contact"},
-                { "SIGNENTRY", "~/mvc/flightedit/SignMobile"}
+            { "FLIGHTS", "~/mvc/flights"},
+            { "MINIFLIGHTS", "~/mvc/flights/minirecents"},
+            { "PROFILE", "~/mvc/prefs"},
+            { "DONATE", "~/mvc/Donate"},
+            { "ENDORSE", "~/mvc/Training/Endorsements"},
+            { "PROGRESS", "~/mvc/Training/RatingsProgress" },
+            { "BADGES", "~/mvc/Training/Achievements" },
+            { "STUDENTS", "~/mvc/training/students" },
+            { "STUDENTSFIXED", "~/mvc/training/students"},
+            { "INSTRUCTORS", "~/mvc/training/instructors" },
+            { "INSTRUCTORSFIXED", "~/mvc/training/instructors" },
+            { "8710", "~/mvc/training/reports/8710"},
+            { "MODELROLLUP", "~/mvc/training/reports/Model"},
+            { "TIMEROLLUP", "~/mvc/training/reports/Time" },
+            { "AIRCRAFTEDIT", "~/mvc/Aircraft/edit" },
+            { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
+            { "FAQ", "~/mvc/faq"},
+            { "REQSIGS", "~/mvc/Training/RequestSigs"},
+            { "FLIGHTREVIEW", "~/mvc/prefs/pilotinfo"},
+            { "CERTIFICATES", "~/mvc/prefs/pilotinfo"},
+            { "MEDICAL", "~/mvc/prefs/pilotinfo"},
+            { "DEADLINE", "~/mvc/prefs"},
+            { "CUSTOMCURRENCY", "~/mvc/prefs"},
+            { "ACCOUNT", "~/mvc/prefs/account"},
+            { "BIGREDBUTTONS", "~/mvc/prefs/account"},
+            { "CONTACT", "~/mvc/pub/contact"},
+            { "SIGNENTRY", "~/mvc/flightedit/SignMobile"},
+            { "DEADLINEEDIT", "~/mvc/aircraft/DeadlineEdit" }
         };
 
         private readonly static Dictionary<string, string> dictAdditionalParams = new Dictionary<string, string>()

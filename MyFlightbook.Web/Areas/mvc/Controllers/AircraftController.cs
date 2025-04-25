@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -577,6 +577,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region New and Update Aircraft
+        [Authorize]
+        public ActionResult DeadlineEdit(int id)
+        {
+            UserAircraft ua = new UserAircraft(User.Identity.Name);
+            Aircraft ac = ua[id] ?? throw new UnauthorizedAccessException();
+            if (!ac.IsRegistered)
+                throw new InvalidOperationException($"{ac.TailNumber} cannot have a deadline");
+            ViewBag.ac = ac;
+            return View("deadlineEditor");
+        }
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]

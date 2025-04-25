@@ -1,0 +1,18 @@
+﻿@using MyFlightbook;
+@{
+    Aircraft ac = ViewBag.ac;
+    ViewBag.Title = String.Join(" ", new string[] { Resources.Aircraft.AircraftEditEdit, Resources.Aircraft.AircraftHeader, ac.DisplayTailnumberWithModel });
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script src="@("~/Public/Scripts/prefs.js?v=4".ToAbsolute())" type="text/javascript"></script>
+<script type="text/javascript">
+    function reloadMaintLog() { }
+</script>
+<div id="divDeadlines">
+    <h2>@Resources.Currency.deadlinesHeaderDeadlines @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipDeadlines", tiptextHTML = Resources.Currency.DeadlineDescription }); }</h2>
+    <div id="divDeadlineListContainer">
+        @{ Html.RenderAction("AircraftDeadlineSection", "Prefs", new { idAircraft = ac.AircraftID, postEdit = "reloadMaintLog" }); }
+    </div>
+</div>
+

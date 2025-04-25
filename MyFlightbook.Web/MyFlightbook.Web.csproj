@@ -1614,6 +1614,7 @@
     <Content Include="Areas\mvc\Views\MFBTemplate\_linkedStringList.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\yearInReview.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_recentStats.cshtml" />
+    <Content Include="Areas\mvc\Views\Aircraft\deadlineEditor.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1632,10 +1633,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Support\2024-06-14 - AddFlysto.sql" />
-    <Content Include="Support\2024-06-27 - AddFlightCrewView.txt" />
-    <Content Include="Support\2024-10-03 - Add recaptcha.txt" />
-    <Content Include="Support\2025-02-25 - fix PK for usersinroles.txt" />
-    <Content Include="Support\2025-03-09 - Stripe keys.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
