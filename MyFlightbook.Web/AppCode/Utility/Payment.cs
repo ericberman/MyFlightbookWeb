@@ -1433,20 +1433,40 @@ ORDER BY Year ASC , Month ASC;");
             List<YearlyPayments> lst = new List<YearlyPayments>(d.Values);
             lst.Sort();
 
+            PeriodPaymentStat[] highWaters = new PeriodPaymentStat[13];
+            
+
             // Now go through and compute stats.
-            for (int i = 1; i < lst.Count; i++)
+            for (int i = 0; i < lst.Count; i++)
             {
-                if (lst[i - 1].Year != lst[i].Year - 1) // ignore non-congiguous years (shouldn't happen)
+                YearlyPayments thisYear = lst[i];
+
+                // First year is special because we can't compare to previous year.
+                if (i == 0)
+                {
+
+                    foreach (PeriodPaymentStat stat in thisYear.MonthlyPayments)
+                    {
+                        thisYear.AnnualPayment.Fee += stat.Fee;
+                        thisYear.AnnualPayment.Net += stat.Net;
+                        thisYear.AnnualPayment.Gross += stat.Gross;
+                    }
+                    continue;
+                }
+
+                if (lst[i - 1].Year != lst[i].Year - 1) // ignore non-contiguous years (shouldn't happen)
                     continue;
 
                 double annual = 0;
                 YearlyPayments lastYear = lst[i - 1];
-                YearlyPayments thisYear = lst[i];
 
                 for (int j = 0; j < 12; j++)
                 {
                     PeriodPaymentStat lastYearMonth = lastYear.MonthlyPayments[j];
                     PeriodPaymentStat thisYearMonth = thisYear.MonthlyPayments[j];
+                    PeriodPaymentStat highWater = highWaters[j];
+                    if (thisYearMonth.Net > (highWater?.Net ?? 0))
+                        highWaters[j] = thisYearMonth;
 
                     annual += thisYearMonth.Net;
                     thisYearMonth.YOYGross = thisYearMonth.Net - lastYearMonth.Net;
@@ -1456,7 +1476,13 @@ ORDER BY Year ASC , Month ASC;");
                 thisYear.AnnualPayment.Net = annual;
                 thisYear.AnnualPayment.YOYGross = thisYear.AnnualPayment.Net - lastYear.AnnualPayment.Net;
                 thisYear.AnnualPayment.YOYPercent = (lastYear.AnnualPayment.Net == 0) ? 0 : thisYear.AnnualPayment.YOYGross / lastYear.AnnualPayment.Net;
+
+                if (annual > (highWaters[12]?.Net ?? 0))
+                    highWaters[12] = thisYear.AnnualPayment;
             }
+
+            foreach (PeriodPaymentStat pps in highWaters)
+                pps.IsHighWater = true;
 
             return lst;
         }
@@ -1533,5 +1559,6 @@ ORDER BY Year ASC , Month ASC;");
         public double Fee { get; set; }
         public double YOYPercent { get; set; }
         public double YOYGross { get; set; }
+        public bool IsHighWater { get; set; }
     }
 }

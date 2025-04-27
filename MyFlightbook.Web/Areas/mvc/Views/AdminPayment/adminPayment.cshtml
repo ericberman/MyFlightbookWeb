@@ -59,7 +59,21 @@
         </script>
     </div>
 </div>
-<table cellpadding="3">
+<style type="text/css">
+    .yoyUp {
+        color: green;
+    }
+    .yoyDown {
+        color: red;
+    }
+    .hw {
+        border-bottom: 3px double blue;
+    }
+    .annual {
+        font-weight: bold;
+    }
+</style>
+<table class="stickyHeaderTable" style="width: unset;">
     <thead>
         <tr style="font-weight: bold;">
             <th>@Resources.LocalizedText.ChartTotalsGroupYear</th>
@@ -86,19 +100,15 @@
                             @if (pp.Net != 0)
                             {
                                 <span title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", pp.Gross, pp.Fee, pp.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", pp.YOYGross, pp.YOYPercent * 100))"
-                                      style="color: @(pp.YOYGross > 0 ? "green" : (pp.YOYGross < 0 ? "red" : "inherit"))">
-                                    @pp.Net.ToString("C", CultureInfo.CurrentCulture)
-                                </span>
+                                      class="@(pp.YOYGross > 0 ? "yoyUp" : (pp.YOYGross < 0) ? "yoyDown" : string.Empty) @(pp.IsHighWater ? "hw" : string.Empty)">@pp.Net.ToString("C", CultureInfo.CurrentCulture)</span>
                             }
                         </td>
                     }
-                    <td style="font-weight: bold;">
+                    <td class="highlightedFeature annual">
                         @if (yp.AnnualPayment.Net != 0)
                         {
                             <span title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", yp.AnnualPayment.Gross, yp.AnnualPayment.Fee, yp.AnnualPayment.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", yp.AnnualPayment.YOYGross, yp.AnnualPayment.YOYPercent * 100))"
-                                  style="color: @(yp.AnnualPayment.YOYGross > 0 ? "green" : (yp.AnnualPayment.YOYGross < 0 ? "red" : "inherit"))">
-                                @yp.AnnualPayment.Net.ToString("C", CultureInfo.CurrentCulture)
-                            </span>
+                                  class="@(yp.AnnualPayment.YOYGross > 0 ? "yoyUp" : (yp.AnnualPayment.YOYGross < 0) ? "yoyDown" : string.Empty) @(yp.AnnualPayment.IsHighWater ? "hw" : string.Empty)">@yp.AnnualPayment.Net.ToString("C", CultureInfo.CurrentCulture)</span>
                         }
                     </td>
                 </tr>

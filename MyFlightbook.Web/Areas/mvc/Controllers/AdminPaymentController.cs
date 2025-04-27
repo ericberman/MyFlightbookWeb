@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class AdminPaymentController : Controller
+    public class AdminPaymentController : AdminControllerBase
     {
         private static HashSet<Payment.TransactionType> XactionTypes(bool fPayments, bool fRefunds, bool fAdjustments, bool fTestTransactions)
         {
@@ -62,9 +62,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult PaymentSet(string szUser, bool fPayments, bool fRefunds, bool fAdjustments, bool fTestTransactions, int offset, int limit)
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageMoney)
-                throw new UnauthorizedAccessException();
-
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             return PaymentDetailRows(szUser, XactionTypes(fPayments, fRefunds, fAdjustments, fTestTransactions), offset, limit);
         }
 
@@ -72,9 +70,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public void ResetGratuities(string szUser, bool fResetReminders)
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageMoney)
-                throw new UnauthorizedAccessException();
-
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             EarnedGratuity.UpdateEarnedGratuities(szUser, fResetReminders);
         }
 
@@ -82,16 +78,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public void FixFees()
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageMoney)
-                throw new UnauthorizedAccessException();
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             Payment.ADMINFixFees();
         }
 
         private ActionResult CompositeView(string szUser = null, bool fPayments = false, bool fRefunds = false, bool fAdjustments = false, bool fTestTransactions = false)
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageMoney)
-                throw new UnauthorizedAccessException();
-
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             ViewBag.UserRestriction = szUser ?? string.Empty;
             ViewBag.TypeRestriction = XactionTypes(fPayments, fRefunds, fAdjustments, fTestTransactions);
 
@@ -121,9 +114,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(FormCollection collection)
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageMoney)
-                throw new UnauthorizedAccessException();
-
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
             try
