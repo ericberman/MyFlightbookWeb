@@ -16,7 +16,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -224,6 +224,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ViewBag.unsubscribeResult = ex.Message;
             }
             return View("unsubscribe");
+        }
+
+        [HttpPost]
+        public ActionResult CrashReport(string szAppToken, string stacktrace)
+        {
+            if (!MFBWebService.IsAuthorizedService(szAppToken))
+                throw new UnauthorizedAccessException();
+
+            util.NotifyAdminEvent("Crash report received", stacktrace ?? string.Empty, ProfileRoles.maskSiteAdminOnly);
+
+            return Content("OK");
         }
 
         public ActionResult PropertyTable()

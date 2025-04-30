@@ -224,8 +224,11 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szAppToken"></param>
         /// <returns></returns>
-        private static Boolean IsAuthorizedService(string szAppToken)
+        public static Boolean IsAuthorizedService(string szAppToken)
         {
+            if (String.IsNullOrEmpty(szAppToken))
+                return false;
+
             if (ShuntState.IsShunted)
                 throw new MyFlightbookException(ShuntState.ShuntMessage);
 
