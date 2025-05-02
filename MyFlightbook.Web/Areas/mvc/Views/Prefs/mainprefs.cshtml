@@ -11,10 +11,13 @@
 <script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
 @{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "prefsAccordion", active = "false" }); }
 <div id="prefsAccordion">
+    @if ((Request["nolocalprefs"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") != 0)
+    {
     <h3 id="flightentry">@Resources.Preferences.PrefSectFlightEntryHeader</h3>
     <div class="prefSectionRow">
         @{ Html.RenderPartial("_prefFlightEntry"); }
     </div>
+    }
     <h3 id="flightcoloring">@Resources.Preferences.FlightColoringHeader</h3>
     <div>
         @{ Html.RenderPartial("_prefFlightColoring"); }
