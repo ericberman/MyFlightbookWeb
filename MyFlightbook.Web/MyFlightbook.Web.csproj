@@ -1291,7 +1291,6 @@
     <Content Include="Public\AndroidImages\Android5.png" />
     <Content Include="Public\AndroidImages\Android6.png" />
     <Content Include="Public\AndroidImages\Android7.png" />
-    <Content Include="Public\authredir.aspx" />
     <Content Include="Public\AWS-SNSListener.aspx" />
     <Content Include="Public\ClubsManual_files\image015.png" />
     <Content Include="Public\ClubsManual_files\image016.png" />
@@ -1981,13 +1980,6 @@
       <DependentUpon>oAuthToken.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\authredir.aspx.cs">
-      <DependentUpon>authredir.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\authredir.aspx.designer.cs">
-      <DependentUpon>authredir.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\AWS-SNSListener.aspx.cs">
       <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

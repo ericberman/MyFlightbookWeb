@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,6 +29,120 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Profile pf = MyFlightbook.Profile.GetUser(szUser);
                 return pf.PreferenceExists(MFBConstants.keyTFASettings) && !Check2FA(pf, tfaCode) ? Json(Resources.Profile.TFACodeFailed) : Json(true);
             });
+        }
+        #endregion
+
+        #region Authenticated redirection for iOS/Android apps
+        private readonly static Dictionary<string, string> dictRedir = new Dictionary<string, string>()
+        {
+            { "FLIGHTS", "~/mvc/flights"},
+            { "MINIFLIGHTS", "~/mvc/flights/minirecents"},
+            { "PROFILE", "~/mvc/prefs"},
+            { "DONATE", "~/mvc/Donate"},
+            { "ENDORSE", "~/mvc/Training/Endorsements"},
+            { "PROGRESS", "~/mvc/Training/RatingsProgress" },
+            { "BADGES", "~/mvc/Training/Achievements" },
+            { "STUDENTS", "~/mvc/training/students" },
+            { "STUDENTSFIXED", "~/mvc/training/students"},
+            { "INSTRUCTORS", "~/mvc/training/instructors" },
+            { "INSTRUCTORSFIXED", "~/mvc/training/instructors" },
+            { "8710", "~/mvc/training/reports/8710"},
+            { "MODELROLLUP", "~/mvc/training/reports/Model"},
+            { "TIMEROLLUP", "~/mvc/training/reports/Time" },
+            { "AIRCRAFTEDIT", "~/mvc/Aircraft/edit" },
+            { "AIRCRAFTSCHEDULE", "~/mvc/club/ACSchedule"},
+            { "FAQ", "~/mvc/faq"},
+            { "REQSIGS", "~/mvc/Training/RequestSigs"},
+            { "FLIGHTREVIEW", "~/mvc/prefs/pilotinfo"},
+            { "CERTIFICATES", "~/mvc/prefs/pilotinfo"},
+            { "MEDICAL", "~/mvc/prefs/pilotinfo"},
+            { "DEADLINE", "~/mvc/prefs"},
+            { "CUSTOMCURRENCY", "~/mvc/prefs"},
+            { "ACCOUNT", "~/mvc/prefs/account"},
+            { "BIGREDBUTTONS", "~/mvc/prefs/account"},
+            { "CONTACT", "~/mvc/pub/contact"},
+            { "SIGNENTRY", "~/mvc/flightedit/SignMobile"},
+            { "DEADLINEEDIT", "~/mvc/aircraft/DeadlineEdit" }
+        };
+
+        private readonly static Dictionary<string, NameValueCollection> dictAdditionalParams = new Dictionary<string, NameValueCollection>()
+        {
+            { "PROFILE", new NameValueCollection() { { "nolocalprefs", "yes" } } },
+            { "FLIGHTREVIEW", new NameValueCollection() {{"pane", "flightreviews" } } },
+            { "CERTIFICATES", new NameValueCollection() {{"pane", "certs" } } },
+            { "MEDICAL",  new NameValueCollection() {{"pane", "medical" } } },
+            { "DEADLINE", new NameValueCollection() {{"pane","deadlines" } } },
+            { "CUSTOMCURRENCY", new NameValueCollection() {{"pane", "custcurrency" } } },
+            { "BIGREDBUTTONS", new NameValueCollection() {{"pane","redbuttons" } } }
+        };
+
+        private static readonly char[] adminSeparator = new char[] { ':' };
+
+        public ActionResult AuthRedir(string u, string p, string d)
+        {
+            const string szDestErr = "~/mvc/pub";
+
+            string szDest = d?.ToUpperInvariant() ?? string.Empty;
+
+            // Verify all parameters are present and not empty, and that the destination is valid
+            if (!Request.IsSecureConnection || String.IsNullOrEmpty(u) || String.IsNullOrEmpty(p) || String.IsNullOrEmpty(szDest) || !dictRedir.TryGetValue(szDest, out string redir))
+                return Redirect(szDestErr);
+
+            // look for admin emulation in the form of admin:useremail
+            string[] rgUsers = u.Split(adminSeparator, StringSplitOptions.RemoveEmptyEntries);
+            string szEmulate = string.Empty;
+            if (rgUsers != null && rgUsers.Length == 2)
+            {
+                szEmulate = rgUsers[0];
+                u = rgUsers[1];
+            }
+
+            // Issue #1204: Apple isn't properly url-encoding a "+" sign as %2B, so it comes through as a space.  But it's perfectly legal in an email address.
+            string szUserName = Membership.GetUserNameByEmail(u);
+            u = String.IsNullOrEmpty(szUserName) && u.Contains(" ") ? Membership.GetUserNameByEmail(u.Replace(' ', '+')) : szUserName;
+
+            if (Membership.ValidateUser(u, p))
+            {
+                if (!String.IsNullOrEmpty(szEmulate))   // emulation requested - validate that the authenticated user is actually authorized!!!
+                {
+                    Profile pf = MyFlightbook.Profile.GetUser(u);
+                    if (pf.CanSupport || pf.CanManageData)
+                    {
+                        // see if the emulated user actually exists
+                        pf = MyFlightbook.Profile.GetUser(szEmulate);
+                        if (!pf.IsValid())
+                            throw new MyFlightbookException("No such user: " + szEmulate);
+                        u = szEmulate;
+                    }
+                    else
+                        throw new UnauthorizedAccessException();
+                }
+
+                FormsAuthentication.SetAuthCookie(u, false);
+            }
+
+            NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
+
+            // Add any additional params, as needed
+            if (dictAdditionalParams.TryGetValue(szDest, out NameValueCollection nvcParams))
+                nvc.Add(nvcParams);
+
+            // pass on any other parameters
+            nvc.Add(Request.QueryString);
+
+            // don't pass on u, p, or d params
+            nvc.Remove("u");
+            nvc.Remove("p");
+            nvc.Remove("d");
+
+            // Issue #1223 - if night mode isn't set, explicitly turn it off
+            if (Request["night"] == null)
+                nvc["night"] = "no";
+
+            if (nvc["naked"].CompareCurrentCultureIgnoreCase("1") == 0)
+                Session["IsNaked"] = true;
+
+            return Redirect($"{redir.ToAbsolute()}?{nvc}");
         }
         #endregion
 
