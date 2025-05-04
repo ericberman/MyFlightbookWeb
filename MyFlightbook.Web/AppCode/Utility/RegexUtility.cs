@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -74,8 +74,8 @@ namespace MyFlightbook
         /// <summary>
         /// Returns quoted phrases, with an optional negation.  Negation group is "negated", the phrase is "phrase"
         /// </summary>
-        public static Regex QueryQuotedExpressions { get { return mQuotedExpressions ?? (mQuotedExpressions = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled)); } }
-        public static Regex QueryMergeOR { get { return mMergeOR ?? (mMergeOR = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        public static Regex QuerySearchTerms { get { return mQuotedExpressions ?? (mQuotedExpressions = new Regex("(?<negate>-?)(?:\"(?<term>[^\"]+)\"|“(?<term>[^”]+)”|(?<term>\\S+))", RegexOptions.Compiled)); } }
+        public static Regex QueryORPhrases { get { return mMergeOR ?? (mMergeOR = new Regex("\\b(?:OR|\\|)\\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
         /// <summary>
         /// Matches TrailingxxxD|CM|M|W.  "quantity" contains the digits, "rangetype" contains the unit

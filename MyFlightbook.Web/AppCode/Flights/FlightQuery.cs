@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -883,8 +883,6 @@ namespace MyFlightbook
             if (String.IsNullOrWhiteSpace(GeneralText))
                 return;
 
-            List<string> lstSearchTerms = new List<string>();
-
             /* following Google model (sorta) here:
                 * dog cat = must contain "dog" and must contain "cat" (but not necessarily in that order, separated by anything)
                 * "dog cat" = must contains "dog cat" (inclusive of spaces)
@@ -932,86 +930,65 @@ namespace MyFlightbook
                 }
             }
 
-            // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-            string szMerged = RegexUtility.QueryMergeOR.Replace(GeneralText.Trim(), "|");
-            if (String.IsNullOrEmpty(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
-                return;
-
-            // Extract out the quoted expressions first
-            MatchCollection quoted = RegexUtility.QueryQuotedExpressions.Matches(szMerged);
-            foreach (Match m in quoted)
-            {
-                if (m.Groups["phrase"].Value.Trim().Length > 0)
-                    lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
-                szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
-            }
-
-            // Split what is left
-            lstSearchTerms.AddRange(RegexUtility.WhiteSpace.Split(szMerged));
-
             const string szFreeText = "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes)";
 
+            // Split phrases at OR, everything within them is an AND.  E.g., "cat dog or horse buggy" should be treated as "cat and dog" OR "horse and buggy".
+            // So each PHRASE is an "AND", and the phrases themselves will be OR'd together.
+            string[] phrases = RegexUtility.QueryORPhrases.Split(GeneralText.Trim()).Where(s => !String.IsNullOrWhiteSpace(s)).ToArray();
+
             int iWord = 0;
-            foreach (string term in lstSearchTerms)
+            List<string> lstORClauses = new List<string>();
+            foreach (string phrase in phrases)
             {
-                string[] phrases = term.Split(phraseSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-                if (phrases.Length == 0)    // naked "|", perhaps?
-                    continue;
-                else
+                List<string> lstANDClauses = new List<string>();
+                MatchCollection mTerms = RegexUtility.QuerySearchTerms.Matches(phrase);
+                foreach (Match mTerm in mTerms)
                 {
-                    // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
-                    List<string> lstORClauses = new List<string>();
-                    foreach (string phrase in phrases)
+                    string szTerm = mTerm.Groups["term"].Value.EscapeMySQLWildcards().Trim();
+                    bool fNegate = !String.IsNullOrEmpty(mTerm.Groups["negate"].Value);
+                    if (string.IsNullOrWhiteSpace(szTerm))
+                        continue;
+
+                    string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
+
+                    // Issue #802 - Quick hack to direct a specific query to comment or route
+                    MatchCollection mcSpecific = RegexUtility.QuerySpecificField.Matches(szTerm);
+                    if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
                     {
-                        string szPhrase = phrase.EscapeMySQLWildcards().Trim();
-                        bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
-                        if (fNegate)
-                            szPhrase = szPhrase.Substring(1);
-
-                        if (String.IsNullOrWhiteSpace(szPhrase))
-                            continue;
-
-                        string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
-
-                        // Issue #802 - Quick hack to direct a specific query to comment or route
-                        MatchCollection mcSpecific = RegexUtility.QuerySpecificField.Matches(szPhrase);
-                        if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
+                        Match m = mcSpecific[0];
+                        string szField = string.Empty;
+                        switch (m.Groups["field"].Value.ToUpperInvariant())
                         {
-                            Match m = mcSpecific[0];
-                            string szField = string.Empty;
-                            switch (m.Groups["field"].Value.ToUpperInvariant())
-                            {
-                                case RegexUtility.szPrefixLimitComments:
-                                    szField = "Comments";
-                                    break;
-                                case RegexUtility.szPrefixLimitRoute:
-                                    szField = "Route";
-                                    break;
-                                default:
-                                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched RegexUtility.QuerySpecificField", m.Groups["field"].Value));
-                            }
-
-                            // CMT= or RTE= means empty
-                            string szValue = m.Groups["value"].Value.Trim();
-                            if (String.IsNullOrEmpty(szValue))
-                                lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} '' ", szField, fNegate ? "<>" : "="));
-                            else
-                            {
-                                lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szField, fNegate ? "NOT" : string.Empty, szParam));
-                                AddParameter(szParam, szValue.EscapeMySQLWildcards().ConvertToMySQLWildcards()); // must be a match on the full field, but can have * and ? as wildcards.
-                            }
+                            case RegexUtility.szPrefixLimitComments:
+                                szField = "Comments";
+                                break;
+                            case RegexUtility.szPrefixLimitRoute:
+                                szField = "Route";
+                                break;
+                            default:
+                                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched RegexUtility.QuerySpecificField", m.Groups["field"].Value));
                         }
+
+                        // CMT= or RTE= means empty
+                        string szValue = m.Groups["value"].Value.Trim();
+                        if (String.IsNullOrEmpty(szValue))
+                            lstANDClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} '' ", szField, fNegate ? "<>" : "="));
                         else
                         {
-                            lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
-                            AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.ConvertToMySQLWildcards()));
+                            lstANDClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szField, fNegate ? "NOT" : string.Empty, szParam));
+                            AddParameter(szParam, szValue.EscapeMySQLWildcards().ConvertToMySQLWildcards()); // must be a match on the full field, but can have * and ? as wildcards.
                         }
                     }
-                    if (lstORClauses.Count > 0)
-                        AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
+                    else
+                    {
+                        lstANDClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
+                        AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szTerm.ConvertToMySQLWildcards()));
+                    }
                 }
+
+                lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "({0})", String.Join(" AND ", lstANDClauses)));
             }
+            AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
 
             Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
         }
@@ -1102,7 +1079,6 @@ namespace MyFlightbook
         }
 
         protected const string szICAOPrefix = "ICAO:";
-        protected static readonly char[] phraseSeparator = new char[] { '|', '"' };
 
         private void UpdateModels(StringBuilder sbQuery)
         {
@@ -2111,69 +2087,44 @@ namespace MyFlightbook
                 }
             }
 
-            // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-            string szMerged = RegexUtility.QueryMergeOR.Replace(szGeneral.Trim().ToUpper(CultureInfo.CurrentCulture), "|");
-            if (String.IsNullOrWhiteSpace(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
-                return true;
-
             UserAircraft ua = new UserAircraft(le.User);
             Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
 
             // OK, now we're on to general search.  First, generate - once - the string to search
             string szMatch = le.SearchStringForFlight(ac.PrivateNotes);
 
-            List<string> lstSearchTerms = new List<string>();
+            // Split phrases at OR, everything within them is an AND.  E.g., "cat dog or horse buggy" should be treated as "cat and dog" OR "horse and buggy".
+            // So each PHRASE is an "AND", and the phrases themselves will be OR'd together.
+            string[] phrases = RegexUtility.QueryORPhrases.Split(GeneralText.Trim()).Where(s => !String.IsNullOrWhiteSpace(s)).ToArray();
 
-            // Extract out the quoted expressions first
-            MatchCollection quoted = RegexUtility.QueryQuotedExpressions.Matches(szMerged);
-            foreach (Match m in quoted)
+            // No phrases = no condition = call it a match
+            if (phrases.Length == 0)
+                return true;
+
+            foreach (string phrase in phrases)
             {
-                if (m.Groups["phrase"].Value.Trim().Length > 0)
-                    lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
-                szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
-            }
-
-            // Split what is left
-            lstSearchTerms.AddRange(RegexUtility.WhiteSpace.Split(szMerged));
-
-            foreach (string term in lstSearchTerms)
-            {
-                string[] phrases = term.Split(phraseSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-                if (phrases.Length == 0)    // naked "|", perhaps?
-                    continue;
-                else
+                MatchCollection mTerms = RegexUtility.QuerySearchTerms.Matches(phrase);
+                bool matchesWholePhrase = true;
+                foreach (Match mTerm in mTerms)
                 {
-                    bool fMatchesPhrases = false;
+                    string szTerm = mTerm.Groups["term"].Value.Trim();
+                    bool fNegate = !String.IsNullOrEmpty(mTerm.Groups["negate"].Value);
 
-                    // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
-                    // But the gist is that any clause fails, we fail.
-                    foreach (string phrase in phrases)
+                    if (string.IsNullOrWhiteSpace(szTerm))
+                        continue;
+
+                    if (!(fNegate ^ IsPhraseMatch(szTerm, szMatch, le)))
                     {
-                        string szPhrase = phrase;
-                        bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
-
-                        if (fNegate)
-                            szPhrase = szPhrase.Substring(1);
-
-                        if (String.IsNullOrWhiteSpace(szPhrase))
-                            continue;
-
-                        // match the phrase if the phrase contains the search and not negated, or if negation and doesn't contain
-                        if (fNegate ^ IsPhraseMatch(szPhrase, szMatch, le))
-                        {
-                            fMatchesPhrases = true;
-                            break;
-                        }
+                        matchesWholePhrase = false;
+                        break;
                     }
-
-                    // if we didn't match any of the phrases, then return false
-                    if (!fMatchesPhrases)
-                        return false;
                 }
+
+                if (matchesWholePhrase)
+                    return true;
             }
 
-            return true;
+            return false;
         }
 
         private static bool IsPhraseMatch(string szPhrase, string szMatch, LogbookEntryBase le)
