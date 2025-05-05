@@ -1732,7 +1732,25 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Hobbs Est.: {0:#,##0.0#}.
+        ///   Looks up a localized string similar to (over by {0:#,##0.0#}).
+        /// </summary>
+        internal static string DeadlineCurrentGapNegative {
+            get {
+                return ResourceManager.GetString("DeadlineCurrentGapNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0:#,##0.0#} remaining).
+        /// </summary>
+        internal static string DeadlineCurrentGapPositive {
+            get {
+                return ResourceManager.GetString("DeadlineCurrentGapPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Hobbs Est.: {0:#,##0.0#} {1}.
         /// </summary>
         internal static string DeadlineCurrentHobbs {
             get {
@@ -1741,7 +1759,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Tach Est.: {0:#,##0.0#}.
+        ///   Looks up a localized string similar to Current Tach Est.: {0:#,##0.0#} {1}.
         /// </summary>
         internal static string DeadlineCurrentTach {
             get {

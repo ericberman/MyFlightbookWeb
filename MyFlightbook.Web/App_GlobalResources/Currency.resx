@@ -1237,10 +1237,10 @@
     <value>When the deadline has passed and you've done whatever is required:</value>
   </data>
   <data name="DeadlineCurrentHobbs" xml:space="preserve">
-    <value>Current Hobbs Est.: {0:#,##0.0#}</value>
+    <value>Current Hobbs Est.: {0:#,##0.0#} {1}</value>
   </data>
   <data name="DeadlineCurrentTach" xml:space="preserve">
-    <value>Current Tach Est.: {0:#,##0.0#}</value>
+    <value>Current Tach Est.: {0:#,##0.0#} {1}</value>
   </data>
   <data name="CurrencyOptions135DutyTime" xml:space="preserve">
     <value>Show FAR 135 Duty Time Status</value>
@@ -1286,5 +1286,11 @@
   </data>
   <data name="CustomCurrencyEventOffshoreLandings" xml:space="preserve">
     <value>Offshore Landings</value>
+  </data>
+  <data name="DeadlineCurrentGapPositive" xml:space="preserve">
+    <value>({0:#,##0.0#} remaining)</value>
+  </data>
+  <data name="DeadlineCurrentGapNegative" xml:space="preserve">
+    <value>(over by {0:#,##0.0#})</value>
   </data>
 </root>

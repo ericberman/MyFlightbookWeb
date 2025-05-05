@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -425,14 +425,14 @@ GROUP BY d.iddeadlines";
                     if (dc.HighWaterTach > 0)
                     {
                         delta = dTach;
-                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentTach, dc.HighWaterTach);
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentTach, dc.HighWaterTach, dTach > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dTach) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dTach));
                     }
 
                     // see if hobbs has a smaller delta from the target than tach did
                     if (dc.HighWaterHobbs > 0 && Math.Abs(dHobbs) < Math.Abs(dTach))
                     {
                         delta = dHobbs;
-                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentHobbs, dc.HighWaterHobbs);
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentHobbs, dc.HighWaterHobbs, dHobbs> 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dHobbs) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dHobbs));
                     }
 
                     CurrencyState defState = delta == decimal.MinValue ? CurrencyState.NoDate : (delta < -10 ? CurrencyState.OK : (delta < 0 ? CurrencyState.GettingClose : CurrencyState.NotCurrent));
