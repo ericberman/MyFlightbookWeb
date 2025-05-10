@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -504,6 +504,9 @@ namespace MyFlightbook.Templates
 
             if (m_propertyTypes.Count == 0)
                 throw new MyFlightbookValidationException(Resources.LogbookEntry.errTemplateNoProperties);
+
+            if (Description.Length > 255)
+                throw new MyFlightbookValidationException(Resources.LogbookEntry.errTemplateDescriptionTooLong);
         }
 
         /// <summary>

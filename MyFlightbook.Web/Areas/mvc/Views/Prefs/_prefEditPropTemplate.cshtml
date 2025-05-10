@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 @using MyFlightbook.Templates
 @{
     MyFlightbook.Profile pf = ViewBag.pf;
@@ -73,7 +73,10 @@
             </div>
         </div>
         <div>@Resources.LogbookEntry.TemplateDescriptionPrompt</div>
-        <div><textarea rows="3" style="width: 100%;" name="propTemplateDescription" id="txtTemplateDescription">@pt.Description</textarea></div>
+        <div><textarea rows="3" style="width: 100%;" name="propTemplateDescription" id="txtTemplateDescription" maxlength="255">@pt.Description</textarea></div>
+        <span id="descriptionLengthError" class="text-danger" style="display:none;">
+            @Resources.LogbookEntry.errTemplateDescriptionTooLong
+        </span>
         <div>
             <div style="display: inline-block; vertical-align: top;">
                 <div>@Resources.LogbookEntry.TemplatePropertiesPrompt</div>
