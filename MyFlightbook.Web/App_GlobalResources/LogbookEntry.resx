@@ -1005,7 +1005,7 @@ Proceed with import?</value>
     <value>View on CloudAhoy</value>
   </data>
   <data name="errTemplateDescriptionTooLong" xml:space="preserve">
-      <value>Template description cannot exceed 4000 characters.</value>
+      <value>Template description cannot exceed 255 characters.</value>
   </data>
   <data name="errTemplateNoName" xml:space="preserve">
     <value>Template requires a name</value>
