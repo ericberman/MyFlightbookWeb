@@ -1,15 +1,12 @@
 ﻿using MyFlightbook.CSV;
-using Mysqlx.Expr;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
-using System.Windows.Forms;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2024 MyFlightbook LLC
+ * Copyright (c) 2019-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
