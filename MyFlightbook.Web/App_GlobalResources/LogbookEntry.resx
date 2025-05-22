@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1003,6 +1003,9 @@ Proceed with import?</value>
   </data>
   <data name="SendToCloudAhoyView" xml:space="preserve">
     <value>View on CloudAhoy</value>
+  </data>
+  <data name="errTemplateDescriptionTooLong" xml:space="preserve">
+      <value>Template description cannot exceed 255 characters.</value>
   </data>
   <data name="errTemplateNoName" xml:space="preserve">
     <value>Template requires a name</value>
