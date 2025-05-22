@@ -148,7 +148,7 @@
     <value>Times cannot be negative.</value>
   </data>
   <data name="errInvalidUser" xml:space="preserve">
-    <value>Invalid Username.</value>
+    <value>Invalid Username</value>
   </data>
   <data name="errNoNightFlight" xml:space="preserve">
     <value>Nighttime fullstop landings are indicated with no nighttime flying.</value>
@@ -1005,7 +1005,7 @@ Proceed with import?</value>
     <value>View on CloudAhoy</value>
   </data>
   <data name="errTemplateDescriptionTooLong" xml:space="preserve">
-      <value>Template description cannot exceed 255 characters.</value>
+    <value>Template description cannot exceed 255 characters.</value>
   </data>
   <data name="errTemplateNoName" xml:space="preserve">
     <value>Template requires a name</value>

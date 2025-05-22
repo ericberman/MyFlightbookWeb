@@ -988,7 +988,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid Username..
+        ///   Looks up a localized string similar to Invalid Username.
         /// </summary>
         internal static string errInvalidUser {
             get {
@@ -1047,6 +1047,15 @@ namespace Resources {
         internal static string errRouteTooLong {
             get {
                 return ResourceManager.GetString("errRouteTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template description cannot exceed 255 characters..
+        /// </summary>
+        internal static string errTemplateDescriptionTooLong {
+            get {
+                return ResourceManager.GetString("errTemplateDescriptionTooLong", resourceCulture);
             }
         }
         
