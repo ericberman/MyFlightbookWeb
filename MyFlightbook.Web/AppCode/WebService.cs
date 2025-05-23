@@ -641,7 +641,8 @@ namespace MyFlightbook
 
             util.UnescapeObject(fq);    // fix for iPhone HTML encoding issues.
             EventRecorder.LogCall("FlightsWithQuery - user {user}, offset {offset}, maxCount {maxCount}", fq.UserName, offset, maxCount);
-            IEnumerable<LogbookEntry> rgFlights = LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
+            List<LogbookEntry> rgFlights = new List<LogbookEntry>(LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray());
+            rgFlights.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });    // issue #1423: flight sorting done in the database is *almost* the same as on the web, but not quite.  Ensure they are the same.
             IEnumerable<CannedQuery> colorQueryMap = FlightColor.QueriesToColor(fq.UserName);
             // Color the flights
             foreach (LogbookEntry le in rgFlights)
