@@ -496,6 +496,12 @@
   <data name="PilotInfoRatingsPrompt" xml:space="preserve">
     <value>These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete.</value>
   </data>
+  <data name="PilotInfoSecondaryCertificate" xml:space="preserve">
+    <value>*Tip*: If you have additional certificates to track (e.g., from multiple jurisdictions), you can put them all in the certificate field (e.g., "FAA 12345, EASA 67890".  If your additional certificate has an expiration/renewal date, then use a custom deadline to track it, using the certificate as the name for the deadline.</value>
+  </data>
+  <data name="PilotInfoSecondaryMedical" xml:space="preserve">
+    <value>*Tip*: If you have additional medicals (e.g., for multiple jurisdictions), you can create custom deadlines to track them</value>
+  </data>
   <data name="PrefAddCustomCurrency" xml:space="preserve">
     <value>Create a new currency rule</value>
   </data>

@@ -203,6 +203,7 @@
                     <textarea id="textMedicalNotes" name="pilotInfoMedicalNotes" rows="4" style="min-width: 300px">@m_pf.GetPreferenceForKey(MFBConstants.keyMedicalNotes, string.Empty)</textarea>
                     <div class="fineprint">@Resources.Preferences.PilotInfoMedicalNotesDescription</div>
                 </div>
+                <p>@Html.Raw(Resources.Preferences.PilotInfoSecondaryMedical.Linkify())</p>
                 <div>
                     <div><button type="button" id="btnPilotInfoUpdateMedical" onclick="javascript: piEditor.updateMedical($('#frmMedical'), $('#lblPilotInfoMedicalUpdateResult'));">@Resources.Preferences.PilotInfoMedicalUpdate</button></div>
                     <div id="lblPilotInfoMedicalUpdateResult"></div>
@@ -301,7 +302,7 @@
                 <div class="callout calloutSmall calloutBackground shadowed" style="white-space: pre-line; display: none;" id="divTipCFIExpiration">@Html.Raw(Resources.SignOff.tipInstructorExpiration.Linkify(true))</div>
                 <h3>@Resources.Preferences.PilotInfoEnglishProficiencyExpiration</h3>
                 <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPilotInfoEnglishProficiency", name = "pilotInfoEnglishProficiency", value = m_pf.EnglishProficiencyExpiration }); }</div>
-
+                <p>@Html.Raw(Resources.Preferences.PilotInfoSecondaryCertificate.Linkify())</p>
                 <h3><button type="button" onclick="javascript: piEditor.updatePilotCertificate($('#frmPilotCertInfo'), $('#lblPilotInfoUpdated')); return false;">@Resources.Profile.ProfilePilotInfoCertificatesUpdate</button></h3>
                 <div id="lblPilotInfoUpdated"></div>
             }

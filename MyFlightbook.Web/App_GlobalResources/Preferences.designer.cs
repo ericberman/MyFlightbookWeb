@@ -1195,6 +1195,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to *Tip*: If you have additional certificates to track (e.g., from multiple jurisdictions), you can put them all in the certificate field (e.g., &quot;FAA 12345, EASA 67890&quot;.  If your additional certificate has an expiration/renewal date, then use a custom deadline to track it, using the certificate as the name for the deadline..
+        /// </summary>
+        internal static string PilotInfoSecondaryCertificate {
+            get {
+                return ResourceManager.GetString("PilotInfoSecondaryCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Tip*: If you have additional medicals (e.g., for multiple jurisdictions), you can create custom deadlines to track them.
+        /// </summary>
+        internal static string PilotInfoSecondaryMedical {
+            get {
+                return ResourceManager.GetString("PilotInfoSecondaryMedical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create a new currency rule.
         /// </summary>
         internal static string PrefAddCustomCurrency {
