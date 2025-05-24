@@ -25,7 +25,7 @@
         <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldApproaches</span></td>
         <td>@le.Approaches.FormatInt()</td>
         <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldHold</span></td>
-        <td>@le.fHoldingProcedures.FormatBoolean()</td>
+        <td style="font-weight: bold;">@Html.Raw(le.fHoldingProcedures.FormatBoolean())</td>
     </tr>
     <tr style="vertical-align: text-top">
         <td><span style="font-weight: bold">@Resources.LogbookEntry.FieldXCountry</span></td>
