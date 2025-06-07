@@ -6,7 +6,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2024 MyFlightbook LLC
+ * Copyright (c) 2019-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,6 +71,11 @@ namespace MyFlightbook
         {
             if (le == null)
                 return;
+            foreach (CustomFlightProperty cfp in this.CustomProperties)
+            {
+                cfp.FlightID = idFlightNew;
+                cfp.PropID = CustomFlightProperty.idCustomFlightPropertyNew;
+            }
             JsonConvert.PopulateObject(JsonConvert.SerializeObject(le, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
         }
         #endregion

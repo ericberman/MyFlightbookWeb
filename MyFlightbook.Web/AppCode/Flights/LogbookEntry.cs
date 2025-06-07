@@ -1501,7 +1501,6 @@ namespace MyFlightbook
                 CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) ?? new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
                 cfpGIGiven.DecValue = cfpGIReceived.DecValue;
                 cfpGIGiven.FlightID = le.FlightID;
-                cfpGIReceived.DeleteProperty();
                 lstProps.Remove(cfpGIReceived);
                 lstProps.Add(cfpGIGiven);
             }
