@@ -1479,7 +1479,7 @@ namespace MyFlightbook
             lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
             lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
 
-            le.Comment = String.IsNullOrEmpty(le.Comment) ? szSigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, szSigningComments);
+            le.Comment = String.IsNullOrEmpty(le.Comment) ? szSigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, String.IsNullOrWhiteSpace(szSigningComments) ? Resources.LocalizedText.None : szSigningComments);
             le.User = szCFI;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
             le.PIC = le.CFI = Dual;  // Assume you were CFI and PIC for the time you were giving instruction...
             //... but if it's a sim, then set total and PIC to 0.
