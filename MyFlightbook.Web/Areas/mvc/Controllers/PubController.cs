@@ -401,6 +401,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("shunt");
         }
 
+        public ActionResult BetaHome()
+        {
+            return View("newUnauthHome");
+        }
+
         /// <summary>
         /// Returns the home page for the site, redirecting to mini if needed.
         /// </summary>

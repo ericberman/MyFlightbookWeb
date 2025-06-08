@@ -565,6 +565,11 @@
     <Content Include="images\BadgeOverlays\trend.png" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
+    <Content Include="images\home8710.png" />
+    <Content Include="images\homeBackup.png" />
+    <Content Include="images\homeCurrency.png" />
+    <Content Include="images\homeDebrief.png" />
+    <Content Include="images\homeEditFlight.png" />
     <Content Include="images\favicon-dev.png" />
     <Content Include="images\favicon-stg.png" />
     <Content Include="images\favicon.png" />
@@ -574,6 +579,10 @@
     <Content Include="images\flysto.png" />
     <Content Include="images\fulldeflection.png" />
     <Content Include="images\globe.png" />
+    <Content Include="images\homePrint.png" />
+    <Content Include="images\homeProgress.png" />
+    <Content Include="images\homeSchedule.png" />
+    <Content Include="images\homeSharing.png" />
     <Content Include="images\Home\homeAnalytics.svg" />
     <Content Include="images\Home\homeCloud.svg" />
     <Content Include="images\Home\homeCurrency.svg" />
@@ -1620,6 +1629,7 @@
     <Content Include="Areas\mvc\Views\Pub\yearInReview.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_recentStats.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\deadlineEditor.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\newUnauthHome.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

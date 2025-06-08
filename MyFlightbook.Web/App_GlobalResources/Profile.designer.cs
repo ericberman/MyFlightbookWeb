@@ -1762,6 +1762,375 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Easy and Accurate Flight Logging.
+        /// </summary>
+        internal static string newHomePromoHeader1 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powerful Reporting and Analytics.
+        /// </summary>
+        internal static string newHomePromoHeader2 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency and Compliance.
+        /// </summary>
+        internal static string newHomePromoHeader3 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share your adventures.
+        /// </summary>
+        internal static string newHomePromoHeader4 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Easy Access and Connectivity.
+        /// </summary>
+        internal static string newHomePromoHeader5 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining is a Breeze.
+        /// </summary>
+        internal static string newHomePromoHeader6 {
+            get {
+                return ResourceManager.GetString("newHomePromoHeader6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take your logbook to new heights!.
+        /// </summary>
+        internal static string newHomePromoSect1a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect1a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log every flight—whether you&apos;re in the cockpit of a Cessna, cruising at 35,000 feet in an airliner, flying a military mission, or piloting a drone.  %APP_NAME% lets you effortlessly record your flights from any browser or via our free iOS and Android apps..
+        /// </summary>
+        internal static string newHomePromoSect1b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect1b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can even bulk-import flights from a spreadsheet or from other popular electronic logbook programs.
+        /// </summary>
+        internal static string newHomePromoSect1c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect1c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add photos to capture the moment, sign flights digitally, and keep track of endorsements, ratings, and currencies—all in one secure place..
+        /// </summary>
+        internal static string newHomePromoSect1d {
+            get {
+                return ResourceManager.GetString("newHomePromoSect1d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Built by pilots, for pilots, %APP_NAME% supports all of aviation with powerful tools tailored to your flying life..
+        /// </summary>
+        internal static string newHomePromoSect1e {
+            get {
+                return ResourceManager.GetString("newHomePromoSect1e", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stay on top of your flying with powerful analytics and tracking tools!.
+        /// </summary>
+        internal static string newHomePromoSect2a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect2a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With real-time access to your up-to-date totals, you’ll always know exactly how much time you have in every aircraft, role, or condition. Whether you&apos;re chasing that next rating, preparing for a checkride, or just curious about your flying trends, %APP_NAME% gives you the insights you need..
+        /// </summary>
+        internal static string newHomePromoSect2b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect2b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track your progress toward your next certificate or endorsement, identify gaps in your experience, and visualize your path forward, all with clear, customizable reports. With %APP_NAME%’s filtering tools, you can slice and dice your flight history however you like..
+        /// </summary>
+        internal static string newHomePromoSect2c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect2c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% supports instructors signing flights and issuing endorsements..
+        /// </summary>
+        internal static string newHomePromoSect2d {
+            get {
+                return ResourceManager.GetString("newHomePromoSect2d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to And when it’s time for the paperwork? From IACRA to insurance forms, %APP_NAME% helps you generate the data you need with just a few clicks—so you can spend less time at your desk and more time in the air..
+        /// </summary>
+        internal static string newHomePromoSect2e {
+            get {
+                return ResourceManager.GetString("newHomePromoSect2e", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence in the cockpit starts with knowing you are current and %APP_NAME% makes it easy to track it all..
+        /// </summary>
+        internal static string newHomePromoSect3a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether you fly under FAA, EASA, or another authority, %APP_NAME% helps you stay on top of every regulation and requirement..
+        /// </summary>
+        internal static string newHomePromoSect3b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From flight reviews to instrument proficiency, medical expirations to night currency, everything is tracked automatically so you are always ready for your next flight..
+        /// </summary>
+        internal static string newHomePromoSect3c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor your flight, duty, and rest limits with precision, and manage aircraft maintenance alongside your own qualifications.
+        /// </summary>
+        internal static string newHomePromoSect3d {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Have your own requirements to meet? No problem. %APP_NAME% lets you create custom currency rules tailored to your specific operation or organization. It is a perfect fit for flight schools, corporate operators, and international pilots alike..
+        /// </summary>
+        internal static string newHomePromoSect3e {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3e", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Have peace of mind knowing you are always flying legally, safely, and fully compliant.
+        /// </summary>
+        internal static string newHomePromoSect3f {
+            get {
+                return ResourceManager.GetString("newHomePromoSect3f", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need a professional logbook for an interview? A clean summary for your insurance provider? A progress report for your CFI? %APP_NAME% lets you generate polished, professional-grade PDF and print layouts customized to your needs..
+        /// </summary>
+        internal static string newHomePromoSect4a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect4a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose from a wide range of formats—from traditional Jeppesen- or EASA-style logbooks to airline-style grids. Add the details that matter most, including signatures, remarks, and even images..
+        /// </summary>
+        internal static string newHomePromoSect4b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect4b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether you’re on your first lesson or your 10,000th hour, %APP_NAME% ensures your logbook is always ready to impress..
+        /// </summary>
+        internal static string newHomePromoSect4c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect4c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share your flying story: securely, beautifully, and on your terms!.
+        /// </summary>
+        internal static string newHomePromoSect5a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect5a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether you&apos;re applying to an airline or just want to show your instructor how much progress you&apos;ve made, %APP_NAME% makes sharing easy and secure..
+        /// </summary>
+        internal static string newHomePromoSect5b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect5b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grant read-only or editable access to instructors, flight schools, employers, or fellow pilots instantly, and with full control over what they see..
+        /// </summary>
+        internal static string newHomePromoSect5c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect5c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fly anywhere, access everywhere. Your logbook goes where you go with %APP_NAME%.
+        /// </summary>
+        internal static string newHomePromoSect6a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect6a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matter where your flying takes you—across the country or across the globe—your flight log is always within reach..
+        /// </summary>
+        internal static string newHomePromoSect6b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect6b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% gives you secure, cloud-based access from any device, whether you’re logging a flight from the cockpit, reviewing totals on your tablet, or prepping for a checkride on your computer..
+        /// </summary>
+        internal static string newHomePromoSect6c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect6c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your flying life is connected. %APP_NAME% keeps it all in sync—securely, reliably, and effortlessly..
+        /// </summary>
+        internal static string newHomePromoSect6d {
+            get {
+                return ResourceManager.GetString("newHomePromoSect6d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync seamlessly with the tools you already use. Automatically back up your data to leading cloud storage services for extra peace of mind..
+        /// </summary>
+        internal static string newHomePromoSect7a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect7a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push your flights to popular debriefing platforms like CloudAhoy or FlySto to analyze every maneuver.
+        /// </summary>
+        internal static string newHomePromoSect7b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect7b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull flight schedules directly from supported airline scheduling systems to make logging easier than ever..
+        /// </summary>
+        internal static string newHomePromoSect7c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect7c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ditch the paper without losing your history. %APP_NAME% makes the switch seamless..
+        /// </summary>
+        internal static string newHomePromoSect8a {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8a", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We get it: moving from a handwritten logbook to a digital one (or from other digital solutions) can feel like a big leap. That’s why %APP_NAME% is designed to make the transition as smooth and low-pressure as possible..
+        /// </summary>
+        internal static string newHomePromoSect8b {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8b", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just enter your starting totals and start logging new flights electronically—no scanning, no stress. From that point forward, you&apos;re set up for a lifetime of smart, secure, and streamlined logging.  Or, import from a spreadsheet or other digital logbook,.
+        /// </summary>
+        internal static string newHomePromoSect8c {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8c", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Want to add those old pen-and-ink entries someday? Go for it! On your own time. Whether you want a complete digital archive or just feel nostalgic about your early flying days, you can always go back and enter those flights when you&apos;re ready..
+        /// </summary>
+        internal static string newHomePromoSect8d {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% is as flexible as you are! Need instructor signatures to keep things official? No problem. Easily send a batch of signature requests for past flights, and your instructors can digitally sign them with just a few clicks..
+        /// </summary>
+        internal static string newHomePromoSect8e {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8e", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The result? A logbook that’s not only flexible and compliant, but beautifully organized and ready for anything!.
+        /// </summary>
+        internal static string newHomePromoSect8f {
+            get {
+                return ResourceManager.GetString("newHomePromoSect8f", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password:.
         /// </summary>
         internal static string NewUserConfirmPasswordPrompt {

@@ -3185,6 +3185,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It&apos;s *Free!*.
+        /// </summary>
+        internal static string ItsFree {
+            get {
+                return ResourceManager.GetString("ItsFree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Why can&apos;t I edit this aircraft?.
         /// </summary>
         internal static string LabelWhyCantEditSims {

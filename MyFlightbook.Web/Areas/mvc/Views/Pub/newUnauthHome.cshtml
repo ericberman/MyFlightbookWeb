@@ -1,0 +1,169 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    string comparePrompt = Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures);
+    string learnMorePrompt = Branding.ReBrand(Resources.Profile.HomePromoLearnMore);
+}
+
+<style type="text/css">
+    .leftQuote {
+        margin-left: 10%;
+        margin-right: 30%;
+        text-align: left;
+        font-size: 12pt;
+    }
+    .rightQuote {
+        margin-left: 30%;
+        margin-right: 10%;
+        text-align: right;
+        font-size: 12pt;
+    }
+    .blurredimage {
+        width: 100%;
+    }
+    .headline {
+        font-size: 24pt;
+        clear: both;
+    }
+
+    h2.headline img {
+        width: 32pt;
+        height: 32pt;
+    }
+
+    .featureRow {
+        display: flex;
+        align-items: center;
+    }
+    .sideImage {
+        margin: 8pt;
+        display: inline-block;
+    }
+
+    .sidePromo {
+        display: inline-block;
+        font-size: 16pt;
+        padding: 12pt;
+    }
+</style>
+<div class="homePageUnauth centered80">
+    <div style="width: 70%; margin-left: auto; margin-right: auto;"><img style="width: 100%;" src="@("~/images/mfblogonew-large.png".ToAbsolute())" alt="@Branding.CurrentBrand.AppName" title="@Branding.CurrentBrand.AppName" /></div>
+    <h3 class="headline" style="text-align: center;"><img src="@("~/images/rightarrow.png".ToAbsolute())" style="vertical-align: middle;" /><a href="@("~/mvc/auth/newuser".ToAbsolute())">@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity) - @Html.Raw(Resources.LocalizedText.ItsFree.Linkify())</a></h3>
+    <div class="featureRow">
+        <div style="float:left; margin: 8pt; width: 30%"><img src="https://myflightbook.com/logbook/mvc/Image/ViewPic?r=Flight&k=24662133&t=t_2024112915471020-818243_.jpg" class="blurredimage" /></div>
+        <div style="width: 70%;">
+            <h3 class="leftQuote"><span class="testimonialQuote">Over the years, I have been using MyFlightBook with great satisfaction, and I have enthusiastically recommended your platform to many pilots and aviation enthusiasts.</span><span class="testimonialAttribution">Maciej,&nbsp;CFI</span></h3>
+            <h3 class="rightQuote"><span class="testimonialQuote">I’m going to recommend it to all my students.</span><span class="testimonialAttribution">Laurenz,&nbsp;CFI</span></h3>
+            <h3 class="leftQuote"><span class="testimonialQuote">I am a huge fan of MyFlightbook</span><span class="testimonialAttribution">Jason,&nbsp;Airline&nbsp;Pilot</span></h3>
+            <h3 class="rightQuote"><span class="testimonialQuote">Your software is a benefit to pilots, instructors and administrators</span><span class="testimonialAttribution">Wayne,&nbsp;MEI</span></h3>
+            <h3 class="leftQuote"><span class="testimonialQuote">Easy to use, amazing for training, and packed full of features</span><span class="testimonialAttribution">Avery,&nbsp;PPL</span></h3>
+        </div>
+    </div>
+    <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@comparePrompt" title="@comparePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@comparePrompt</a></h2>
+    <div class="homepageRecentStats">
+        @{ Html.RenderPartial("_recentStats"); }
+    </div>
+    <h2 class="headline"><img src="https://myflightbook.com/logbook/images/Home/homeLogging.svg" />@Resources.Profile.newHomePromoHeader1</h2>
+    <div class="featureRow">
+        <div class="sideImage" style="width: 25%;"><img src="@("~/public/iPhoneImages/iPhone1.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/public/iPhoneImages/iPhone1.png".ToAbsolute())');" class="blurredimage" /></div>
+        <div class="sidePromo" style="width: 75%;">
+            <p>@Resources.Profile.newHomePromoSect1a</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect1b)</p>
+            <p>@Resources.Profile.newHomePromoSect1c</p>
+        </div>
+    </div>
+    <div class="featureRow" style="clear:both;">
+        <div class="sidePromo" style="width: 50%;">
+            <p>@Resources.Profile.newHomePromoSect1d</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect1e)</p>
+        </div>
+        <div class="sideImage" style="width: 50%;"><img src="@("~/images/homeEditFlight.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeEditFlight.png".ToAbsolute())');" class="blurredimage" /></div>
+    </div>
+    <h2 class="headline"><img src="https://myflightbook.com/logbook/images/Home/homeTime.svg" />@Resources.Profile.newHomePromoHeader2</h2>
+    <div class="featureRow">
+        <div class="sidePromo" style="width: 40%;">
+            <p>@Resources.Profile.newHomePromoSect2a</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect2b)</p>
+        </div>
+        <div class="sideImage" style="width: 60%"><img src="@("~/images/home8710.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/home8710.png".ToAbsolute())');" class="blurredimage" /></div>
+    </div>
+    <div class="featureRow">
+        <div class="sideImage" style="width: 50%"><img src="@("~/images/homeProgress.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeProgress.png".ToAbsolute())');" class="blurredimage" /></div>
+        <div class="sidePromo" style="width: 50%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect2c)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect2d)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect2e)</p>
+        </div>
+    </div>
+    <h2 class="headline"><img src="https://myflightbook.com/logbook/images/Home/homeCurrency.svg" />@Resources.Profile.newHomePromoHeader3</h2>
+    <div class="featureRow">
+        <div class="sidePromo" style="width: 40%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3a)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3b)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3c)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3d)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3e)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect3f)</p>
+        </div>
+        <div class="sideImage" style="width:60%;"><img src="@("~/images/homeCurrency.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeCurrency.png".ToAbsolute())');" class="blurredimage" /></div>
+    </div>
+    <h2 class="headline"><img src="https://myflightbook.com/logbook/images/Home/homeSharing.svg" />@Resources.Profile.newHomePromoHeader4</h2>
+    <div class="featureRow">
+        <div class="sidePromo" style="width: 40%">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect4a)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect4b)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect4c)</p>
+        </div>
+        <div class="sideImage" style="width: 60%;"><img src="@("~/images/homePrint.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homePrint.png".ToAbsolute())');" class="blurredimage" /></div>
+    </div>
+    <div class="featureRow">
+        <div class="sideImage" style="width: 40%;"><img src="@("~/images/homeSharing.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeSharing.png".ToAbsolute())');" class="blurredimage" /></div>
+        <div class="sidePromo" style="width: 60%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect5a)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect5b)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect5c)</p>
+        </div>
+    </div>
+    <h2 class="headline"><img src="https://myflightbook.com/logbook/images/Home/homeCloud.svg" />@Resources.Profile.newHomePromoHeader5</h2>
+    <div class="featureRow">
+        <div class="sidePromo">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect6a)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect6b)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect6c)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect6d)</p>
+        </div>
+    </div>
+    <div class="featureRow">
+        <div class="sideImage" style="width: 40%;"><img src="@("~/images/homeBackup.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeBackup.png".ToAbsolute())');" class="blurredimage" /></div>
+        <div class="sidePromo" style="width: 60%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect7a)</p>
+        </div>
+    </div>
+    <div class="featureRow">
+        <div class="sidePromo" style="width: 60%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect7b)</p>
+        </div>
+        <div class="sideImage" style="width: 40%;"><img src="@("~/images/homeDebrief.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeDebrief.png".ToAbsolute())');" class="blurredimage" /></div>
+    </div>
+    <div class="featureRow">
+        <div class="sideImage" style="width: 40%;"><img src="@("~/images/homeSchedule.png".ToAbsolute())" onclick="javascript: viewMFBImg('@("~/images/homeSchedule.png".ToAbsolute())');" class="blurredimage" /></div>
+        <div class="sidePromo" style="width: 60%;">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect7c)</p>
+        </div>
+    </div>
+    <h2 class="headline">@Resources.Profile.newHomePromoHeader6</h2>
+    <div class="featureRow">
+        <div class="sidePromo">
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8a)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8b)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8c)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8d)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8e)</p>
+            <p>@Branding.ReBrand(Resources.Profile.newHomePromoSect8f)</p>
+        </div>
+    </div>
+    <p style="text-align: center; font-size: 28pt; font-weight: bold;"><a href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
+    <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@learnMorePrompt" title="@learnMorePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/about".ToAbsolute())">@learnMorePrompt</a></h2>
+</div>
