@@ -21,7 +21,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2024 MyFlightbook LLC
+ * Copyright (c) 2016-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1658,7 +1658,7 @@ namespace MyFlightbook.CloudStorage
         public const string ObsoletePrefKeyAuthToken = "googlePhotoAuthToken";
         private static readonly string[] _gDriveScopes = new string[] { "https://www.googleapis.com/auth/photospicker.mediaitems.readonly" };
 
-        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent", "https://www.googleapis.com/oauth2/v4/token", _gDriveScopes)
+        public GooglePhoto(Profile pf = null) : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline", "https://www.googleapis.com/oauth2/v4/token", _gDriveScopes)
         {
             AuthParam = szParamGPhotoAuth;
             CurrentUser = pf;
