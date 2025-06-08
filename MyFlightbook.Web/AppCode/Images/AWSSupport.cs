@@ -443,13 +443,13 @@ namespace MyFlightbook.Image
                     cFilesOnS3 += response.S3Objects.Count;
                     foreach (S3Object o in response.S3Objects)
                     {
-                        cBytesOnS3 += o.Size;
+                        cBytesOnS3 += o.Size ?? 0;
                         lstS3Objects.Add(o);
                     }
 
                     // If response is truncated, set the marker to get the next 
                     // set of keys.
-                    if (response.IsTruncated)
+                    if (response.IsTruncated ?? false)
                         request.Marker = response.NextMarker;
                     else
                         request = null;
@@ -500,7 +500,7 @@ namespace MyFlightbook.Image
                     if (!dictDBResults.Remove(szPrimary))
                     {
                         cOrphansFound++;
-                        cBytesToFree += o.Size;
+                        cBytesToFree += o.Size ?? 0;
                         if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
                         {
                             // Make sure that the item 
@@ -535,7 +535,7 @@ namespace MyFlightbook.Image
 
                     // If response is truncated, set the marker to get the next 
                     // set of keys.
-                    if (response.IsTruncated)
+                    if (response.IsTruncated ?? false)
                     {
                         request.Marker = response.NextMarker;
                     }

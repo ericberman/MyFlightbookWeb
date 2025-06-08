@@ -13,7 +13,7 @@ using System.Web.Hosting;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -184,7 +184,7 @@ namespace MyFlightbook.Image
 
                     // If response is truncated, set the marker to get the next 
                     // set of keys.
-                    if (response.IsTruncated)
+                    if (response.IsTruncated ?? false)
                         loRequest.Marker = response.NextMarker;
                     else
                         loRequest = null;
@@ -239,8 +239,8 @@ namespace MyFlightbook.Image
                         s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = originalVideo.Key });
 
                     // Now set the ACLs so that it's all public
-                    s3.PutACL(new PutACLRequest() { BucketName = Bucket, Key = thumbFileNew, CannedACL = S3CannedACL.PublicRead });
-                    s3.PutACL(new PutACLRequest() { BucketName = Bucket, Key = mp4Video.Key, CannedACL = S3CannedACL.PublicRead });
+                    s3.PutObjectAcl(new PutObjectAclRequest() { BucketName = Bucket, Key = thumbFileNew, ACL = S3CannedACL.PublicRead });
+                    s3.PutObjectAcl(new PutObjectAclRequest() { BucketName = Bucket, Key = mp4Video.Key, ACL = S3CannedACL.PublicRead });
                 }
                 catch (AmazonS3Exception)
                 {
