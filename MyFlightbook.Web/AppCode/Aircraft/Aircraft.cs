@@ -1253,6 +1253,7 @@ ORDER BY user ASC");
               |Different ICAO, or new and old empty ICAO                 |Clone                                                            |Yes                           |
               |Same non-empty ICAO as an existing clone                  |Don't edit the model, but switch the user to the existing clone  |No                            |
               |Same ICAO new cat class - (e.g., C-172 P to C-172 P Float)|Clone, if it didn't match existing clone above.                  |No                            |
+              |Same ICAO and cat class - CRJ-700 to CRJ-550              |Clone                                                            |Yes                           |
               |Same ICAO and cat class                                   |Treat as a minor edit.  E.g., C-172N to C-172P.                  |Yes                           |
              */
             MakeModel mmOld = MakeModel.GetModel(ModelID);
@@ -1284,7 +1285,12 @@ ORDER BY user ASC");
 
             // Check for a minor edit: defined as same non-empty ICAO, type, and category class
             if (!String.IsNullOrEmpty(mmNew.FamilyName) && mmNew.FamilyName.CompareCurrentCulture(mmOld.FamilyName) == 0 && mmNew.CategoryClassID == mmOld.CategoryClassID && mmNew.TypeName.CompareCurrentCultureIgnoreCase(mmOld.TypeName) == 0)
-                return false;   // any admin notification will be done outside of this
+            {
+                // Issue #1429 - Right now, the only meaningful case where an aircraft changes model but keeps its ICAO code is the CRJ upgrade from -700 to -550, so call that out and force the clone
+                // Over time, if there are others, we should generalize this using a dictionary, but for now, this is a fine hack.
+                if (mmNew.FamilyName.CompareCurrentCulture("CRJ7") != 0 || !mmOld.ModelName.Contains("700") || !mmNew.ModelName.Contains("550"))
+                    return false;   // any admin notification will be done outside of this
+            }
 
             // If we are here, this is not a minor change - go ahead and clone and notify the admin.
             Clone(idProposedModel, new string[] { szUser });
