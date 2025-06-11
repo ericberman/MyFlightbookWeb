@@ -322,8 +322,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 LogbookEntry le = LogbookEntryFromForm();
 
                 int appchCount = util.GetIntParam(Request, "appchHelpCount", 0);
-                // Form the string to append
-                string szAppchDesc = new ApproachDescription(appchCount, Request["appchHelpType"], Request["appchHelpRwy"], Request["appchHelpApt"]).ToCanonicalString();
 
                 if (Request["appchHelpAdd"] != null)
                     le.Approaches += appchCount;
