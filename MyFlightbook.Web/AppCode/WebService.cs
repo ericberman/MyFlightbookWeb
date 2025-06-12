@@ -751,7 +751,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
 
             // should never happen
-            if (String.IsNullOrEmpty(le.User))
+            if (String.IsNullOrEmpty(le.User) || szUser.CompareCurrentCultureIgnoreCase(le.User) != 0)
                 le.User = szUser;
 
             // fCommit from logbook (below) will do normal validation, but two more layers are needed for external edits:
