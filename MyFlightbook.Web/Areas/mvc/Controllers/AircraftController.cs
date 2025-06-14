@@ -626,9 +626,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (!fAdminMode && fChangedModel && fOtherUsers && acInDatabase.HandlePotentialClone(acNew.ModelID, User.Identity.Name))
                 return RedirectToAction("Index");
 
+            // Issue #1427 - not preserving locked state for aircraft NOT in the admin's profile
+            acNew.CopyFlags(acInAccount ?? acInDatabase);
             if (acInAccount != null)
             {
-                acNew.CopyFlags(acInAccount);
                 // Issue #1055 - preserve existing templates.
                 acNew.DefaultTemplates.Clear();
                 foreach (int idtemplate in acExisting.DefaultTemplates)

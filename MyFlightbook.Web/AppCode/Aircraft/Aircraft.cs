@@ -755,7 +755,7 @@ ORDER BY user ASC");
         public void CopyFlags(Aircraft ac)
         {
             if (ac == null)
-                throw new ArgumentNullException(nameof(ac));
+                return;
             Flags = ac.Flags;
             IsLocked = ac.IsLocked; // issue #1401 - locked isn't being preserved.
         }
