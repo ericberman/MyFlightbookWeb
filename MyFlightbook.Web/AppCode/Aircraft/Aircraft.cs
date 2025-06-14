@@ -2301,7 +2301,7 @@ ORDER BY user ASC");
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>", 
                 rblGroup, RoleForPilot == PilotRole.None ? "checked" : string.Empty, AircraftID, PilotRole.None, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleNone));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
-                rblGroup, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleCFI));
+                rblGroup, RoleForPilot == PilotRole.CFI ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleCFI));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" id=\"{1}\" {2} onclick=\"javascript: setRole({3}, '{4}', $('#{5}')[0].checked, $('#{5}')[0])\" />{6}</label></div>", 
                 rblGroup,  idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePIC));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"margin-left: 2em;\"><label><input type=\"checkbox\" {0} id=\"{1}\" onclick=\"javascript: $('#{2}')[0].click();\" />{3}</label></div>", CopyPICNameWithCrossfill ? "checked" : string.Empty, idCKAddName, idRBPIC, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePICName));
@@ -3528,6 +3528,8 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
         private int iColPrivatenotes = -1; // column index for private notes
         private int iColFrequentlyUsed = -1; // column index for frequently used
         private int iColAircraftID = -1; // column index for aircraft ID
+        private int iColRole = -1;  // column index for the aircraft's role
+        private int iColCopyPIC = -1;   // column index for the yes/no field to copy name-of-pic
         #endregion
 
         #region Subsets of matches
@@ -3636,6 +3638,10 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                     iColFrequentlyUsed = i;
                 if (rgszRow[i].CompareCurrentCultureIgnoreCase("Aircraft ID") == 0)
                     iColAircraftID = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Autofill") == 0)
+                    iColRole = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("FillPICName") == 0)
+                    iColCopyPIC = i;
             }
 
             if (iColTail < 0)
@@ -3691,6 +3697,21 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                                     {
                                         fChanged = fChanged || ac.PrivateNotes.CompareCurrentCultureIgnoreCase(rgszRow[iColPrivatenotes]) != 0;
                                         ac.PrivateNotes = rgszRow[iColPrivatenotes];
+                                    }
+
+                                    if (iColRole >= 0 && Enum.TryParse(rgszRow[iColRole], true, out Aircraft.PilotRole role))
+                                    {
+                                        fChanged = fChanged || role != ac.RoleForPilot;
+                                        ac.RoleForPilot = role;
+                                        if (role != Aircraft.PilotRole.PIC)
+                                            ac.CopyPICNameWithCrossfill = false;
+                                    }
+
+                                    if (iColCopyPIC >= 0)
+                                    {
+                                        bool newVal = ac.RoleForPilot == Aircraft.PilotRole.PIC && rgszRow[iColCopyPIC].SafeParseBoolean();
+                                        fChanged = fChanged || ac.CopyPICNameWithCrossfill != newVal;
+                                        ac.CopyPICNameWithCrossfill = newVal;
                                     }
 
                                     if (fChanged)

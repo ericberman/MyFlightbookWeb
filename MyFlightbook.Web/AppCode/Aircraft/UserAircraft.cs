@@ -489,6 +489,8 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
             dt.Columns.Add(new DataColumn("Hours", typeof(string)));
             dt.Columns.Add(new DataColumn("First Flight", typeof(string)));
             dt.Columns.Add(new DataColumn("LastFlight", typeof(string)));
+            dt.Columns.Add(new DataColumn("Autofill", typeof(string)));
+            dt.Columns.Add(new DataColumn("FillPICName", typeof(string)));
 
             foreach (Aircraft ac in lst)
             {
@@ -526,13 +528,15 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 dr[27] = ac.LastNewEngine.FormatDecimal(false);
                 dr[28] = ac.RegistrationDue.YMDString();
                 dr[29] = Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(User, ac.AircraftID);
-                dr[30] = ac.HideFromSelection ? string.Empty : "yes";
+                dr[30] = (!ac.HideFromSelection).FormatBooleanInt();
                 dr[31] = ac.PublicNotes;
                 dr[32] = ac.PrivateNotes;
                 dr[33] = ac.Stats.UserFlights;
                 dr[34] = ac.Stats.Hours.FormatDecimal(false);
                 dr[35] = ac.Stats.EarliestDate.HasValue ? ac.Stats.EarliestDate.Value.YMDString() : string.Empty;
                 dr[36] = ac.Stats.LatestDate.HasValue ? ac.Stats.LatestDate.Value.YMDString() : string.Empty;
+                dr[37] = ac.RoleForPilot.ToString();
+                dr[38] = ac.CopyPICNameWithCrossfill.FormatBooleanInt();
                 dt.Rows.Add(dr);
             }
         }

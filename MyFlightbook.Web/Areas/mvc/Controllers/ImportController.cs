@@ -151,12 +151,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                if (specs == null)
-                    throw new ArgumentNullException(nameof(specs));
-
                 IDictionary<string, AircraftImportSpec> d = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping);
 
-                foreach (AircraftImportSpec spec in specs)
+                foreach (AircraftImportSpec spec in specs ?? Array.Empty<AircraftImportSpec>())
                 {
                     try
                     {

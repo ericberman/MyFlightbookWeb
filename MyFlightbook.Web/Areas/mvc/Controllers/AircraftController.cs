@@ -1,6 +1,5 @@
 ﻿using MyFlightbook.CSV;
 using MyFlightbook.Image;
-using MyFlightbook.ImportFlights;
 using MyFlightbook.Templates;
 using Newtonsoft.Json;
 using System;
