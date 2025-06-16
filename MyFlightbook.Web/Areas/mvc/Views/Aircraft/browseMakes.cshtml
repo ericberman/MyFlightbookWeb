@@ -11,6 +11,7 @@
     var queryJSON = '@Html.Raw(Json.Encode(mq))';
 
     function getNextSet() {
+        $("#imgPrg").show();
         var params = new Object();
         params.skip = $("#resultsBody").children().length;
         params.limit = limit;
@@ -27,7 +28,9 @@
                 error: function (response) {
                     alert(response.responseText);
                 },
-                complete: function (response) { },
+                complete: function (response) {
+                    $("#imgPrg").hide();
+                },
                 success: function (response) {
                     var body = $("#resultsBody");
                     body.append(response);
@@ -160,7 +163,7 @@
     </div>
     <div style="flex:auto; text-align: right;">
         <div style="display: inline-block">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="height: 20px; width: 20px; vertical-align:middle;"  />
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="height: 20px; width: 20px; vertical-align:middle;" />
             <a href="@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/ViewModel/-1")" style="font-weight: bold">@Resources.Makes.makesAddModel</a>
         </div>
     </div>
@@ -189,3 +192,4 @@
 {
     <div style="text-align: center;">@String.Format(CultureInfo.CurrentCulture, Resources.Makes.makesPrompt, MakeModel.ModelCount())</div>
 }
+<div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" id="imgPrg" style="display:none; height: 36pt; width: 36pt;" /></div>
