@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -364,7 +364,6 @@ namespace MyFlightbook.ImportFlights.Leon
         approachType
         count }}
     }}
-    blockHours(timeInterval: {{ {0} }}, timeZoneToggle: {{ baseNid: 1, timeZone: UTC }})
   }}
 }}", timeInterval.ToString());
         }
