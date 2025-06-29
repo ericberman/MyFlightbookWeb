@@ -74,6 +74,10 @@
         <h1>@ViewBag.Title</h1>
         <div><a style="vertical-align: middle;" href="@returnLink.ToAbsolute()"><img style="vertical-align: middle; margin-right: 10px;" src="@("~/images/back.png".ToAbsolute())" />@Resources.LocalizedText.PrintViewReturnLogbook</a></div>
         <p>@Resources.LocalizedText.PrintViewDescription @Resources.LocalizedText.PrintViewPermaLink</p>
+        @using (Html.BeginForm("", ""))
+        {
+            // placeholder form so that dialog boxes can work
+        }
         <div id="divSections">
             @using (Html.BeginForm("Refresh", "Print", FormMethod.Post, new { id = "frmPrintOptions", name = "frmPrintOptions" }))
             {
