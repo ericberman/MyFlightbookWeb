@@ -1,0 +1,53 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+/* Define colors for day theme */
+
+:root {
+    --body-background: white;
+    --theme-color: #00bcd4;
+    --text-default: black;
+    --text-light: #263238;
+    --text-dim: #888888;
+    --disabled-color: gray;
+    --default-border: darkgray;
+    --sticky-header-border: #eeeeee;
+    --anchor-color: #4983B7;
+    --h1-color: black;
+    --h1-background: var(--theme-color);
+    --h2-color: #767676;
+    --table-border-color: lightgray;
+    --table-alternate-row-background: #EFEFEF;
+    --textbox-border-color: #a0a0a0;
+    --textbox-background: white;
+    --textbox-text-color: var(--text-default);
+    --entry-header-border-color: darkgray;
+    --entry-item-label-color: #263238;
+    --callout-border-color: var(--entry-header-border-color);
+    --callout-background: #EEEEEE;
+    --success-color: green;
+    --error-color: red;
+    --currency-ok: green;
+    --currency-close: blue;
+    --currency-expired: red;
+    --currency-nodate: var(--text-default);
+    --progress-complete: limegreen;
+    --progress-incomplete: #cccccc;
+    --menu-color: #263238;
+    --menu-color-selected: #263238;
+    --menu-background: #fafafa;
+    --menu-background-selected: #cdcdcd;
+    --accordion-header-background: var(--table-alternate-row-background);
+    --accordion-header-background-selected: var(--entry-header-border-color);
+    --watermark-color: gray;
+    --overridden-catclass: var(--currency-close);
+    --header-base-color: #444444;
+    --footer-text: white;
+    --box-shadow-color: rgba(0,0,0,0.75);
+    --jquery-icons: url(/logbook/Content/themes/base/images/ui-icons_444444_256x240.png);
+    --inverted-image-filter: none;
+}

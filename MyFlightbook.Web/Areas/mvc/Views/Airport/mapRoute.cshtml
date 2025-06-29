@@ -22,7 +22,7 @@
     <div>
         @Resources.Airports.MapPrompt@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mapTips", tipTextHTML = Resources.Airports.MapNavaidTip }); }
     </div>
-    <div><textarea id="txtAirports" name="Airports" style="width: 600px;" class="ui-widget-content" rows="@(Math.Min(6, Math.Max((ViewBag.Airports.Length / 70 + 1), 1)))">@ViewBag.Airports</textarea></div>
+    <div><textarea id="txtAirports" name="Airports" style="width: 600px;" rows="@(Math.Min(6, Math.Max((ViewBag.Airports.Length / 70 + 1), 2)))">@ViewBag.Airports</textarea></div>
     <div>
         <button type="submit">@Resources.Airports.MapUpdateMap</button>
         @if (ViewBag.travelingSalesman)

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps, AddBaseRef = ViewBag.AddBaseRef ?? false, NoIndex = ViewBag.NoIndex ?? false }); }
+    @{ Html.RenderAction("RenderHead", "MFBTemplate", new { Title = ViewBag.Title, UseCharting = ViewBag.UseCharting, UseMaps = ViewBag.UseMaps, AddBaseRef = ViewBag.AddBaseRef ?? false, NoIndex = ViewBag.NoIndex ?? false, AdditionalCSS = ViewBag.sheets }); }
     @if (!String.IsNullOrEmpty(ViewBag.PrintingCSS))
     {
         <link href="@VirtualPathUtility.ToAbsolute(ViewBag.PrintingCSS)" rel="Stylesheet" type="text/css" />
@@ -16,10 +16,8 @@
             <h1>@ViewBag.Title</h1>
         </div>
     }
-    <div class="topForm">
-        <div class="sidebarRight">
-            @RenderBody()
-        </div>
+    <div class="sidebarRight">
+        @RenderBody()
     </div>
     <script type="text/javascript">
             function acceptCookies() {

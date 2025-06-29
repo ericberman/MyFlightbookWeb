@@ -313,7 +313,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderHead(string Title, bool UseCharting = false, bool UseMaps = false, bool AddBaseRef = false, bool NoIndex = false)
+        public ActionResult RenderHead(string Title, bool UseCharting = false, bool UseMaps = false, bool AddBaseRef = false, bool NoIndex = false, IEnumerable<string> AdditionalCSS = null)
         {
             int idBrand = util.GetIntParam(Request, "bid", -1);
             if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
@@ -359,11 +359,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsNight = true;
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                 IsNight = false;
-            ViewBag.NightCSS = IsNight ? VirtualPathUtility.ToAbsolute(MFBConstants.BaseNightStylesheet) : string.Empty;
+            ViewBag.IsNight = IsNight;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
             ViewBag.MobileCSS = System.Web.HttpContext.Current.Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
+            ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();
             
             return PartialView("_templatehead");
         }

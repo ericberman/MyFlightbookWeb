@@ -4,7 +4,7 @@
         using (Html.BeginForm("StopImpersonation", "MFBTemplate", FormMethod.Post))
         {
             @Html.AntiForgeryToken();
-            <div style="text-align:center; background-color: beige; width:100%">
+            <div style="text-align:center; background-color: beige; color: black; width:100%">
                 User
                 @ViewBag.ImpersonatingUser is impersonating user @User.Identity.Name
                 <input type="submit" value="Stop" />

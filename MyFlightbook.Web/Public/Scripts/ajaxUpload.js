@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2023-2024 MyFlightbook LLC
+ * Copyright(c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  * Code here adapted from https://hayageek.com/drag-and-drop-file-upload-jquery/ - thanks!
  *
@@ -67,10 +67,12 @@ function ajaxFileUpload(container, options) {
             cache: false,
             data: formData,
             error: function (xhr, status, error) {
+                if (status == "abort")
+                    return;
                 if (options.onErr)
-                    options.onErr(xhr.responseText);
+                    options.onErr(xhr.responseText || error);
                 else
-                    window.alert(xhr.responseText);
+                    window.alert(xhr.responseText || error);
             },
             complete: function (response) {
                 status.setProgress(100);
@@ -126,7 +128,7 @@ function ajaxFileUpload(container, options) {
         this.filename = $("<div class='fileUploadFilename'></div>").appendTo(this.statusbar);
         this.size = $("<div class='fileUploadFileSize'></div>").appendTo(this.statusbar);
         this.abort = $("<div class='fileUploadAbort'>" + (options.abortPrompt ?? "Abort") + "</div>").appendTo(this.statusbar);
-        this.progressBar = $("<div class='fileUploadProgressBar'><div></div></div>").appendTo(this.uploadContainer);
+        this.progressBar = $("<div class='fileUploadProgressBar'><div class='bar'></div><div class='percent'></div>").appendTo(this.uploadContainer);
         this.setFileNameSize = function (name, size) {
             var sizeStr = "";
             var sizeKB = size / 1024;
@@ -141,8 +143,9 @@ function ajaxFileUpload(container, options) {
             this.size.html(sizeStr);
         }
         this.setProgress = function (progress) {
-            var progressBarWidth = progress * this.progressBar.width() / 100;
-            this.progressBar.find('div').animate({ width: progressBarWidth }, 10).html(progress + "% ");
+            var perc = progress + "%";
+            this.progressBar.find('.percent').text(perc);
+            this.progressBar.find('.bar').animate({ width: perc}, 500);
             if (parseInt(progress) >= 100) {
                 this.abort.hide();
                 this.progressBar.hide();

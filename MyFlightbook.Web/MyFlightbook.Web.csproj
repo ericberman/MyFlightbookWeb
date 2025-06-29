@@ -565,6 +565,7 @@
     <Content Include="images\BadgeOverlays\trend.png" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
+    <Content Include="images\hold.gif" />
     <Content Include="images\home8710.png" />
     <Content Include="images\homeBackup.png" />
     <Content Include="images\homeCurrency.png" />
@@ -754,7 +755,9 @@
     <Content Include="images\xml.gif" />
     <Content Include="images\zip_med.png" />
     <Content Include="Member\Ajax.asmx" />
+    <Content Include="Public\CSS\day.css" />
     <Content Include="Public\CSS\jquery.passwordRequirements.css" />
+    <Content Include="Public\CSS\night.css" />
     <Content Include="Public\CSS\printAirline.css" />
     <Content Include="Public\CSS\printHongKong.css" />
     <Content Include="Public\Scripts\accordionproxy.js" />
@@ -1322,7 +1325,6 @@
     <Content Include="Public\CSS\jqueryuimods.css" />
     <Content Include="Public\CSS\mfbheader.css" />
     <Content Include="Public\CSS\MobileSheet.css" />
-    <Content Include="Public\CSS\NightMode.css" />
     <Content Include="Public\CSS\print2Page.css" />
     <Content Include="Public\CSS\printCanada.css" />
     <Content Include="Public\CSS\printCASA.css" />
@@ -2270,9 +2272,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_LocalResources\DefaultMini.aspx.resx" />
-  </ItemGroup>
-  <ItemGroup>
+    <Folder Include="App_LocalResources\" />
     <Folder Include="Areas\mvc\Data\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />

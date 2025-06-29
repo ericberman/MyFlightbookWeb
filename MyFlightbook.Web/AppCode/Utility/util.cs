@@ -64,16 +64,16 @@ namespace MyFlightbook
 
         public const string keySessLastNewFlight = "sessNewFlightID";
 
-        private const int StyleSheetVer = 63;
+        public const int StyleSheetVer = 64;
 
         public static string BaseStylesheet
         {
             get { return String.Format(CultureInfo.InvariantCulture, "~/Public/stylesheet.css?v={0}", StyleSheetVer); }
         }
 
-        public static string BaseNightStylesheet
+        public static string BaseCssVars(bool isNight)
         {
-            get { return String.Format(CultureInfo.InvariantCulture, "~/Public/CSS/NightMode.css?v=fjed{0}", StyleSheetVer); }
+            return String.Format(CultureInfo.InvariantCulture, isNight ? "~/public/css/night.css?v=fdn{0}" : "~/public/css/day.css?v=fdn{0}", StyleSheetVer).ToAbsolute();
         }
     }
 

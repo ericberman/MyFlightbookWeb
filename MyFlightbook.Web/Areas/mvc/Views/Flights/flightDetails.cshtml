@@ -155,7 +155,7 @@
             <td>
                 <p>
                     <span style="font-weight: bold; font-size: larger">@led.Date.ToShortDateString()</span> @led.TailNumDisplay
-                    <span class="@(led.IsOverridden ? "ExceptionData" : string.Empty)" title="@(led.IsOverridden ? Resources.LogbookEntry.LogbookAltCatClassTooltip : string.Empty)">(@led.CatClassDisplay)</span>
+                    <span class="@(led.IsOverridden ? "overriddenCatClass" : string.Empty)" title="@(led.IsOverridden ? Resources.LogbookEntry.LogbookAltCatClassTooltip : string.Empty)">(@led.CatClassDisplay)</span>
                     <span style="font-weight: bold;">@led.Route.ToUpper(CultureInfo.CurrentCulture)</span>
                     <span style="white-space:pre-line" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
                 </p>

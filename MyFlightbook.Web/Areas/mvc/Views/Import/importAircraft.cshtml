@@ -5,7 +5,7 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript" src="@("~/Public/Scripts/import.js?v=2".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=10".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=11".ToAbsolute())"></script>
 <script type="text/javascript">
     function modelCommitted(m) {
         $(".expandoATD")[0].click();
@@ -165,7 +165,7 @@ N6789,B777
                 @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddModel", labelClass= "expandoATD" }); }
             </span>
         </p>
-        <div id="divAddModel" class="logbookForm" style="display: none; padding: 5px; border: 1px solid gray;">
+        <div id="divAddModel" class="callout" style="display: none; width: unset;">
             @{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = MakeModel.UnknownModel, onCommitFunc = "modelCommitted" }); }
         </div>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftFinishTip.Linkify())</p>

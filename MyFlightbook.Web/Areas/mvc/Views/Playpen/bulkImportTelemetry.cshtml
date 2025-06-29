@@ -7,7 +7,7 @@
     Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
     TimeZoneInfo tzi = pf.PreferredTimeZone;
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=10")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=11")"></script>
 <h2>@Resources.FlightData.ImportHeaderBulkUpload</h2>
 <div>@Resources.FlightData.ImportBulkUploadDescription</div>
 @using (Html.BeginForm("ImportTelemetry", "PlayPen", FormMethod.Post))

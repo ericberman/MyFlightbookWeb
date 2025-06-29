@@ -30,6 +30,40 @@
     src: url('Fonts/roboto.bold.ttf') format('opentype')
 }
 
+/* Shorthand for common inline styles */
+.b {
+    font-weight: bold;
+}
+
+.i {
+    font-style: italic;
+}
+
+.l {
+    font-size: larger;
+}
+
+.c {
+    text-align: center;
+}
+
+.hc {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.largeBold {
+    font-weight: bold;
+    font-size: larger;
+}
+
+.imgMiddle {
+    vertical-align: middle;
+}
+
+.lightText {
+    color: var(--text-light);
+}
 
 /* Basic HTML */
 .mfbDefault {
@@ -56,19 +90,20 @@ BODY, body {
     padding-right: 5px;
     padding-top: 0px;
     padding-bottom: 5px;
+    color: var(--text-default);
+    background-color: var(--body-background) !important;
 }
 
 TABLE, table {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-H1
-{
+h1 {
     font-size: 14pt;
     font-weight: bold;
-    color: black;
+    color: var(--h1-color);
     width: 100%;
-    background-color: #00bcd4;
+    background-color: var(--h1-background);
     padding: 4px;
     text-align: center;
     margin: 0px;
@@ -77,22 +112,23 @@ H1
     box-sizing: border-box; /* Opera/IE 8+ */
 }
 
-H2 {
+h2 {
     font-size: 12pt;
     font-weight: bold;
-    color: #767676;
+    color: var(--h2-color);
 }
-H3
+
+h3
 {
     font-size: 10pt;
     font-weight: bold;
-    color: Black;
+    color: var(--text-default);
 }
-H4
-{
+
+h4 {
     font-size: 10pt;
     font-weight: normal;
-    color: Black;
+    color: var(--text-default);
 }
 
 /* Centered body */
@@ -102,31 +138,50 @@ H4
     margin-right: auto;
 }
 
-input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea {
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea, select {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border-radius: 5px;
-    border: 1px solid #a0a0a0;
+    border: 1px solid var(--textbox-border-color);
+    background-color: var(--textbox-background);
+    color: var(--textbox-text-color);
+}
+
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea {
     padding: 2px;
 }
 
-input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea, select {
-    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+input[type=text].noselect {
+    background-color: var(--body-background);
+    color: var(--text-default);
 }
+
+input[type=text]::placeholder {
+    color: var(--watermark-color);
+}
+
+    input[type=text].noselect::placeholder {
+        color: var(--watermark-color);
+    }
 
 /* Data entry form */
 .header {
     font-weight: bold;
-    color: #263238;
-    border-bottom: 1px solid darkgray;
+    color: var(--entry-item-label-color);
+    border-bottom: 1px solid var(--entry-header-border-color);
     margin-bottom: 2px;
 }
 .itemlabel {
     font-size: 9pt;
-    color: /* #00bcd4 */ #263238;
+    color: var(--entry-item-label-color);
 }
 
-.logbookForm
-{
-    background-color: white;
+/* "Please Read" callout or similar */
+.callout {
+    border: 1px solid var(--default-border);
+    background-color: var(--callout-background);
+    padding: 3pt;
+    margin: 3pt;
+    width: 600px;
 }
 
 .calloutSponsor {
@@ -139,16 +194,16 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
 .calloutSmall {
     margin: 5px 10px 5px 10px;
     padding: 5px;
-    border: 1px solid gray;
+    border: 1px solid var(--callout-border-color);
     border-radius: 5px;
 }
 
 .calloutBackground {
-    background-color: #EEEEEE
+    background-color: var(--callout-background);
 }
 
 .shadowed {
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 .hint
@@ -160,14 +215,13 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
 }
 
 .hintPopup {
-    border: 1px solid darkgray;
     border-radius: 5px;
     padding: 5px;
     margin: 3px;
     max-width: 50%;
     display: none;
-    background-color: #e7e7e7;
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    background-color: var(--callout-background);
+    box-shadow: 2px 2px 2px 0px var(--box-shadow-color);
 }
 
 /* Vertical form (e.g., Edit Make) */
@@ -210,32 +264,30 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
 }
 
 /* Error/success messages messages */
-.success
-{
+.success {
     font-weight: bold;
-    color: Green;
+    color: var(--success-color);
 }
-.ok
-{
+.ok {
     font-weight: normal;
-    color: Green;
+    color: var(--success-color);
 }
 
 .error
 {
     font-weight: bold;
-    color: Red;
+    color: var(--error-color);
 }
 
 .errorCallout {
     position: absolute;
     z-index: 1000;
-    border: 1px solid red;
+    border: 1px solid var(--error-color);
     padding: 5px;
-    color: red;
-    background-color: white;
+    color: var(--error-color);
+    background-color: var(--textbox-background);
     border-radius: 5pt;
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px var(--box-shadow-color);
     margin-top: 4pt;
     margin-left: 1.5em;
 }
@@ -248,18 +300,14 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
     border-top: 0;
     border-right: 10px solid transparent;
     border-left: 10px solid transparent;
-    border-bottom: 10px solid red;
+    border-bottom: 10px solid var(--error-color);
     padding: 0;
     width: 0;
     height: 0;
 }
 
 input[type=text].errorItem, input[type=password].errorItem, input[type=number].errorItem, input[type=email].errorItem, input[type=date].errorItem, textarea.errorItem, select.errorItem {
-    border-color: red;
-}
-
-.emphasis {
-    font-weight: bold;
+    border-color: var(--error-color);
 }
 
 /* Currency status */
@@ -276,51 +324,51 @@ input[type=text].errorItem, input[type=password].errorItem, input[type=number].e
 .currencyok
 {
     font-weight: normal;
-    color: Green;
+    color: var(--currency-ok);
     font-size: 10pt;
 }
 .currencynearlydue
 {
     font-weight: bold;
-    color: Blue;
+    color: var(--currency-close);
     font-size: 10pt;
 }
 .currencyexpired
 {
     font-weight: bold;
-    color: Red;
+    color: var(--currency-expired);
     font-size: 10pt;
 }
 
 .currencynodate 
 {
     font-weight: bold;
-    color: black;
+    color: var(--currency-nodate);
     font-size: 10pt;
 }
 
 /* Signature status */
 .signatureValid
 {
-    color: Green;
+    color: var(--success-color);
 }
 .signatureInvalid
 {
-    color:Red;
+    color:var(--error-color);
 }
 
 .signatureBlock {
-    border: 1px double #DDDDDD;
+    border: 1px double var(--callout-border-color);
     border-radius: 5px;
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    background-color: #F8F8f8;
+    box-shadow: 2px 2px 2px 0px var(--box-shadow-color);
+    background-color: var(--callout-background);
     margin: 3px;
     padding: 3px;
     display: inline-block;
 }
 
 .bordered .signatureBlock tr td {
-    background-color: #F8F8F8;
+    background-color: var(--callout-background);
     border: none;
 }
 
@@ -335,12 +383,6 @@ input[type=text].errorItem, input[type=password].errorItem, input[type=number].e
     font-size: smaller;
     text-indent: 0;
     text-align: left;
-}
-.task
-{
-    background-color: #C0C0C0;
-    font-weight: bold;
-    text-align: center;
 }
 
 /* Logbook rows */
@@ -396,14 +438,14 @@ input[type=text].errorItem, input[type=password].errorItem, input[type=number].e
     font-weight: bold;
     width: 6em;
     padding: 3px;
-    border-right: 1px solid lightgray;
+    border-right: 1px solid var(--table-border-color);
 }
 
 tr.totalsGroupHeaderRow {
     text-align: center;
     font-weight: bold;
-    border-bottom: 1px solid lightgray;
-    border-top: 1px solid lightgray;
+    border-bottom: 1px solid var(--table-border-color);
+    border-top: 1px solid var(--table-border-color);
 }
 
 tr.totalsGroupHeaderRow td {
@@ -419,15 +461,15 @@ tr.totalsGroupRow td {
 }
 
 tr.totalsGroupRow:last-child {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 td.totalsByTimeCell:nth-child(even) {
-    background-color: #EFEFEF;
+    background-color: var(--table-alternate-row-background);
 }
 
 tr.totalsGroupDateRanges, tr.totalsGroupRow {
-    border-left: 1px solid lightgray;
+    border-left: 1px solid var(--table-border-color);
 }
 
 tr.totalsGroupRow td {
@@ -435,37 +477,30 @@ tr.totalsGroupRow td {
     padding-right: 3pt;
 }
 
-.totalsDescription {
-
-}
-
 .totalsDateRange {
     padding-top: 6pt;
     font-weight: bold;
     text-align: center;
     background-color: none;
-    border-bottom: 1px solid lightgray;
-}
-
-td.totalsByTimeCell:nth-child(even) {
-    background-color: #EFEFEF;
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 td.totalsDateRange:last-of-type {
-    border-right: 1px solid lightgray;
+    border-right: 1px solid var(--table-border-color);
 }
 
 /* Autocomplete AJAX.  Insert Training uses "autoInsertxxx */
 .AutoExtender, .autoInsertItems {
     font-weight: normal;
     font-size: smaller;
-    border: solid 1px #006699;
+    border: solid 1px var(--callout-border-color);
     line-height: 20px;
     list-style-type: none;
-    background-color: #e7e7e7;
+    background-color: var(--menu-background);
+    color: var(--menu-color);
     border-radius: 5px;
-    padding: 3px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    padding: 3pt;
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 .autoInsertItems {
@@ -479,15 +514,14 @@ td.totalsDateRange:last-of-type {
 
 .AutoExtenderList, .autoInsertItem
 {
-    border-bottom: dotted 1px #006699;
+    border-bottom: dotted 1px var(--table-border-color);
     cursor: pointer;
-    color: Maroon;
     list-style-type: none;
 }
 
 .AutoExtenderHighlight, .autoInsertItem:hover {
-    color: White;
-    background-color: #006699;
+    color: var(--menu-color-selected);
+    background-color: var(--menu-background-selected);
     cursor: pointer;
     list-style-type: none;
 }
@@ -496,10 +530,15 @@ td.totalsDateRange:last-of-type {
     border-bottom: none;
 }
 
-/* Charting */
-.ttip {
-    padding: 2px;
-}
+    .ui-state-active:hover, .ui-state-focus:hover {
+        color: var(--menu-color-selected);
+        background-color: var(--menu-background-selected);
+    }
+
+    /* Charting */
+    .ttip {
+        padding: 2px;
+    }
 
 .dataVal {
     font-weight: bold;
@@ -516,31 +555,31 @@ td.totalsDateRange:last-of-type {
 .accordianHeader {
     font-weight: bold;
     line-height: 24pt;
-    background-color: #e8e8e8;
+    background-color: var(--accordion-header-background);
     padding: 4px 4px 4px 10px;
     margin-top: 8px;
-    border: 1px solid gray;
+    border: 1px solid var(--accordion-header-background-selected);
     border-radius: 7px;
 }
 
 .accordianHeaderSelected {
     font-weight: bold;
     line-height: 24pt;
-    background-color: darkgray;
+    background-color: var(--accordion-header-background-selected);
     padding: 4px 4px 4px 10px;
     margin-top: 8px;
-    border-top: 1px solid gray;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
+    border-top: 1px solid var(--accordion-header-background-selected);
+    border-left: 1px solid var(--accordion-header-background-selected);
+    border-right: 1px solid var(--accordion-header-background-selected);
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
 }
 
 .accordianContent {
     padding: 3px;
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
+    border-bottom: 1px solid var(--accordion-header-background-selected);
+    border-left: 1px solid var(--accordion-header-background-selected);
+    border-right: 1px solid var(--accordion-header-background-selected);
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
 }
@@ -570,32 +609,29 @@ td.totalsDateRange:last-of-type {
 
 .accordionMenuContent {
     padding: 4px 4px 4px 10px;
-    background-color: white;
+    background-color: var(--body-background);
     position: static;
-    border: black 1px solid;
+    border: 1px solid var(--default-border);
     margin: 15px;
-    border-bottom-left-radius: 7px; 
-    border-bottom-right-radius: 7px; 
-    border-top-left-radius: 7px; 
-    border-top-right-radius: 7px;
+    border-radius: 7px;
 }
 
 .accordionMenuControllerUnselected {
-    display:inline-block;
+    display: inline-block;
     font-size: smaller;
     line-height: 18pt;
-    padding:3px;
-    width:80px;
+    padding: 3px;
+    width: 80px;
     margin: 2px;
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-    border-top: 1px solid gray;
+    border-bottom: 1px solid var(--default-border);
+    border-left: 1px solid var(--default-border);
+    border-right: 1px solid var(--default-border);
+    border-top: 1px solid var(--default-border);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    background-color: snow;
+    background-color: var(--accordion-header-background);
     text-align: center;
     font-weight: normal;
     cursor: pointer;
@@ -608,15 +644,9 @@ td.totalsDateRange:last-of-type {
     padding: 3px;
     width: 80px;
     margin: 2px;
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-    border-top: 1px solid gray;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    background-color: lightgray;
+    border: 1px solid var(--default-border);
+    border-radius: 4px;
+    background-color: var(--accordion-header-background-selected);
     text-align: center;
     font-weight: bold;
     cursor: pointer;
@@ -628,22 +658,22 @@ td.totalsDateRange:last-of-type {
     margin-right: auto;
     margin-top: 2px;
     margin-bottom: 2px;
-    background-color: #EEEEEE;
-    border: 1px solid gray;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    background-color: var(--callout-background);
+    border: 1px solid var(--default-border);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 .accordionEnhanced {
-    border: 1px solid black;
+    border: 1px solid var(--default-border);
     font-weight: bold;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 /* Accordion from jQuery-UI */
 .ui-accordion, .ui-accordion h3 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 10pt !important;
-    color: black;
+    color: var(--text-default);
 }
 
 .ui-accordion h3 {
@@ -657,14 +687,14 @@ td.totalsDateRange:last-of-type {
 
 .ui-accordion .ui-accordion-header {
     background: none;
-    background-color: #e8e8e8;
+    background-color: var(--accordion-header-background);
     margin-top: 8px;
     padding: 4px 4px 4px 10px;
 }
 
 .ui-accordion .ui-accordion-header-active {
     background: none;
-    background-color: darkgray;
+    background-color: var(--accordion-header-background-selected);
     border-bottom: none;
     margin-top: 8px;
     padding: 4px 4px 4px 10px;
@@ -678,59 +708,13 @@ td.totalsDateRange:last-of-type {
     font-size: 9pt;
 }
 
-/* aircraft and flight pictures popup */
-.rollAble
-{
-    color: #4983B7;
-}
-
-.rollAble:hover
-{
-    color: black;
-    font-weight: bold;
-}
-
-.modalBackground {
-    background-color: Gray;
-    opacity: 0.7;
-}
-
 .modalpopup {
-    background-color: white;
+    background-color: var(--body-background);
     min-width: 300px;
     padding: 15px;
-    border: 1px solid gray;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    border: 1px solid var(--default-border);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
     border-radius: 5px;
-}
-
-.searchHit
-{
-    background-color:Yellow;
-}
-
-/* Combo-box typeahead prompt */
-.typeAhead
-{
-    border-right: black 1px solid;
-    border-top: black 1px solid;
-    font-weight: bold;
-    visibility: visible;
-    border-left: black 1px solid;
-    border-bottom: black 1px solid;
-    background-color: #cccc66;
-    z-index: 8;
-    position: absolute;
-}
-
-/* "Please Read" callout or similar */
-.callout
-{
-    border: 1px solid darkgray;
-    background-color: #DDDDDD;
-    padding: 3px;
-    margin: 3px;
-    width: 600px;
 }
 
 .endorsementEdit {
@@ -740,44 +724,16 @@ td.totalsDateRange:last-of-type {
 
 .endorsement {
     width: 600px;
-    background-color: #CCCCCC;
-    border: 1px solid black;
+    background-color: var(--callout-background);
+    border: 1px solid var(--default-border);
     border-radius: 5px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
     page-break-inside: avoid;
 }
 
-/* Watermark */
-.watermark
-{
-    color: Gray;
-}
-
 /* Sidebar UI */
-.topForm
-{
-    background-color: white;
-    padding: 5px;
-}
-
-.sidebarContainer
-{
-    background-color:White;
-}
-
-.sidebarLeft
-{
-    width: 150px;
-    display:inline-block;
-    vertical-align:top;
-    margin: 0px;
-    height:100%;
-    background-color:white;
-}
-
 .sidebarRight
 {
-    background-color: white;
     padding: 5px;
     display: block;
     height: 100%;
@@ -788,64 +744,16 @@ td.totalsDateRange:last-of-type {
     margin-right: auto;
 }
 
-.sidebarSelected {
-    line-height: 40px;
-    display: block;
-    margin: 3px;
-    padding: 3px;
-    background-color: #cdcdcd;
-    font-family: roboto_bold;
-    font-weight: normal;
-    font-size: 10pt;
-    border: 1px solid #aaaaaa;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    height: 40px;
-    text-align: center;
-}
-
-.sidebarUnSelected {
-    line-height: 40px;
-    display: block;
-    margin: 3px;
-    padding: 3px;
-    background-color: white;
-    font-family: roboto_bold;
-    font-weight: normal;
-    font-size: 10pt;
-    height: 40px;
-    border: 1px solid #aaaaaa;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    text-align: center;
-}
-
-td.sidebarUnSelected a, td.sidebarUnSelected a:visited, td.sidebarUnSelected a:link, td.sidebarUnSelected a:active
-{
-    text-decoration: none;
-    color: #4983B7;
-}
-
-td.sidebarUnSelected:hover, td.sidebarUnSelected a:hover
-{
-    color: Black;
-    text-decoration: underline;
-}
-
-a, a:visited
-{
+a, a:visited {
     outline: none;
     text-decoration: none;
-    color: #4983B7;
+    color: var(--anchor-color);
 }
 
-a:hover
-{
-    outline:none;
+a:hover {
+    outline: none;
     text-decoration: underline;
-    color: Black;
+    color: var(--anchor-color);
 }
 
 a img
@@ -895,7 +803,7 @@ a img
 
 /* item labels in both left and right times */
 .itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel {
-    padding: 0px, 0px, 0px, 0px;
+    padding: 0;
     display: block;
 }
 
@@ -923,41 +831,21 @@ a img
     max-height: 200px;
 }
 
-.propItemContainerOverflow
-{
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    width: 600px;
-    height: 200px;
-    padding: 3px;
-}
-
-.EntryBlock
-{
-    padding: 4px;
-    background-color: white;
-    position: static;
-    border: black 1px solid;
-    margin: 15px;
-}
-
 /* Data that we want to call out */
-.ExceptionData
-{
-    font-weight:bold;
-    color: Blue;
+.overriddenCatClass {
+    font-weight: bold;
+    color: var(--overridden-catclass);
 }
 
 /* 8710 Form */
 .PaddedCell {
     padding: 3px;
-    border: 1px solid lightgray;
+    border: 1px solid var(--default-border);
 }
 
-.PaddedCell:nth-child(even) {
-    background-color: #EFEFEF;
-}
+    .PaddedCell:nth-child(even) {
+        background-color: var(--table-alternate-row-background);
+    }
 
 .FootNote
 {
@@ -983,15 +871,15 @@ table.modelRollup tbody tr:last-child {
 /* Logbook gridview header */
 .headerBase {
     font-weight: normal;
-    color: #444444;
+    color: var(--header-base-color);
 }
 
-.headerBase a {
-    color: #444444;
-}
+    .headerBase a {
+        color: var(--header-base-color);
+    }
 
 .headerBase a:hover {
-    color:#4983B7;
+    color:var(--anchor-color);
     text-decoration:none;
 }
 
@@ -1015,22 +903,20 @@ table.modelRollup tbody tr:last-child {
 .wizStepCompleted
 {
     font-weight:normal;
-    color:Gray;
+    color: var(--disabled-color);
     font-size: 14pt;
 }
 
 .wizStepInProgress
 {
     font-weight:bold;
-    color:#4983B7;
     font-size: 14pt;
 }
 
-.wizStepFuture
-{
-    font-weight:normal;
-    color:Black;
+.wizStepFuture {
+    font-weight: normal;
     font-size: 14pt;
+    color: var(--entry-item-label-color);
 }
 
 /* next steps bullet */
@@ -1051,13 +937,12 @@ ul.nextStep li {
     margin-right: auto;
     margin-top: 5px;
     width: 100%;
-    border-top: 12px solid #07afb9;
-    background-color: #263238;
-    color: white;
+    border-top: 5pt solid var(--theme-color);
+    background-color: var(--menu-color);
+    color: var(--footer-text);
     font-weight: normal;
     font-family: roboto_bold;
     font-size: 9pt;
-    border-top: 10px solid #07a5b9;
 }
 
 .footerItem
@@ -1078,7 +963,7 @@ ul.nextStep li {
 }
 
 .footerContainer a, footerContainer a:visited, footerContainer a:hover {
-    color: white;
+    color: var(--footer-text);
 }
 
 /* Data entry form tables */
@@ -1093,30 +978,6 @@ td.label
     vertical-align: middle;
 }
 
-/* Data Description tables */
-table.dataDescription
-{
-    border-collapse: collapse;
-}
-
-table.dataDescription tbody tr td
-{
-    border: 1px solid black;
-}
-
-table.dataDescription thead tr td
-{
-    background: #CCCCCC;
-    font-weight:bold;
-    border: 1px solid black;
-}
-
-/* Public flight row */
-.publicFlight
-{
-    border-top: 1px solid #CCCCCC;
-}
-
 /* Filter items for a flight query */
 .queryFilterItem {
     display:inline-block; 
@@ -1125,14 +986,15 @@ table.dataDescription thead tr td
     padding: 3px; 
     vertical-align:middle; 
     margin:2px; 
-    border: 1px solid gray; 
-    background: #DDDDDD;
+    border: 1px solid var(--default-border); 
+    background: var(--callout-background);
 }
 
 /* Progress towards ratings */
 .progress {
     width: 500px; 
-    border: 1px solid black; 
+    border: 1px solid var(--default-border); 
+    margin-top: 3pt;
     position: relative; 
     height: 20px;
     padding: 3px;
@@ -1142,7 +1004,7 @@ table.dataDescription thead tr td
 {
     width: 40px;
     height: 40px;
-    border: 1px solid black;
+    border: 2px solid var(--default-border);
     text-align: center;
     vertical-align: middle;
     font-size: 30px;
@@ -1162,21 +1024,30 @@ table.dataDescription thead tr td
     height:20px;
     line-height: 20px;
     display:inline-block;
+    margin-bottom: 5pt;
 }
 
 .progressRow {
     vertical-align: top;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 5pt;
+    padding-bottom: 5pt;
     page-break-inside: avoid;
 }
 
 .bar 
 {
-    margin: 0px 0px 0px 0px;
-    left:0px;
-    top:0px;
+    margin: 0;
+    left:0;
+    top:0;
     height: 20px;
+}
+
+.progressCompleted {
+    background-color: var(--progress-complete);
+}
+
+.progressNotCompleted {
+    background-color: var(--progress-incomplete)
 }
 
 /* Image List item */
@@ -1235,12 +1106,6 @@ table.dataDescription thead tr td
     margin-bottom: 10px;
 }
 
-/* Ajax */
-.ajax__html_editor_extender_texteditor
-{
-    background-color:White;
-}
-
 /* Calendaring */
 .calContainer
 {
@@ -1262,6 +1127,11 @@ table.dataDescription thead tr td
     float:left; width:600px; padding: 4px;
 }
 
+.calendar_default_rowheader {
+    color: var(--menu-color-selected);
+    background-color: var(--menu-background-selected);
+}
+
 /* Club */
 .clubContainer {
     width: 90%;
@@ -1276,7 +1146,7 @@ table.dataDescription thead tr td
 .clubHeader {
     font-weight: bold;
     padding: 5px;
-    background-color: lightgray;
+    background-color: var(--callout-background);
     margin-top: 5pt;
     margin-bottom: 5pt;
 }
@@ -1296,15 +1166,16 @@ table.dataDescription thead tr td
     margin-left: 8px;
     margin-bottom: 4px;
     width: 50%;
-    max-width: 240px;
-    border: 1px solid black;
-    background-color: white;
+    max-width: 30em;
+    padding: 5pt;
+    border: 1px solid var(--callout-border-color);
+    background-color: var(--callout-background);
     border-radius: 6px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 .clubCFI {
-    background-color: lightgrey;
+    background-color: var(--callout-background);
     font-weight: bold;
     border-radius: 5px;
     padding: 5px;
@@ -1312,11 +1183,11 @@ table.dataDescription thead tr td
 
 .clubMemberRow, .clubMemberAlternateRow {
     vertical-align: middle;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 .clubMemberAlternateRow {
-    background-color: #eeeeee;
+    background-color: var(--table-alternate-row-background);
 }
 
 .clubMemberRow:nth-last-child(1), .clubMemberAlternateRow:nth-last-child(1) {
@@ -1341,69 +1212,85 @@ table.tblAvailablityMap th.dateHeader {
     font-weight:bold;
 }
 
-table.tblAvailablityMap th.timeHeader {
-    text-align: left;
-    border: 1px solid #CCCCCC;
-}
+    table.tblAvailablityMap th.timeHeader {
+        text-align: left;
+        border: 1px solid var(--textbox-border-color);
+    }
 
 .avmResource {
     font-weight: bold;
 }
 
 .avmAvail {
-    background-color: unset;
-    border-top: 1px solid #CCCCCC;
-    border-bottom: 1px solid #CCCCCC;
-    border-left: 1px solid #CCCCCC;
+    border-top: 1px solid var(--textbox-border-color);
+    border-bottom: 1px solid var(--textbox-border-color);
+    border-left: 2px solid var(--textbox-border-color);
     margin-bottom: 1px;
     margin-top: 1px;
     width: 15px !important;
 }
 
 .avmBusy {
-    background-color: #888888;
-    border-top: 1px solid #CCCCCC;
-    border-bottom: 1px solid #CCCCCC;
+    background-color: var(--disabled-color);
+    border-top: 1px solid var(--textbox-border-color);
+    border-bottom: 1px solid var(--textbox-border-color);
     margin-bottom: 1px;
     margin-top: 1px;
     width: 15px !important;
 }
 
 .avmSubHour {
-    border-left: 1px solid #E6E6E6;
+    border-left: 2px solid var(--textbox-border-color);
 }
 
-.avmSubHour:last-child, .avmBusy:last-child {
-    border-right: 1px solid #CCCCCC;
-}
+    .avmSubHour:last-child, .avmBusy:last-child {
+        border-right: 2px solid var(--textbox-border-color);
+    }
 
 .avmBusy:nth-child(2) {
-    border-left: 1px solid #CCCCCC;
+    border-left: 2px solid var(--textbox-border-color);
 }
 
 /* Drag & drop */
 .draggableItem {
-    padding-left: 4px;
+    padding-left: 20px;
     padding-right: 4px;
     height: 16px;
     line-height: 16px;
     margin: 4px;
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--default-border);
     white-space: nowrap;
     vertical-align: middle;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
-    border-left: 20px solid gray;
-    border-right: 1px solid gray;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
+    background-color: var(--body-background);
+    color: var(--text-default);
     cursor: move;
     display: block;
     min-width: 150px;
 }
 
+.draggableItem::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: var(--jquery-icons);
+    background-position: 0px -224px;
+    background-repeat: no-repeat;
+    background-size: auto;
+    pointer-events: none;
+}
+
 .dragTarget {
     overflow-y:scroll;
     height: 136px;
-    border: 1px solid black;
+    border: 1px solid var(--default-border);
 }
 
 /* Resize handle*/
@@ -1432,8 +1319,8 @@ table.tblAvailablityMap th.timeHeader {
     margin-top: 5px;
     margin-bottom: 15px;
     text-align: center;
-    background-color: #eeeeee;
-    border: 1px solid darkgray;
+    background-color: var(--callout-background);
+    border: 1px solid var(--callout-border-color);
     border-radius: 6px;
 }
 
@@ -1444,7 +1331,7 @@ table.tblAvailablityMap th.timeHeader {
     margin-top: 5px;
     margin-bottom: 5px;
     width: 90%;
-    border: 1px solid gray;
+    border: 1px solid var(--default-border);
     border-radius: 5px;
 }
 
@@ -1456,20 +1343,7 @@ table.tblAvailablityMap th.timeHeader {
     max-width: 350px;
 }
 
-#signIn.welcomeHeader {
-    display: inline-block;
-    padding: 5px;
-    margin-left: 10px;
-    background-color: #eeeeee;
-    border: 1px solid darkgray;
-    border-radius: 6px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
-    vertical-align: top;
-    max-width: 300px;
-}
-
 .homePageUnauth h1 {
-    color: #323232;
     background-color: unset;
 }
 
@@ -1483,12 +1357,12 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 #homePagePromo.welcomeHeader {
-    background-color: #00bcd4;
+    background-color: var(--theme-color);
     padding: 4px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
-    color: white;
+    color: var(--text-default);
     max-width: unset;
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border-radius: 15px;
@@ -1543,13 +1417,10 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 #homePagePromo.welcomeHeader a, #homePagePromo.welcomeHeader a:visited {
-    color: white;
+    color: var(--text-default);
     font-size: larger;
+    font-weight: bold;
     text-align:center;
-}
-
-#homePagePromo.welcomeHeader a:hover {
-    text-decoration:none;
 }
 
 .homePageUnauth .centeredImg {
@@ -1565,8 +1436,8 @@ table.tblAvailablityMap th.timeHeader {
     margin-right: auto;
     margin-top: 20pt; 
     margin-bottom: 10pt;
-    border: 1pt solid gray;
-    box-shadow: 2pt 2pt 3pt 0pt rgba(0,0,0,0.75);
+    border: 1pt solid var(--default-border);
+    box-shadow: 2pt 2pt 3pt 0pt var(--box-shadow-color);
     border-radius: 5pt;
     max-width: 80%;
 }
@@ -1601,7 +1472,7 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 .featureAreaBlockItem {
-    border: 3px solid #aaaaaa;
+    border: 3px solid var(--default-border);
     border-radius: 10pt;
     margin: 8pt;
     padding: 10pt;
@@ -1623,7 +1494,7 @@ table.tblAvailablityMap th.timeHeader {
     font-weight: normal;
     font-size: 10pt;
     text-align: left;
-    color: #323232;
+    color: var(--text-light);
 }
 
 .featureAreaDescriptorIcon {
@@ -1638,66 +1509,31 @@ table.tblAvailablityMap th.timeHeader {
     outline: none !important;
 }
 
-/* Ajax styling */
-/* Ajax file upload */
-.mfbDefault .ajax__fileupload {
-    border: none;
-    padding: 5px;
-    padding-left: 0px;
-}
-
-.mfbDefault .ajax__fileupload_dropzone {
-    background-color: white;
-    border: 1px solid gray;
-    border-radius: 5px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    font-size: 22pt;
-    font-weight: bold;
-    color: darkgrey;
-    line-height: 60px;
-}
-
-.mfbDefault .ajax__fileupload_selectFileButton {
-    background-color: #DDDDDD;
-    border: 1px solid #888888;
-    color: black;
-    font-size: 9pt;
-    line-height: 18pt;
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box; /* Firefox, other Gecko */
-    box-sizing: border-box; /* Opera/IE 8+ */
-}
-
-.mfbDefault .ajax__fileupload_queueContainer {
-}
-
-.mfbDefault .ajax__fileupload_footer {
-}
-
 /* Pop-up hover menus */
 .popContainer {
     display: inline-block;
 }
 
 .popMenuContent {
-    background-color: white;
-    border: 1px solid black;
+    background-color: var(--menu-background);
+    border: 1px solid var(--default-border);
+    color: var(--menu-color);
     padding: 3px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
-}
-
-.popMenuAccess {
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
 }
 
 .popTrigger:hover, .popContainer:hover .popTrigger {
-    background-color: #CCCCCC;
+    background-color: var(--menu-background-selected);
+    color: var(--menu-color-selected);
     border-radius: 5px;
 }
 
 .popTrigger:hover + .popMenuHidden, .popMenuHidden:hover {
     display: block;
+}
+
+.darkSensitive {
+    filter: var(--inverted-image-filter);
 }
 
 .popMenuHidden {
@@ -1708,7 +1544,7 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 .searchBox {
-    border: 1px solid darkgray;
+    border: 1px solid var(--default-border);
     border-radius: 14px;
     height: 24px;
     display: table-cell;
@@ -1735,28 +1571,14 @@ table.tblAvailablityMap th.timeHeader {
     border: none;
 }
 
-/* Tabs*/
-.mfbDefault.ajax__tab_xp .ajax__tab_header {
-    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt;
-}
-
-.mfbDefault .ajax__tab_panel, .mfbDefault .ajax__tab_body, .mfbDefault .ajax__scroll_none {
-    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 9pt;
-}
-
-#privacyFooterContainer {
-}
-
 /* Privacy footer */
 #privacyFooter {
     margin-left: 10%;
     margin-right: 10%;
     margin-bottom: 2px;
-    border: 1px solid black;
+    border: 1px solid var(--callout-border-color);
     border-radius: 3px;
-    background-color: #eeeeee;
+    background-color: var(--callout-background);
     padding: 4px;
     position: fixed;
 }
@@ -1773,10 +1595,10 @@ table.tblAvailablityMap th.timeHeader {
 }
 
 .signFlightFlightToSign > table {
-    background-color: #DDDDDD;
+    background-color: var(--callout-background);
     border-radius: 5px;
-    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.75);
-    border: 1px solid black;
+    box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
+    border: 1px solid var(--callout-border-color);
     margin-left:auto;
     margin-right:auto;
     padding: 3px;
@@ -1805,12 +1627,12 @@ table.tblAvailablityMap th.timeHeader {
     justify-content: center;
     height: 20pt;
     width: 20pt;
-    background-color: #00bcd4;
+    background-color: var(--theme-color);
     color: white;
     font-weight: bold;
     text-align: center;
     font-size: 16pt;
-    border: 1px solid #00bcd4;
+    border: 1px solid var(--theme-color);
     margin-top: 2pt;
     margin-bottom: 2pt;
     margin-right: 4pt;
@@ -1820,34 +1642,6 @@ table.tblAvailablityMap th.timeHeader {
 h3.numberedStep {
     display: inline-block;
     vertical-align: middle;
-}
-
-/* Password Strength styles */
-.pwBorder {
-    border: 1px solid darkgray;
-    padding: 2pt;
-    border-radius: 3px;
-    width: 100px;
-    height: 4pt;
-    vertical-align: middle;
-}
-
-.pwWeak {
-    background-color: red;
-}
-
-.pwOK {
-    background-color: gold;
-}
-
-.pwGood {
-    background-color: lightgray;
-}
-
-.pwExcellent {
-    color: black;
-    font-weight: bold;
-    background-color: green;
 }
 
 /* Gridview styles */
@@ -1866,11 +1660,11 @@ h3.numberedStep {
     vertical-align: bottom;
     position: sticky;
     top: 0;
-    background-color: white;
+    background-color: var(--body-background);
 }
 
 tr.gvhDefault th {
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid var(--sticky-header-border);
 }
 
 tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
@@ -1890,7 +1684,7 @@ tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
 }
 
 .gvcCentered, .gvcLeft, .gvcRight {
-    border-right: 1px solid #eeeeee;
+    border-right: 1px solid var(--sticky-header-border);
 }
 
 .gvcCentered:last-child, .gvcLeft:last-child, .gvcRight:last-child {
@@ -1941,7 +1735,7 @@ tr.gvhDefault th:nth-last-child(2), tr.gvhDefault th:last-child {
 
 /* Sticky-header tables (not gridview) */
 .stickyHeaderTable {
-    border-color: #eeeeee;
+    border-color: var(--sticky-header-border);
     font-size: 9pt;
 }
 
@@ -1951,14 +1745,14 @@ table.stickyHeaderTable {
     border-spacing: 0;
 }
 
-table.stickyHeaderTable th {
-    /* Apply both top and bottom borders to the <th> */
-    border-bottom: 1px solid #eeeeee;
-    padding: .5em 1em .5em 1em;
-    vertical-align: bottom;
-    text-align: center;
-    font-weight: bold;
-}
+    table.stickyHeaderTable th {
+        /* Apply both top and bottom borders to the <th> */
+        border-bottom: 1px solid var(--sticky-header-border);
+        padding: .5em 1em .5em 1em;
+        vertical-align: bottom;
+        text-align: center;
+        font-weight: bold;
+    }
 
 table.stickyHeaderTable th.gvhLeft {
     text-align: left;
@@ -1968,33 +1762,24 @@ table.stickyHeaderTable th.gvhRight {
     text-align: right;
 }
 
-table.stickyHeaderTable td {
-    /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
-    border-bottom: 1px solid #eeeeee;
-    border-right: 1px solid#eeeeee;
-    padding: .5em 1em .5em 1em;
-}
+    table.stickyHeaderTable td {
+        /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+        border-bottom: 1px solid var(--sticky-header-border);
+        border-right: 1px solid var(--sticky-header-border);
+        padding: .5em 1em .5em 1em;
+    }
 
 table.stickyHeaderTable tr {
     vertical-align: top;
 }
 
-table.stickyHeaderTable td:first-child {
-    border-left: 1px solid #eeeeee;
-}
+    table.stickyHeaderTable td:first-child {
+        border-left: 1px solid var(--sticky-header-border);
+    }
 
-table.stickyHeaderTable.stickyHeaderAlternate tr:nth-child(even) {
-    background-color: #E0E0E0;
-}
-
-.largeBold {
-    font-weight:bold;
-    font-size:larger;
-}
-
-.imgMiddle {
-    vertical-align:middle;
-}
+    table.stickyHeaderTable.stickyHeaderAlternate tr:nth-child(even) {
+        background-color: var(--table-alternate-row-background);
+    }
 
 /* Feature comparison */
 table.featureTable {
@@ -2037,16 +1822,16 @@ table.featureTable {
 .featureTable .feature {
     text-align: center;
     max-width: 20em;
-    border: 1px solid gray;
+    border: 1px solid var(--default-border);
 }
 
 .featureName {
     max-width: 20em;
-    border: 1px solid gray;
+    border: 1px solid var(--default-border);
 }
 
 .highlightedFeature {
-    background-color: #eeeeee;
+    background-color: var(--callout-background);
 }
 
 /* Aircraft menu handle */
@@ -2054,7 +1839,7 @@ table.featureTable {
     display: inline-block;
     vertical-align: top;
     margin-left: -3px;
-    background-color: #DDDDDD;
+    background-color: var(--callout-background);
     border-bottom-right-radius: 8px;
     border-top-right-radius: 8px;
 }
@@ -2114,26 +1899,26 @@ tr div.editCell, tr.editRow div.displayCell {
     display: inline-block;
     margin: 3px;
     vertical-align: top;
-    border: 1px solid gray;
+    border: 1px solid var(--default-border);
 }
 
 .monthHeader {
     text-align: center;
-    background-color: darkgray;
+    background-color: var(--callout-background);
     font-weight: bold;
     font-size: 9pt;
 }
 
 .adjacentDay {
-    color: gray;
-    background-color: lightgray;
+    color: var(--text-light);
+    background-color: var(--callout-background);
     height: 30px;
     width: 30px;
 }
 
 .includedDay {
-    background-color: white;
-    color: black;
+    background-color: var(--body-background);
+    color: var(--text-default);
     height: 30px;
     width: 30px;
 }
@@ -2156,15 +1941,11 @@ tr div.editCell, tr.editRow div.displayCell {
 }
 
 .dateContentValue {
-    background-color: #00ff00;
+    background-color: var(--theme-color);
 }
 
-.dateContent:hover {
-    color: blue;
-}
-
-.dateContent:link, .dateContent:visited {
-    color: black;
+.dateContent:hover, .dateContent:link, .dateContent:visited {
+    color: var(--text-default);
 }
 
 /* Image hover list */
@@ -2178,7 +1959,7 @@ tr div.editCell, tr.editRow div.displayCell {
 .hoverListContainer a {
     position: absolute;
     text-decoration: none;
-    color: black;
+    color: var(--text-default);
     cursor: default;
     font-weight: normal;
 }
@@ -2201,7 +1982,7 @@ tr div.editCell, tr.editRow div.displayCell {
 
 .fileDragTarget {
     vertical-align: top;
-    border: 3px dotted #00bcd4;
+    border: 3px dotted var(--theme-color);
     border-radius: 8pt;
     display: inline-flex;
     flex-direction: row;
@@ -2210,7 +1991,7 @@ tr div.editCell, tr.editRow div.displayCell {
     text-align: center;
     width: 130px;
     height: 130px;
-    color: #888888;
+    color: var(--text-dim);
     padding: 5px;
     font-size: 125%;
     font-weight: bold;
@@ -2218,7 +1999,7 @@ tr div.editCell, tr.editRow div.displayCell {
 
 .fileDragTargetSmall {
     vertical-align: top;
-    border: 3px dotted #00bcd4;
+    border: 3px dotted var(--theme-color);
     border-radius: 8pt;
     display: inline-flex;
     flex-direction: row;
@@ -2227,22 +2008,22 @@ tr div.editCell, tr.editRow div.displayCell {
     text-align: center;
     width: 8em;
     height: 28pt;
-    color: #888888;
+    color: var(--text-dim);
     padding: 5px;
     font-size: 125%;
     font-weight: bold;
 }
 
 .fileDragHighlighted {
-    border: 3px solid darkgray;
+    border: 3px solid var(--default-border);
 }
 
 .fileInQueueContainer {
     vertical-align: top;
-    border: 1px solid gray;
+    border: 1px solid var(--default-border);
     border-radius: 8pt;
     display: inline-flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     text-align: center;
     width: 130px;
@@ -2256,27 +2037,31 @@ tr div.editCell, tr.editRow div.displayCell {
 }
 
 .fileInQueContainerInProgress {
-    color: #888888;
+    color: var(--text-dim);
 }
 
 .fileUploadProgressBar {
     width: 90%;
     height: 22px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 5px, 0, 5px, 0;
+    margin: 5px 0 5px 0;
+    position: relative;
 }
 
-.fileUploadProgressBar div {
-    height: 100%;
-    color: lightgray;
-    text-align: center;
-    line-height: 22px; /* same as .fileUploadProgressBar height if we want text middle aligned */
-    width: 0;
-    background-color: darkgray;
-    border-radius: 3px;
-}
+    .fileUploadProgressBar div.bar {
+        width: 0%;
+        overflow: hidden;
+        background-color: var(--progress-incomplete);
+        border: 1px solid var(--progress-incomplete);
+        border-radius: 5px;
+        padding: 0;
+        height: 26px;
+    }
+
+    .fileUploadProgressBar div.percent {
+        border: 1px solid var(--progress-incomplete);
+        border-radius: 5px;
+        color: var(--text-default);
+    }
 
 .fileUploadResult {
     width: 100%;
@@ -2308,45 +2093,34 @@ tr div.editCell, tr.editRow div.displayCell {
 }
 
 .fileUploadAbort {
-    background-color: #A8352F;
+    background-color: var(--callout-background);
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
     text-align: center;
-    color: #fff;
+    color: var(--text-default);
     font-size: larger;
     padding: 4px 15px;
     cursor: pointer;
-    margin: 5px, auto, 5px, auto;
+    margin: 5px auto 5px auto;
     max-width: 60%;
 }
 
-/* Printing */
-@media print {
-    h1 {
-        background-color: none;
-    }
-
-    BODY, body {
-        border: none;
-    }
-
-   thead {display: table-header-group;}
-   tfoot {display: table-footer-group;}
-   .noprint, .sidebarContainer, .footerContainer {display:none; border:none;}
-   .logbookRow {vertical-align:top; border:1px solid lightgray; page-break-inside:avoid;}
-   .logbookAlternateRow {vertical-align:top; background:#EEEEEE; border:1px solid lightgray;page-break-inside:avoid;}
-   tr.logbookRowEven:nth-child(even) { background: #EEEEEE; }
-   tr.logbookRow td, tr.logbookAlternateRow td {border: 1px solid lightgray; }
-   .hintPopup {
-    border: none;
-    border-radius: 0px;
-    padding: 0px;
-    margin: 0px;
-    }
-   .endorsement {background-color: #EEEEEE;}
+.logbookRow, .logbookAlternateRow {
+    vertical-align: top;
+    border: 1px solid var(--sticky-header-border);
+    page-break-inside: avoid;
 }
 
+.l.logbookRow {
+    background-color: var(--body-background);
+}
+
+.logbookAlternateRow {
+    background-color: var(--table-alternate-row-background);
+}
+
+/* Printing */
 .printHeaderLeft {
     white-space: pre-wrap;
     width: 33%;
@@ -2362,11 +2136,41 @@ tr div.editCell, tr.editRow div.displayCell {
     text-align: right;
 }
 
+@media print {
+    h1 {
+        background-color: none;
+    }
+
+    BODY, body {
+        border: none;
+        background-color: none;
+        color: black;
+    }
+
+   thead {display: table-header-group;}
+   tfoot {display: table-footer-group;}
+   .noprint, .footerContainer {display:none; border:none;}
+   tr.logbookRowEven:nth-child(even) { background: none; }
+   tr.logbookRow td, tr.logbookAlternateRow td {border: 1px solid lightgray; }
+   .hintPopup {
+    border: none;
+    border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+    }
+    .endorsement {
+        background-color: none;
+        border: 1px solid black;
+    }
+}
+
 /* All print layouts are contained within pageTable */
 .pageTable {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    background-color: none;
+    color: black;
 }
 
 .pageTable td {
@@ -2375,30 +2179,24 @@ tr div.editCell, tr.editRow div.displayCell {
 
 @media screen {
     .printonly {display:none;}
-    .logbookRow, .logbookAlternateRow {
-        vertical-align: top;
-    }
-    tr.logbookRowEven:nth-child(even) {
-        background: #EEEEEE;
-    }
-    .logbookAlternateRow {
-        background-color: #eeeeee;
+    tr.logbookRowEven:nth-child(even), .logbookAlternateRow {
+        background: var(--table-alternate-row-background);
     }
 
     .logbookAlternateRow td, .logbookRow td {
-        border-bottom: 1px solid #eeeeee;
+        border-bottom: 1px solid var(--sticky-header-border);
     }
 
     .logbookAlternateRow td:first-child, .logbookRow td:first-child {
-        border-left: 1px solid #eeeeee;
+        border-left: 1px solid var(--sticky-header-border);
     }
 
     .logbookAlternateRow td.noprint, .logbookRow td.noprint {
+        background-color: var(--body-background);
         border-bottom: none;
-        background-color: white;
     }
 
-    body, body {
+    body {
         max-width: 1400px;
     }
 }

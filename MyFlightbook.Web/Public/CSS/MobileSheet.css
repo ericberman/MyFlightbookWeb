@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,16 +26,6 @@ h1 {
 {
     clear:both;
     display:block;
-}
-
-.logbookForm
-{
-    background-color: #ffffff;
-}
-
-.EntryBlock
-{
-    background-color: #ffffff;
 }
 
 /* full-width blocks (i.e., no side-to-side */
@@ -80,20 +70,8 @@ h1 {
 }
 
 /* Sidebar for mobile */
-.topForm
-{
+.topForm {
     border-top: none;
-    background-color: #ffffff;
-}
-
-.sidebarLeft
-{
-    background-color: #eeeeee;
-    display: block;
-    width: 100%;
-    height: auto;
-    text-align:center;
-    border-bottom: 1px solid black;
 }
 
 .sidebarItem
@@ -106,27 +84,8 @@ h1 {
 .sidebarRight
 {
     width: 90%;
-    background-color: #ffffff;
     margin-left:auto;
     margin-right: auto;
-}
-
-.sidebarSelected, .sidebarUnSelected
-{
-    display: inline-block;
-    font-weight: normal;
-    border: none;
-    height: auto;
-    line-height: 1.5;
-    margin-left: 2px;
-    margin-right: 2px;
-    padding: 3px;
-}
-
-.sidebarSelected
-{
-    background-color: #eeeeee;
-    font-weight:bold;
 }
 
 /* Menu bar for mobile */

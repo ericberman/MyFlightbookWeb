@@ -23,17 +23,17 @@
 }
 
 <title>@(String.IsNullOrEmpty(ViewBag.Title) ? Branding.CurrentBrand.AppName : ViewBag.Title)</title>
-<script src="@VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js")" type="text/javascript"></script>
-<script src="@VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.14.1.min.js")" type="text/javascript"></script>
-<script src="@VirtualPathUtility.ToAbsolute("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
-<script src="@VirtualPathUtility.ToAbsolute("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
-<script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=10")"></script>
-<script src='@VirtualPathUtility.ToAbsolute("~/Public/Scripts/jquery.fitvids.js")' type="text/javascript"></script>
+<script src="@("~/Scripts/jquery-3.7.1.min.js".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Scripts/jquery-ui-1.14.1.min.js".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Scripts/jquery.validate.min.js".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Scripts/jquery.validate.unobtrusive.min.js".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Public/Scripts/jqueryutil.js?v=10".ToAbsolute())"></script>
+<script src='@("~/Public/Scripts/jquery.fitvids.js".ToAbsolute())' type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js" type="text/javascript"></script>
 @if (ViewBag.UseCharting)
 {
     <script src="https://www.google.com/jsapi" type="text/javascript"></script>
-    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/gchart.js?v=5")" type="text/javascript"></script>
+    <script src="@("~/Public/Scripts/gchart.js?v=5".ToAbsolute())" type="text/javascript"></script>
     <script type="text/javascript">
         google.load('visualization', '1.1', { packages: ['corechart'] });
         var chartsToDraw = [];
@@ -70,7 +70,7 @@
             mapInitFuncs.push(func);
         }
     </script>
-    <script src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/GMapScript.js?v=17")" type="text/javascript"></script>
+    <script src="@("~/Public/Scripts/GMapScript.js?v=17".ToAbsolute())" type="text/javascript"></script>
     <script>
         (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
             key: "@MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey",
@@ -79,25 +79,29 @@
             // Add other bootstrap parameters as needed, using camel case.
         });
     </script>
-    <script defer src="@(VirtualPathUtility.ToAbsolute("~/Public/Scripts/oms.min.js?v=10&spiderfier_callback=onGMapLoaded"))"></script>
+    <script defer src="@(("~/Public/Scripts/oms.min.js?v=10&spiderfier_callback=onGMapLoaded".ToAbsolute()))"></script>
 }
 
 @if (ViewBag.IsIOSOrAndroid)
 {
     <meta name="format-detection" content="telephone=no" />
 }
+<link rel="stylesheet" href="@MFBConstants.BaseCssVars(ViewBag.IsNight)" />
 <link rel="stylesheet" href="@("~/public/css/jquery.passwordRequirements.css?v=2".ToAbsolute())">
 <link rel="shortcut icon" href="@((Request.IsLocal ? "~/Images/favicon-dev.png" : Branding.CurrentBrand.IconHRef).ToAbsolute())" type="image/png" />
-<link rel="stylesheet" type="text/css" href="@VirtualPathUtility.ToAbsolute("~/Content/jHtmlArea/jHtmlArea.css")" />
-<link href="@VirtualPathUtility.ToAbsolute("~/images/apple-touch-icon.png")" rel="apple-touch-icon" />
-<link rel="stylesheet" href="@VirtualPathUtility.ToAbsolute("~/Content/themes/base/jquery-ui.css?v=2")" type="text/css">
+<link rel="stylesheet" type="text/css" href="@("~/Content/jHtmlArea/jHtmlArea.css".ToAbsolute())" />
+<link href="@("~/images/apple-touch-icon.png".ToAbsolute())" rel="apple-touch-icon" />
+<link rel="stylesheet" href="@("~/Content/themes/base/jquery-ui.css?v=2".ToAbsolute())" type="text/css">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" />
-<link href="@VirtualPathUtility.ToAbsolute("~/public/CSS/jqueryuimods.css?v=5")" type="text/css" rel="stylesheet" />
+<link href="@("~/public/CSS/jqueryuimods.css?v=6".ToAbsolute())" type="text/css" rel="stylesheet" />
 <link href="@VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet)" rel="stylesheet" type="text/css" />
-<link href="@VirtualPathUtility.ToAbsolute("~/public/CSS/mfbheader.css?v=5")" rel="stylesheet" type="text/css" />
-<link rel="Stylesheet" type="text/css" href='@ViewBag.NightCSS' />
+<link href="@("~/public/CSS/mfbheader.css?v=6".ToAbsolute())" rel="stylesheet" type="text/css" />
 <link href="@ViewBag.BrandCSS" rel="Stylesheet" type="text/css" />
-<link rel="Stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
+<link rel="stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
+@foreach (string s in ViewBag.sheets)
+{
+    <link rel="stylesheet" type="text/css" href="@(s.ToAbsolute())" />
+}
 <style type="text/css">
     .ui-wrapper {
         padding: 0 !important;

@@ -55,7 +55,7 @@
                 {
                     <div class="progress">
                         <div class="percent"><span id="lblProgress">@mi.ProgressDisplay</span></div>
-                        <div class="bar" style="@String.Format(CultureInfo.InvariantCulture, "width: {0}%; background-color: {1}", cappedPercentage, cappedPercentage < 100 ? "#CCCCCC" : "limegreen")">&nbsp;</div>
+                        <div class="bar @(cappedPercentage < 100 ? "progressNotCompleted" : "progressCompleted")" style="@($"width: {cappedPercentage}%;")">&nbsp;</div>
                     </div>
                 }
             </td>

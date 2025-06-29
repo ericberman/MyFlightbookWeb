@@ -96,7 +96,7 @@
                 <div class="error">@(ViewBag.error ?? string.Empty)</div>
             }
         </div>
-        <div class="ui-widget-content" style="display: none; padding: 1em 1.4em;" id="divPrintSearch">
+        <div style="display: none; padding: 1em 1.4em;" id="divPrintSearch">
             @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
         </div>
     </div>

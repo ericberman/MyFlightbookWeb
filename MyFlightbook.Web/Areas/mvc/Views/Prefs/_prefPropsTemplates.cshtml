@@ -111,7 +111,7 @@ else
                             <span style="font-weight:bold; font-size:larger">@pt.Name</span>
                             <span>@Html.Raw(pt.Description.Linkify(true))</span>
                         </div>
-                        <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em">@String.Join(" ● ", pt.PropertyNames)</div>
+                        <div class="fineprint i lightText" style="margin-left: 2em">@String.Join(" ● ", pt.PropertyNames)</div>
                     </td>
                     <td style="padding: 3px; text-align:center;">
                         @if (pt.IsMutable)
