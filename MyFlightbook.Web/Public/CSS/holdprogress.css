@@ -1,0 +1,40 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2025 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+
+.holdProgressContainer {
+    position: relative;
+    width: 244px;
+    height: 244px;
+    background: url('/logbook/images/holding%20pattern.png') no-repeat center;
+    background-size: cover;
+    box-shadow: 0 0 8px 8px var(--body-background) inset;
+}
+
+.holdProgressPlane {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    background: url('/logbook/images/holdjet.png') no-repeat center;
+    background-size: contain;
+    offset-path: path("M38,105 L138,205 A47,47 0 0 0 205,138 L105,38 A47,47 0 0 0 38,105");
+    offset-distance: 0%;
+    offset-rotate: auto;
+    animation: flyLoop 10s linear infinite;
+    transform-origin: center;
+    transform: rotate(90deg);
+}
+
+@keyframes flyLoop {
+    from {
+        offset-distance: 0%;
+    }
+
+    to {
+        offset-distance: 100%;
+    }
+}

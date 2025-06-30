@@ -3,6 +3,7 @@
     ViewBag.Title = Resources.Aircraft.ImportAircraftTitle;
     ViewBag.defaultTab = tabID.tabAircraft;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
 }
 <script type="text/javascript" src="@("~/Public/Scripts/import.js?v=2".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=11".ToAbsolute())"></script>
@@ -32,6 +33,7 @@
                     importAircraft.renderSummary();
                 else if (oldStep == 1 && newStep == 2)
                     importAircraft.renderUnmatched();
+                $("#divHoldProgress").hide();
                 return true;
             },
             onFinish: function () {
@@ -40,7 +42,7 @@
                         window.location = "@("~/mvc/Aircraft".ToAbsolute())";
                     else {
                         $("#lblImportFinishErr").text("@Resources.Aircraft.errImportFixErrors");
-                    }                        
+                    }
                 });
             }
         });
@@ -51,6 +53,9 @@
             dragTargetClass: "fileDragTarget",
             additionalParams: [],
             maxFiles: 1,
+            onPreSend: function (f) {
+                $("#divHoldProgress").show();
+            },
             onFileUploaded: function (status, response) {
                 $(".fileInQueueContainer").hide();
                 importAircraft.aircraftParseContext = response;
@@ -162,7 +167,7 @@ N6789,B777
         <p>
             @Resources.Aircraft.ImportAircraftAddModelTip
             <span style="font-weight: bold;">
-                @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddModel", labelClass= "expandoATD" }); }
+                @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddModel", labelClass = "expandoATD" }); }
             </span>
         </p>
         <div id="divAddModel" class="callout" style="display: none; width: unset;">
@@ -179,4 +184,9 @@ N6789,B777
     <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
     <button type="button" id="btnWizNext" disabled>@Resources.LocalizedText.NextPrompt</button>
     <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+</div>
+<div style="display: none;" id="divHoldProgress">
+    <div class="holdProgressContainer hc">
+        <div class="holdProgressPlane"></div>
+    </div>
 </div>

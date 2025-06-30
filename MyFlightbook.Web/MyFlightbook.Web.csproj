@@ -565,7 +565,8 @@
     <Content Include="images\BadgeOverlays\trend.png" />
     <Content Include="images\BadgeOverlays\trend.svg" />
     <Content Include="images\Collapsed.png" />
-    <Content Include="images\hold.gif" />
+    <Content Include="images\holding pattern.png" />
+    <Content Include="images\holdjet.png" />
     <Content Include="images\home8710.png" />
     <Content Include="images\homeBackup.png" />
     <Content Include="images\homeCurrency.png" />
@@ -756,6 +757,7 @@
     <Content Include="images\zip_med.png" />
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Public\CSS\day.css" />
+    <Content Include="Public\CSS\holdprogress.css" />
     <Content Include="Public\CSS\jquery.passwordRequirements.css" />
     <Content Include="Public\CSS\night.css" />
     <Content Include="Public\CSS\printAirline.css" />
