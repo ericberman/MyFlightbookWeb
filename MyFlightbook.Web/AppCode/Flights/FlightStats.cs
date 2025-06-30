@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -415,22 +415,27 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
         }
         #endregion
 
+        private static readonly object statsLock = new object();
+
         /// <summary>
         /// Return stats for flights over the preceding N days.  This will be cached for 30 minutes
         /// </summary>
         /// <returns>A FlightStats object</returns>
         public static FlightStats GetFlightStats()
         {
-            FlightStats fs = CachedStats();
-            if (fs == null)
+            // issue #1433 - possible cause of SQL CPU spiking is re-entrancy?  Make this a critical section so that you can never call refreshslowdata multiple times simultaneously
+            lock (statsLock)
             {
-                fs = new FlightStats();
-
-                fs.RefreshSlowData();   // will happen asynchronously.
-
-                HttpRuntime.Cache?.Add(szCacheKeyRecentStats, fs, null, DateTime.Now.AddMinutes(60), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                FlightStats fs = CachedStats();
+                if (fs == null)
+                {
+                    fs = new FlightStats();
+                    HttpRuntime.Cache?.Add(szCacheKeyRecentStats, fs, null, DateTime.Now.AddMinutes(60), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    fs.RefreshSlowData();   // will happen asynchronously, so should return very quickly
+                }
+                // FS cannot be null here, nor can cachedstats, so next call should not kcik off a refreshslow data if one is already in progress.
+                return fs;
             }
-            return fs;
         }
 
         public override string ToString()
