@@ -2144,6 +2144,13 @@ tr div.editCell, tr.editRow div.displayCell {
     text-align: right;
 }
 
+.printMarginPagePlaceholder {
+    border: 1px dotted var(--text-default);
+    width: 60px;
+    margin: 4px;
+    height: 60px;
+}
+
 @media print {
     h1 {
         background-color: none;

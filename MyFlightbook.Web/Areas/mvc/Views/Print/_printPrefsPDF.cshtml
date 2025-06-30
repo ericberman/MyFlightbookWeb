@@ -66,7 +66,7 @@
                 </tr>
                 <tr style="vertical-align:middle">
                     <td><div>@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginLeft", name = "pdfMarginLeft", value = pdfOptions.LeftMargin.HasValue ? pdfOptions.LeftMargin.Value : 10 }); }</div></td>
-                    <td style="border: 1px dotted black; width: 60px; margin: 4px; height:60px">&nbsp;</td>
+                    <td class="printMarginPagePlaceholder">&nbsp;</td>
                     <td><div>@{Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtMarginRight", name = "pdfMarginRight", value = pdfOptions.RightMargin.HasValue ? pdfOptions.RightMargin.Value : 10 }); }</div></td>
                 </tr>
                 <tr>
