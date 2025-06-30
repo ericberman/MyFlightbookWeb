@@ -116,7 +116,7 @@
                 <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="noprint"></td>
                 <td class="noprint">
-                    <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                    <div class="ctxtMenuIcon popTrigger"></div>
                     <div class="popMenuContent popMenuHidden" style="margin-top: -10px; margin-left: -90px">
                         <div class="flightContextMenu">
                             <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>

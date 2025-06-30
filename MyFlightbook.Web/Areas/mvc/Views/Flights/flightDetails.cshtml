@@ -183,7 +183,7 @@
     <div id="apcRaw" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisRaw </div>
     <div id="apcDownload" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisDownload </div>
     <div style="display: inline-block">
-        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+        <div class="ctxtMenuIcon popTrigger"></div>
         <div class="popMenuContent popMenuHidden" style="margin-top: -5pt; margin-left: -120px; text-align: left;">
             @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led }); }
         </div>

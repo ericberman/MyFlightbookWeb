@@ -356,7 +356,7 @@
                     </td>
                     <td><button type="button" onclick="javascript: autoFill(); return false;">@Resources.LogbookEntry.AutoFill</button></td>
                     <td>
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                        <div class="ctxtMenuIcon popTrigger"></div>
                         <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
                             @{ Html.RenderAction("AutoFillOptionsEditor", "Prefs", new { szUser = pfViewer.UserName }); }
                         </div>

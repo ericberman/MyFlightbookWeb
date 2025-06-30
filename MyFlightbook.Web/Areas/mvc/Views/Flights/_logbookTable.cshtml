@@ -216,7 +216,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div style="display: inline-block" class="popContainer">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+            <div class="ctxtMenuIcon popTrigger"></div>
             <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
                 <div>
                     <label><input type="radio" checked name="rblPagingGroup" onchange="javascript: togglePaged(this, true);" id="rbShowInPages" />@Resources.LogbookEntry.LogbookShowInPages</label>

@@ -43,7 +43,7 @@
             <td>
                 @if (groupedTemplates.Count() != 1 || groupedTemplates.ElementAt(0).Group != PropertyTemplateGroup.Automatic)
                 {
-                    <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                    <div class="ctxtMenuIcon popTrigger"></div>
                     <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
                         @foreach (TemplateCollection tc in groupedTemplates)
                         {

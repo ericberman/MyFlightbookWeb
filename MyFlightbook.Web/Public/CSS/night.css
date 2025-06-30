@@ -49,5 +49,5 @@
     --footer-text: var(--text-default);
     --box-shadow-color: rgba(200,200,200,0.75);
     --jquery-icons: url(/logbook/Content/themes/base/images/ui-icons_FFFFFF_256x240.png);
-    --inverted-image-filter: invert(.85);
+    --inverted-image-filter: invert(.9);
 }

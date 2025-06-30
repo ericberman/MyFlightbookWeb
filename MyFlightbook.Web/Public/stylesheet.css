@@ -1532,6 +1532,14 @@ table.tblAvailablityMap th.dateHeader {
     display: block;
 }
 
+.ctxtMenuIcon {
+    width: 21px;
+    height: 21px;
+    background-image: url('/logbook/images/menuchevron.png');
+    display: inline-block;
+    filter: var(--inverted-image-filter);
+}
+
 .darkSensitive {
     filter: var(--inverted-image-filter);
 }

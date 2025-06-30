@@ -215,7 +215,7 @@
 <div id="targetTotals" style="display: none">
     <div style="float:right;">
         <div class="popContainer">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+            <div class="ctxtMenuIcon popTrigger"></div>
             <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
                 <div><label><input type="radio" id="rbFlat" name="totalsMode" @((!groupedMode).ToChecked()) value="false" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeFlat</label></div>
                 <div><label><input type="radio" id="rbGrouped" name="totalsMode" @((groupedMode).ToChecked()) value="true" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeGrouped</label></div>

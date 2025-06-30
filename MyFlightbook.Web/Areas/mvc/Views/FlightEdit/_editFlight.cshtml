@@ -145,7 +145,7 @@
                     <td>
                         @if (!String.IsNullOrEmpty(nextFlightHref) || !String.IsNullOrEmpty(prevFlightHref) || le.IsNewFlight)
                         {
-                            <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                            <div class="ctxtMenuIcon popTrigger"></div>
                             <div class="popMenuContent popMenuHidden" style="margin-top: -8pt; margin-left: 0px">
                                 @if (le.IsNewFlight && pf == null)
                                 {

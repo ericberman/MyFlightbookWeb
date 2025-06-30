@@ -3,7 +3,6 @@
 @{
     IEnumerable<Aircraft> rgac = ViewBag.aircraft;
     string deleteFunc = ViewBag.deleteFunc;
-    string urlChevron = VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png");
 }
 <table style="width: 100%" cellpadding="5" cellspacing="5">
     @foreach (Aircraft ac in rgac)
@@ -32,7 +31,7 @@
             </td>
             <td class="gvContext">
                 <div class="popContainer">
-                    <img src="@urlChevron" class="popTrigger" />
+                    <div class="ctxtMenuIcon popTrigger"></div>
                     <div class="popMenuContent popMenuHidden" style="margin-top: -5px;">
                         <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber)</h2>
                         @Html.Raw(ac.ContextMenuOptions())

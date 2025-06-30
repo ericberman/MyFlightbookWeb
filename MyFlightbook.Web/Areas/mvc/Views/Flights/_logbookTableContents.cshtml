@@ -137,7 +137,7 @@ else
                             @if (led.HasFlightData)
                             {
                                 <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?tabID=Chart", led.FlightID).ToAbsolute()" style="background-color: transparent !important;">
-                                    <img src="@("~/images/Clip.png".ToAbsolute())" class="imgMiddle" alt="@Resources.LogbookEntry.LogbookFlightHasTelemetry" title="@Resources.LogbookEntry.LogbookFlightHasTelemetry" />
+                                    <img src="@("~/images/Clip.png".ToAbsolute())" class="imgMiddle darkSensitive" alt="@Resources.LogbookEntry.LogbookFlightHasTelemetry" title="@Resources.LogbookEntry.LogbookFlightHasTelemetry" />
                                 </a>
                             }
                         </div>
@@ -261,7 +261,7 @@ else
                         @if (fAllowMenu)
                         {
                             <div name="fltContext">
-                                <img src="@VirtualPathUtility.ToAbsolute("~/images/MenuChevron.png")" class="popTrigger" />
+                                <div class="ctxtMenuIcon popTrigger"></div>
                                 <div class="popMenuContent popMenuHidden" style="margin-top: -20px; margin-left: -180px">
                                     @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led, contextParams = ViewBag.contextParams }); }
                                 </div>
