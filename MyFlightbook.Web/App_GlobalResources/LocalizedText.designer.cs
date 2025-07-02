@@ -1375,7 +1375,7 @@ namespace Resources {
         ///        Flying clubs on %APP_NAME% provide a convenient way to
         ///        manage aircraft that are shared among multiple pilots, whether in a club/FBO
         ///        environment or even just a single aircraft shared among a few co-owner pilots. 
-        ///        (The term club here refers to any of these scenarios.)
+        ///        (The term &amp;ldquo;club&amp;rdquo; here refers to any of these scenarios.)
         ///    &lt;/p&gt;
         ///
         ///    &lt;p&gt;
@@ -1385,7 +1385,7 @@ namespace Resources {
         ///
         ///    &lt;ul&gt;
         ///        &lt;li&gt;
-        ///            Associate aircraft with your club and manage [rest of string was truncated]&quot;;.
+        ///            Associate aircraft with your clu [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ClubsManual {
             get {
@@ -4061,6 +4061,15 @@ namespace Resources {
         internal static string PilotsLabel {
             get {
                 return ResourceManager.GetString("PilotsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please hold for a moment....
+        /// </summary>
+        internal static string PleaseHold {
+            get {
+                return ResourceManager.GetString("PleaseHold", resourceCulture);
             }
         }
         

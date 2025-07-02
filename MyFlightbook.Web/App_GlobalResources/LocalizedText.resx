@@ -2078,4 +2078,7 @@
   <data name="ItsFree" xml:space="preserve">
     <value>It's *Free!*</value>
   </data>
+  <data name="PleaseHold" xml:space="preserve">
+    <value>Please hold for a moment...</value>
+  </data>
 </root>

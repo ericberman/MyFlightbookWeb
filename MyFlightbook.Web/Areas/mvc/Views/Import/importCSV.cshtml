@@ -4,6 +4,7 @@
     ViewBag.Title = Resources.LogbookEntry.ImportHeader;
     ViewBag.defaultTab = tabID.tabLogbook;
     MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript" src="@("~/Public/Scripts/import.js?v=2".ToAbsolute())"></script>
@@ -90,7 +91,14 @@
         });
     });
 </script>
-<div style="display: none;" id="divProgressHome"><img src="@("~/images/progress.gif".ToAbsolute())" id="imgProgress" /></div>
+<div style="display: none;" id="divProgressHome">
+    <div class="hc c" id="imgProgress" style="width: 244px;">
+        <div class="holdProgressContainer">
+            <div class="holdProgressPlane"></div>
+        </div>
+        <h2>@Resources.LocalizedText.PleaseHold</h2>
+    </div>
+</div>
 <div style="display: none;" id="divConfirmHome">@Resources.LogbookEntry.ImportErrorsConfirm</div>
 
 <div id="wizardHead">
