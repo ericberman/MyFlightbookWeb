@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2024 MyFlightbook LLC
+ * Copyright (c) 2020-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -219,7 +219,7 @@ namespace MyFlightbook.Lint
                     if ((options & (UInt32)LintOptions.PICSICDualMath) != 0)
                         CheckPICSICDualIssues(le);
 
-                    if ((options & (UInt32)LintOptions.TimeIssues) != 0)
+                    if ((options & (UInt32)LintOptions.TimeIssues) != 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft)
                         CheckTimeIssues(le);
 
                     if ((options & (UInt32)LintOptions.DateTimeIssues) != 0)
@@ -387,9 +387,6 @@ namespace MyFlightbook.Lint
 
         private void CheckTimeIssues(LogbookEntryBase le)
         {
-            if (currentAircraft.InstanceType != AircraftInstanceTypes.RealAircraft)
-                return;
-
             int totalMinutes = le.TotalFlightTime.ToMinutes();
 
             AddConditionalIssue(le.CrossCountry.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesXCGreaterThanTotal);
@@ -403,25 +400,22 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
             int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
             AddConditionalIssue(totalMinutes > 0 && le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() + picus == 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
-            
-            CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
-            if (cfpSolo != null)
-            {
-                int soloMinutes = cfpSolo.DecValue.ToMinutes();
-                AddConditionalIssue(soloMinutes > le.PIC.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeExceedsPICTime);
-                AddConditionalIssue(soloMinutes > totalMinutes - le.SIC.ToMinutes() - le.CFI.ToMinutes() - le.Dual.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime);
+            AddConditionalIssue(le.NightLandings > 0 && le.Nighttime == 0.0M, LintOptions.TimeIssues, Resources.LogbookEntry.errNoNightFlight);
 
-                AddConditionalIssue(soloMinutes == totalMinutes &&
-                    (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorOnBoard) ||
-                     le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPassengerNames) ||
-                     le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) ||
-                     le.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropPassengerCount) > 0), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime2);
-            }
+            CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
+            int soloMinutes = cfpSolo?.DecValue.ToMinutes() ?? 0;
+            AddConditionalIssue(soloMinutes > le.PIC.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeExceedsPICTime);
+            AddConditionalIssue(soloMinutes > totalMinutes - le.SIC.ToMinutes() - le.CFI.ToMinutes() - le.Dual.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime);
+            AddConditionalIssue(soloMinutes == totalMinutes &&
+                (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorOnBoard) ||
+                 le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPassengerNames) ||
+                 le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) ||
+                 le.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropPassengerCount) > 0), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime2);
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {
-                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal && !cfp.PropertyType.IsNoSum && !hsExcludedTimeProps.Contains(cfp.PropTypeID) &&  
-                    cfp.DecValue.ToMinutes() > totalMinutes, 
+                AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal && !cfp.PropertyType.IsNoSum && !hsExcludedTimeProps.Contains(cfp.PropTypeID) &&
+                    cfp.DecValue.ToMinutes() > totalMinutes,
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
 

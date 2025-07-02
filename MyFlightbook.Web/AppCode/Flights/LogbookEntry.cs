@@ -801,13 +801,6 @@ namespace MyFlightbook
                 return false;
             }
 
-            if (NightLandings > 0 && Nighttime == 0.0M && ac.InstanceType == AircraftInstanceTypes.RealAircraft)
-            {
-                LastError = ErrorCode.MissingNight;
-                ErrorString = Resources.LogbookEntry.errNoNightFlight;
-                return false;
-            }
-
             AutofillForAircraft(ac);
 
             return true;
