@@ -140,6 +140,12 @@ namespace MyFlightbook.Lint
             currentIssues.Add(new FlightIssue(option, szIssue));
         }
 
+        private void CheckIfOption(bool b, LogbookEntryBase le, Action<LogbookEntryBase> action)
+        {
+            if (b)
+                action(le);
+        }
+
         /// <summary>
         /// Checks flights for various potential issues
         /// </summary>
@@ -204,29 +210,14 @@ namespace MyFlightbook.Lint
                     if (alMaster != null)
                         alSubset = alMaster.CloneSubset(le.Route);
 
-                    if ((options & (UInt32)LintOptions.SimIssues) != 0)
-                        CheckSimIssues(le);
-
-                    if ((options & (UInt32)LintOptions.IFRIssues) != 0)
-                        CheckIFRIssues(le);
-
-                    if ((options & (UInt32)LintOptions.AirportIssues) != 0)
-                        CheckAirportIssues(le);
-
-                    if ((options & (UInt32)LintOptions.XCIssues) != 0)
-                        CheckXCIssues(le);
-
-                    if ((options & (UInt32)LintOptions.PICSICDualMath) != 0)
-                        CheckPICSICDualIssues(le);
-
-                    if ((options & (UInt32)LintOptions.TimeIssues) != 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft)
-                        CheckTimeIssues(le);
-
-                    if ((options & (UInt32)LintOptions.DateTimeIssues) != 0)
-                        CheckDateTimeIssues(le);
-
-                    if ((options & (UInt32)LintOptions.MiscIssues) != 0)
-                        CheckMiscIssues(le);
+                    CheckIfOption((options & (UInt32)LintOptions.SimIssues) != 0, le, CheckSimIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.IFRIssues) != 0, le, CheckIFRIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.AirportIssues) != 0, le, CheckAirportIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.XCIssues) != 0, le, CheckXCIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.PICSICDualMath) != 0, le, CheckPICSICDualIssues);
+                    CheckIfOption(((options & (UInt32)LintOptions.TimeIssues) != 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft), le, CheckTimeIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.DateTimeIssues) != 0, le, CheckDateTimeIssues);
+                    CheckIfOption((options & (UInt32)LintOptions.MiscIssues) != 0, le,CheckMiscIssues);
                 }
                 catch (Exception ex) when (!(ex is OutOfMemoryException))
                 {
@@ -385,10 +376,8 @@ namespace MyFlightbook.Lint
             (int) CustomPropertyType.KnownProperties.IDPropPlannedBlock
         };
 
-        private void CheckTimeIssues(LogbookEntryBase le)
+        private void CheckCoreTimeIssues(LogbookEntryBase le, int totalMinutes)
         {
-            int totalMinutes = le.TotalFlightTime.ToMinutes();
-
             AddConditionalIssue(le.CrossCountry.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesXCGreaterThanTotal);
             AddConditionalIssue(le.Nighttime.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesNightGreaterThanTotal);
             AddConditionalIssue(le.SimulatedIFR.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSimIFRGreaterThanTotal);
@@ -401,12 +390,18 @@ namespace MyFlightbook.Lint
             int picus = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS).ToMinutes();
             AddConditionalIssue(totalMinutes > 0 && le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.CFI.ToMinutes() + le.Dual.ToMinutes() + picus == 0, LintOptions.TimeIssues, Resources.FlightLint.warningTotalTimeButNoOtherTime);
             AddConditionalIssue(le.NightLandings > 0 && le.Nighttime == 0.0M, LintOptions.TimeIssues, Resources.LogbookEntry.errNoNightFlight);
+        }
+
+        private void CheckTimeIssues(LogbookEntryBase le)
+        {
+            int totalMinutes = le.TotalFlightTime.ToMinutes();
+            CheckCoreTimeIssues(le, totalMinutes);
 
             CustomFlightProperty cfpSolo = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropSolo);
             int soloMinutes = cfpSolo?.DecValue.ToMinutes() ?? 0;
             AddConditionalIssue(soloMinutes > le.PIC.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeExceedsPICTime);
             AddConditionalIssue(soloMinutes > totalMinutes - le.SIC.ToMinutes() - le.CFI.ToMinutes() - le.Dual.ToMinutes(), LintOptions.TimeIssues, Resources.FlightLint.warningSoloTimeWithNonSoloTime);
-            AddConditionalIssue(soloMinutes == totalMinutes &&
+            AddConditionalIssue(soloMinutes == totalMinutes && soloMinutes > 0 &&
                 (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorOnBoard) ||
                  le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPassengerNames) ||
                  le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) ||
