@@ -607,10 +607,6 @@ namespace MyFlightbook.ImportFlights
                 le.EngineEnd = GetMappedUTCDate(m_cm.iColEngineEnd, le.Date);
                 le.FlightStart = GetMappedUTCDate(m_cm.iColFlightStart, le.Date);
                 le.FlightEnd = GetMappedUTCDate(m_cm.iColFlightEnd, le.Date);
-                if (le.EngineEnd.CompareTo(le.EngineStart) < 0)
-                    le.EngineEnd = le.EngineEnd.AddDays(1);
-                if (le.FlightEnd.CompareTo(le.FlightStart) < 0)
-                    le.FlightEnd = le.FlightEnd.AddDays(1);
                 le.HobbsStart = GetMappedDecimal(m_cm.iColHobbsStart);
                 le.HobbsEnd = GetMappedDecimal(m_cm.iColHobbsEnd);
                 if (m_cm.iColPublic >= 0)   // only set public flag if the column is present in the file being imported.
@@ -640,13 +636,6 @@ namespace MyFlightbook.ImportFlights
                         }
                     }
                 }
-
-                // Fix up block times too
-                CustomFlightProperty blockIn = lstCustPropsForFlight.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
-                CustomFlightProperty blockOut = lstCustPropsForFlight.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
-
-                if (blockIn != null && blockOut != null && blockIn.DateValue.CompareTo(blockOut.DateValue) < 0)
-                    blockIn.DateValue = blockIn.DateValue.AddDays(1);
 
                 // CAFRS support - read pilot role and flight conditions IF not already filled in above.
                 SetCAFRSFlightCondition(le, GetMappedString(m_cm.iColFlightConditions), lstCustPropsForFlight);
@@ -832,12 +821,17 @@ namespace MyFlightbook.ImportFlights
                 InitFlightFromRowMainFields(le);
 
                 InitFlightFromRowProperties(le, out string szTail);
-                                
+
                 // Do any autofill here
                 if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
                 {
                     using (FlightData fd = new FlightData())
                         fd.AutoFill(le, afo);
+                }
+                else
+                {
+                    // Issue #1441 - AutoFill will have fixed ambiguous times, but if we don't autofill, we still need to ensure it is performed.
+                    le.FixAmbiguousTimes();
                 }
 
                 // See if the aircraft exists

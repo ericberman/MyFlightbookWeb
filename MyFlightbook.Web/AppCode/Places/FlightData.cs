@@ -1991,6 +1991,8 @@ namespace MyFlightbook.Telemetry
                             le.EngineEnd = dtEnd = DateTime.SpecifyKind(dtEndLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
                         }
 
+                        le.FixAmbiguousTimes(); // ensure that ambiguous times are fixed.
+
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
                         SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
 
@@ -2012,6 +2014,7 @@ namespace MyFlightbook.Telemetry
 
         /// <summary>
         /// Updates the specified entry with as much as can be gleaned from the telemetry and/or times.
+        /// Ensures as well that FixAmbiguousTimes is called for the flight. (Issue #1441)
         /// </summary>
         /// <param name="le"></param>
         /// <returns></returns>
@@ -2028,6 +2031,9 @@ namespace MyFlightbook.Telemetry
                 le.Telemetry.MetaData.Clear();  // ensure no cropping.
                 fSyntheticPath = !String.IsNullOrEmpty(le.FlightData);
             }
+
+            // Issue #1441: if start/end times were naked (no date), then we need to fix them to account for overnight flights; GenerateSyntheticPath will have done this already, after potentially handling local times.
+            le.FixAmbiguousTimes();
 
             // first, parse the telemetry.
             if (!String.IsNullOrEmpty(le.FlightData) && (ParseFlightData(le) || opt.IgnoreErrors) && HasLatLongInfo && HasDateTime)

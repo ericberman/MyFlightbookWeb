@@ -585,6 +585,25 @@ namespace MyFlightbook
         #endregion
 
         #region Validation
+        /// <summary>
+        /// Checks for engine/flight/block date-time pairs that might have had an ambiguous time and push "time-travel required" arrivals to the next day.  E.g., 10pm to 1am is probably a 3 hour flight.
+        /// THIS CAN MODIFY THE FLIGHT
+        /// </summary>
+        public void FixAmbiguousTimes()
+        {
+            if (EngineEnd.CompareTo(EngineStart) < 0)
+                EngineEnd = EngineEnd.AddDays(1);
+            if (FlightEnd.CompareTo(FlightStart) < 0)
+                FlightEnd = FlightEnd.AddDays(1);
+
+            // Fix up block times too
+            CustomFlightProperty blockIn = CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
+            CustomFlightProperty blockOut = CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+
+            if (blockIn != null && blockOut != null && blockIn.DateValue.CompareTo(blockOut.DateValue) < 0)
+                blockIn.DateValue = blockIn.DateValue.AddDays(1);
+        }
+
         private bool ValidateMainFields()
         {
             if (CrossCountry < 0 || Nighttime < 0 || IMC < 0 || SimulatedIFR < 0 || GroundSim < 0 || Dual < 0 || PIC < 0 || TotalFlightTime < 0 || CFI < 0 || SIC < 0)
