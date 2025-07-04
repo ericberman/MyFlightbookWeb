@@ -65,6 +65,46 @@
     color: var(--text-light);
 }
 
+.w100 {
+    width: 100%;
+}
+
+.w90 {
+    width: 90%;
+}
+
+.w80 {
+    width: 80%;
+}
+
+.w75 {
+    width: 75%;
+}
+
+.w70 {
+    width: 70%;
+}
+
+.w60 {
+    width: 60%;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.w40 {
+    width: 40%;
+}
+
+.w30 {
+    width: 30%;
+}
+
+.w25 {
+    width: 25%;
+}
+
 /* Basic HTML */
 .mfbDefault {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -1335,168 +1375,6 @@ table.tblAvailablityMap th.dateHeader {
     border-radius: 5px;
 }
 
-/* Home page welcome */
-.welcomeHeader {
-    margin-left:auto;
-    margin-right: auto;
-    min-width: 200px;
-    max-width: 350px;
-}
-
-.homePageUnauth h1 {
-    background-color: unset;
-}
-
-.homePageUnauth h2 {
-    margin-top: 36pt;
-    margin-bottom: 12pt;
-}
-
-.homePageUnauth h2 {
-    text-align: center;
-}
-
-#homePagePromo.welcomeHeader {
-    background-color: var(--theme-color);
-    padding: 4px;
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box; /* Firefox, other Gecko */
-    box-sizing: border-box; /* Opera/IE 8+ */
-    color: var(--text-default);
-    max-width: unset;
-    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    border-radius: 15px;
-    margin-bottom: 10px;
-}
-
-.welcomeHeader p {
-    font-size: larger;
-    font-weight: bold;
-    text-align: center;
-}
-
-.welcomeHeader div {
-    text-align: center;
-}
-
-.homepageRecentStats {
-    max-width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 36pt;
-}
-
-#homePagePromo.welcomeHeader p {
-    text-align: center;
-    font-size: 24pt;
-    line-height: 1.0;
-    font-weight: bold;
-}
-
-#homePagePromo.welcomeHeader ul {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#homePagePromo.welcomeHeader li {
-    display: inline;
-    font-size: 12pt;
-    text-align: left;
-}
-
-#homePagePromo.welcomeHeader li:before {
-    content: "•";
-    margin-left: 6px;
-    margin-right: 6px;
-    display: inline-block;
-}
-
-#homePagePromo.welcomeHeader li:first-child:before {
-    content: none;
-}
-
-#homePagePromo.welcomeHeader a, #homePagePromo.welcomeHeader a:visited {
-    color: var(--text-default);
-    font-size: larger;
-    font-weight: bold;
-    text-align:center;
-}
-
-.homePageUnauth .centeredImg {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80%;
-}
-
-.testimonialBlock {
-    padding: 10pt;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20pt; 
-    margin-bottom: 10pt;
-    border: 1pt solid var(--default-border);
-    box-shadow: 2pt 2pt 3pt 0pt var(--box-shadow-color);
-    border-radius: 5pt;
-    max-width: 80%;
-}
-
-.testimonialQuote {
-}
-
-.testimonialQuote::before, .testimonialQuote::after {
-    content: "\"";
-}
-
-.testimonialAttribution::before {
-    content: " — "
-}
-
-.testimonialAttribution {
-    font-style: italic;
-    font-weight: normal;
-}
-
-.centered80 {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80%;
-}
-
-.featureAreaBlock {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80%;
-    text-align: center;
-}
-
-.featureAreaBlockItem {
-    border: 3px solid var(--default-border);
-    border-radius: 10pt;
-    margin: 8pt;
-    padding: 10pt;
-    height: 150pt;
-    width: 180pt;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.featureAreaDescriptionHeader {
-    font-weight:bold;
-    font-size: 12pt;
-    text-align:center;
-    margin-bottom: 5pt;
-}
-
-.featureAreaDescriptionBody {
-    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: normal;
-    font-size: 10pt;
-    text-align: left;
-    color: var(--text-light);
-}
-
 .featureAreaDescriptorIcon {
     background-repeat: no-repeat;
     background-position-x: center;
@@ -2118,10 +1996,6 @@ tr div.editCell, tr.editRow div.displayCell {
     vertical-align: top;
     border: 1px solid var(--sticky-header-border);
     page-break-inside: avoid;
-}
-
-.l.logbookRow {
-    background-color: var(--body-background);
 }
 
 .logbookAlternateRow {

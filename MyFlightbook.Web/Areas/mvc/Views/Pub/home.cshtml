@@ -7,6 +7,7 @@
         String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.sheets = new string[] { $"~/public/CSS/homepage.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     string fbfeed = Branding.CurrentBrand.FacebookFeed;
     string comparePrompt = Branding.ReBrand(Resources.LocalizedText.AboutViewFeatures);
     string learnMorePrompt = Branding.ReBrand(Resources.Profile.HomePromoLearnMore);
@@ -31,16 +32,16 @@
             @foreach (AppAreaDescriptor aad in AppAreaDescriptor.DefaultDescriptors)
             {
                 <div class="featureAreaBlockItem">
-                    <div class="featureAreaDescriptorIcon"><img src="@aad.Icon.ToAbsolute()" alt="@aad.Title" title="@aad.Title" style="width: 36pt; height: 36pt;" /></div>
+                    <div class="featureAreaDescriptorIcon"><img src="@aad.Icon.ToAbsolute()" alt="@aad.Title" title="@aad.Title" /></div>
                     <div class="featureAreaDescriptionHeader">@aad.Title</div>
                     <div class="featureAreaDescriptionBody">@Branding.ReBrand(aad.Description)</div>
                 </div>
             }
         </div>
-        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@comparePrompt" title="@comparePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@comparePrompt</a></h2>
+        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@comparePrompt" title="@comparePrompt" class="imgMiddle" /> <a href="@("~/mvc/pub/FeatureChart".ToAbsolute())">@comparePrompt</a></h2>
         <div id="homePagePromo" class="welcomeHeader">
             <h1>@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity)</h1>
-            <p><a style="font-size: larger; font-weight: bold;" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
+            <p><a class="b l" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.Profile.NewUserCreateAccountPrompt</a></p>
             <div>@Resources.Profile.NewUserExistingAccount <a href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
         </div>
         <div class="testimonialBlock">
@@ -49,7 +50,7 @@
             <h3><span class="testimonialQuote">I am a huge fan of MyFlightbook</span><span class="testimonialAttribution">Jason, Airline Pilot</span></h3>
             <h3><span class="testimonialQuote">Your software is a benefit to pilots, instructors and administrators</span><span class="testimonialAttribution">Wayne, MEI</span></h3>
         </div>
-        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@learnMorePrompt" title="@learnMorePrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/pub/about".ToAbsolute())">@learnMorePrompt</a></h2>
+        <h2><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@learnMorePrompt" title="@learnMorePrompt" class="imgMiddle" /> <a href="@("~/mvc/pub/about".ToAbsolute())">@learnMorePrompt</a></h2>
     </div>
     <div class="homepageRecentStats">
         @{ Html.RenderPartial("_recentStats"); }
@@ -92,17 +93,17 @@ else
         <br />
         <h2>@Resources.Profile.HomePromoCurrencyHeader</h2>
         <div class="centered80" id="divCurrency">
-            <div style="text-align: center"><img src="@("~/images/progress.gif".ToAbsolute())" style="width: 20pt; height: 20pt;" /></div>
+            <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
         </div>
         <br />
         <h2>@Resources.Profile.HomePromoTotalsHeader</h2>
         <div id="divTotals">
-            <div style="text-align: center"><img src="@("~/images/progress.gif".ToAbsolute())" style="width: 20pt; height: 20pt;" /></div>
+            <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
         </div>
-        <h2 style="text-align: center;"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" style="vertical-align: middle;" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
+        <h2 class="c"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" class="imgMiddle" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
     </div>
 }
-<div style="text-align:center">
+<div class="c">
     @{ Html.RenderAction("RenderGoogleAd", "MFBTemplate", new { fVertical = false }); }
 </div>
 

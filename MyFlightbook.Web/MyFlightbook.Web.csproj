@@ -758,6 +758,7 @@
     <Content Include="Member\Ajax.asmx" />
     <Content Include="Public\CSS\day.css" />
     <Content Include="Public\CSS\holdprogress.css" />
+    <Content Include="Public\CSS\homepage.css" />
     <Content Include="Public\CSS\jquery.passwordRequirements.css" />
     <Content Include="Public\CSS\night.css" />
     <Content Include="Public\CSS\printAirline.css" />
