@@ -47,6 +47,14 @@
     text-align: center;
 }
 
+.ra {
+    text-align: right;
+}
+
+.dn {
+    display: none;
+}
+
 .hc {
     margin-left: auto;
     margin-right: auto;
@@ -103,6 +111,10 @@
 
 .w25 {
     width: 25%;
+}
+
+.overX {
+    overflow-x: auto;
 }
 
 /* Basic HTML */
@@ -883,9 +895,9 @@ a img
     border: 1px solid var(--default-border);
 }
 
-    .PaddedCell:nth-child(even) {
-        background-color: var(--table-alternate-row-background);
-    }
+.PaddedCell:nth-child(even) {
+    background-color: var(--table-alternate-row-background);
+}
 
 .FootNote
 {
@@ -902,10 +914,63 @@ table.rollupReport {
     margin-bottom: 10px;
 }
 
-/* Model rollup - emphasize the bottom row */
-table.modelRollup tbody tr:last-child {
+table.innerReport {
+    font-size: 8pt;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.catClassSubReport {
+    font-size: smaller;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.catClassSubReport thead tr {
+    vertical-align: bottom;
+}
+
+table.catClassSubReport thead tr th:not(:last-child) {
+    border-right: 1px solid var(--default-border);
+}
+
+table.catClassSubReport tbody tr td {
+    border-top: 1px solid var(--default-border);
+}
+
+table.catClassSubReport tbody tr td:not(:last-child) {
+    border-right: 1px solid var(--default-border);
+}
+
+table.innerReport tr td {
+    padding: 3px;
+}
+
+table.innerReport tr:first-child {
+    border-bottom: 1px solid var(--default-border);
+}
+
+table.modelRollup tbody tr.totalRow {
     font-weight: bold;
+}
+
+.doubleTop {
     border-top-style: double;
+}
+
+table.modelRollup tbody tr.t12rollup {
+    display: none;
+    background-color: var(--table-alternate-row-background);
+    font-style: italic;
+    font-size: smaller;
+}
+
+.t12rollup td:first-child::after {
+}
+
+.t12rollup td:first-child::before {
+    margin-left: 2em;
+    content: ' ● ';
 }
 
 /* Logbook gridview header */
@@ -914,9 +979,9 @@ table.modelRollup tbody tr:last-child {
     color: var(--header-base-color);
 }
 
-    .headerBase a {
-        color: var(--header-base-color);
-    }
+.headerBase a {
+    color: var(--header-base-color);
+}
 
 .headerBase a:hover {
     color:var(--anchor-color);

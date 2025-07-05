@@ -44,7 +44,7 @@
         });
     });
 </script>
-<div style="display:none;">
+<div class="dn">
     @using (Html.BeginForm("Reports", "Training", FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
     {
         @Html.AntiForgeryToken();
@@ -54,7 +54,7 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
-<div id="accordionproxycontainer" style="display:none;">
+<div id="accordionproxycontainer" class="dn">
     <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
     <div id="apc8710">@Resources.Totals.CommonReports8710</div>
     <div id="apcModel">@Resources.Totals.CommonReportsAirline</div>
@@ -72,12 +72,12 @@
     </script>
 </div>
 }
-<div id="targetFilter" style="display:none;">
-    <div style="margin-left:auto; margin-right:auto;">
+<div id="targetFilter" class="dn">
+    <div class="hc">
         @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
     </div>
 </div>
-<div id="target8710" style="display:none; overflow-x: auto;">
+<div id="target8710" class="dn overX">
     @if (reports.Report8710.Any())
     {
         <table cellpadding="0" cellspacing="0" class="rollupReport">
@@ -104,73 +104,73 @@
                 @foreach (Form8710Row row in reports.Report8710)
                 {
                     <tr>
-                        <td class="PaddedCell" style="text-align:center">@row.Category</td>
-                        <td class="PaddedCell" style="text-align:right">@row.TotalTime.FormatDecimal(fUseHHMM, false)</td>
-                        <td class="PaddedCell" style="text-align:right">@row.InstructionReceived.FormatDecimal(fUseHHMM, false)</td>
-                        <td class="PaddedCell" style="text-align:right">@row.SoloTime.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell c">@row.Category</td>
+                        <td class="PaddedCell ra">@row.TotalTime.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.InstructionReceived.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.SoloTime.FormatDecimal(fUseHHMM, false)</td>
                         <td class="PaddedCell">
-                            <table style="width: 100%; font-size:8pt; border-spacing:0px">
+                            <table class="innerReport">
                                 <tr>
-                                    <td style="border-bottom: 1px solid black; padding: 3px">@Resources.Totals.PIC</td>
-                                    <td style="border-bottom: 1px solid black; padding:3px">@row.PIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.PIC</td>
+                                    <td>@row.PIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 3px">@Resources.Totals.SIC</td>
-                                    <td style="padding: 3px">@row.SIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.SIC</td>
+                                    <td>@row.SIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                             </table>
                         </td>
-                        <td class="PaddedCell" style="text-align: right">@row.CrossCountryDual.FormatDecimal(fUseHHMM, false)</td>
-                        <td class="PaddedCell" style="text-align: right">@row.CrossCountrySolo.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.CrossCountryDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.CrossCountrySolo.FormatDecimal(fUseHHMM, false)</td>
                         <td class="PaddedCell">
-                            <table style="width: 100%; font-size:8pt; border-spacing:0px">
+                            <table class="innerReport">
                                 <tr>
-                                    <td style="border-bottom: 1px solid black; padding: 3px">@Resources.Totals.PIC</td>
-                                    <td style="border-bottom: 1px solid black; padding:3px">@row.CrossCountryPIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.PIC</td>
+                                    <td>@row.CrossCountryPIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 3px">@Resources.Totals.SIC</td>
-                                    <td style="padding: 3px">@row.CrosscountrySIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.SIC</td>
+                                    <td>@row.CrosscountrySIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                             </table>
                         </td>
-                        <td class="PaddedCell" style="text-align: right">@row.InstrumentTime.FormatDecimal(fUseHHMM, false)</td>
-                        <td class="PaddedCell" style="text-align: right">@row.NightDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.InstrumentTime.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightDual.FormatDecimal(fUseHHMM, false)</td>
                         <td class="PaddedCell">@row.NightTakeoffs.PrettyString() / @row.NightLandings.PrettyString()</td>
                         <td class="PaddedCell">
-                            <table style="width: 100%; font-size:8pt; border-spacing:0px">
+                            <table class="innerReport">
                                 <tr>
-                                    <td style="border-bottom: 1px solid black; padding: 3px">@Resources.Totals.PIC</td>
-                                    <td style="border-bottom: 1px solid black; padding:3px">@row.NightPIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.PIC</td>
+                                    <td>@row.NightPIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 3px">@Resources.Totals.SIC</td>
-                                    <td style="padding: 3px">@row.NightSIC.FormatDecimal(fUseHHMM, false)</td>
+                                    <td>@Resources.Totals.SIC</td>
+                                    <td>@row.NightSIC.FormatDecimal(fUseHHMM, false)</td>
                                 </tr>
                             </table>
                         </td>
                         <td class="PaddedCell">
-                            <table style="width: 100%; font-size:8pt; border-spacing:0px">
+                            <table class="innerReport">
                                 <tr>
-                                    <td style="border-bottom: 1px solid black; padding: 3px">@Resources.Totals.PIC</td>
-                                    <td style="border-bottom: 1px solid black; padding:3px">@row.NightPICTakeoffs.PrettyString() / @row.NightPICLandings.PrettyString()</td>
+                                    <td>@Resources.Totals.PIC</td>
+                                    <td>@row.NightPICTakeoffs.PrettyString() / @row.NightPICLandings.PrettyString()</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 3px">@Resources.Totals.SIC</td>
-                                    <td style="padding: 3px">@row.NightSICTakeoffs.PrettyString() / @row.NightSICLandings.PrettyString()</td>
+                                    <td>@Resources.Totals.SIC</td>
+                                    <td>@row.NightSICTakeoffs.PrettyString() / @row.NightSICLandings.PrettyString()</td>
                                 </tr>
                             </table>
                         </td>
                         <td class="PaddedCell">
                             @if (!String.IsNullOrEmpty(row.Category) && reports.ClassTotalsFor8710.TryGetValue(row.Category, out IList<Form8710ClassTotal> classTotals))
                             {
-                                <table style="border-collapse: collapse; width: 100%; font-size: smaller">
+                                <table class="catClassSubReport">
                                     <thead>
-                                        <tr style="vertical-align: bottom;">
-                                            <th style="border-right: 1px solid darkgray;"></th>
-                                            <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldTotal</th>
-                                            <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldPIC</th>
-                                            <th style="border-right: 1px solid darkgray;">@Resources.LogbookEntry.FieldSIC</th>
+                                        <tr>
+                                            <th></th>
+                                            <th>@Resources.LogbookEntry.FieldTotal</th>
+                                            <th>@Resources.LogbookEntry.FieldPIC</th>
+                                            <th>@Resources.LogbookEntry.FieldSIC</th>
                                             <th>@Html.Raw(Resources.LogbookEntry.FieldDual.Replace(" ", "<br />"))</th>
                                         </tr>
                                     </thead>
@@ -178,18 +178,18 @@
                                         @foreach (Form8710ClassTotal trow in classTotals)
                                         {
                                             <tr>
-                                                <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.ClassName</td>
-                                                <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.Total.FormatDecimal(fUseHHMM, false)</td>
-                                                <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.PIC.FormatDecimal(fUseHHMM, false)</td>
-                                                <td style="border-right: 1px solid darkgray; border-top: 1px solid darkgray;">@trow.SIC.FormatDecimal(fUseHHMM, false)</td>
-                                                <td style="border-top: 1px solid darkgray;">@trow.DualReceived.FormatDecimal(fUseHHMM, false)</td>
+                                                <td>@trow.ClassName</td>
+                                                <td>@trow.Total.FormatDecimal(fUseHHMM, false)</td>
+                                                <td>@trow.PIC.FormatDecimal(fUseHHMM, false)</td>
+                                                <td>@trow.SIC.FormatDecimal(fUseHHMM, false)</td>
+                                                <td>@trow.DualReceived.FormatDecimal(fUseHHMM, false)</td>
                                             </tr>
                                         }
                                     </tbody>
                                 </table>
                             }
                         </td>
-                        <td class="PaddedCell" style="text-align: center;">
+                        <td class="PaddedCell c">
                             <div>@Html.Raw((row.NumberOfFlights > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710NumberFlights, row.NumberOfFlights) : string.Empty)</div>
                             <div>@Html.Raw((row.AeroTows > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.GliderAeroTows, row.AeroTows) : string.Empty)</div>
                             <div>@Html.Raw((row.WinchedLaunches > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.GliderGroundLaunches, row.WinchedLaunches) : string.Empty)</div>
@@ -209,57 +209,72 @@
     <p><span class="FootNote">2</span>@Resources.Totals._8710Footnote2</p>
     <p><span class="FootNote">3</span>@Resources.Totals._8710Footnote3</p>
 </div>
-<div id="targetModel" style="display:none; overflow-x: auto;">
-    <table class="rollupReport modelRollup" cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th></th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldDual</th>
-                <th class="PaddedCell">@Html.Raw(Resources.LogbookEntry.FieldFlightEngineer)</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldMilitary</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldCFI</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldNight</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldIMC</th>
-                <th class="PaddedCell">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldXCountry</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldLanding</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupApproach)</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupPICSIC)</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupPICSICTurboprop)</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupJetPICSIC)</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupMultiPICSIC)</th>
-                <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupTotalByPeriod)</th>
-                <th class="PaddedCell">@Resources.LogbookEntry.FieldLastFlight</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (ModelRollupRow row in reports.ReportByModel)
-            {
+<div id="targetModel" class="dn overX">
+    @if (reports.ReportByModel.Any())
+    {
+        <div class="ra"><label><input type="checkbox" onclick="javascript: $('.t12rollup').toggle();" />@Resources.Totals.ShowTrailing12</label></div>
+        <table class="rollupReport modelRollup" cellpadding="0" cellspacing="0">
+            <thead>
                 <tr>
-                    <td class="PaddedCell" style="text-align: center">@row.ModelDisplay</td>
-                    <td class="PaddedCell" style="text-align: right">@row.DualReceived.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.flightengineer.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.MilTime.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.CFI.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.Night.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.IMC.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.SimIMC.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.XC.FormatDecimal(fUseHHMM, false)</td>
-                    <td class="PaddedCell" style="text-align: right">@row.Landings.FormatInt()</td>
-                    <td class="PaddedCell" style="text-align: right">@((new int[] { row.approaches, row._6MonthApproaches, row._12MonthApproaches }).FormatMulti())</td>
-                    <td class="PaddedCell" style="text-align: right">@((new decimal[] { row.PIC, row.SIC }).FormatMulti(fUseHHMM))</td>
-                    <td class="PaddedCell" style="text-align: right">@((new decimal[] { row.TurboPropPIC, row.TurboPropSIC }).FormatMulti(fUseHHMM))</td>
-                    <td class="PaddedCell" style="text-align: right">@((new decimal[] { row.JetPIC, row.JetSIC }).FormatMulti(fUseHHMM))</td>
-                    <td class="PaddedCell" style="text-align: right">@((new decimal[] { row.MultiPIC, row.MultiSIC }).FormatMulti(fUseHHMM))</td>
-                    <td class="PaddedCell" style="text-align: right">@((new decimal[] { row.Total, row._12MonthTotal, row._24MonthTotal }).FormatMulti(fUseHHMM))</td>
-                    <td class="PaddedCell" style="text-align:center">@row.LastFlight.ToString("d", CultureInfo.CurrentCulture)</td>
+                    <th></th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldDual</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.LogbookEntry.FieldFlightEngineer)</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldMilitary</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldNight</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldIMC</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldXCountry</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldLanding</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupApproach)</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupPICSIC)</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupPICSICTurboprop)</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupJetPICSIC)</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupMultiPICSIC)</th>
+                    <th class="PaddedCell">@Html.Raw(Resources.Totals.RollupTotalByPeriod)</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldLastFlight</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (ModelRollupRow row in reports.DD1821List)
+                {
+                    <tr class="@(row.ModelDisplay == null ? "totalRow" : string.Empty) @(row.is12MonthTotal ? "t12rollup" : string.Empty) @(row.ModelDisplay == null && !row.is12MonthTotal ? "doubleTop" : string.Empty)">
+                        <td class="PaddedCell">@(row.ModelDisplay ?? Resources.LogbookEntry.FieldTotal)</td>
+                        <td class="PaddedCell ra">@row.DualReceived.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.flightengineer.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.MilTime.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.CFI.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.Night.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.IMC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.SimIMC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.XC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.Landings.FormatInt()</td>
+                        <td class="PaddedCell ra">@((new int[] { row.approaches, row._6MonthApproaches, row._12MonthApproaches }).FormatMulti())</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.PIC, row.SIC }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.TurboPropPIC, row.TurboPropSIC }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.JetPIC, row.JetSIC }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.MultiPIC, row.MultiSIC }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.Total, row._12MonthTotal, row._24MonthTotal }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell c">@row.LastFlight.ToString("d", CultureInfo.CurrentCulture)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+    <p class="error">@Resources.LocalizedText.errNoMatchingFlightsFound</p>
+    }
 </div>
-<div id="targetTime" style="display:none; overflow-x: auto;">
-    @Html.Raw(reports.ReportByTime.RenderHTML(pf.UsesHHMM, true))
+<div id="targetTime" class="dn overX">
+    @if (reports.ReportByModel.Any())
+    {
+        @Html.Raw(reports.ReportByTime.RenderHTML(pf.UsesHHMM, true))
+    }
+    else
+    {
+        <p class="error">@Resources.LocalizedText.errNoMatchingFlightsFound</p>
+    }
 </div>
 
 

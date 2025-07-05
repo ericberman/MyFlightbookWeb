@@ -394,6 +394,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include trailing-12-month totals, a la form DD-1821 (denoted in italics with &quot;●&quot;).
+        /// </summary>
+        internal static string ShowTrailing12 {
+            get {
+                return ResourceManager.GetString("ShowTrailing12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SIC.
         /// </summary>
         internal static string SIC {

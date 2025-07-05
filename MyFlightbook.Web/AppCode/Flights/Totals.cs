@@ -1274,13 +1274,8 @@ namespace MyFlightbook.Currency
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
 
-            if (dr["FamilyDisplay"] == DBNull.Value)
-                ModelDisplay = Resources.LogbookEntry.FieldTotal;
-            else
-            {
-                string szFamily = (string)dr["FamilyDisplay"];
-                ModelDisplay = szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : util.ReadNullableString(dr, "ModelDisplay");
-            }
+            FamilyDisplay = (dr["FamilyDisplay"] == DBNull.Value) ? null : (string)dr["FamilyDisplay"];
+            ModelDisplay = FamilyDisplay == null ? null : (FamilyDisplay.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? FamilyDisplay : util.ReadNullableString(dr, "ModelDisplay"));
 
             DualReceived = Convert.ToDecimal(util.ReadNullableField(dr, "DualReceived", 0.0M), CultureInfo.InvariantCulture);
             flightengineer = Convert.ToDecimal(util.ReadNullableField(dr, "FlightEngineer", 0.0M), CultureInfo.InvariantCulture);
@@ -1309,6 +1304,7 @@ namespace MyFlightbook.Currency
         }
 
         #region properties
+        public string FamilyDisplay { get; private set; }
         public string ModelDisplay { get; private set; }
         public decimal DualReceived { get; private set; }
         public decimal flightengineer { get; private set; }
@@ -1334,6 +1330,8 @@ namespace MyFlightbook.Currency
         public decimal _12MonthTotal { get; private set; }
         public decimal _24MonthTotal { get; private set; }
         public DateTime LastFlight { get; private set; }
+
+        public bool is12MonthTotal { get; private set; }
         #endregion
 
         /// <summary>
@@ -1343,14 +1341,19 @@ namespace MyFlightbook.Currency
         /// <param name="args">Optional arguments, if the flightquery has already been refreshed.  Otherwise, this will call refresh</param>
         /// <returns>An enumerable of rows for the Rollup By Model report</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<ModelRollupRow> ModelRollupForQuery(FlightQuery fq, DBHelperCommandArgs args)
+        public static IEnumerable<ModelRollupRow> ModelRollupForQuery(FlightQuery fqIn, DBHelperCommandArgs args, bool fTrailing12)
         {
-            if (fq == null)
-                throw new ArgumentNullException(nameof(fq));
+            if (fqIn == null)
+                throw new ArgumentNullException(nameof(fqIn));
+
+            FlightQuery fq = new FlightQuery(fqIn);
+            if (fTrailing12)
+                fq.DateRange = FlightQuery.DateRanges.Trailing12Months;
+
+            fq.Refresh();
 
             if (args == null)
             {
-                fq.Refresh();
                 args = new DBHelperCommandArgs() { Timeout = 120 };
                 args.AddFrom(fq.QueryParameters());
             }
@@ -1364,7 +1367,7 @@ namespace MyFlightbook.Currency
                     if (dr.HasRows)
                     {
                         while (dr.Read())
-                            lst.Add(new ModelRollupRow(dr));
+                            lst.Add(new ModelRollupRow(dr) { is12MonthTotal = fTrailing12 });
                     }
                 });
 
@@ -1702,6 +1705,27 @@ namespace MyFlightbook.Currency
 
         public IEnumerable<ModelRollupRow> ReportByModel { get; private set; }
 
+        public IEnumerable<ModelRollupRow> ReportByModelTrailing12 { get; private set; }
+
+        public IEnumerable<ModelRollupRow> DD1821List
+        {
+            get
+            {
+                List<ModelRollupRow> lst = new List<ModelRollupRow>(ReportByModel ?? Array.Empty<ModelRollupRow>());
+                lst.AddRange(ReportByModelTrailing12 ?? Array.Empty<ModelRollupRow>());
+                lst.Sort((mr1, mr2) => {
+                    if (mr1.ModelDisplay == null)
+                        return 1;
+                    else if (mr2.ModelDisplay == null)
+                        return -1;
+
+                    int nc = mr1.FamilyDisplay.CompareCurrentCultureIgnoreCase(mr2.FamilyDisplay);
+                    return (nc == 0) ? (mr1.is12MonthTotal ? 1 : -1) : nc;
+                });
+                return lst;
+            }
+        }
+
         public TimeRollup ReportByTime { get; private set; }
 
         public static TrainingReportsForUser ReportsForUser(FlightQuery fq, int roundingUnit)
@@ -1726,7 +1750,8 @@ namespace MyFlightbook.Currency
                 Task.WaitAll(
                     Task.Run(() => { trfu.ClassTotalsFor8710 = Form8710ClassTotal.ClassTotalsForQuery(fq, args); }),
                     Task.Run(() => { trfu.Report8710 = Form8710Row.Form8710ForQuery(fq, args); }),
-                    Task.Run(() => { trfu.ReportByModel = ModelRollupRow.ModelRollupForQuery(fq, args); }),
+                    Task.Run(() => { trfu.ReportByModel = ModelRollupRow.ModelRollupForQuery(fq, args, false); }),
+                    Task.Run(() => { trfu.ReportByModelTrailing12 = ModelRollupRow.ModelRollupForQuery(fq, args, true); }),
                     Task.Run(() => { trfu.ReportByTime = tr.Bind(); })
                 );
             }
