@@ -452,6 +452,105 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MEP (Land).
+        /// </summary>
+        internal static string EASACategoryClassAMELP {
+            get {
+                return ResourceManager.GetString("EASACategoryClassAMELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MET (Land).
+        /// </summary>
+        internal static string EASACategoryClassAMELT {
+            get {
+                return ResourceManager.GetString("EASACategoryClassAMELT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEP (Sea).
+        /// </summary>
+        internal static string EASACategoryClassAMESP {
+            get {
+                return ResourceManager.GetString("EASACategoryClassAMESP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MET (Sea).
+        /// </summary>
+        internal static string EASACategoryClassAMEST {
+            get {
+                return ResourceManager.GetString("EASACategoryClassAMEST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SEP (Land).
+        /// </summary>
+        internal static string EASACategoryClassASELP {
+            get {
+                return ResourceManager.GetString("EASACategoryClassASELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SET (Land).
+        /// </summary>
+        internal static string EASACategoryClassASELT {
+            get {
+                return ResourceManager.GetString("EASACategoryClassASELT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SEP (Sea).
+        /// </summary>
+        internal static string EASACategoryClassASESP {
+            get {
+                return ResourceManager.GetString("EASACategoryClassASESP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SET (Sea).
+        /// </summary>
+        internal static string EASACategoryClassASEST {
+            get {
+                return ResourceManager.GetString("EASACategoryClassASEST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sailplane.
+        /// </summary>
+        internal static string EASACategoryClassGlider {
+            get {
+                return ResourceManager.GetString("EASACategoryClassGlider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Motor Glider.
+        /// </summary>
+        internal static string EASACategoryClassMotorGlider {
+            get {
+                return ResourceManager.GetString("EASACategoryClassMotorGlider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt Rotor.
+        /// </summary>
+        internal static string EASACategoryClassPoweredLift {
+            get {
+                return ResourceManager.GetString("EASACategoryClassPoweredLift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This tailnumber has been used for multiple aircraft; if you meant to use another one besides this, you can select it below..
         /// </summary>
         internal static string editAicraftOtherVersionsDescription {

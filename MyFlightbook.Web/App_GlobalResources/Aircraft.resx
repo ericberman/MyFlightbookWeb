@@ -886,4 +886,37 @@ Do you still want to delete?</value>
   <data name="SharedDeadlineIndicator" xml:space="preserve">
     <value>Indicates that the deadline is shared amongst all pilots who fly this aircraft, not just you.</value>
   </data>
+  <data name="EASACategoryClassASESP" xml:space="preserve">
+    <value>SEP (Sea)</value>
+  </data>
+  <data name="EASACategoryClassASEST" xml:space="preserve">
+    <value>SET (Sea)</value>
+  </data>
+  <data name="EASACategoryClassASELP" xml:space="preserve">
+    <value>SEP (Land)</value>
+  </data>
+  <data name="EASACategoryClassASELT" xml:space="preserve">
+    <value>SET (Land)</value>
+  </data>
+  <data name="EASACategoryClassAMELP" xml:space="preserve">
+    <value>MEP (Land)</value>
+  </data>
+  <data name="EASACategoryClassAMELT" xml:space="preserve">
+    <value>MET (Land)</value>
+  </data>
+  <data name="EASACategoryClassAMESP" xml:space="preserve">
+    <value>MEP (Sea)</value>
+  </data>
+  <data name="EASACategoryClassAMEST" xml:space="preserve">
+    <value>MET (Sea)</value>
+  </data>
+  <data name="EASACategoryClassGlider" xml:space="preserve">
+    <value>Sailplane</value>
+  </data>
+  <data name="EASACategoryClassMotorGlider" xml:space="preserve">
+    <value>Motor Glider</value>
+  </data>
+  <data name="EASACategoryClassPoweredLift" xml:space="preserve">
+    <value>Tilt Rotor</value>
+  </data>
 </root>

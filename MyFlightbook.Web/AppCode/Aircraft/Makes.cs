@@ -208,6 +208,34 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// If this model has an alternative category/class naming scheme in EASA, this returns the alternate name (localized).  If not, it returns null.
+        /// </summary>
+        [JsonIgnore]
+        public string EASAClassification
+        {
+            get
+            {
+                switch (CategoryClassID)
+                {
+                    case CategoryClass.CatClassID.ASEL:
+                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassASELP : Resources.Aircraft.EASACategoryClassASELT;
+                    case CategoryClass.CatClassID.ASES:
+                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassASESP : Resources.Aircraft.EASACategoryClassASEST;
+                    case CategoryClass.CatClassID.AMEL:
+                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassAMELP : Resources.Aircraft.EASACategoryClassAMELT;
+                    case CategoryClass.CatClassID.AMES:
+                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassAMESP : Resources.Aircraft.EASACategoryClassAMEST;
+                    case CategoryClass.CatClassID.Glider:
+                        return IsMotorGlider ? Resources.Aircraft.EASACategoryClassMotorGlider : Resources.Aircraft.EASACategoryClassGlider;
+                    case CategoryClass.CatClassID.PoweredLift:
+                        return Resources.Aircraft.EASACategoryClassPoweredLift;
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
         /// ID's of sample aircraft which that are of this make (read-only)
         /// This is generally the result of a group_concat when retrieving multiple models at once;
         /// the aircraft can then be scanned to find sample images.

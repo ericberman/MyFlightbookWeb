@@ -70,6 +70,8 @@
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
+                string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassification;
+                string catClassDisplay = EASACatClass == null ? led.CatClassDisplay : $"{EASACatClass} / {led.CatClassDisplay}";
                 <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
                     <td>@led.Index</td>
                     <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
@@ -79,7 +81,7 @@
                     <td>@Html.Raw(led.ArrivalTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
                     <td>@pl.ModelDisplay(led)</td>
                     <td>@led.TailNumOrSimDisplay</td>
-                    <td>@led.CatClassDisplay</td>
+                    <td>@catClassDisplay</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
                         <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
