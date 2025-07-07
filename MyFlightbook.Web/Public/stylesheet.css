@@ -55,9 +55,17 @@
     display: none;
 }
 
+.dib {
+    display: inline-block;
+}
+
 .hc {
     margin-left: auto;
     margin-right: auto;
+}
+
+.indent {
+    margin-left: 1.5em;
 }
 
 .largeBold {
@@ -67,6 +75,10 @@
 
 .imgMiddle {
     vertical-align: middle;
+}
+
+.topAlign {
+    vertical-align: top;
 }
 
 .lightText {
@@ -115,6 +127,14 @@
 
 .overX {
     overflow-x: auto;
+}
+
+.w15em {
+    width: 15em;
+}
+
+.bordered {
+    border: 1px solid var(--default-border);
 }
 
 /* Basic HTML */
@@ -277,13 +297,12 @@ input[type=text]::placeholder {
 }
 
 /* Vertical form (e.g., Edit Make) */
-.vfSection
-{
-    display:block;
+.vfSection {
     padding-top: 3px;
     padding-left: 3px;
     padding-right: 3px;
     padding-bottom: 8px;
+    vertical-align: top;
 }
 
 .vfPrompt
@@ -291,7 +310,7 @@ input[type=text]::placeholder {
     font-weight:bold;
     width: 130px;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .vfSubDesc {
@@ -299,16 +318,14 @@ input[type=text]::placeholder {
     font-size:smaller;
 }
 
-.vfValue
-{
+.vfValue {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .vfDescription
 {
     display: inline-block;
-    vertical-align: middle;
     font-weight: normal;
     font-size: smaller;
     text-align: left;
