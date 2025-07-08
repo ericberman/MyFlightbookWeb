@@ -1347,7 +1347,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Frequently Used.
+        ///   Looks up a localized string similar to Frequently Used*.
         /// </summary>
         internal static string ImportAircraftHeaderActive {
             get {
@@ -1374,7 +1374,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indicates the internal numerical identifier for an aircraft.  This is useful to disambiguate if there are multiple aircraft with the same tail.  Note that you cannot assign this - it is assigned by the system; this is really only useful for round-trip bulk edits..
+        ///   Looks up a localized string similar to *Assigned by %APP_NAME%*, used only for round-trip bulk-edits.  Indicates the internal numerical identifier for an aircraft.  This is useful to disambiguate if there are multiple aircraft with the same tail.  *Do not make up your own values for this.*.
         /// </summary>
         internal static string ImportAircraftHeaderAircraftIDDesc {
             get {
@@ -1401,7 +1401,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Private Notes.
+        ///   Looks up a localized string similar to Private Notes*.
         /// </summary>
         internal static string ImportAircraftHeaderPrivateNote {
             get {
@@ -1640,6 +1640,15 @@ namespace Resources {
         internal static string ImportHeaderBestMatchModel {
             get {
                 return ResourceManager.GetString("ImportHeaderBestMatchModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to * This is ignored on any initial import; it is only used when re-importing existing aircraft that are already in your account.  Specifically, the &quot;Aircraft ID&quot; column must be present and filled with the internal ID (not the tail number) of the aircraft being updated..
+        /// </summary>
+        internal static string ImportHeaderFootnoteRoundTripOnly {
+            get {
+                return ResourceManager.GetString("ImportHeaderFootnoteRoundTripOnly", resourceCulture);
             }
         }
         

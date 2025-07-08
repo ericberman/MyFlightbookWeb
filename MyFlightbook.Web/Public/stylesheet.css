@@ -1730,12 +1730,12 @@ table.stickyHeaderTable th.gvhRight {
     text-align: right;
 }
 
-    table.stickyHeaderTable td {
-        /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
-        border-bottom: 1px solid var(--sticky-header-border);
-        border-right: 1px solid var(--sticky-header-border);
-        padding: .5em 1em .5em 1em;
-    }
+table.stickyHeaderTable td {
+    /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+    border-bottom: 1px solid var(--sticky-header-border);
+    border-right: 1px solid var(--sticky-header-border);
+    padding: .5em 1em .5em 1em;
+}
 
 table.stickyHeaderTable tr {
     vertical-align: top;

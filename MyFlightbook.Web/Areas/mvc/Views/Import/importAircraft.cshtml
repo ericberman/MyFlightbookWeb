@@ -79,98 +79,103 @@
     <span>@Resources.Aircraft.ImportAircraftStep2&nbsp; </span>
     <span>@Resources.Aircraft.ImportAircraftStep3&nbsp; </span>
 </div>
-<div id="wizardSteps" style="margin-top: 10pt;">
+<div id="wizardSteps">
     <div id="wzStep1">
         <h3>@Resources.Aircraft.ImportAircraftDataFormatPrompt</h3>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftDataFormatBody.Linkify())</p>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftHeaderRowDesc.Linkify())</p>
-        <table class="stickyHeaderTable stickyHeaderAlternate" style="max-width: 90%; margin-left: auto; margin-right: auto;">
-            <thead><tr><th></th><th></th></tr></thead>
-            <tbody>
-                <tr style="vertical-align:top">
-                    <td>
-                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderTail</div>
-                        <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
-                    </td>
-                    <td>
-                        @Resources.Aircraft.ImportAircraftHeaderTailDesc
-                        <ul>
-                            <li>@Resources.Aircraft.ImportAircraftSimTip</li>
-                            <li>@Resources.Aircraft.ImportAircraftAnonTip</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr style="vertical-align:top">
-                    <td>
-                        <div style="font-weight:bold;">@Resources.Aircraft.ImportAircraftHeaderModel</div>
-                        <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
-                    </td>
-                    <td>@Resources.Aircraft.ImportAircraftHeaderModelDesc</td>
-                </tr>
-                <tr style="vertical-align: top">
-                    <td>
-                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderActive</div>
-                        <div>@Resources.LocalizedText.OptionalData</div>
-                    </td>
-                    <td>@Resources.Aircraft.ImportAircraftHeaderActiveDesc</td>
-                </tr>
-                <tr style="vertical-align: top">
-                    <td>
-                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderPrivateNote</div>
-                        <div>@Resources.LocalizedText.OptionalData</div>
-                    </td>
-                    <td>@Resources.Aircraft.ImportAircraftHeaderPrivateNoteDesc</td>
-                </tr>
-                <tr style="vertical-align: top">
-                    <td>
-                        <div style="font-weight: bold;">@Resources.Aircraft.ImportAircraftHeaderAircraftID</div>
-                        <div>@Resources.LocalizedText.OptionalData</div>
-                    </td>
-                    <td>@Resources.Aircraft.ImportAircraftHeaderAircraftIDDesc</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="w90 hc">
+            <table class="stickyHeaderTable stickyHeaderAlternate w90 hc">
+                <thead><tr><th></th><th></th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="b">@Resources.Aircraft.ImportAircraftHeaderTail</div>
+                            <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
+                        </td>
+                        <td>
+                            @Resources.Aircraft.ImportAircraftHeaderTailDesc
+                            <ul>
+                                <li>@Resources.Aircraft.ImportAircraftSimTip</li>
+                                <li>@Resources.Aircraft.ImportAircraftAnonTip</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="b">@Resources.Aircraft.ImportAircraftHeaderModel</div>
+                            <div>@Resources.Aircraft.ImportAircraftHeaderRequired</div>
+                        </td>
+                        <td>@Resources.Aircraft.ImportAircraftHeaderModelDesc</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="b">@Resources.Aircraft.ImportAircraftHeaderAircraftID</div>
+                            <div>@Resources.LocalizedText.OptionalData</div>
+                        </td>
+                        <td>@Html.Raw(Branding.ReBrand(Resources.Aircraft.ImportAircraftHeaderAircraftIDDesc).Linkify())</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="b">@Resources.Aircraft.ImportAircraftHeaderActive</div>
+                            <div>@Resources.LocalizedText.OptionalData</div>
+                        </td>
+                        <td>@Resources.Aircraft.ImportAircraftHeaderActiveDesc</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="b">@Resources.Aircraft.ImportAircraftHeaderPrivateNote</div>
+                            <div>@Resources.LocalizedText.OptionalData</div>
+                        </td>
+                        <td>@Resources.Aircraft.ImportAircraftHeaderPrivateNoteDesc</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="fineprint">@Resources.Aircraft.ImportHeaderFootnoteRoundTripOnly</p>
+        </div>
         <p>@Resources.Aircraft.ImportAircraftAnyOrder</p>
         <p>@Resources.Aircraft.ImportAircraftSamplePrompt</p>
-        <table style="margin-left:auto; margin-right: auto; max-width: 80%; min-width: 50%;">
-            <tr style="font-weight: bold;">
-                <td style="padding: 5px">@Resources.Aircraft.ImportAircraftSampleExcel</td>
-                <td style="padding: 5px">@Resources.Aircraft.ImportAircraftSampleTextEditor</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px"><img src="@("~/images/AircraftImportSample.png".ToAbsolute())" alt="@Resources.Aircraft.ImportAircraftExcelAlt" title="@Resources.Aircraft.ImportAircraftExcelAlt" /></td>
-                <td style="padding: 5px">
-                    <pre>Tail Number,Model
+        <table class="hc" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>@Resources.Aircraft.ImportAircraftSampleExcel</th>
+                    <th>@Resources.Aircraft.ImportAircraftSampleTextEditor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="@("~/images/AircraftImportSample.png".ToAbsolute())" alt="@Resources.Aircraft.ImportAircraftExcelAlt" title="@Resources.Aircraft.ImportAircraftExcelAlt" /></td>
+                    <td>
+                        <pre>Tail Number,Model
 N12345,C172
 N6789,B777
 ...</pre>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <p>@Resources.Aircraft.ImportAircraftBatchTip</p>
-        <p style="font-weight:bold">@Resources.Aircraft.ImportAircraftPreviewTip</p>
-        <div style="margin-left: auto; margin-right: auto;">
-            <div id="divUploadAircraftCSV"></div>
-        </div>
+        <p class="b">@Resources.Aircraft.ImportAircraftPreviewTip</p>
+        <div id="divUploadAircraftCSV"></div>
         <div class="error" id="lblUploadErr"></div>
     </div>
-    <div id="wzStep2" style="display: none;">
+    <div id="wzStep2" class="dn">
         <div id="divImportSummary">
             <img src="@("~/images/progress.gif".ToAbsolute())" style="height: 18pt; width: 18pt;" />
         </div>
     </div>
-    <div id="wzStep3" style="display: none;">
+    <div id="wzStep3" class="dn">
         <p>@Resources.Aircraft.ImportAircraftUnmatchedHeader</p>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftUmmatchedHeader2.Linkify())</p>
         <p>@Resources.Aircraft.ImportAircraftEditTip</p>
         @{ Html.RenderAction("ATDFTDNote", "Aircraft"); }
         <p>
             @Resources.Aircraft.ImportAircraftAddModelTip
-            <span style="font-weight: bold;">
+            <span class="b">
                 @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divAddModel", labelClass = "expandoATD" }); }
             </span>
         </p>
-        <div id="divAddModel" class="callout" style="display: none; width: unset;">
+        <div id="divAddModel" class="callout dn" style="width: unset;">
             @{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = MakeModel.UnknownModel, onCommitFunc = "modelCommitted" }); }
         </div>
         <p>@Html.Raw(Resources.Aircraft.ImportAircraftFinishTip.Linkify())</p>
@@ -180,12 +185,12 @@ N6789,B777
         <div class="error" id="lblImportFinishErr"></div>
     </div>
 </div>
-<div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
-    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+<div id="wizNav" class="w100 c" style="margin-top: 18pt;">
+    <button type="button" id="btnWizPrev" class="dn">@Resources.LocalizedText.PreviousPrompt</button>
     <button type="button" id="btnWizNext" disabled>@Resources.LocalizedText.NextPrompt</button>
-    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+    <button type="button" id="btnWizFinish" class="dn">@Resources.LocalizedText.FinishPrompt</button>
 </div>
-<div style="display: none;" id="divHoldProgress">
+<div class="dn" id="divHoldProgress">
     <div class="hc c" id="imgProgress" style="width: 244px;">
         <div class="holdProgressContainer">
             <div class="holdProgressPlane"></div>
