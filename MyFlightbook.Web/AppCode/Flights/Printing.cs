@@ -580,6 +580,8 @@ namespace MyFlightbook.Printing
 
         public enum PropertySeparatorType { Space, Comma, Semicolon, Newline }
 
+        public enum SubtotalStripe { None, CatClass, CatClassTurbine, EASA }
+
         public enum ModelDisplayMode { Full, Short, ICAO }
 
         public enum FontSize { Small, Normal, Large }
@@ -655,10 +657,10 @@ namespace MyFlightbook.Printing
         public bool IncludeColumnTotals { get; set; } = true;
 
         /// <summary>
-        /// If true, stripes subtotals by category/class
+        /// Specifies how per-page subtotals are striped
         /// </summary>
-        [System.ComponentModel.DefaultValue(true)]
-        public bool StripeSubtotalsByCategoryClass { get; set; } = true;
+        [System.ComponentModel.DefaultValue(SubtotalStripe.CatClass)]
+        public SubtotalStripe SubtotalStripeRules { get; set; } = SubtotalStripe.CatClass;
 
         /// <summary>
         /// Returns the text to use to separate properties (based on PropertySeparator)
@@ -811,6 +813,11 @@ namespace MyFlightbook.Printing
         /// </summary>
         [System.ComponentModel.DefaultValue(EndorsementsLevel.DigitalAndPhotos)]
         public EndorsementsLevel Endorsements { get; set; } = EndorsementsLevel.DigitalAndPhotos;
+
+        /// <summary>
+        /// Include headshot image on the cover page?
+        /// </summary>
+        public bool IncludeHeadshot { get; set; }
         #endregion
 
         public PrintingSections() { }
@@ -1207,11 +1214,6 @@ namespace MyFlightbook.Printing
             if (cIn == 0)
                 return Array.Empty<LogbookPrintedPage>();
 
-            // For speed, cache the names of each category/class
-            Dictionary<int, string> dictCatClasses = new Dictionary<int, string>();
-            foreach (CategoryClass cc in CategoryClass.CategoryClasses())
-                dictCatClasses.Add(cc.IDCatClassAsInt, cc.CatClass);
-
             List<LogbookPrintedPage> lstOut = new List<LogbookPrintedPage>();
 
             Dictionary<string, LogbookEntryDisplay> dictPageTotals = null, dictPreviousTotals, dictRunningTotals = new Dictionary<string, LogbookEntryDisplay>();
@@ -1261,7 +1263,11 @@ namespace MyFlightbook.Printing
 
                 flightIndexOnPage += led.RowHeight;
 
-                string szCatClassKey = dictCatClasses[led.EffectiveCatClass];   // should never not be present!!
+                string szCatClassKey = CategoryClass.CategoryClassFromID(led.EffectiveCatClass).CatClass;
+                if (po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.EASA)
+                    szCatClassKey =  MakeModel.GetModel(led.ModelID).EASAClassificationForCatClass((CategoryClass.CatClassID) led.EffectiveCatClass) ?? szCatClassKey;
+                else if (po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClassTurbine && MakeModel.GetModel(led.ModelID).EngineType.IsTurbine())
+                    szCatClassKey += Resources.LocalizedText.PrintViewTurbineSubtotalSuffix;
 
                 led.Index = ++index;
 
@@ -1311,7 +1317,7 @@ namespace MyFlightbook.Printing
                 foreach (LogbookEntryDisplay lep in lpp.RunningTotals.Values)
                     lep.Index = iTotal++;
 
-                if (!po.StripeSubtotalsByCategoryClass)
+                if (po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.None )
                 {
                     RemoveStripedSubtotals(lpp.TotalsThisPage);
                     RemoveStripedSubtotals(lpp.TotalsPreviousPages);

@@ -70,7 +70,7 @@
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
-                string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassification;
+                string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassificationForCatClass((CategoryClass.CatClassID) led.EffectiveCatClass);
                 string catClassDisplay = EASACatClass == null ? led.CatClassDisplay : $"{EASACatClass} / {led.CatClassDisplay}";
                 <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
                     <td>@led.Index</td>

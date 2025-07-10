@@ -67,7 +67,7 @@
         $("#divPrintSearch").toggle();
     }
 </script>
-<script type="text/javascript" src="@("~/Public/Scripts/printing.js?v=5".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/printing.js?v=6".ToAbsolute())"></script>
 @if (!ViewBag.isPDF)
 {
     <div class="noprint">
@@ -111,6 +111,10 @@
         <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;">
             <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large; margin-top: 36pt;">
                 <p>@pf.UserFullName</p>
+                @if (po.Sections.IncludeHeadshot && pf.HasHeadShot)
+                {
+                    <div class="c"><img src="@pf.HeadShotHRefWithKey" /></div>
+                }
                 <p>@Resources.LocalizedText.PrintViewCoverSheetNameTemplate</p>
             </div>
             @if (po.Sections.IncludeAddress)

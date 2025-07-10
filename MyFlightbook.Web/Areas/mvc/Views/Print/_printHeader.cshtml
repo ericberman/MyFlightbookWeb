@@ -5,9 +5,15 @@
 }
 <table style="width:100%;">
     <tr>
-        <td class="printHeaderLeft">@(pl.Options.Sections.IncludeAddress ? pf.Address : string.Empty)</td>
+        <td class="printHeaderLeft">
+            @if (pl.Options.Sections.IncludeHeadshot && pf.HasHeadShot)
+            {
+                <div class="dib"><img class="headerHeadSht" src="@pf.HeadShotHRefWithKey" /></div>   
+            }
+            <div class="dib printHeaderAddress">@(pl.Options.Sections.IncludeAddress ? pf.Address : string.Empty)</div>
+        </td>
         <td class="printHeaderCenter" colspan="7">
-            <img style="max-width: 120px;" src="@Branding.CurrentBrand.LogoHRef.ToAbsoluteURL(Request)" />
+            <img class="printHeaderLogo" src="@Branding.CurrentBrand.LogoHRef.ToAbsoluteURL(Request)" />
         </td>
         <td class="printHeaderRight">
             <div>@pf.UserFullName</div>

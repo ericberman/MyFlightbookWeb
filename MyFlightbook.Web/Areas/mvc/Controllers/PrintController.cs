@@ -93,6 +93,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IncludeTotals = Request["poSectTotals"] != null,
                 IncludeDOB = Request["poSectDOB"] != null,
                 IncludeAddress = Request["poSectAddress"] != null,
+                IncludeHeadshot = Request["poHeadshot"] != null,
                 CompactTotals = Request["poSectTotalsCompact"] != null,
                 Endorsements = Request["poSectEndorsements"] != null ? (Request["poSectEndorsementsJPG"] != null ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None
             };
@@ -123,7 +124,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 FlightsPerPage = int.TryParse(Request["poFlightsPerPage"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fpp) ? fpp : 0,
                 IncludeColumnTotals = Request["poIncludeColumn"] != null,
                 IncludePullForwardTotals = Request["poIncludePreviousPage"] != null,
-                StripeSubtotalsByCategoryClass = Request["poSubtotalCatClass"] != null,
+                SubtotalStripeRules = Enum.TryParse(Request["poSubtotalsRules"], true, out PrintingOptions.SubtotalStripe stripeRules) ? stripeRules : PrintingOptions.SubtotalStripe.CatClass,
                 BreakAtMonthBoundary = Request["poForcedBreak"].CompareCurrentCultureIgnoreCase("Month") == 0,
                 BreakAtYearBoundary = Request["poForcedBreak"].CompareCurrentCultureIgnoreCase("Year") == 0,
                 DisplayMode = Enum.TryParse(Request["poModelDisplay"], true, out PrintingOptions.ModelDisplayMode displayMode) ? displayMode : PrintingOptions.ModelDisplayMode.Full,

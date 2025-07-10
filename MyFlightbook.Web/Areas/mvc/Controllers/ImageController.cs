@@ -275,6 +275,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
         }
 
+        public ActionResult ViewUserWithKey(string id, string key)
+        {
+            if (String.IsNullOrEmpty(id))
+                throw new ArgumentNullException(nameof(id));
+            if (String.IsNullOrEmpty(key))
+                throw new ArgumentNullException(nameof(key));
+
+            long utcNow = DateTime.UtcNow.Ticks;
+            bool fKey = (long.TryParse(new Encryptors.SharedDataEncryptor().Decrypt(key ?? string.Empty), out long ticks) && utcNow - ticks > 0 && TimeSpan.FromTicks(utcNow - ticks).TotalMinutes < 5);
+            if (!fKey)
+                throw new UnauthorizedAccessException();
+
+            Profile pf = MyFlightbook.Profile.GetUser(id);
+            return pf.HasHeadShot ? (ActionResult) File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
+
+
+        }
+
         public ActionResult ViewPic(string r, string k, string t)
         {
             // issue #1389 - seeing a bunch of requests that include an encoded ampersand.  If we see that, redirect to notfound

@@ -207,31 +207,24 @@ namespace MyFlightbook
             get { return String.IsNullOrEmpty(FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Makes.ICAOTemplate, FamilyName); }
         }
 
-        /// <summary>
-        /// If this model has an alternative category/class naming scheme in EASA, this returns the alternate name (localized).  If not, it returns null.
-        /// </summary>
-        [JsonIgnore]
-        public string EASAClassification
+        public string EASAClassificationForCatClass(CategoryClass.CatClassID categoryClass)
         {
-            get
+            switch (categoryClass)
             {
-                switch (CategoryClassID)
-                {
-                    case CategoryClass.CatClassID.ASEL:
-                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassASELP : Resources.Aircraft.EASACategoryClassASELT;
-                    case CategoryClass.CatClassID.ASES:
-                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassASESP : Resources.Aircraft.EASACategoryClassASEST;
-                    case CategoryClass.CatClassID.AMEL:
-                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassAMELP : Resources.Aircraft.EASACategoryClassAMELT;
-                    case CategoryClass.CatClassID.AMES:
-                        return EngineType == TurbineLevel.Piston ? Resources.Aircraft.EASACategoryClassAMESP : Resources.Aircraft.EASACategoryClassAMEST;
-                    case CategoryClass.CatClassID.Glider:
-                        return IsMotorGlider ? Resources.Aircraft.EASACategoryClassMotorGlider : Resources.Aircraft.EASACategoryClassGlider;
-                    case CategoryClass.CatClassID.PoweredLift:
-                        return Resources.Aircraft.EASACategoryClassPoweredLift;
-                    default:
-                        return null;
-                }
+                case CategoryClass.CatClassID.ASEL:
+                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassASELT : Resources.Aircraft.EASACategoryClassASELP;
+                case CategoryClass.CatClassID.ASES:
+                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassASEST : Resources.Aircraft.EASACategoryClassASESP;
+                case CategoryClass.CatClassID.AMEL:
+                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassAMELT : Resources.Aircraft.EASACategoryClassAMELP;
+                case CategoryClass.CatClassID.AMES:
+                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassAMEST : Resources.Aircraft.EASACategoryClassAMESP;
+                case CategoryClass.CatClassID.Glider:
+                    return IsMotorGlider ? Resources.Aircraft.EASACategoryClassMotorGlider : Resources.Aircraft.EASACategoryClassGlider;
+                case CategoryClass.CatClassID.PoweredLift:
+                    return Resources.Aircraft.EASACategoryClassPoweredLift;
+                default:
+                    return null;
             }
         }
 

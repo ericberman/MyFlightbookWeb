@@ -41,6 +41,7 @@ function printingSections(container, options) {
         sects["CompactTotals"] = ckPrintSectionCompactTotals.checked;
         sects["IncludeDOB"] = $("#ckPrintSectionsDOB")[0].checked;
         sects["IncludeAddress"] = $("#ckPrintSectionsAddress")[0].checked;
+        sects["IncludeHeadshotCover"] = $("#ckPvHeadshot")[0].checked;
         options.onChangeFunc(sects)
         return false;
     }

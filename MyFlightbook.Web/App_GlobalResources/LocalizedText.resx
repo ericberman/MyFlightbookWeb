@@ -1653,7 +1653,7 @@
     <value>'Week of' {0}</value>
   </data>
   <data name="PrintViewSubtotalsByCategoryClass" xml:space="preserve">
-    <value>Break down subtotals by category/class</value>
+    <value>Category / Class</value>
   </data>
   <data name="FeaturesHeader" xml:space="preserve">
     <value>Feature Summary</value>
@@ -2080,5 +2080,29 @@
   </data>
   <data name="PleaseHold" xml:space="preserve">
     <value>Please hold for a moment...</value>
+  </data>
+  <data name="PrintViewIncludeHeadshotCover" xml:space="preserve">
+    <value>Include headshot on cover sheet and header (if provided)</value>
+  </data>
+  <data name="PrintViewSubtotalTurbine" xml:space="preserve">
+    <value>Category / Class and Turbine</value>
+  </data>
+  <data name="PrintViewSubtotalEASA" xml:space="preserve">
+    <value>EASA Classification</value>
+  </data>
+  <data name="PrintViewIncludeHeadshotAdd" xml:space="preserve">
+    <value>Add a headshot</value>
+  </data>
+  <data name="PrintViewSubtotalNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PrintViewSubTotalPrompt" xml:space="preserve">
+    <value>Group subtotals by:</value>
+  </data>
+  <data name="PrintViewTurbineSubtotalSuffix" xml:space="preserve">
+    <value> (Turbine)</value>
+  </data>
+  <data name="PrintViewIncludeAddressAdd" xml:space="preserve">
+    <value>Add an address</value>
   </data>
 </root>

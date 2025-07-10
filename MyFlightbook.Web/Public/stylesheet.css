@@ -133,8 +133,13 @@
     width: 15em;
 }
 
-.bordered {
+.brdr {
     border: 1px solid var(--default-border);
+}
+
+.prgSpin {
+    height: 16pt;
+    width: 16pt;
 }
 
 /* Basic HTML */
@@ -2086,13 +2091,20 @@ tr div.editCell, tr.editRow div.displayCell {
 
 /* Printing */
 .printHeaderLeft {
-    white-space: pre-wrap;
     width: 33%;
+}
+
+.printHeaderAddress {
+    white-space: pre-wrap;
 }
 
 .printHeaderCenter {
     width: 34%;
     text-align: center;
+}
+
+.printHeaderLogo {
+    max-width: 120px;
 }
 
 .printHeaderRight {
@@ -2140,7 +2152,7 @@ tr div.editCell, tr.editRow div.displayCell {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-    background-color: none;
+    background-color: transparent;
     color: black;
 }
 

@@ -4328,6 +4328,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add an address.
+        /// </summary>
+        internal static string PrintViewIncludeAddressAdd {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeAddressAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show column totals.
         /// </summary>
         internal static string PrintViewIncludeColumnTotals {
@@ -4369,6 +4378,24 @@ namespace Resources {
         internal static string PrintViewIncludeHeader {
             get {
                 return ResourceManager.GetString("PrintViewIncludeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a headshot.
+        /// </summary>
+        internal static string PrintViewIncludeHeadshotAdd {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeHeadshotAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include headshot on cover sheet and header (if provided).
+        /// </summary>
+        internal static string PrintViewIncludeHeadshotCover {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeHeadshotCover", resourceCulture);
             }
         }
         
@@ -4616,11 +4643,47 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break down subtotals by category/class.
+        ///   Looks up a localized string similar to EASA Classification.
+        /// </summary>
+        internal static string PrintViewSubtotalEASA {
+            get {
+                return ResourceManager.GetString("PrintViewSubtotalEASA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string PrintViewSubtotalNone {
+            get {
+                return ResourceManager.GetString("PrintViewSubtotalNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group subtotals by:.
+        /// </summary>
+        internal static string PrintViewSubTotalPrompt {
+            get {
+                return ResourceManager.GetString("PrintViewSubTotalPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category / Class.
         /// </summary>
         internal static string PrintViewSubtotalsByCategoryClass {
             get {
                 return ResourceManager.GetString("PrintViewSubtotalsByCategoryClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category / Class and Turbine.
+        /// </summary>
+        internal static string PrintViewSubtotalTurbine {
+            get {
+                return ResourceManager.GetString("PrintViewSubtotalTurbine", resourceCulture);
             }
         }
         
@@ -4675,6 +4738,15 @@ namespace Resources {
         internal static string PrintViewTotalsHeader {
             get {
                 return ResourceManager.GetString("PrintViewTotalsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  (Turbine).
+        /// </summary>
+        internal static string PrintViewTurbineSubtotalSuffix {
+            get {
+                return ResourceManager.GetString("PrintViewTurbineSubtotalSuffix", resourceCulture);
             }
         }
         

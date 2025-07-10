@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -284,6 +284,8 @@ namespace MyFlightbook
             return rgCatClass;
         }
 
+        private static readonly Dictionary<int, CategoryClass> _dIndexed = new Dictionary<int, CategoryClass>();
+
         /// <summary>
         /// Returns the category/class for a given ID
         /// </summary>
@@ -291,11 +293,18 @@ namespace MyFlightbook
         /// <returns>The specified category/class; throws an exception if not found</returns>
         public static CategoryClass CategoryClassFromID(CatClassID id)
         {
-            IEnumerable<CategoryClass> rgCatClass = CategoryClasses();
-            foreach (CategoryClass cc in rgCatClass)
-                if (cc.IdCatClass == id)
-                    return cc;
-            throw new InvalidDataException("CategoryClassFromID: category/class with ID " + id.ToString() + " does not exist.");
+            if (_dIndexed.Count == 0)
+            {
+                IEnumerable<CategoryClass> rgCatClass = CategoryClasses();
+                foreach (CategoryClass c in rgCatClass)
+                    _dIndexed[c.IDCatClassAsInt] = c;
+            }
+            return _dIndexed.TryGetValue((int) id, out CategoryClass cc) ? cc : throw new InvalidDataException("CategoryClassFromID: category/class with ID " + id.ToString() + " does not exist.");
+        }
+
+        public static CategoryClass CategoryClassFromID(int id)
+        {
+            return CategoryClassFromID((CatClassID) id);
         }
 
         #region IEquatable

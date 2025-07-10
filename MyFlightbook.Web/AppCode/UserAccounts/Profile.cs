@@ -848,8 +848,26 @@ namespace MyFlightbook
         {
             get
             {
-                bool fHasHeadshot = HasHeadShot;
-                return fHasHeadshot ? String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewUser?id={0}", HttpUtility.UrlEncode(UserName)) : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png");
+                NameValueCollection p = HttpUtility.ParseQueryString(string.Empty);
+                p["id"] = UserName;
+                return (HasHeadShot ? $"~/mvc/Image/ViewUser?{p}" : "~/Public/tabimages/ProfileTab.png").ToAbsolute();
+            }
+        }
+
+        /// <summary>
+        /// Returns a link to the user's headshot, if present, else default icon; this link includes a short-duration key that will provide unauthenticated access.
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMember]
+        public string HeadShotHRefWithKey
+        {
+            get
+            {
+                if (!HasHeadShot)
+                    return "~/Public/tabimages/ProfileTab.png".ToAbsolute();
+                NameValueCollection p = HttpUtility.ParseQueryString(string.Empty);
+                p["id"] = UserName;
+                p["key"] = new SharedDataEncryptor().Encrypt(DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
+                return $"~/mvc/Image/ViewUserWithKey?{p}".ToAbsolute();
             }
         }
 

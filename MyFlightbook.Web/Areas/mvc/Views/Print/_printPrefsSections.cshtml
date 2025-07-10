@@ -3,6 +3,7 @@
 @{
     NameValueCollection nvc = ViewBag.paramList;
     FlightQuery fq = ViewBag.query;
+    MyFlightbook.Profile pfCurrent = MyFlightbook.Profile.GetUser(fq.UserName);
     PrintingOptions po = ViewBag.po;
     Action<NameValueCollection> fillNVC = (n) => { foreach (string k in nvc.Keys) { n[k] = nvc[k]; } };
     bool includeFlightsSection = ViewBag.includeFlightsSection;
@@ -39,7 +40,7 @@
             <td><input type="checkbox" @po.Sections.IncludeCoverPage.ToChecked() id="ckPrintSectionsCoverSheet" name="poSectCover" /></td>
             <td>
                 <label for="ckPrintSectionsCoverSheet">@Resources.LocalizedText.PrintViewIncludeCoverSheet</label>
-                
+
             </td>
         </tr>
         <tr>
@@ -47,8 +48,24 @@
             <td><label><input type="checkbox" name="poSectDOB" id="ckPrintSectionsDOB" @((po.Sections.IncludeDOB && po.Sections.IncludeCoverPage).ToChecked()) @(po.Sections.IncludeCoverPage ? string.Empty : "disabled") />@Resources.LocalizedText.PrintViewIncludeDOB</label></td>
         </tr>
         <tr>
-            <td><input type="checkbox" id="ckPrintSectionsAddress" name="poSectAddress" @po.Sections.IncludeAddress.ToChecked() /></td>
-            <td><label for="ckPrintSectionsAddress">@Resources.LocalizedText.PrintViewIncludeAddress</label></td>
+            <td><input type="checkbox" id="ckPrintSectionsAddress" name="poSectAddress" @po.Sections.IncludeAddress.ToChecked() @(String.IsNullOrWhiteSpace(pfCurrent.Address) ? "disabled" : string.Empty) /></td>
+            <td>
+                <label for="ckPrintSectionsAddress">@Resources.LocalizedText.PrintViewIncludeAddress</label>
+                @if (String.IsNullOrWhiteSpace(pfCurrent.Address))
+                {
+                    <a href="@("~/mvc/prefs/account?pane=account".ToAbsolute())">@Resources.LocalizedText.PrintViewIncludeAddressAdd</a>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td><input id="ckPvHeadshot" type="checkbox" @((pfCurrent.HasHeadShot && po.Sections.IncludeHeadshot).ToChecked()) name="poHeadshot" @(pfCurrent.HasHeadShot ? string.Empty : "disabled") /></td>
+            <td>
+                <label for="ckPvHeadshot">@Resources.LocalizedText.PrintViewIncludeHeadshotCover</label>
+                @if (!pfCurrent.HasHeadShot)
+                {
+                    <a href="@("~/mvc/prefs/account?pane=account".ToAbsolute())">@Resources.LocalizedText.PrintViewIncludeHeadshotAdd</a>
+                }
+            </td>
         </tr>
         @if (includeFlightsSection)
         {
@@ -78,7 +95,7 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align:top;">
+            <td>
                 <input type="checkbox" name="poSectEndorsements" @((po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None).ToChecked()) id="ckPrintSectionEndorsements" />
             </td>
             <td><label for="ckPrintSectionEndorsements">@Resources.LocalizedText.PrintViewIncludeEndorsements</label></td>
@@ -96,7 +113,7 @@
         <ul class="nextStep">
             <li>
                 <a id="lnkPrintView" target="_blank" href="@PrintingOptions.PermaLink(fq, po, Request.Url.Host, Request.Url.Scheme, fillNVC)">@Resources.LocalizedText.OpenPrintView</a>
-                <img src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 14px; width: 14px;" id="imgPrgUpdPrintLink" />
+                <img src="@("~/images/progress.gif".ToAbsolute())" class="dn prgSpin" id="imgPrgUpdPrintLink" />
             </li>
         </ul>
     }

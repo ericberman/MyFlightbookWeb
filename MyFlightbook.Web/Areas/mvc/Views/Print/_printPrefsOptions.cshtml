@@ -78,7 +78,7 @@
             <option value="Airline" @((po.Layout == PrintLayoutType.Airline).ToSelected())>@Resources.LogbookEntry.PrintFormatAirline</option>
             <option value="HongKong" @((po.Layout == PrintLayoutType.HongKong).ToSelected())>@Resources.LogbookEntry.PrintFormatHongKong</option>
         </select>
-        <div style="@(pl.SupportsImages ? string.Empty : "display: none;")" ><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poImages" @((po.IncludeImages && pl.SupportsImages).ToChecked()) />@Resources.LocalizedText.PrintViewIncludeImages</label></div>
+        <div class="@(pl.SupportsImages ? string.Empty : "dn")" ><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poImages" @((po.IncludeImages && pl.SupportsImages).ToChecked()) />@Resources.LocalizedText.PrintViewIncludeImages</label></div>
         <div><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poSigs" @po.IncludeSignatures.ToChecked() />@Resources.LocalizedText.PrintViewIncludeSignatures</label></div>
         <div>
             <label><input type="checkbox" onchange="javascript:@(onChange)();" name="poColors" @po.UseFlightColoring.ToChecked() />@Resources.LocalizedText.PrintViewFlightColoring</label>
@@ -92,10 +92,10 @@
     </div>
     <div>
         <div>
-            <h3 style="display: inline-block; font-weight: bold">@Resources.LocalizedText.PrintViewFlightsPerPage</h3>
+            <h3 class="dib b">@Resources.LocalizedText.PrintViewFlightsPerPage</h3>
             @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); }
         </div>
-        <div id="flightsPerPageTip" style="display: none" class="callout">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
+        <div id="flightsPerPageTip" class="callout dn">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
         <select name="poFlightsPerPage" onchange="javascript:@(onChange)();">
             <option value="-1" @((po.FlightsPerPage <= 0).ToSelected())>@Resources.LocalizedText.PrintViewAsFit</option>
             @for (int i = 3; i <= 40; i++)
@@ -104,9 +104,16 @@
             }
         </select>
         <div><label><input type="checkbox" onchange="javascript: @(onChange)();" name="poIncludeColumn" @po.IncludeColumnTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludeColumnTotals</label></div>
-        <div style="@(po.FlightsPerPage <= 0 ? "display: none;" : string.Empty)"><label><input type="checkbox" @(po.IncludeColumnTotals ? string.Empty : "disabled") onchange="javascript:@(onChange)();" name="poIncludePreviousPage" @po.IncludePullForwardTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludePreviousPageTotals</label></div>
-        <div><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poSubtotalCatClass" @po.StripeSubtotalsByCategoryClass.ToChecked() />@Resources.LocalizedText.PrintViewSubtotalsByCategoryClass</label></div>
-        <div style="@(po.FlightsPerPage <= 0 ? "display: none;" : string.Empty)">
+        <div class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)"><label><input type="checkbox" @(po.IncludeColumnTotals ? string.Empty : "disabled") onchange="javascript:@(onChange)();" name="poIncludePreviousPage" @po.IncludePullForwardTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludePreviousPageTotals</label></div>
+        <div>@Resources.LocalizedText.PrintViewSubTotalPrompt
+            <select name="poSubtotalsRules" onchange="javascript:@(onChange)();">
+                <option value="@PrintingOptions.SubtotalStripe.None" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.None).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalNone</option>
+                <option value="@PrintingOptions.SubtotalStripe.CatClass" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClass).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalsByCategoryClass</option>
+                <option value="@PrintingOptions.SubtotalStripe.CatClassTurbine" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClassTurbine).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalTurbine</option>
+                <option value="@PrintingOptions.SubtotalStripe.EASA" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.EASA).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalEASA</option>
+            </select>
+        </div>
+        <div class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)">
             @Resources.LocalizedText.PrintViewBreakPeriodPrompt
             <label><input type="radio" onchange="javascript:@(onChange)();" value="None" name="poForcedBreak" @((!po.BreakAtMonthBoundary && !po.BreakAtYearBoundary).ToChecked()) />@Resources.LocalizedText.PrintViewBreakNone</label>
             <label><input type="radio" onchange="javascript:@(onChange)();" value="Month" name="poForcedBreak" @po.BreakAtMonthBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakMonth</label>
@@ -119,12 +126,12 @@
         <div><label><input type="radio" onchange="javascript:@(onChange)();" value="Short" name="poModelDisplay" @((po.DisplayMode == PrintingOptions.ModelDisplayMode.Short).ToChecked()) />@Resources.LocalizedText.PrintViewModelDisplayShort</label></div>
         <div><label><input type="radio" onchange="javascript:@(onChange)();" value="ICAO" name="poModelDisplay" @((po.DisplayMode == PrintingOptions.ModelDisplayMode.ICAO).ToChecked()) />@Resources.LocalizedText.PrintViewModelDisplayICAO</label></div>
     </div>
-    <div style="@(pl.SupportsOptionalColumns ? string.Empty : "display: none;")">
+    <div class="@(pl.SupportsOptionalColumns ? string.Empty : "dn")">
         <h3>@Resources.LocalizedText.PrintViewOptionalColumns</h3>
         @for (int icol = 0; icol < 4; icol++)
         {
             OptionalColumnType colType = (icol < po.OptionalColumns.Count) ? po.OptionalColumns[icol].ColumnType : OptionalColumnType.None;
-            <div style="display: inline-block;">
+            <div class="dib">
                 <select name="poOptColumn" onchange="javascript:@(onChange)();">
                     <option value="" @((colType == OptionalColumnType.None).ToSelected())>@Resources.LocalizedText.PrintViewOptionalColumnNone</option>
                     @foreach (OptionalColumnType oct in optionalColumnCandidates)
@@ -162,12 +169,12 @@
         {
             bool allExcluded = true;
             <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = po.ExcludedPropertyIDs.Any(), targetID = "divExcludedProps", labelText = Resources.LocalizedText.PrintViewPropertyInclusion });}</h3>
-            <div id="divExcludedProps" style="@(po.ExcludedPropertyIDs.Any() ? string.Empty : "display: none;")">
+            <div id="divExcludedProps" class="@(po.ExcludedPropertyIDs.Any() ? string.Empty : "dn")">
                 @foreach (CustomPropertyType cpt in rgcptUser)
                 {
                     bool fExcluded = po.ExcludedPropertyIDs.Contains(cpt.PropTypeID);
                     allExcluded = allExcluded && fExcluded;
-                    <div style="display: inline-block; width: 25em; text-overflow: ellipsis;"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poExcludedProp" value="@cpt.PropTypeID" @fExcluded.ToChecked() />@cpt.Title</label></div>
+                    <div class="dib" style="width: 25em; text-overflow: ellipsis;"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poExcludedProp" value="@cpt.PropTypeID" @fExcluded.ToChecked() />@cpt.Title</label></div>
                 }
                 @if (rgcptUser.Count > 4)
                 {
