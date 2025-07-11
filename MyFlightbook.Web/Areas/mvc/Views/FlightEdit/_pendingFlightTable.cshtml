@@ -53,11 +53,11 @@
 
             <tr class="logbookRow logbookRowEven">
                 <td class="gvcLeft">
-                    <span style="display:none">@pf.Date.YMDString()</span>
+                    <span class="dn">@pf.Date.YMDString()</span>
                     <div>
-                        <span style="font-weight: bold; font-size: larger">@pf.Date.ToShortDateString()</span>
-                        <span style="font-weight: bold; font-size: larger;">@pf.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
-                        <a href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/airport/maproute?Airports={0}", pf.Route).ToAbsolute())" style="font-weight: bold">@pf.Route</a>
+                        <span class="largeBold">@pf.Date.ToShortDateString()</span>
+                        <span class="largeBold">@pf.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
+                        <a class="b" href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/airport/maproute?Airports={0}", pf.Route).ToAbsolute())" >@pf.Route</a>
                         <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
                     </div>
                     <div>
@@ -85,7 +85,7 @@
                     {
                         <a class="popTrigger" href="@AircraftUtility.EditLink(ac.AircraftID)">@ac.DisplayTailnumber</a>
                         <div class="popMenuContent popMenuHidden hintPopup" style="margin-top: -60px; margin-left: 50px">
-                            <div style="text-align: center">@pf.ModelDisplay</div>
+                            <div class="c">@pf.ModelDisplay</div>
                             @foreach (MFBImageInfo img in ac.AircraftImages)
                             {
                                 if (img.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
@@ -101,25 +101,26 @@
                     }
                 </td>
                 <td class="gvcCentered"> @pf.CatClassDisplay</td>
-                <td class="gvcCentered">@pf.Approaches.FormatInt()<span style="display:none">@pf.Approaches.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.Approaches.FormatInt()<span class="dn">@pf.Approaches.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="gvcCentered largeBold">@Html.Raw(pf.fHoldingProcedures.FormatBoolean())</td>
-                <td class="gvcCentered">@LogbookEntryDisplay.LandingDisplayForFlight(pf)<span style="display:none">@pf.Landings.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.CrossCountry.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.CrossCountry.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.Nighttime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.Nighttime.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.SimulatedIFR.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.SimulatedIFR.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.IMC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.IMC.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.GroundSim.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.GroundSim.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.Dual.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.Dual.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.CFI.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.CFI.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.SIC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.SIC.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.PIC.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.PIC.ToString(CultureInfo.InvariantCulture)</span></td>
-                <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span style="display:none">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@LogbookEntryDisplay.LandingDisplayForFlight(pf)<span class="dn">@pf.Landings.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.CrossCountry.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.CrossCountry.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.Nighttime.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.Nighttime.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.SimulatedIFR.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.SimulatedIFR.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.IMC.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.IMC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.GroundSim.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.GroundSim.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.Dual.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.Dual.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.CFI.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.CFI.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.SIC.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.SIC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.PIC.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.PIC.ToString(CultureInfo.InvariantCulture)</span></td>
+                <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="noprint"></td>
                 <td class="noprint">
                     <div class="ctxtMenuIcon popTrigger"></div>
                     <div class="popMenuContent popMenuHidden" style="margin-top: -10px; margin-left: -90px">
                         <div class="flightContextMenu">
                             <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>
+                            <div><a href="#" onclick="javascript: commitPendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/add.png".ToAbsolute())" />@Resources.LogbookEntry.EditFlightAddFlight</a></div>
                             <div><a href="#" onclick="javascript: deletePendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a></div>
                             <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1 })"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a></div>
                             <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1, reverse = 1 })"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a></div>

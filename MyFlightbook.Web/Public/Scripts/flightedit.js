@@ -353,6 +353,20 @@ function deleteAllPendingFlights() {
     return false;
 }
 
+function commitPendingFlight(pfID) {
+    $("#hdnPendingID").val(pfID);
+    var f = $("#frmActPending").serialize(); $.ajax({
+        url: '/logbook/mvc/flightedit/CommitPendingFlight',
+        type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        complete: function () { },
+        success: function () {
+            window.location = window.location;
+        }
+    });
+    return false;
+}
+
 function cancelEdit() {
     window.location = '/logbook/mvc/FlightEdit/Pending';
     return false;

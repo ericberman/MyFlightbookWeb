@@ -249,6 +249,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult CommitPendingFlight(string pfID)
+        {
+            return SafeOp(() =>
+            {
+                PendingFlight pf = (PendingFlight.PendingFlightsForUser(User.Identity.Name)).FirstOrDefault(pf2 => pf2.PendingID.CompareOrdinal(pfID) == 0);
+                if (pf == null || pf.User.CompareOrdinal(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException(Resources.WebService.errFlightNotYours);
+                pf.FCommit(true, true);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult DeleteAllPendingFlights()
