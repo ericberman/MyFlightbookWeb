@@ -284,11 +284,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             long utcNow = DateTime.UtcNow.Ticks;
             bool fKey = (long.TryParse(new Encryptors.SharedDataEncryptor().Decrypt(key ?? string.Empty), out long ticks) && utcNow - ticks > 0 && TimeSpan.FromTicks(utcNow - ticks).TotalMinutes < 5);
-            if (!fKey)
-                throw new UnauthorizedAccessException();
 
             Profile pf = MyFlightbook.Profile.GetUser(id);
-            return pf.HasHeadShot ? (ActionResult) File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
+            return fKey && pf.HasHeadShot ? (ActionResult) File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
 
 
         }
