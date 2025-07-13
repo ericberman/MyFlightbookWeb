@@ -22,7 +22,7 @@ using static MyFlightbook.Telemetry.AutoFillOptions;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -423,7 +423,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             try
             {
-                return File(ScheduledEvent.WriteICalFromCSVStream(fuCSV?.InputStream), "text/calendar", String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.ics", calTitle ?? string.Empty));
+                return File(ScheduledEvent.WriteICalFromCSVStream(fuCSV?.InputStream), "text/calendar", $"{calTitle ?? "Calendar"}.ics");
             }
             catch (MyFlightbookException ex)
             {

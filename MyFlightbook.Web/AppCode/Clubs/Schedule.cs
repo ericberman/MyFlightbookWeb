@@ -19,7 +19,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -909,14 +909,12 @@ namespace MyFlightbook.Schedule
             CalendarEvent ev = new CalendarEvent()
             {
                 Uid = se.ID,
-                IsAllDay = false,
                 Start = new CalDateTime(se.StartUtc, TimeZoneInfo.Utc.Id),
                 End = new CalDateTime(se.EndUtc, TimeZoneInfo.Utc.Id),
                 Description = szTitle,
                 Summary = szTitle,
                 Location = c.HomeAirport == null ? c.HomeAirportCode : String.Format(CultureInfo.CurrentCulture, "{0} - {1}", c.HomeAirportCode, c.HomeAirport.Name)
             };
-            ev.Start.HasTime = ev.End.HasTime = true;  // has time is false if the ultimate time is midnight.
 
             Alarm a = new Alarm()
             {
@@ -1082,7 +1080,6 @@ namespace MyFlightbook.Schedule
                         CalendarEvent ev = new CalendarEvent()
                         {
                             Uid = id++.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                            IsAllDay = false,
                             Description = rgCols[iColSubject],
                             Summary = rgCols[iColSubject],
                             Location = rgCols[iColLocation]
