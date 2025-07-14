@@ -496,4 +496,7 @@
   <data name="editMakeSimsWarningTitle" xml:space="preserve">
     <value>Creating a new simulator model on %APP_NAME%</value>
   </data>
+  <data name="editMakeTailwheelAmphib" xml:space="preserve">
+    <value> (for amphibs, when on land)</value>
+  </data>
 </root>

@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,6 +37,10 @@ namespace MyFlightbook.Currency
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
+
+            // Issue #1443: no tailwheel landings when on water
+            if (CategoryClass.IsSeaClass(cfr.idCatClassOverride))
+                return;
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
             int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);

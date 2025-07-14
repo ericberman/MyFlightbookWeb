@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -773,13 +773,14 @@ namespace MyFlightbook.Currency
         public ICurrencyExaminer TailwheelCurrencyExaminer(CatClassContext catclasscontext)
         {
             string szKey = catclasscontext.Name + "TAILWHEEL";
-            if (!dictFlightCurrency.ContainsKey(szKey))
+            if (!dictFlightCurrency.TryGetValue(szKey, out ICurrencyExaminer value))
             {
                 TailwheelCurrency fcTailwheel = new TailwheelCurrency(catclasscontext.Name + " - " + Resources.Currency.Tailwheel);
                 catclasscontext.AddContextToQuery(fcTailwheel.Query, pf.UserName, true);
-                dictFlightCurrency.Add(szKey, fcTailwheel);
+                value = fcTailwheel;
+                dictFlightCurrency.Add(szKey, value);
             }
-            return dictFlightCurrency[szKey];
+            return value;
         }
 
         public ICurrencyExaminer NightCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr, bool fIsTypeRatedCategory)
@@ -1078,7 +1079,7 @@ namespace MyFlightbook.Currency
                 {
                     ccc.PassengerCurrencyExaminer(catclasscontext, cfr).ExamineFlight(cfr);
 
-                    if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.FAA && CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
+                    if (ccc.pf.CurrencyJurisdiction == CurrencyJurisdiction.FAA && cfr.fTailwheel && CategoryClass.IsAirplane(cfr.idCatClassOverride) && !CategoryClass.IsSeaClass(cfr.idCatClassOverride) && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
                         ccc.TailwheelCurrencyExaminer(catclasscontext).ExamineFlight(cfr);
 
                     // for 61.57(e), we need to look at all flights, regardless of whether they have night flight, in computing currency

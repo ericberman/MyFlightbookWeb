@@ -578,6 +578,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  (for amphibs, when on land).
+        /// </summary>
+        internal static string editMakeTailwheelAmphib {
+            get {
+                return ResourceManager.GetString("editMakeTailwheelAmphib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Motor Glider/Touring Motor Glider (TMG).
         /// </summary>
         internal static string editMakeTMG {
