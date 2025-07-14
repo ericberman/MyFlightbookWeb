@@ -1006,6 +1006,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Water operations (Landings, Takeoffs, taxi, and/or docking) were specified in an ASEL or AMEL aircraft.  If you are Chesley Sullenberger, carry-on.  Otherwise, was this an amphib? Check that you used the correct version of an aircraft or consider overriding the category/class for the flight..
+        /// </summary>
+        internal static string warningWaterOperationsInLandPlane {
+            get {
+                return ResourceManager.GetString("warningWaterOperationsInLandPlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates cross-country flight of less than 25NM, but route was longer than that from departure airport.
         /// </summary>
         internal static string warningXCDistanceLessThan25ButFlewMore {

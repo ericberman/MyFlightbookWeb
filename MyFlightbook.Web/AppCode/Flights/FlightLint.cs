@@ -581,8 +581,14 @@ namespace MyFlightbook.Lint
             CheckDutyIssues(le, cfpBlockIn, cfpBlockOut);
         }
 
+        // Issue #1444 - check for water operations in a land aircraft
+        // Here's a quick way to check for water ops: Water landings, Water Takeoffs, Water Taxi, Water Step Taxi, Water Docking, Water Docking (CrossWind)
+        private static readonly HashSet<int> _waterOpsProps = new HashSet<int>() { (int) CustomPropertyType.KnownProperties.IDPropWaterLandings, (int)CustomPropertyType.KnownProperties.IDPropWaterTakeoffs, 423, 424, 425, 426 };
+
         private void CheckMiscIssues(LogbookEntryBase le)
         {
+            bool fHasWaterOps = false;
+
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {
                 if (cfp.PropertyType.IsExcludedFromMRU)
@@ -590,7 +596,11 @@ namespace MyFlightbook.Lint
                     AddConditionalIssue(seenCheckrides.Contains(cfp.PropTypeID), LintOptions.MiscIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningMiscMultipleRedundantCheckrides, cfp.PropertyType.Title));
                     seenCheckrides.Add(cfp.PropTypeID);
                 }
+                fHasWaterOps = fHasWaterOps || _waterOpsProps.Contains(cfp.PropTypeID);
             }
+
+            // Issue #1444: check for water operations in a land aircraft.
+            AddConditionalIssue(fHasWaterOps && !CategoryClass.IsSeaClass(currentCatClassID) && CategoryClass.IsAirplane(currentCatClassID), LintOptions.MiscIssues, Resources.FlightLint.warningWaterOperationsInLandPlane);
 
             AddConditionalIssue(le.Landings + le.Approaches > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring), LintOptions.MiscIssues, Resources.FlightLint.warningOperationsLoggedWhileMonitoring);
             // Issue #1227 - check for too many described landings
