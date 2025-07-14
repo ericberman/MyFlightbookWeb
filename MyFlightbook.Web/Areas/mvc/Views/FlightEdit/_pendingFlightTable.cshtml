@@ -19,7 +19,7 @@
 }
 <table class="lbTable" id="tblPending">
     <thead>
-        <tr class="gvhDefault" style="vertical-align: bottom">
+        <tr class="gvhDefault">
             <th class="headerBase gvhLeft @sortCss("Date")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'Date');">@Resources.LogbookEntry.FieldFlight</th>
             <th class="headerBase gvhCentered @sortCss("TailNumDisplay")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'TailNumDisplay');">@Resources.LogbookEntry.FieldTail</th>
             <th class="headerBase gvhCentered @sortCss("CatClassDisplay")" onclick="javascript: navigateToPendingPage(@curPage, @pageSize, 'CatClassDisplay');">@Html.Raw(Resources.LogbookEntry.FieldCatClassType)</th>
@@ -58,7 +58,7 @@
                         <span class="largeBold">@pf.Date.ToShortDateString()</span>
                         <span class="largeBold">@pf.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</span>
                         <a class="b" href="@(String.Format(CultureInfo.InvariantCulture, "~/mvc/airport/maproute?Airports={0}", pf.Route).ToAbsolute())" >@pf.Route</a>
-                        <div style="clear: left; white-space: pre-line;" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
+                        <div class="wsprel" dir="auto">@Html.Raw(ApproachDescription.ReplaceApproaches(pf.Comment.Linkify()))</div>
                     </div>
                     <div>
                         @if (viewer.DisplayTimesByDefault)
@@ -116,14 +116,16 @@
                 <td class="gvcCentered">@pf.TotalFlightTime.FormatDecimal(viewer.UsesHHMM)<span class="dn">@pf.TotalFlightTime.ToString(CultureInfo.InvariantCulture)</span></td>
                 <td class="noprint"></td>
                 <td class="noprint">
-                    <div class="ctxtMenuIcon popTrigger"></div>
-                    <div class="popMenuContent popMenuHidden" style="margin-top: -10px; margin-left: -90px">
-                        <div class="flightContextMenu">
-                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>
-                            <div><a href="#" onclick="javascript: commitPendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/add.png".ToAbsolute())" />@Resources.LogbookEntry.EditFlightAddFlight</a></div>
-                            <div><a href="#" onclick="javascript: deletePendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a></div>
-                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1 })"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a></div>
-                            <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1, reverse = 1 })"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a></div>
+                    <div class="popContainer">
+                        <div class="ctxtMenuIcon popTrigger"></div>
+                        <div class="popMenuContent popMenuHidden ctxtTight ctxtRight">
+                            <div class="flightContextMenu">
+                                <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID })"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a></div>
+                                <div><a href="#" onclick="javascript: commitPendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/add.png".ToAbsolute())" />@Resources.LogbookEntry.EditFlightAddFlight</a></div>
+                                <div><a href="#" onclick="javascript: deletePendingFlight('@pf.PendingID'); return false;"><img src="@("~/images/x.gif".ToAbsolute())" style="padding-right: 10px;" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a></div>
+                                <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1 })"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a></div>
+                                <div><a href="@Url.Action("Pending", "FlightEdit", new { id = pf.PendingID, clone = 1, reverse = 1 })"><img src="@("~/images/copyflightreverse.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatReverseFlight" />@Resources.LogbookEntry.RepeatReverseFlight</a></div>
+                            </div>
                         </div>
                     </div>
                 </td>

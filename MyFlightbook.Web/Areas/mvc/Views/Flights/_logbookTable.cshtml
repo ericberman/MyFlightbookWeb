@@ -184,6 +184,7 @@
     function navigateToPage(page) {
         $("#hdnPageRequest").val(page);
         navigateToTarget();
+        return false;
     }
 
     function navigateToTarget(target) {

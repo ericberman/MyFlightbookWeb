@@ -13,13 +13,13 @@
             </td>
             <td class="gvAcItem">
                 <div>
-                    <a style="font-size:larger; font-weight:bold;" href="@AircraftUtility.EditLink(ac.AircraftID)">@ac.DisplayTailnumber</a>
+                    <a class="largeBold" href="@AircraftUtility.EditLink(ac.AircraftID)">@ac.DisplayTailnumber</a>
                     - @ac.ModelDescription - @ac.ModelCommonName (@ac.CategoryClassDisplay)
                 </div>
                 <div>@ac.InstanceTypeDescription</div>
                 <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
-                    <div style="white-space:pre-line">@Html.Raw(ac.PublicNotes.Linkify())</div>
-                    <div style="white-space:pre-line">@Html.Raw(ac.PrivateNotes.Linkify())</div>
+                    <div class="wsprel">@Html.Raw(ac.PublicNotes.Linkify())</div>
+                    <div class="wsprel">@Html.Raw(ac.PrivateNotes.Linkify())</div>
                     @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.Stats, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate) }); }
                 </div>
             </td>
@@ -32,7 +32,7 @@
             <td class="gvContext">
                 <div class="popContainer">
                     <div class="ctxtMenuIcon popTrigger"></div>
-                    <div class="popMenuContent popMenuHidden" style="margin-top: -5px;">
+                    <div class="popMenuContent popMenuHidden ctxtTight">
                         <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber)</h2>
                         @Html.Raw(ac.ContextMenuOptions())
                         @if (ViewBag.hasTemplates)
@@ -44,7 +44,7 @@
                         @if (!String.IsNullOrEmpty(ViewBag.migrateFunc))
                         {
                             <hr />
-                            <div style="margin-left: 20px;"><a style="cursor: pointer;" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID);">@Resources.Aircraft.editAircraftMigrate</a></div>
+                            <div class="indent"><a href="#" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID);">@Resources.Aircraft.editAircraftMigrate</a></div>
                         }
                     </div>
                 </div>                

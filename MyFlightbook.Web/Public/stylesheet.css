@@ -77,12 +77,36 @@
     vertical-align: middle;
 }
 
+.flL {
+    float: left;
+}
+
+.flR {
+    float: right;
+}
+
 .topAlign {
     vertical-align: top;
 }
 
 .lightText {
     color: var(--text-light);
+}
+
+.ctxtTight {
+    margin-top: -5px;
+}
+
+.ctxtRight {
+    transform: translateX(-90%);
+}
+
+.wsprew {
+    white-space: pre-wrap;
+}
+
+.wsprel {
+    white-space: pre-line;
 }
 
 .w100 {
