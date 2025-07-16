@@ -17,7 +17,7 @@
         <a href="@szEdit"><img src="@("~/images/pencilsm.png".ToAbsolute())" />@Resources.LogbookEntry.PublicFlightEditThisFlight</a>
     </div>
     <div>
-        <a href="#" onclick="javascript: deleteFlight(@le.FlightID, '@le.ToShortString()');"><img style="padding-right: 10px" src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a>
+        <a href="#" onclick="javascript: deleteFlight(@le.FlightID, '@le.ToShortString()'); return false;"><img style="padding-right: 10px" src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.LogbookEntry.LogbookDeleteTooltip" title="@Resources.LogbookEntry.LogbookDeleteTooltip" />@Resources.LogbookEntry.LogbookDeleteTooltip</a>
     </div>
     <div>
         <a href="@szClone"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.RepeatFlight" />@Resources.LogbookEntry.RepeatFlight</a>
@@ -35,10 +35,10 @@
     </div>
     }
     <div>
-        <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
+        <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)return false;" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
     </div>
     <div>
-        <a href="#" onclick="javascript: sendFlight(@le.FlightID);"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>
+        <a href="#" onclick="javascript: sendFlight(@le.FlightID); return false;"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>
     </div>
     <div>
         <a href="@szCheck"><img src="@("~/images/CheckFlights.png".ToAbsolute())" style="width: 20px;" />@Resources.FlightLint.TitleCheckThisFlightShort</a>
