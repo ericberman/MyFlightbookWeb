@@ -3,6 +3,7 @@
     ViewBag.Title = Resources.Airports.EditAirportsTitle;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = ViewBag.isAdminMode ? tabID.tabAdmin : tabID.tabMaps;
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     ViewBag.UseMaps = true;
 }
 <div>@Resources.Airports.EditAirportsDescription</div>
@@ -509,7 +510,14 @@
                 <button onclick="javascript: importFromFile(false);">Import</button>
                 <button onclick="javascript: importFromFile(true);" style="display:none">Import (no interactive)</button>
                 @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "importTip", tipTextHTML = "MUST be: FAA/IATA/ICAO for airportID, Name, Type, SourceUserName, Latitude, Longitude, Preferred.  SourceUserName and Preferred are optional.  OR OldCode/CurrentCode (bulk only) to backfill old codes.  Country and Admin1 are optional.  If Bulk-import is visible, use only one column for code" }); }
-                <img id="imgProgressImport" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="display:none;" />
+                <div class="dn" id="imgProgressImport">
+                    <div class="hc c" style="width: 244px;">
+                        <div class="holdProgressContainer">
+                            <div class="holdProgressPlane"></div>
+                        </div>
+                        <h2>@Resources.LocalizedText.PleaseHold</h2>
+                    </div>
+                </div>
             </div>
             <div id="pnlImportResults">
 

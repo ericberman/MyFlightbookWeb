@@ -44,7 +44,7 @@
                         @if (!String.IsNullOrEmpty(ViewBag.migrateFunc))
                         {
                             <hr />
-                            <div class="indent"><a href="#" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID);">@Resources.Aircraft.editAircraftMigrate</a></div>
+                            <div class="indent"><a href="#" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID); return false;">@Resources.Aircraft.editAircraftMigrate</a></div>
                         }
                     </div>
                 </div>                

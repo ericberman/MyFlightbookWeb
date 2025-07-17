@@ -54,7 +54,7 @@ function dismissDlg(idDlg) {
 
 function showModalById(id, szTitle, width) {
     // the dialog is placed outside of the main form, so asp.net postbacks get lost.  Thus we append these to the parent form.
-    $("#" + id).dialog({ autoOpen: true, closeOnEscape: true, width: (width || 400), modal: true, title: szTitle || "" }).parent().appendTo(jQuery("form:first"));
+    $("#" + id).dialog({ autoOpen: true, closeOnEscape: true, width: (width || 400), modal: true, title: szTitle || "" }).parent().appendTo(jQuery("body"));
 }
 
 function convertFdUpJsonDate(fdUpDate) {
