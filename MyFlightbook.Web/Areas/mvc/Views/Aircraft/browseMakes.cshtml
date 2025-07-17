@@ -3,6 +3,7 @@
     ViewBag.Title = Resources.Makes.makesHeader;
     ViewBag.defaultTab = tabID.tabAircraft;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     ModelQuery mq = ViewBag.mq;
 }
 <script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/endless-scroll.js")'></script>
@@ -104,24 +105,24 @@
         });
     </script>
 }
-<div class="calloutSmall shadowed" style="vertical-align:middle; width: 90%; display:flex; margin-right: auto; margin-left: auto; margin-bottom: 5pt;">
+<div class="calloutSmall shadowed w90 imgMiddle hc" style="display:flex; margin-bottom: 5pt;">
     <div style="flex:auto;">
-        <div style="display:inline-block">
+        <div class="dib">
             @using (Html.BeginForm("Makes", "Aircraft", FormMethod.Post, new { name = "frmSearch", id = "frmSearch" }))
             {
                 <input type="hidden" name="fAdvancedSearch" id="hdnAdvancedSearch" value="@Json.Encode(ViewBag.fAdvanced)" />
                 <input type="hidden" name="sortKey" id="hdnSortKey" value="@mq.SortMode.ToString()" />
                 <input type="hidden" name="sortDir" id="hdnSortDir" value="@mq.SortDir.ToString()" />
-                <div id="vwSimpleSearch" style="@(mq.IsAdvanced ? "display: none;" : string.Empty)">
+                <div id="vwSimpleSearch" class="@(mq.IsAdvanced ? "dn" : string.Empty)">
                     <div style="vertical-align:top; height: 40px;">
-                        <div style="display:inline-block; vertical-align:middle;">
+                        <div class="dib imgMiddle">
                             @{ Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "makeSimpleSearch", placeholder = Resources.Makes.searchTip, text = mq.FullText }); }
                         </div>
-                        <a style="vertical-align: middle; cursor: pointer" onclick="javascript: setSearchMode(false);">@Resources.Makes.makesAdvancedSearch</a>
+                        <a class="imgMiddle" href="#" onclick="javascript: setSearchMode(false); return false;">@Resources.Makes.makesAdvancedSearch</a>
                     </div>
                     <div class="fineprint">@Resources.Makes.searchWildcardTip</div>
                 </div>
-                <div id="vwAdvancedSearch" style="@(mq.IsAdvanced ? string.Empty : "display: none;")">
+                <div id="vwAdvancedSearch" class="@(mq.IsAdvanced ? string.Empty : "dn")">
                     <table>
                         <tr>
                             <td>@Resources.Makes.makesAdvManufacturer</td>
@@ -156,20 +157,20 @@
                             </td>
                         </tr>
                     </table>
-                    <a style="vertical-align: middle; cursor: pointer" onclick="javascript: setSearchMode(true);">@Resources.Makes.makesSimpleSearch</a>
+                    <a class="imgMiddle" href="#" onclick="javascript: setSearchMode(true); return false;">@Resources.Makes.makesSimpleSearch</a>
                 </div>
             }
         </div>
     </div>
     <div style="flex:auto; text-align: right;">
-        <div style="display: inline-block">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" style="height: 20px; width: 20px; vertical-align:middle;" />
-            <a href="@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/ViewModel/-1")" style="font-weight: bold">@Resources.Makes.makesAddModel</a>
+        <div class="dib b">
+            <img src="@VirtualPathUtility.ToAbsolute("~/images/add.png")" class="imgMiddle" style="height: 20px; width: 20px;" />
+            <a href="@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/ViewModel/-1")">@Resources.Makes.makesAddModel</a>
         </div>
     </div>
 </div>
 <input id="hdnQueryJSON" type="hidden" value="@Json.Encode(mq)" />
-<table class="stickyHeaderTable" style="display: none;" id="tableResult">
+<table class="stickyHeaderTable dn" id="tableResult">
     <thead>
         <tr id="trHeaderRow">
             <th style="width: 160px;"></th>
@@ -187,9 +188,16 @@
     <tbody id="resultsBody">
     </tbody>
 </table>
-<div style="text-align: center; display: none;" id="divNoResults">@Resources.Makes.makesNoResults</div>
+<div class="dn c" id="divNoResults">@Resources.Makes.makesNoResults</div>
 @if (!ViewBag.getResults)
 {
-    <div style="text-align: center;">@String.Format(CultureInfo.CurrentCulture, Resources.Makes.makesPrompt, MakeModel.ModelCount())</div>
+    <div class="c">@String.Format(CultureInfo.CurrentCulture, Resources.Makes.makesPrompt, MakeModel.ModelCount())</div>
 }
-<div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" id="imgPrg" style="display:none; height: 36pt; width: 36pt;" /></div>
+<div class="dn" id="imgPrg">
+    <div class="hc c" style="width: 244px;">
+        <div class="holdProgressContainer">
+            <div class="holdProgressPlane"></div>
+        </div>
+        <h2>@Resources.LocalizedText.PleaseHold</h2>
+    </div>
+</div>

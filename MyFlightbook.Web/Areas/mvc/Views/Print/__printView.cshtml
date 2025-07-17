@@ -93,9 +93,9 @@
                         <li><a href="#sectPrefs">@Resources.LocalizedText.PrintViewTabFilter</a></li>
                         <li><a href="#pdfPrefs">@Resources.LocalizedText.DownloadAsPDFTabHeader</a></li>
                     </ul>
-                    <div id="printPrefs">@{ Html.RenderAction("PrintPrefsOptions", "Print", new { userName = fq.UserName, po = po, pl = pl, onChange = "prefsUpdated" }); } </div>
-                    <div id="sectPrefs">@{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, po = po, includeFlightsSection = true, onChange = "prefsUpdated" }); } </div>
-                    <div id="pdfPrefs">@{ Html.RenderPartial("_printPrefsPDF"); } </div>
+                    <div id="printPrefs" class="@(selTab == 0 ? string.Empty : "dn")">@{ Html.RenderAction("PrintPrefsOptions", "Print", new { userName = fq.UserName, po = po, pl = pl, onChange = "prefsUpdated" }); } </div>
+                    <div id="sectPrefs" class="@(selTab == 1 ? string.Empty : "dn")">@{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, po = po, includeFlightsSection = true, onChange = "prefsUpdated" }); } </div>
+                    <div id="pdfPrefs" class="@(selTab == 2 ? string.Empty : "dn")">@{ Html.RenderPartial("_printPrefsPDF"); } </div>
                 </div>
                 <div class="error">@(ViewBag.error ?? string.Empty)</div>
             }

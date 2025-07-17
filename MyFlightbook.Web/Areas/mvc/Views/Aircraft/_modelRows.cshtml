@@ -19,11 +19,11 @@
             }
         </td>
         <td style="text-align:left; vertical-align:top;">
-            <span style="@((mq.SortMode == ModelQuery.ModelSortMode.Manufacturer) ? "font-weight: bold; font-size: larger;" : string.Empty)">@mm.ManufacturerDisplay</span>
+            <span class="@((mq.SortMode == ModelQuery.ModelSortMode.Manufacturer) ? "largeBold" : string.Empty)">@mm.ManufacturerDisplay</span>
         </td>
         <td>
             <div>
-                <a style="@((mq.SortMode == ModelQuery.ModelSortMode.ModelName) ? "font-weight: bold; font-size: larger;" : string.Empty)" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID))">
+                <a class="@((mq.SortMode == ModelQuery.ModelSortMode.ModelName) ? "largeBold" : string.Empty)" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID))">
                     @mm.ModelDisplayNameNoCatclass
                 </a>
             </div>
@@ -37,7 +37,7 @@
             }
         </td>
         <td>
-            <span style="@((mq.SortMode == ModelQuery.ModelSortMode.CatClass) ? "font-weight: bold; font-size: larger;" : string.Empty)">@mm.CategoryClassDisplay</span>
+            <span class="@((mq.SortMode == ModelQuery.ModelSortMode.CatClass) ? "largeBold" : string.Empty)">@mm.CategoryClassDisplay</span>
             <ul>
                 @foreach (string attribute in mm.AttributeList())
                 {
