@@ -2035,4 +2035,7 @@ Proceed with import?</value>
   <data name="FlightCrewViewRefreshFailed" xml:space="preserve">
     <value>Unable to refresh access to Flight Crew View.  Please re-authorize %APP_NAME% to access your Flight Crew View account.</value>
   </data>
+  <data name="PrintHeaderCoPilotOrStudentOrPassenger" xml:space="preserve">
+    <value>Co-Pilot, Student, or Passenger</value>
+  </data>
 </root>

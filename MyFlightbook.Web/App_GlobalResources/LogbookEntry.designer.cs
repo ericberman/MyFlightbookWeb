@@ -2340,26 +2340,22 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to      &lt;p&gt;%APP_NAME% can recognize and import the following core attributes of each 
-        ///        flight:&lt;/p&gt;
-        ///    &lt;table cellpadding=&quot;3&quot; cellspacing=&quot;0&quot; class=&quot;dataDescription&quot;&gt;
+        ///   Looks up a localized string similar to      &lt;p&gt;%APP_NAME% can recognize and import the following core attributes of each flight:&lt;/p&gt;
+        ///    &lt;table class=&quot;stickyHeaderTable stickyHeaderAlternate&quot;&gt;
         ///		&lt;thead&gt;
         ///			&lt;tr&gt;
-        ///				&lt;td&gt;
-        ///					Column Name&lt;/td&gt;
-        ///				&lt;td&gt;
-        ///					Data&lt;/td&gt;
+        ///				&lt;th class=&quot;headerBase gvhLeft&quot;&gt;Column Name&lt;/th&gt;
+        ///				&lt;th class=&quot;headerBase gvhLeft&quot;&gt;Data&lt;/th&gt;
         ///			&lt;/tr&gt;
         ///		&lt;/thead&gt;
         ///        &lt;tr&gt;
-        ///            &lt;td valign=&quot;top&quot; &gt;
-        ///                Date&lt;/td&gt;
-        ///            &lt;td valign=&quot;top&quot; &gt;
-        ///                &lt;b&gt;REQUIRED&lt;/b&gt; - Date of the flight&amp;nbsp; in 
-        ///                %SHORT_DATE%
-        ///&amp;nbsp;format&lt;/td&gt;
+        ///            &lt;td&gt;Date&lt;/td&gt;
+        ///            &lt;td&gt;&lt;b&gt;REQUIRED&lt;/b&gt; - Date of the flight&amp;nbsp; in %SHORT_DATE% &amp;nbsp;format&lt;/td&gt;
         ///        &lt;/tr&gt;
-        ///      [rest of string was truncated]&quot;;.
+        ///        &lt;tr&gt;
+        ///            &lt;td&gt;Tail Number&lt;/td&gt;
+        ///            &lt;td&gt;
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ImportTableDescription {
             get {
@@ -3399,6 +3395,15 @@ namespace Resources {
         internal static string PrintHeaderCoPilotOrStudent {
             get {
                 return ResourceManager.GetString("PrintHeaderCoPilotOrStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Co-Pilot, Student, or Passenger.
+        /// </summary>
+        internal static string PrintHeaderCoPilotOrStudentOrPassenger {
+            get {
+                return ResourceManager.GetString("PrintHeaderCoPilotOrStudentOrPassenger", resourceCulture);
             }
         }
         

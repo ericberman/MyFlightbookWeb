@@ -12,6 +12,7 @@
      (int) CustomPropertyType.KnownProperties.IDPropStudentName,
      (int) CustomPropertyType.KnownProperties.IDPropNameOfSIC,
      (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC,
+     (int) CustomPropertyType.KnownProperties.IDPropPassengerNames,
      (int) CustomPropertyType.KnownProperties.IDPropCaptainName,
      (int) CustomPropertyType.KnownProperties.IDPropFirstOfficerName,
      (int) CustomPropertyType.KnownProperties.IDPropNightTakeoff
@@ -25,7 +26,7 @@
                 <th class="headerBig" style="width:10ch; border-right: 2px solid black;" rowspan="3">@Resources.LogbookEntry.PrintHeaderDate</th>
                 <th class="headerBig" style="width:1.2cm; border-right: 2px solid black;" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th class="headerBig" style="width:1cm" rowspan="3">@Resources.LogbookEntry.PrintHeaderPICName</th>
-                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
+                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudentOrPassenger</th>
                 <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;">@Resources.LogbookEntry.PrintHeaderRoute</th>
                 <th class="headerBig" rowspan="3" style="border-right: 2px solid black;">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 <th class="headerBig" colspan="@(pl.CurrentUser.TracksSecondInCommandTime ? 3 :2)" rowspan="2" style="border-right: 2px solid black;">@Resources.LogbookEntry.PrintHeaderDay</th>
@@ -97,7 +98,7 @@
                     <td class="centered"><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></td>
                     <td class="centered" style="border-right: 2px solid black;">@led.TailNumOrSimDisplay</td>
                     <td class="centered">@led.PICName</td>
-                    <td class="centered" style="border-right: 2px solid black;">@led.SICName @led.StudentName</td>
+                    <td class="centered" style="border-right: 2px solid black;">@led.SICName @led.StudentName @led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropPassengerNames)</td>
                     <td class="centered">@led.Departure</td>
                     <td class="centered" style="border-right: 2px solid black;">@led.Destination</td>
                     <td style="border-right: 2px solid black;">
