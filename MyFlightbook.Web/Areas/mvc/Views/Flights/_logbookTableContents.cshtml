@@ -134,7 +134,7 @@ else
                                     }
                                 </div>
                             }
-                            @if (led.HasFlightData)
+                            @if (led.HasFlightData && !readOnly)
                             {
                                 <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/details/{0}?tabID=Chart", led.FlightID).ToAbsolute()">
                                     <img src="@("~/images/Clip.png".ToAbsolute())" class="imgMiddle darkSensitive" alt="@Resources.LogbookEntry.LogbookFlightHasTelemetry" title="@Resources.LogbookEntry.LogbookFlightHasTelemetry" />
