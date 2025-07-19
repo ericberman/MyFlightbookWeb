@@ -1588,7 +1588,6 @@
     <Content Include="PlayPen\Web.config" />
     <Content Include="Areas\mvc\Views\oAuth\leonmanage.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\contact.cshtml" />
-    <Content Include="Areas\mvc\Views\Pub\home.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\homemini.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\rss.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\_rssHTML.cshtml" />
@@ -1638,6 +1637,8 @@
     <Content Include="Areas\mvc\Views\Pub\_recentStats.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\deadlineEditor.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\newUnauthHome.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\homeUnauth.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\homeAuth.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

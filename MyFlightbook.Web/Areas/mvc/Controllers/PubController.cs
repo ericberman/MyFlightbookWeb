@@ -406,6 +406,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("newUnauthHome");
         }
 
+        public ActionResult UnAuth()
+        {
+            return View("homeUnauth");
+        }
+
         /// <summary>
         /// Returns the home page for the site, redirecting to mini if needed.
         /// </summary>
@@ -424,7 +429,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("homemini");
             }
 
-            return View("home");
+            return View(User.Identity.IsAuthenticated ? "homeAuth" : "homeUnauth");
         }
     }
 }
