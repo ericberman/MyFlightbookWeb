@@ -4553,6 +4553,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resume from last printout.
+        /// </summary>
+        internal static string PrintViewPrintPartialPrompt {
+            get {
+                return ResourceManager.GetString("PrintViewPrintPartialPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Printing of flight properties.
         /// </summary>
         internal static string PrintViewPropertiesHeader {
@@ -4639,6 +4648,24 @@ namespace Resources {
         internal static string PrintViewShowTotalPages {
             get {
                 return ResourceManager.GetString("PrintViewShowTotalPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only display flights after:.
+        /// </summary>
+        internal static string PrintViewStartingDate {
+            get {
+                return ResourceManager.GetString("PrintViewStartingDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start numbering pages at:.
+        /// </summary>
+        internal static string PrintViewStartingPage {
+            get {
+                return ResourceManager.GetString("PrintViewStartingPage", resourceCulture);
             }
         }
         

@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -84,9 +84,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Helper utilities
-        private PrintingOptions PrintingOptionsFromForm()
+        private PrintingSections SectionsFromForm()
         {
-            PrintingSections ps = new PrintingSections()
+            return new PrintingSections()
             {
                 IncludeCoverPage = Request["poSectCover"] != null,
                 IncludeFlights = Request["poSectFlights"] != null,
@@ -97,22 +97,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 CompactTotals = Request["poSectTotalsCompact"] != null,
                 Endorsements = Request["poSectEndorsements"] != null ? (Request["poSectEndorsementsJPG"] != null ? PrintingSections.EndorsementsLevel.DigitalAndPhotos : PrintingSections.EndorsementsLevel.DigitalOnly) : PrintingSections.EndorsementsLevel.None
             };
+        }
 
-            const int defMargin = 10;
-            PDFOptions pdfOptions = new PDFOptions()
-            {
-                PaperSize = Enum.TryParse(Request["pdfPageSize"], true, out PDFOptions.PageSize pagesize) ? pagesize : PDFOptions.PageSize.Letter,
-                BottomMargin = int.TryParse(Request["pdfMarginBottom"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int bottomMargin) ? bottomMargin : defMargin,
-                LeftMargin = int.TryParse(Request["pdfMarginLeft"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int leftMargin) ? leftMargin : defMargin,
-                RightMargin = int.TryParse(Request["pdfMarginRight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int rightMargin) ? rightMargin : defMargin,
-                TopMargin = int.TryParse(Request["pdfMarginTop"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int topMargin) ? topMargin : defMargin,
-                Orientation = Enum.TryParse(Request["pdfOrientation"], true, out PDFOptions.PageOrientation orientation) ? orientation : PDFOptions.PageOrientation.Landscape,
-                PageHeight = int.TryParse(Request["pdfCustHeight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int custHeight) ? custHeight : 0,
-                PageWidth = int.TryParse(Request["pdfCustWidth"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int custWidth) ? custWidth : 0,
-                IncludeTotalPageCount = Request["pdfIncludePageCount"] != null
-            };
-
-            PrintingOptions po = new PrintingOptions()
+        private PrintingOptions OptionsFromForm(PDFOptions pdfOptions, PrintingSections ps)
+        {
+            return new PrintingOptions()
             {
                 PDFSettings = pdfOptions,
                 Sections = ps,
@@ -129,7 +118,35 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 BreakAtYearBoundary = Request["poForcedBreak"].CompareCurrentCultureIgnoreCase("Year") == 0,
                 DisplayMode = Enum.TryParse(Request["poModelDisplay"], true, out PrintingOptions.ModelDisplayMode displayMode) ? displayMode : PrintingOptions.ModelDisplayMode.Full,
                 PropertySeparator = Enum.TryParse(Request["poPropSeparator"], true, out PrintingOptions.PropertySeparatorType pst) ? pst : PrintingOptions.PropertySeparatorType.Space,
+                FlightStartDate = DateTime.TryParse(Request["poPrintFrom"] ?? string.Empty, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtFlightStart) ? (DateTime?)dtFlightStart : null,
+                StartingPageNumberOffset = Math.Max((int.TryParse(Request["poPrintFromPage"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int startPage) ? startPage : 1) - 1, 0)
             };
+        }
+
+        private PDFOptions PDFOptionsFromForm()
+        {
+            const int defMargin = 10;
+            return new PDFOptions()
+            {
+                PaperSize = Enum.TryParse(Request["pdfPageSize"], true, out PDFOptions.PageSize pagesize) ? pagesize : PDFOptions.PageSize.Letter,
+                BottomMargin = int.TryParse(Request["pdfMarginBottom"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int bottomMargin) ? bottomMargin : defMargin,
+                LeftMargin = int.TryParse(Request["pdfMarginLeft"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int leftMargin) ? leftMargin : defMargin,
+                RightMargin = int.TryParse(Request["pdfMarginRight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int rightMargin) ? rightMargin : defMargin,
+                TopMargin = int.TryParse(Request["pdfMarginTop"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int topMargin) ? topMargin : defMargin,
+                Orientation = Enum.TryParse(Request["pdfOrientation"], true, out PDFOptions.PageOrientation orientation) ? orientation : PDFOptions.PageOrientation.Landscape,
+                PageHeight = int.TryParse(Request["pdfCustHeight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int custHeight) ? custHeight : 0,
+                PageWidth = int.TryParse(Request["pdfCustWidth"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int custWidth) ? custWidth : 0,
+                IncludeTotalPageCount = Request["pdfIncludePageCount"] != null
+            };
+        }
+
+        private PrintingOptions PrintingOptionsFromForm()
+        {
+            PrintingSections ps = SectionsFromForm();
+
+            PDFOptions pdfOptions = PDFOptionsFromForm();
+
+            PrintingOptions po = OptionsFromForm(pdfOptions, ps);
 
             po.OptionalColumns.Clear();
             foreach (string szColumn in (Request["poOptColumn"] ?? string.Empty).SplitCommas())
@@ -194,6 +211,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 fCover = printingOptions.Sections.IncludeCoverPage,
                 fTotalPages = printingOptions.PDFSettings.IncludeTotalPageCount,
                 fTrackChanges = pf.PreferenceExists(MFBConstants.keyTrackOriginal),
+                StartPageOffset = printingOptions.StartingPageNumberOffset,
                 UserName = String.IsNullOrEmpty(pf.FirstName + pf.LastName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)
             };
             printingOptions.PDFSettings.FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + footerOptions.ToEncodedPathSegment()).ToAbsoluteURL(Request);

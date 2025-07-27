@@ -2105,4 +2105,13 @@
   <data name="PrintViewIncludeAddressAdd" xml:space="preserve">
     <value>Add an address</value>
   </data>
+  <data name="PrintViewStartingDate" xml:space="preserve">
+    <value>Only display flights after:</value>
+  </data>
+  <data name="PrintViewStartingPage" xml:space="preserve">
+    <value>Start numbering pages at:</value>
+  </data>
+  <data name="PrintViewPrintPartialPrompt" xml:space="preserve">
+    <value>Resume from last printout</value>
+  </data>
 </root>

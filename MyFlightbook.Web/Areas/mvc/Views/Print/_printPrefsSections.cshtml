@@ -76,8 +76,20 @@
             <tr>
                 <td></td>
                 <td>
-                    <button onclick="javascript: toggleSearch(); return false;">@Resources.LocalizedText.ChangeQuery</button>
-                    @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+                    <div class="indent">
+                        <button onclick="javascript: toggleSearch(); return false;">@Resources.LocalizedText.ChangeQuery</button>
+                        @{ Html.RenderAction("QueryDescription", "Search", new { fq = fq, onClientClick = "qfeClicked" }); }
+                    </div>
+                    <div>&nbsp;</div>
+                    <div>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = po.FlightStartDate.HasValue || po.StartingPageNumberOffset != 0, targetID = "divPrintPartial", labelText = Resources.LocalizedText.PrintViewPrintPartialPrompt });}</div>
+                    <div id="divPrintPartial" class="@(po.FlightStartDate.HasValue || po.StartingPageNumberOffset != 0 ? string.Empty : "dn") callout">
+                        <div>@Resources.LocalizedText.PrintViewStartingDate</div>
+                        <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtPrintFrom", name = "poPrintFrom", value = po.FlightStartDate ?? DateTime.MinValue });}</div>
+                        <br />
+                        <div>@Resources.LocalizedText.PrintViewStartingPage</div>
+                        <div>@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtPrintFromPage", name = "poPrintFromPage", value = po.StartingPageNumberOffset + 1 });}</div>
+                        <p><input type="submit" value="@Resources.LocalizedText.OK" /></p>
+                    </div>
                 </td>
             </tr>
         }

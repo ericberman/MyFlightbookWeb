@@ -701,6 +701,19 @@ namespace MyFlightbook.Printing
         /// For PDF download, what settings to offer.
         /// </summary>
         public PDFOptions PDFSettings { get; set; } = new PDFOptions();
+
+        /// <summary>
+        /// If set, will only display the logbook from the specified starting date onward.  All flights that match the relevant query are still included for things like totals calculation, but they are not displayed
+        /// The purpose of this is to print only a few pages since the last time that you printed.
+        /// </summary>
+        public DateTime? FlightStartDate { get; set; }
+
+        /// <summary>
+        /// If non-zero, this specifies the offset for the first page number (after the cover sheet) to use. 
+        /// The purpose of this is to print only a few pages since the last time that you printed.
+        /// This is 0-based.  I.e., 0 = start numbering at "1", 1 = start numbering at "2", etc.
+        /// </summary>
+        public int StartingPageNumberOffset { get; set; }
         #endregion
 
         public PrintingOptions() { }
@@ -868,6 +881,11 @@ namespace MyFlightbook.Printing
             get { return (OptionFlags & flagShowTracking) != 0; }
             set { OptionFlags |= value ? flagShowTracking : 0; }
         }
+
+        /// <summary>
+        /// Amount to offset the physical page number to yield the desired printed display number
+        /// </summary>
+        public int StartPageOffset { get; set; }
 
         public PDFFooterOptions() { }
 
@@ -1222,7 +1240,7 @@ namespace MyFlightbook.Printing
 
             int flightIndexOnPage = 0;
             int index = 0;
-            int pageNum = 0;
+            int pageNum = po.StartingPageNumberOffset;
 
             DateTime? dtLastEntry = null;
 
@@ -1271,7 +1289,6 @@ namespace MyFlightbook.Printing
 
                 led.Index = ++index;
 
-                // Add the flight to the page
                 lstFlightsThisPage.Add(led);
 
                 // And add the flight to the page catclass totals and running catclass totals
@@ -1288,6 +1305,9 @@ namespace MyFlightbook.Printing
 
             // Assign page number, and index totals
             AddPageNumbersIndexTotals(po, lstOut, pageNum);
+
+            // Issue #1448: strip out any flights prior to a specified date, and then strip any pages that are thus empty.
+            StripIgnoredPages(po, lstOut);
 
             return lstOut;
         }
@@ -1334,6 +1354,30 @@ namespace MyFlightbook.Printing
                     lpp.RunningTotals.Clear();
                 }
             }
+        }
+
+        private static void StripIgnoredPages(PrintingOptions po, List<LogbookPrintedPage> lstOut)
+        {
+            // quick short-circuit if no ignored pages.
+            if (!po.FlightStartDate.HasValue) 
+                return;
+
+            DateTime dt = po.FlightStartDate.Value.Date;
+
+            // Remove from each page any flight that is prior to the start date
+            lstOut.ForEach((lpp) =>
+            {
+                List<LogbookEntryDisplay> lst = new List<LogbookEntryDisplay>(lpp.Flights);
+                lst.RemoveAll(l => l.Date.Date.CompareTo(dt) < 0);
+                lpp.Flights = lst;
+            });
+
+            // Now remove any page that has no flights remaining
+            lstOut.RemoveAll(lpp => !lpp.Flights.Any());
+
+            // Finally, renumber the pages
+            for (int i = 0; i < lstOut.Count; i++)
+                lstOut[i].PageNum = po.StartingPageNumberOffset + i;
         }
 
         private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, Collection<OptionalColumn> optionalColumns)

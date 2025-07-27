@@ -1,14 +1,12 @@
 ﻿using MyFlightbook.Printing;
 using MyFlightbook.SponsoredAds;
-using System;
-using System.Globalization;
 using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     /******************************************************
      * 
-     * Copyright (c) 2007-2024 MyFlightbook LLC
+     * Copyright (c) 2007-2025 MyFlightbook LLC
      * Contact myflightbook-at-gmail.com for more information
      *
     *******************************************************/
