@@ -293,11 +293,14 @@ namespace MyFlightbook
         /// <returns>The specified category/class; throws an exception if not found</returns>
         public static CategoryClass CategoryClassFromID(CatClassID id)
         {
-            if (_dIndexed.Count == 0)
+            lock (_dIndexed)
             {
-                IEnumerable<CategoryClass> rgCatClass = CategoryClasses();
-                foreach (CategoryClass c in rgCatClass)
-                    _dIndexed[c.IDCatClassAsInt] = c;
+                if (_dIndexed.Count == 0)
+                {
+                    IEnumerable<CategoryClass> rgCatClass = CategoryClasses();
+                    foreach (CategoryClass c in rgCatClass)
+                        _dIndexed[c.IDCatClassAsInt] = c;
+                }
             }
             return _dIndexed.TryGetValue((int) id, out CategoryClass cc) ? cc : throw new InvalidDataException("CategoryClassFromID: category/class with ID " + id.ToString() + " does not exist.");
         }
