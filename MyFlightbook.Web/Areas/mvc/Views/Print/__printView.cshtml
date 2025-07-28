@@ -20,6 +20,7 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
     ViewBag.ForceNaked = true;
     ViewBag.AddBaseRef = ViewBag.isPDF;
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     PrintLayout pl = PrintLayout.LayoutForType(po.Layout, pf);
     ViewBag.PrintingCSS = pl.CSSPath.ToAbsolute();
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
@@ -43,6 +44,8 @@
     });
 
     function prefsUpdated() {
+        $("#divPreview").hide();
+        $("#imgPrg").show();
         $("#btnRefreshScreen").click();
     }
 
@@ -105,65 +108,75 @@
         </div>
     </div>
 }
-<div style="font-size: @(po.Size == PrintingOptions.FontSize.Normal ? "9pt" : String.Format(CultureInfo.InvariantCulture, po.Size == PrintingOptions.FontSize.Small ? "7pt" : "11pt"))">
-    @if (po.Sections.IncludeCoverPage)
-    {
-        <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;">
-            <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large; margin-top: 36pt;">
-                <p>@pf.UserFullName</p>
-                @if (po.Sections.IncludeHeadshot && pf.HasHeadShot)
+<div id="divPreview">
+    <div style="font-size: @(po.Size == PrintingOptions.FontSize.Normal ? "9pt" : String.Format(CultureInfo.InvariantCulture, po.Size == PrintingOptions.FontSize.Small ? "7pt" : "11pt"))">
+        @if (po.Sections.IncludeCoverPage)
+        {
+            <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;">
+                <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large; margin-top: 36pt;">
+                    <p>@pf.UserFullName</p>
+                    @if (po.Sections.IncludeHeadshot && pf.HasHeadShot)
+                    {
+                        <div class="c"><img src="@pf.HeadShotHRefWithKey" /></div>
+                    }
+                    <p>@Resources.LocalizedText.PrintViewCoverSheetNameTemplate</p>
+                </div>
+                @if (po.Sections.IncludeAddress)
                 {
-                    <div class="c"><img src="@pf.HeadShotHRefWithKey" /></div>
+                    <div style="white-space:pre-line">@pf.Address</div>
                 }
-                <p>@Resources.LocalizedText.PrintViewCoverSheetNameTemplate</p>
+                <div>@(po.Sections.IncludeDOB && pf.DateOfBirth.HasValue && pf.DateOfBirth.Value.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.dateOfBirthFormat, pf.DateOfBirth.Value) : string.Empty)</div>
+                <div>@pf.LicenseDisplay</div>
+                <div><img src="@(Branding.CurrentBrand.LogoHRef.ToAbsolute())" style="max-width: 300px;" /></div>
+                <p>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now)</p>
             </div>
-            @if (po.Sections.IncludeAddress)
-            {
-                <div style="white-space:pre-line">@pf.Address</div>
-            }
-            <div>@(po.Sections.IncludeDOB && pf.DateOfBirth.HasValue && pf.DateOfBirth.Value.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.dateOfBirthFormat, pf.DateOfBirth.Value) : string.Empty)</div>
-            <div>@pf.LicenseDisplay</div>
-            <div><img src="@(Branding.CurrentBrand.LogoHRef.ToAbsolute())" style="max-width: 300px;" /></div>
-            <p>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now)</p>
-        </div>
-    }
-    @if (po.Sections.IncludeFlights)
-    {
-        <div>
-            @{ Html.RenderAction("FlightPages", "Print", new { pl = pl, pf = pf, fq = fq, po = po, suppressFooter = suppressFooter }); }
-        </div>
-    }
-    @if (po.Sections.IncludeTotals)
-    {
-        <div style="page-break-after:always;">
-            @if (po.Sections.CompactTotals)
-            {
-                Html.RenderAction("TotalsForUser", "Flights", new { userName = fq.UserName, linkItems = false, grouped = true });
-            }
-            else
-            {
-                TimeRollup tr = new TimeRollup(fq.UserName, fq) { IncludeTrailing12 = true, IncludeTrailing24 = true };
-                tr.Bind();
-                <div>@Html.Raw(tr.RenderHTML(pf.UsesHHMM, false))</div>
-            }
-        </div>
-    }
-    @if (po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None)
-    {
-        IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(fq.UserName, null);
-        foreach (Endorsement e in rgEndorsements)
-        {
-            <div>@Html.Raw(e.RenderHTML())</div>
         }
+        @if (po.Sections.IncludeFlights)
+        {
+            <div>
+                @{ Html.RenderAction("FlightPages", "Print", new { pl = pl, pf = pf, fq = fq, po = po, suppressFooter = suppressFooter }); }
+            </div>
+        }
+        @if (po.Sections.IncludeTotals)
+        {
+            <div style="page-break-after:always;">
+                @if (po.Sections.CompactTotals)
+                {
+                    Html.RenderAction("TotalsForUser", "Flights", new { userName = fq.UserName, linkItems = false, grouped = true });
+                }
+                else
+                {
+                    TimeRollup tr = new TimeRollup(fq.UserName, fq) { IncludeTrailing12 = true, IncludeTrailing24 = true };
+                    tr.Bind();
+                    <div>@Html.Raw(tr.RenderHTML(pf.UsesHHMM, false))</div>
+                }
+            </div>
+        }
+        @if (po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None)
+        {
+            IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(fq.UserName, null);
+            foreach (Endorsement e in rgEndorsements)
+            {
+                <div>@Html.Raw(e.RenderHTML())</div>
+            }
 
-        if (po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos)
-        {
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, fq.UserName);
-            il.Refresh(fIncludeDocs: false, fIncludeVids: false);
-            foreach (MFBImageInfo mfbii in il.ImageArray)
+            if (po.Sections.Endorsements == PrintingSections.EndorsementsLevel.DigitalAndPhotos)
             {
-                <div style="margin-bottom: 5px; page-break-inside:avoid;"><img style="max-width:100%" src="@mfbii.URLFullImage" /></div>
+                ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, fq.UserName);
+                il.Refresh(fIncludeDocs: false, fIncludeVids: false);
+                foreach (MFBImageInfo mfbii in il.ImageArray)
+                {
+                    <div style="margin-bottom: 5px; page-break-inside:avoid;"><img style="max-width:100%" src="@mfbii.URLFullImage" /></div>
+                }
             }
         }
-    }
+    </div>
+</div>
+<div class="dn" id="imgPrg">
+    <div class="hc c" style="width: 244px;">
+        <div class="holdProgressContainer">
+            <div class="holdProgressPlane"></div>
+        </div>
+        <h2>@Resources.LocalizedText.PleaseHold</h2>
+    </div>
 </div>

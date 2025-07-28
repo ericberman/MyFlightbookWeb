@@ -88,7 +88,7 @@
                         <br />
                         <div>@Resources.LocalizedText.PrintViewStartingPage</div>
                         <div>@{ Html.RenderAction("RenderIntegerField", "MFBTemplate", new { id = "txtPrintFromPage", name = "poPrintFromPage", value = po.StartingPageNumberOffset + 1 });}</div>
-                        <p><input type="submit" value="@Resources.LocalizedText.OK" /></p>
+                        <p><input type="button" onclick="javascript: prefsUpdated();" value="@Resources.LocalizedText.OK" /></p>
                     </div>
                 </td>
             </tr>
