@@ -14,25 +14,25 @@
     <table class="pageTable">
         <thead>
             <tr class="bordered">
-                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
-                <th class="headerSmall" style="width:1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSegments</th>
+                <th class="headerSmall w10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSegments</th>
                 <th class="headerSmall clipped">@Resources.LogbookEntry.PrintHeaderModel</th>
                 <th class="headerSmall clipped">@Resources.LogbookEntry.PrintHeaderRoute</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerSmall" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    <th class="headerSmall w1cm"><div class="custColumn">@oc.Title</div></th>
                 }
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproachesShort</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldXCountry</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldIMC</th>
-                <th class="headerSmall" style="width:1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldPIC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldCFI</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldTotal</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderApproachesShort</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldNight</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldXCountry</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall w1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldPIC</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldCFI</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldSIC</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldTotal</th>
             </tr>
         </thead>
         <tbody>
@@ -42,7 +42,7 @@
                     <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
                     <td>@led.FlightCount.FormatInt()</td>
                     <td class="clipped">@pl.ModelDisplay(led)</td>
-                    <td class="clipped"><span style="font-weight:bold">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</td>
+                    <td class="clipped"><span class="b">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
                         <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>

@@ -393,7 +393,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=3"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCASA.css?v=4"; } }
     }
 
     public class PrintLayoutSACAA : PrintLayout
@@ -444,7 +444,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=3"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printCanada.css?v=4"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout

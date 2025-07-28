@@ -46,9 +46,9 @@
                 <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
                     <td colspan="2">
                         <div>
-                            @pl.ChangeMarkerForFlight(led)<span style="font-weight: bold; font-size: larger">@led.Date.ToShortDateString()</span>
-                            <span style="font-weight:bold">@led.Route</span>
-                            <span style="white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                            @pl.ChangeMarkerForFlight(led)<span class="largeBold">@led.Date.ToShortDateString()</span>
+                            <span class="b">@led.Route</span>
+                            <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
                         </div>
                         @if (pl.CurrentUser.DisplayTimesByDefault)
                         {
@@ -56,7 +56,7 @@
                             <div>@led.FlightTimeDisplay</div>
                             <div>@led.HobbsDisplay</div>
                         }
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
@@ -75,9 +75,9 @@
                             }
                         }
                     </td>
-                    <td style="width: 3cm">
-                        <div style="font-weight:bold">@led.TailNumOrSimDisplay</div>
-                        <div style="font-size:smaller">@pl.ModelDisplay(led) @led.CatClassDisplay</div>
+                    <td class="w3cm">
+                        <div class="b">@led.TailNumOrSimDisplay</div>
+                        <div class="sm">@pl.ModelDisplay(led) @led.CatClassDisplay</div>
                     </td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
@@ -87,7 +87,7 @@
                     <td class="numericColumn">
                         @if (led.fHoldingProcedures)
                         {
-                            <img src="@("~/images/checkmark.png".ToAbsolute())" style="height:10pt; width: 10pt;" />
+                            <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
                         }
                     </td>
                     <td class="numericColumn">@led.LandingDisplay</td>

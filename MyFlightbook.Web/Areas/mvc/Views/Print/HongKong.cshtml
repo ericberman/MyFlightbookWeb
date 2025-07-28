@@ -24,9 +24,9 @@
     <table class="pageTable">
         <thead class="header bordered">
             <tr class="bordered">
-                <th class="headerBig thickRight" style="width:10ch;" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerBig thickRight w10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
 
-                <th class="headerBig thickRight" style="width:1.2cm;" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerBig thickRight w1cm" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
 
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderPICName</th>
                 <th class="headerBig thickRight" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
@@ -40,11 +40,11 @@
 
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerBig" rowspan="3" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    <th class="headerBig w1cm" rowspan="3"><div class="custColumn">@oc.Title</div></th>
                 }
 
                 <th class="headerBig thickRight" colspan="2">@Resources.LogbookEntry.PrintHeaderInstrumentTime</th>
-                <th class="headerBig thickRight" style="width:1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+                <th class="headerBig thickRight w1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
 
                 <th class="headerBig thickRight" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
             </tr>
@@ -52,35 +52,35 @@
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderTypeShort</th>
                 <th class="headerSmall thickRight">@Resources.LogbookEntry.PrintHeaderRegistration</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
-                <th class="headerSmall thickRight" style="width:1cm;">@Resources.LogbookEntry.PrintHeaderTo</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderTo</th>
 
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderTakeoffs</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderLanding</th>
                 <th class="headerSmall thickRight">@Resources.LogbookEntry.PrintHeaderApproachesShort</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1US</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP2X</th>
-                <th class="headerSmall thickRight" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPUT</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1US</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2X</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderPUT</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1US</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP2X</th>
-                <th class="headerSmall thickRight" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPUT</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1US</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2X</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderPUT</th>
 
 
-                <th class="headerSmall" style="width:1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-                <th class="headerSmall thickRight" style="width:1cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall w1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerSmall thickRight w1cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
             </tr>
         </thead>
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered @(iRow++ == 0 ? "topThick" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td class="centered thickRight" style="font-weight:bold;">@pl.ChangeMarkerForFlight(led)@led.Date.YMDString()</td>
+                    <td class="centered thickRight b">@pl.ChangeMarkerForFlight(led)@led.Date.YMDString()</td>
 
                     <td class="centered"><div>@pl.ModelDisplay(led) @led.CatClassDisplay</div></td>
                     <td class="centered thickRight">@led.TailNumOrSimDisplay</td>
@@ -125,7 +125,7 @@
                             <div>@led.FlightTimeDisplay</div>
                             <div>@led.HobbsDisplay</div>
                         }
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay.ToString() </div>
+                        <div class="wsprel">@led.CustPropertyDisplay.ToString() </div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });

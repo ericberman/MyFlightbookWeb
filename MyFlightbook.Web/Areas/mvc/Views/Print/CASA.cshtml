@@ -18,34 +18,34 @@
     <table class="pageTable">
         <thead>
             <tr class="bordered">
-                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall w10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
                 <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderPICName</th>
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderFlightDetails</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerSmall" rowspan="2" style="width:1cm">@oc.Title</th>
+                    <th class="headerSmall w1cm" rowspan="2" >@oc.Title</th>
                 }
-                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
-                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPICUS</th>
-                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
-                <th class="headerSmall" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                <th class="headerSmall w1cm" colspan="2" >@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm" colspan="2" >@Resources.LogbookEntry.PrintHeaderPICUS</th>
+                <th class="headerSmall w1cm" colspan="2" >@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall w1cm" colspan="2" >@Resources.LogbookEntry.PrintHeaderCoPilot</th>
                 <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderInstrumentShort</th>
             </tr>
             <tr class="bordered">
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderTypeShort</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderRegistration</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall nightCol" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol w1cm" >@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol w1cm" >@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol w1cm" >@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall nightCol w1cm" >@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderIMC</th>
+                <th class="headerSmall w1cm" >@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
             </tr>
         </thead>
         <tbody>
@@ -58,9 +58,9 @@
                     <td>@led.PICName</td>
                     <td>@led.SICName @led.StudentName</td>
                     <td>
-                        <span style="text-transform:uppercase; font-style:italic; font-weight:bold;">@led.Route</span>
-                        <span style="white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <span class="rte">@led.Route</span>
+                        <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         <div>
                             @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                             {

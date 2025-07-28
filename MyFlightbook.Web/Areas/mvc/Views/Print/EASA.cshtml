@@ -59,7 +59,7 @@
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderDay</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderNight</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall"><div>@Resources.LogbookEntry.PrintHeaderIFR</div><div style="text-align:center; font-size:smaller">@Resources.LogbookEntry.PrintHeaderIFRSubhead</div></th>
+                <th class="headerSmall"><div>@Resources.LogbookEntry.PrintHeaderIFR</div><div class="c sm">@Resources.LogbookEntry.PrintHeaderIFRSubhead</div></th>
                 <th class="headerSmall">@Resources.LogbookEntry.FieldPIC</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
                 <th class="headerSmall">@Resources.LogbookEntry.FieldDual</th>
@@ -99,9 +99,9 @@
                     <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>
                         <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
                         <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)) : string.Empty)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         <div>
                             @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                             {

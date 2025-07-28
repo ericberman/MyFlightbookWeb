@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -9,16 +9,16 @@ tr.bordered {
     page-break-inside: avoid;
 }
 
-    tr.bordered td, tr.bordered th {
-        padding: 3px;
-        border: 1px solid black;
-        page-break-inside: avoid;
-        font-weight: normal;
-    }
+tr.bordered td, tr.bordered th {
+    padding: 3px;
+    border: 1px solid black;
+    page-break-inside: avoid;
+    font-weight: normal;
+}
 
-    tr.bordered td {
-        font-size: smaller;
-    }
+tr.bordered td {
+    font-size: smaller;
+}
 
 tr.borderedBold th {
     padding: 3px;
@@ -35,9 +35,15 @@ tr.subtotal td {
     font-weight: bold;
 }
 
-    tr.subtotal td.subtotalLabel {
-        border: none;
-    }
+tr.subtotal td.subtotalLabel {
+    border: none;
+}
+
+.rte {
+    text-transform: uppercase;
+    font-style: italic;
+    font-weight: bold;
+}
 
 tr.bordered th.headerBig {
     text-align: center;

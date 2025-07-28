@@ -73,6 +73,10 @@
     font-size: larger;
 }
 
+.sm {
+    font-size: smaller;
+}
+
 .imgMiddle {
     vertical-align: middle;
 }
@@ -150,6 +154,22 @@
     width: 25%;
 }
 
+.w1cm {
+    width: 1cm;
+}
+
+.w2cm {
+    width: 2cm;
+}
+
+.w3cm {
+    width: 3cm;
+}
+
+.w10ch {
+    width: 10ch;
+}
+
 .overX {
     overflow-x: auto;
 }
@@ -165,6 +185,11 @@
 .prgSpin {
     height: 16pt;
     width: 16pt;
+}
+
+.ckmrk {
+    height: 10pt;
+    width: 10pt;
 }
 
 /* Basic HTML */

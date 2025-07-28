@@ -22,12 +22,12 @@
                 <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderGliderAltitude</th>
                 <th class="headerSmall" colspan="3">@Resources.LogbookEntry.PrintHeaderLaunchMethod</th>
 
-                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderGliderLandings</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderGliderLandings</th>
 
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderGroundTrainingReceived</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerBig" rowspan="2" style="width:1cm">@oc.Title</th>
+                    <th class="headerBig w1cm" rowspan="2">@oc.Title</th>
                 }
 
                 <th class="headerSmall" colspan="@(4 + (pl.CurrentUser.IsInstructor ? 1 : 0))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
@@ -85,8 +85,8 @@
                     }
                     <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                     <td>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         <div>
                             @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                             {

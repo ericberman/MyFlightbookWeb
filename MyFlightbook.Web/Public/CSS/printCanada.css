@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2021 MyFlightbook LLC
+ * Copyright (c) 2021-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,6 +29,22 @@ td.centered {
 
 .topThick {
     border-top: 2px solid black;
+}
+
+.brdrRt2, tr.bordered td.brdrRt2, tr.bordered th.brdrRt2, tr.subtotal td.brdrRt2 {
+    border-right: 2px solid black;
+}
+
+.w10ch {
+    width: 10ch;
+}
+
+.w12cm {
+    width: 1.2cm;
+}
+
+.sbTop {
+    border-top: 3px solid black;
 }
 
 tr.bordered td {
