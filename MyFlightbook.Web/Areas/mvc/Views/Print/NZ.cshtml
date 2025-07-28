@@ -16,53 +16,53 @@
     <table class="pageTable">
         <thead class="header bordered">
             <tr class="bordered">
-                <th class="headerBig" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
-                <th class="headerBig" style="width:1.2cm" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
-                <th class="headerBig" style="width:1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderPICName</th>
-                <th class="headerBig" style="width:1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
+                <th class="headerBig w10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerBig w12cm" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerBig w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderPICName</th>
+                <th class="headerBig w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilotOrStudent</th>
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderDay</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderNight</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderInstrumentTime</th>
                 @if (pl.CurrentUser.IsInstructor)
                 {
-                    <th class="headerBig" style="width:1cm" rowspan="2">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="headerBig w1cm" rowspan="2">@Resources.LogbookEntry.FieldCFI</th>
                 }
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerBig" rowspan="2" style="width:1cm">@oc.Title</th>
+                    <th class="headerBig w1cm" rowspan="2">@oc.Title</th>
                 }
-                <th class="headerBig" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
+                <th class="headerBig w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
             </tr>
             <tr class="bordered">
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderModel</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderRegistration</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldSIC</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldSIC</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldIMC</th>
-                <th class="headerSmall" style="width:1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-                <th class="headerSmall" style="width:1cm">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall w1cm">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerSmall w1cm">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
-                    <td style="font-weight:bold">@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td class="b">@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
                     <td><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></td>
                     <td>@led.TailNumOrSimDisplay</td>
                     <td>@led.PICName</td>
                     <td>@led.SICName @led.StudentName</td>
                     <td>
                         <div>
-                            <span style="font-weight:bold">@led.Route</span>
+                            <span class="b">@led.Route</span>
                             <span dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
                         </div>
                         @if (pl.CurrentUser.DisplayTimesByDefault)

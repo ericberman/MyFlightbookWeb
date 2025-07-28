@@ -22,9 +22,9 @@
     <table class="pageTable">
         <thead class="header bordered">
             <tr class="bordered">
-                <th class="headerSmall" style="width:10ch" rowspan="3">@Resources.LogbookEntry.PrintHeaderDate</th>
-                <th class="headerSmall" style="width:10ch" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
-                <th class="headerSmall" style="width:10ch" rowspan="3">@Resources.LogbookEntry.PrintHeaderKindOfFlight</th>
+                <th class="headerSmall w10ch" rowspan="3">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall w10ch" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerSmall w10ch" rowspan="3">@Resources.LogbookEntry.PrintHeaderKindOfFlight</th>
                 <th class="headerSmall" colspan="4">@Resources.LogbookEntry.PrintHeaderPilotTime</th>
                 <th class="headerSmall" rowspan="3">@Resources.LogbookEntry.PrintHeaderSpecialCrew</th>
                 <th class="headerSmall" colspan="2">@Resources.LogbookEntry.PrintHeaderInstrumentTime</th>
@@ -41,15 +41,15 @@
             </tr>
             <tr class="bordered">
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderModel</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSerialNumber</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSerialNumber</th>
 
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderFirstPIlot</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCommander</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderFirstPIlot</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderCommander</th>
 
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
 
                 <th class="headerSmall" colspan="3">@Resources.LogbookEntry.PrintHeaderCarrier</th>
                 <th class="headerSmall" rowspan="2"><span class="rotated">@Resources.LogbookEntry.PrintHeaderFCLP</th>
@@ -91,8 +91,8 @@
                     }
                     <td>
                         <div>@((led.Airports.Any() ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route) : String.Empty))</div>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });

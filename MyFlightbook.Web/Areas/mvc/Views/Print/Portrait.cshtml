@@ -55,7 +55,7 @@
             {
                 string directColor = pl.ColorForFlight(led);
                 <tr class="bordered">
-                    <td class="row1" @Html.Raw(directColor)>@pl.ChangeMarkerForFlight(led)<span style="font-weight: bold">@led.Date.ToShortDateString()</span></td>
+                    <td class="row1" @Html.Raw(directColor)>@pl.ChangeMarkerForFlight(led)<span class="b">@led.Date.ToShortDateString()</span></td>
                     <td class="row1" @Html.Raw(directColor)>@pl.ModelDisplay(led)</td>
                     <td class="row1" @Html.Raw(directColor)>@led.CatClassDisplay</td>
                     <td class="row1" @Html.Raw(directColor)>@led.TailNumOrSimDisplay</td>
@@ -86,21 +86,21 @@
                     <td class="numericColumn">
                         @if (led.fHoldingProcedures)
                         {
-                            <img src="@("~/images/checkmark.png".ToAbsolute())" style="height:10pt; width: 10pt;" />
+                            <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
                         }
                     </td>
                 </tr>
                 <tr class="bordered">
                     <td colspan="@colCount">
                         <span>@led.Route</span>
-                        <span style="white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                        <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
                         @if (pl.CurrentUser.DisplayTimesByDefault)
                         {
                             <div>@led.EngineTimeDisplay</div>
                             <div>@led.FlightTimeDisplay</div>
                             <div>@led.HobbsDisplay</div>
                         }
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay.ToString()</div>
+                        <div class="wsprel">@led.CustPropertyDisplay.ToString()</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });

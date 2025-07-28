@@ -511,7 +511,7 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsOptionalColumns { get { return true; } }
 
-        public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=3"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printPCAA.css?v=4"; } }
     }
 
     public class PrintLayoutHongKong : PrintLayout

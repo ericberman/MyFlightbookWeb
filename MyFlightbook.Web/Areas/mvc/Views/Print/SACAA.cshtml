@@ -83,9 +83,9 @@
                     <td>@led.TailNumOrSimDisplay</td>
                     <td>@led.PICName</td>
                     <td>
-                        <div style="font-weight:bold;">@led.Route</div>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="b">@led.Route</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                     </td>
                     <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName)</td>
                     <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

@@ -21,9 +21,9 @@
     <table class="pageTable">
         <thead>
             <tr class="bordered">
-                <th class="headerSmall" style="width:10ch">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall w10ch">@Resources.LogbookEntry.PrintHeaderDate</th>
                 <th class="headerSmall">@Resources.LogbookEntry.PrintHeaderModel</th>
-                <th class="headerSmall" style="width:1.2cm">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerSmall w12cm">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th class="headerBig">@Resources.LogbookEntry.PrintHeaderRoute</th>
                 @if (ShowRole)
                 {
@@ -32,21 +32,21 @@
                 <th class="headerBig">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerSmall" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    <th class="headerSmall w1cm"><div class="custColumn">@oc.Title</div></th>
                 }
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSim</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderSim</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldDual</th>
                 @if (pl.CurrentUser.IsInstructor)
                 {
-                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldCFI</th>
                 }
                 @if (pl.CurrentUser.TracksSecondInCommandTime)
                 {
-                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
+                    <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldSIC</th>
                 }
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
             </tr>
         </thead>
         <tbody>
@@ -63,8 +63,8 @@
                     }
                     <td>
                         <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });

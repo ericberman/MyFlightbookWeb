@@ -23,15 +23,15 @@
     <table class="pageTable">
         <thead class="header bordered">
             <tr class="bordered">
-                <th class="headerBig thickRight" style="width:10ch;" rowspan="3">@Resources.LogbookEntry.PrintHeaderDate</th>
-                <th class="headerBig thickRight" style="width:1.2cm;" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerBig thickRight w10ch" rowspan="3">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerBig thickRight w12cm" colspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th class="headerBig thickRight" colspan="2">@Resources.LogbookEntry.PrintHeaderCrew</th>
                 <th class="headerBig thickRight" colspan="2" rowspan="2">@Resources.LogbookEntry.PrintHeaderRoute</th>
                 <th class="headerBig thickRight" rowspan="3">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 <th class="headerBig thickRight" colspan="2">@Resources.LogbookEntry.PrintHeaderFlightTimes</th>
 
-                <th class="headerSmall" rowspan="3" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLanding</th>
-                <th class="headerSmall thickRight" rowspan="3" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+                <th class="headerSmall w1cm" rowspan="3">@Resources.LogbookEntry.PrintHeaderLanding</th>
+                <th class="headerSmall thickRight w1cm" rowspan="3">@Resources.LogbookEntry.PrintHeaderApproaches</th>
 
                 <th class="headerBig thickRight" colspan="3" rowspan="2">@Resources.LogbookEntry.PrintHeaderDay</th>
                 <th class="headerBig thickRight" colspan="3" rowspan="2">@Resources.LogbookEntry.PrintHeaderNight</th>
@@ -41,17 +41,17 @@
 
                 @if (pl.CurrentUser.IsInstructor)
                 {
-                    <th class="headerBig" style="width:1cm;" rowspan="3">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="headerBig w1cm" rowspan="3">@Resources.LogbookEntry.FieldCFI</th>
                 }
 
                 @if (pl.CurrentUser.TracksSecondInCommandTime)
                 {
-                    <th class="headerBig" style="width:1cm;" rowspan="3">@Resources.LogbookEntry.FieldSIC</th>
+                    <th class="headerBig w1cm" rowspan="3">@Resources.LogbookEntry.FieldSIC</th>
                 }
 
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerBig" rowspan="3" style="width:1cm"><div class="custColumn">@oc.Title</div></th>
+                    <th class="headerBig w1cm" rowspan="3"><div class="custColumn">@oc.Title</div></th>
                 }
 
                 <th class="headerBig" rowspan="3">@Resources.LogbookEntry.PrintHeaderSignature</th>
@@ -66,33 +66,33 @@
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderDeparture</th>
                 <th class="headerSmall thickRight" rowspan="2">@Resources.LogbookEntry.PrintHeaderArrival</th>
 
-                <th class="headerSmall" style="width:1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
-                <th class="headerSmall" style="width:1cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
-                <th class="headerSmall thickRight" style="width:1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
+                <th class="headerSmall w1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.FieldIMC</th>
+                <th class="headerSmall thickRight w1cm" rowspan="2">@Html.Raw(Resources.LogbookEntry.FieldGroundSim)</th>
 
                 <th class="headerSmall thickRight" colspan="2" style="border-top:none;">@Resources.LogbookEntry.PrintHeaderP1Only</th>
             </tr>
             <tr class="bordered">
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
-                <th class="headerSmall thickRight" style="width:1cm;">@Resources.LogbookEntry.PrintHeaderTo</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderTo</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
-                <th class="headerSmall" style="width:1cm;">@Resources.LogbookEntry.PrintHeaderP2</th>
-                <th class="headerSmall thickRight" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP3</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderP3</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
-                <th class="headerSmall thickRight" style="width:1cm;">@Resources.LogbookEntry.PrintHeaderP3</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP1</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderP2</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderP3</th>
 
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall thickRight" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall thickRight w1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
             </tr>
         </thead>
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered @(iFlightRow == 0 ? "topThick" : string.Empty) @(iFlightRow++ % 2 == 0 ? "evenRow" : "oddRow")" @Html.Raw(pl.ColorForFlight(led))>
-                    <td class="centered thickRight" style="font-weight:bold;">@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td class="centered thickRight b">@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
 
                     <td class="centered"><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></td>
                     <td class="centered thickRight">@led.TailNumOrSimDisplay</td>
@@ -112,7 +112,7 @@
                             <div>@led.FlightTimeDisplay</div>
                             <div>@led.HobbsDisplay</div>
                         }
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay </div>
+                        <div class="wsprel">@led.CustPropertyDisplay </div>
                         @if (pl.Options.IncludeImages)
                         {
                             ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
@@ -187,12 +187,12 @@
                         <td class="thickRight">@led.Approaches.FormatInt()</td>
 
                         <td>@Math.Max(led.PIC - led.NightPICTotal, 0).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td class="thickRight">@Math.Max(led.SIC - led.NightSICTotal, 0).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@Math.Max(led.Dual - led.NightDualTotal, 0).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@Math.Max(led.SIC - led.NightSICTotal, 0).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td class="thickRight">@Math.Max(led.Dual - led.NightDualTotal, 0).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
 
                         <td>@led.NightPICTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td class="thickRight">@led.NightSICTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.NightDualTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.NightSICTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td class="thickRight">@led.NightDualTotal.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
 
                         <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                         <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>

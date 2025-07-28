@@ -17,39 +17,39 @@
                 <th colspan="@(10 + pl.Options.OptionalColumns.Count() + (pl.CurrentUser.IsInstructor ? 1 : 0) + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0).ToString(CultureInfo.InvariantCulture))" class="rightCols"></th>
             </tr>
             <tr class="bordered">
-                <th class="headerSmall" style="width:10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                <th class="headerSmall w10ch" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderModel</th>
-                <th class="headerSmall" style="width:1.2cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                <th class="headerSmall w12cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th class="headerSmall" rowspan="2">@Resources.LogbookEntry.PrintHeaderRoute</th>
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
-                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderApproaches</th>
-                <th class="headerBig" colspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderLanding</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+                <th class="headerBig w1cm" colspan="2">@Resources.LogbookEntry.PrintHeaderLanding</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderCondition2</th>
-                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSim</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSim</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                 {
-                    <th class="headerSmall" rowspan="2" style="width:1cm">@oc.Title</th>
+                    <th class="headerSmall w1cm" rowspan="2">@oc.Title</th>
                 }
                 <th class="headerBig" colspan="@(3 + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (pl.CurrentUser.IsInstructor ? 1 : 0))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
-                <th class="headerSmall" rowspan="2" style="width:1cm">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
+                <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
             </tr>
             <tr class="bordered">
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderCrossCountry</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderDay</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderNight</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderIMC</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderCrossCountry</th>
                 @if (pl.CurrentUser.IsInstructor)
                 {
-                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldCFI</th>
+                    <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldCFI</th>
                 }
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldDual</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldDual</th>
                 @if (pl.CurrentUser.TracksSecondInCommandTime)
                 {
-                    <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.FieldSIC</th>
+                    <th class="headerSmall w1cm">@Resources.LogbookEntry.FieldSIC</th>
                 }
-                <th class="headerSmall" style="width:1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                <th class="headerSmall w1cm">@Resources.LogbookEntry.PrintHeaderPIC2</th>
             </tr>
         </thead>
         <tbody>
@@ -61,8 +61,8 @@
                     <td>@led.TailNumOrSimDisplay</td>
                     <td>@led.Route</td>
                     <td>
-                        <div style="clear:left; white-space:pre-line;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div style="white-space:pre-line;">@led.CustPropertyDisplay</div>
+                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                        <div class="wsprel">@led.CustPropertyDisplay</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
