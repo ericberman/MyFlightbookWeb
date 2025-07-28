@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -359,7 +359,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Share keys
         [HttpPost]
         [Authorize]
-        public ActionResult UpdateShareKey(string idShareKey, bool fFlights, bool fTotals, bool fCurrency, bool fAchievements, bool fAirports)
+        public ActionResult UpdateShareKey(string idShareKey, bool fFlights, bool fTotals, bool fCurrency, bool fAchievements, bool fAirports, string queryName)
         {
             return SafeOp(() =>
             {
@@ -372,6 +372,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 sk.CanViewCurrency = fCurrency;
                 sk.CanViewAchievements = fAchievements;
                 sk.CanViewVisitedAirports = fAirports;
+                sk.QueryName = String.IsNullOrEmpty(queryName) ? null : queryName;
                 sk.FCommit();
                 return new EmptyResult();
             });
@@ -793,6 +794,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 CanViewCurrency = Request["prefShareLinkCurrency"] != null,
                 CanViewAchievements = Request["prefShareLinkAchievements"] != null,
                 CanViewVisitedAirports = Request["prefShareLinkAirports"] != null,
+                QueryName = Request["prefShareLinkAssociatedQuery"],
             };
             try
             {

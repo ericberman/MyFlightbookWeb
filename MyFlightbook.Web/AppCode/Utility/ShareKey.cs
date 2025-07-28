@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2024 MyFlightbook LLC
+ * Copyright (c) 2020-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,7 +26,6 @@ namespace MyFlightbook.Web.Sharing
     [Serializable]
     public class ShareKey
     {
-
         #region properties
         /// <summary>
         /// Unique ID (Guid) for this share key
@@ -41,6 +41,11 @@ namespace MyFlightbook.Web.Sharing
         /// Owner of the share key
         /// </summary>
         public string Username { get; set; }
+
+        /// <summary>
+        /// Name of any associated query
+        /// </summary>
+        public string QueryName { get; set; }
 
         /// <summary>
         /// When - if ever - was this most recently used?
@@ -116,6 +121,14 @@ namespace MyFlightbook.Web.Sharing
                 return i;
             }
         }
+
+        /// <summary>
+        /// Returns the full associated query, not just the name.  Will be null if no name or if the query is not found (which should not happen)
+        /// </summary>
+        public FlightQuery Query
+        {
+            get { return CannedQuery.QueryForUser(Username, QueryName); }
+        }
         #endregion
 
         #region Constructors
@@ -140,6 +153,7 @@ namespace MyFlightbook.Web.Sharing
             privFlags = Convert.ToUInt32(dr["privileges"], CultureInfo.InvariantCulture);
             object o = dr["lastaccess"];
             LastAccess = o == null || o == DBNull.Value || o.ToString().Length == 0 ? null : (DateTime?)Convert.ToDateTime(o, CultureInfo.InvariantCulture);
+            QueryName = util.ReadNullableString(dr, "queryName");
         }
         #endregion
 
@@ -150,13 +164,14 @@ namespace MyFlightbook.Web.Sharing
                 throw new InvalidOperationException("ShareKey must have an ID to be saved");
             if (privFlags == 0)
                 throw new MyFlightbookValidationException(Resources.LocalizedText.ShareKeyValidationNoPrivileges);
-            DBHelper dbh = new DBHelper("REPLACE INTO shareKeys SET GUID=?guid, Username=?user, Name=?name, Privileges=?privs");
+            DBHelper dbh = new DBHelper("REPLACE INTO shareKeys SET GUID=?guid, Username=?user, Name=?name, Privileges=?privs, queryName=?qName");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("guid", ID);
                 comm.Parameters.AddWithValue("user", Username);
                 comm.Parameters.AddWithValue("name", Name);
                 comm.Parameters.AddWithValue("privs", privFlags);
+                comm.Parameters.AddWithValue("qName", QueryName);
             });
             return String.IsNullOrEmpty(dbh.LastError);
         }
@@ -179,6 +194,27 @@ namespace MyFlightbook.Web.Sharing
             {
                 comm.Parameters.AddWithValue("guid", ID);
                 comm.Parameters.AddWithValue("user", Username);
+            });
+            return String.IsNullOrEmpty(dbh.LastError);
+        }
+
+
+        /// <summary>
+        /// Deletes any sharekeys for the specified user that references the specified query.  If either is null or empty, is a no-op.
+        /// </summary>
+        /// <param name="szUser">The username</param>
+        /// <param name="szName">The query name</param>
+        /// <returns></returns>
+        public static bool DeleteForQueryName(string szUser, string szName)
+        {
+            if (String.IsNullOrEmpty(szUser) || string.IsNullOrEmpty(szName))
+                return false;
+
+            DBHelper dbh = new DBHelper("DELETE FROM shareKeys WHERE Username=?user AND queryName=?qName");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("qName", szName);
             });
             return String.IsNullOrEmpty(dbh.LastError);
         }

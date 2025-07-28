@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MyFlightbook.Web.Sharing;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -1696,6 +1697,22 @@ namespace MyFlightbook
             dba.AddWithValue("qname", QueryName);
             new DBHelper(dba).DoNonQuery();
             FlushCachedQueries();
+
+            // Delete any sharekeys that reference this too
+            ShareKey.DeleteForQueryName(UserName, QueryName);
+        }
+
+        /// <summary>
+        /// Returns the specified named query for the specified named user, or null if not found.  Case sensitive.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static CannedQuery QueryForUser(string szUser, string name)
+        {
+            if (String.IsNullOrEmpty(name))
+                return null;
+            return new List<CannedQuery>(QueriesForUser(szUser)).FirstOrDefault(cq => cq.QueryName.CompareCurrentCulture(name) == 0);
         }
         #endregion
 

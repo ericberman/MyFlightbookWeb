@@ -679,4 +679,25 @@
   <data name="SharingShareKeyNameHint" xml:space="preserve">
     <value>Suggestion: use the name of the recipient</value>
   </data>
+  <data name="SharingShareKeyQuery" xml:space="preserve">
+    <value>Only show flights matching saved query:</value>
+  </data>
+  <data name="SharingShareKeyQueryHeader" xml:space="preserve">
+    <value>Matches:</value>
+  </data>
+  <data name="SharingShareKeyQueryAny" xml:space="preserve">
+    <value>(All flights)</value>
+  </data>
+  <data name="SharingShareKeyExistingLinks" xml:space="preserve">
+    <value>Your current sharing links:</value>
+  </data>
+  <data name="SharingShareKeyPermissionsPrompt" xml:space="preserve">
+    <value>What parts of the logbook should be shared?</value>
+  </data>
+  <data name="SharingShareKeySearchRestricted" xml:space="preserve">
+    <value>This view of the logbook has been restricted, so the applied search cannot be modified.</value>
+  </data>
+  <data name="SharingShareKeyAddNewLink" xml:space="preserve">
+    <value>Add a new sharing link</value>
+  </data>
 </root>

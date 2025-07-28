@@ -4,6 +4,7 @@
 @{ 
     MyFlightbook.Profile m_pf = ViewBag.pf;
     IEnumerable<ShareKey> lstKeys = ShareKey.ShareKeysForUser(m_pf.UserName);
+    IEnumerable<CannedQuery> Queries = CannedQuery.QueriesForUser(m_pf.UserName);
 }
 <script type="text/javascript">
     $(() => {
@@ -29,31 +30,46 @@
     <p>
         <input type="text" style="width: 300px;" readonly value="@m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri" id="txtPrefSharingMyFlights" />
         <img src="@("~/images/copyflight.png".ToAbsolute())" style="vertical-align:text-bottom;" onclick="javascript:copyClipboard(null, 'txtPrefSharingMyFlights', true, 'lblPrefMyFlightsCopied');return false;" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard" />
-        <span id="lblPrefMyFlightsCopied" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt;">@Resources.LocalizedText.CopiedToClipboard</span>
+        <span id="lblPrefMyFlightsCopied" class="hintPopup dn b">@Resources.LocalizedText.CopiedToClipboard</span>
     </p>
 </div>
 <div class="prefSectionRow">
     <h2>@Resources.LocalizedText.ShareLogbookPrompt1</h2>
     <p>@Resources.LocalizedText.ShareLogbookPrompt2</p>
-    <div id="divCreateShareKey">
+    <h2>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCreateShareKey", labelText = Resources.Preferences.SharingShareKeyAddNewLink });}</h2>
+    <div id="divCreateShareKey" class="dn callout">
         @using (Html.BeginForm("CreateShareKey", "Prefs", FormMethod.Post, new { id = "frmCreateShareKey", name = "frmCreateShareKey" }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" name="prefShareLinkID" value="" />
-            <div style="display: inline;" id="divShareKeyName"><input type="text" id="txtShareLinkName" placeholder="@Resources.LocalizedText.ShareKeyNamePrompt" required name="prefShareLinkName" /></div>
-            <div style="display: inline;" id="divShareKeyPerms">
+            <h3>@Resources.LocalizedText.ShareKeyNamePrompt</h3>
+            <div>
+                <input type="text" id="txtShareLinkName" placeholder="@Resources.LocalizedText.ShareKeyNamePrompt" required name="prefShareLinkName" /> <span class="fineprint">@Resources.Preferences.SharingShareKeyNameHint</span>
+            </div>
+            <h3>@Resources.Preferences.SharingShareKeyPermissionsPrompt</h3>
+            <div>
                 <label><input type="checkbox" id="ckShareLinkFlights" checked name="prefShareLinkFlights">@Resources.LocalizedText.ShareKeyPermissionViewFlights</label>
                 <label><input type="checkbox" id="ckShareLinkTotals" checked name="prefShareLinkTotals">@Resources.LocalizedText.ShareKeyPermissionViewTotals</label>
                 <label><input type="checkbox" id="ckShareLinkCurrency" checked name="prefShareLinkCurrency">@Resources.LocalizedText.ShareKeyPermissionViewCurrency</label>
                 <label><input type="checkbox" id="ckShareLinkAchievements" checked name="prefShareLinkAchievements">@Resources.LocalizedText.ShareKeyPermissionViewAchievements</label>
                 <label><input type="checkbox" id="ckShareLinkAirports" checked name="prefShareLinkAirports">@Resources.LocalizedText.ShareKeyPermissionViewAirports</label>
             </div>
-            <button type="submit" id="btnCreateShareLink">@Resources.Preferences.SharingCreateShareLink</button>
+            <h3>@Resources.Preferences.SharingShareKeyQuery</h3>
+            <div>
+                <select name="prefShareLinkAssociatedQuery">
+                    <option value="">@Resources.Preferences.SharingShareKeyQueryAny</option>
+                    @foreach (CannedQuery cq in Queries)
+                    {
+                        <option value="@cq.QueryName">@cq.QueryName</option>
+                    }
+                </select>
+            </div>
+            <p><button type="submit" id="btnCreateShareLink">@Resources.Preferences.SharingCreateShareLink</button></p>
         }
     </div>
-    <div class="fineprint">@Resources.Preferences.SharingShareKeyNameHint</div>
     @if (lstKeys.Any())
     {
+        <h3>@Resources.Preferences.SharingShareKeyExistingLinks</h3>
         <table cellpadding="3">
             <thead>
                 <tr>
@@ -64,6 +80,7 @@
                     <th>@Resources.LocalizedText.ShareKeyPermissionViewCurrency</th>
                     <th>@Resources.LocalizedText.ShareKeyPermissionViewAchievements</th>
                     <th>@Resources.LocalizedText.ShareKeyPermissionViewAirports</th>
+                    <th>@Resources.Preferences.SharingShareKeyQueryHeader</th>
                     <th>@Resources.LocalizedText.ShareKeyLastAccessHeader</th>
                     <th></th>
                     <th></th>
@@ -75,13 +92,22 @@
                     string idTxtLink = String.Format(CultureInfo.InvariantCulture, "txtShareLnk{0}", sk.ID);
                     string idtxtTip = String.Format(CultureInfo.InvariantCulture, "txtShareTip{0}", sk.ID);
                     <tr>
-                        <td style=""><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" onclick="javascript: skEditor.deleteShareKey($(this).closest('tr'), '@sk.ID');" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
-                        <td style="font-weight: bold;">@sk.Name</td>
-                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewFlights.ToChecked() name="skCanViewFlights"></td>
-                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewTotals.ToChecked() name="skCanViewTotals"></td>
-                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewCurrency.ToChecked() name="skCanViewCurrency"></td>
-                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewAchievements.ToChecked() name="skCanViewAchievements"></td>
-                        <td style="text-align: center"><input type="checkbox" disabled @sk.CanViewVisitedAirports.ToChecked() name="skCanViewAirports"></td>
+                        <td><img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.Currency.CustomCurrencyDeleteTooltip" onclick="javascript: skEditor.deleteShareKey($(this).closest('tr'), '@sk.ID');" title="@Resources.Currency.CustomCurrencyDeleteTooltip" /></td>
+                        <td class="b">@sk.Name</td>
+                        <td class="c"><input type="checkbox" disabled @sk.CanViewFlights.ToChecked() name="skCanViewFlights"></td>
+                        <td class="c"><input type="checkbox" disabled @sk.CanViewTotals.ToChecked() name="skCanViewTotals"></td>
+                        <td class="c"><input type="checkbox" disabled @sk.CanViewCurrency.ToChecked() name="skCanViewCurrency"></td>
+                        <td class="c"><input type="checkbox" disabled @sk.CanViewAchievements.ToChecked() name="skCanViewAchievements"></td>
+                        <td class="c"><input type="checkbox" disabled @sk.CanViewVisitedAirports.ToChecked() name="skCanViewAirports"></td>
+                        <td>
+                            <select name="skAssociatedQuery" disabled>
+                                <option value="">@Resources.Preferences.SharingShareKeyQueryAny</option>
+                                @foreach (CannedQuery cq in Queries)
+                                {
+                                    <option value="@cq.QueryName" @((cq.QueryName.CompareCurrentCulture(sk.QueryName ?? string.Empty) == 0).ToSelected())>@cq.QueryName</option>
+                                }
+                            </select>
+                        </td>
                         <td>@sk.LastAccessDisplay</td>
                         <td>
                             <input readonly style="width: 200px;" value="@sk.ShareLink" id="@idTxtLink" />
@@ -91,13 +117,13 @@
                             <div class="shareKeyStatic">
                                 <img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="skEditor.setEditMode($(this).closest('tr'), true);" />
                             </div>
-                            <div class="shareKeyEdit" style="display:none;">
-                                <a href="#" onclick="javascript: skEditor.setEditMode($(this).closest('tr'), false); skEditor.setPermissions($(this).closest('tr'), @Json.Encode(sk.CanViewFlights), @Json.Encode(sk.CanViewTotals), @Json.Encode(sk.CanViewCurrency), @Json.Encode(sk.CanViewAchievements), @Json.Encode(sk.CanViewVisitedAirports)); return false;">@Resources.LocalizedText.Cancel</a>
+                            <div class="shareKeyEdit dn">
+                                <a href="#" onclick="javascript: skEditor.setEditMode($(this).closest('tr'), false); skEditor.setPermissions($(this).closest('tr'), @Json.Encode(sk.CanViewFlights), @Json.Encode(sk.CanViewTotals), @Json.Encode(sk.CanViewCurrency), @Json.Encode(sk.CanViewAchievements), @Json.Encode(sk.CanViewVisitedAirports), '@Json.Encode(sk.QueryName ?? string.Empty)'); return false;">@Resources.LocalizedText.Cancel</a>
                                 <a href="#" onclick="javascript: skEditor.updateShareKey($(this).closest('tr'), '@sk.ID'); return false;">@Resources.LocalizedText.genericUpdate</a>
                             </div>
                         </td>
-                        <td><span id="@idtxtTip" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt;">@Resources.LocalizedText.CopiedToClipboard</span></td>
-                </tr>
+                        <td><span id="@idtxtTip" class="hintPopup dn b">@Resources.LocalizedText.CopiedToClipboard</span></td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -105,7 +131,7 @@
     }
     else
     {
-        <ul><li style="font-style: italic;">@Resources.LocalizedText.ShareKeyNoKeysFound</li></ul>
+        <ul><li class="i">@Resources.LocalizedText.ShareKeyNoKeysFound</li></ul>
     }
 </div>
 <div class="prefSectionRow">

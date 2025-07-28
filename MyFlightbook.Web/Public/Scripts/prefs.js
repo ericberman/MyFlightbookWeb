@@ -630,6 +630,7 @@ function sharingEditor(baseEndpoint, options) {
             root.find(".shareKeyStatic").show();
         }
         root.find("input[type='checkbox']").prop("disabled", !mode);
+        root.find("select").prop("disabled", !mode);
     }
 
     this.updateShareKey = function (root, id) {
@@ -641,6 +642,7 @@ function sharingEditor(baseEndpoint, options) {
         params.fCurrency = root.find("input[name='skCanViewCurrency']").is(":checked");
         params.fAchievements = root.find("input[name='skCanViewAchievements']").is(":checked");
         params.fAirports = root.find("input[name='skCanViewAirports']").is(":checked");
+        params.queryName = root.find("select[name='skAssociatedQuery']").val();
         var d = JSON.stringify(params);
         $.ajax({
             url: baseEndpoint + "UpdateShareKey",
@@ -654,12 +656,13 @@ function sharingEditor(baseEndpoint, options) {
         });
     }
 
-    this.setPermissions = function (root, flights, totals, currency, achievements, airports) {
+    this.setPermissions = function (root, flights, totals, currency, achievements, airports, queryName) {
         root.find("input[name='skCanViewFlights']")[0].checked = flights;
         root.find("input[name='skCanViewTotals']")[0].checked = totals;
         root.find("input[name='skCanViewCurrency']")[0].checked = currency;
         root.find("input[name='skCanViewAchievements']")[0].checked = achievements;
         root.find("input[name='skCanViewAirports']")[0].checked = airports;
+        root.find("input[name='skAssociatedQuery']").val(queryName);
     }
 }
 

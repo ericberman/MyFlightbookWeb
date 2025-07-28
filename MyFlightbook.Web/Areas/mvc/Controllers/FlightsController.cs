@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -622,7 +622,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ShareKey sk = ShareKey.ShareKeyWithID(g) ?? throw new UnauthorizedAccessException("Invalid share key: " + g);
             ViewBag.sk = sk;
 
-            fq = fq ?? new FlightQuery(sk.Username);
+            // Issue # 1449 - restrict to a specified query.
+            fq = sk.Query ?? fq ?? new FlightQuery(sk.Username);
 
             if (fq.UserName.CompareCurrentCultureIgnoreCase(sk.Username) != 0)
                 throw new UnauthorizedAccessException();

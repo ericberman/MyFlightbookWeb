@@ -32,12 +32,19 @@
     }
 
     function qfeClicked(propName) {
-        $("#hdnQuery").val(JSON.stringify(srch.buildQuery()));
-        $("#hdnQFEClicked").val(true);
-        $("#hdnPropToDelete").val(propName);
-        $("#frmUpdateQuery").submit();
-        return false;
-    }
+        @if (String.IsNullOrEmpty(sk.QueryName))
+            { 
+                @:$("#hdnQuery").val(JSON.stringify(srch.buildQuery()));
+                @:$("#hdnQFEClicked").val(true);
+                @:$("#hdnPropToDelete").val(propName);
+                @:$("#frmUpdateQuery").submit();
+                @: return false;
+            }
+        else
+            {
+                @:window.alert('@Resources.Preferences.SharingShareKeySearchRestricted');
+            }
+        }
 
     function estimateDistance() {
         var params = new Object();
@@ -116,7 +123,10 @@
     }
 </div>
 <div id="accordionproxycontainer" style="display:none;">
-    <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
+    @if (String.IsNullOrEmpty(sk.QueryName))
+    {
+        <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
+    }
     @if (sk.CanViewTotals)
     {
         <div id="apcTotals">@Resources.LocalizedText.LogTabTotals</div>

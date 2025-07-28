@@ -1195,7 +1195,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Tip*: If you have additional certificates to track (e.g., from multiple jurisdictions), you can put them all in the certificate field (e.g., &quot;FAA 12345, EASA 67890&quot;.  If your additional certificate has an expiration/renewal date, then use a custom deadline to track it, using the certificate as the name for the deadline..
+        ///   Looks up a localized string similar to *Tip*: If you have additional certificates to track (e.g., from multiple jurisdictions), you can put them all in the certificate field (e.g., &quot;FAA 12345, EASA 67890&quot;).  If your additional certificate has an expiration/renewal date, then use a custom deadline to track it, using the certificate as the name for the deadline..
         /// </summary>
         internal static string PilotInfoSecondaryCertificate {
             get {
@@ -1735,11 +1735,74 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a new sharing link.
+        /// </summary>
+        internal static string SharingShareKeyAddNewLink {
+            get {
+                return ResourceManager.GetString("SharingShareKeyAddNewLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your current sharing links:.
+        /// </summary>
+        internal static string SharingShareKeyExistingLinks {
+            get {
+                return ResourceManager.GetString("SharingShareKeyExistingLinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Suggestion: use the name of the recipient.
         /// </summary>
         internal static string SharingShareKeyNameHint {
             get {
                 return ResourceManager.GetString("SharingShareKeyNameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What parts of the logbook should be shared?.
+        /// </summary>
+        internal static string SharingShareKeyPermissionsPrompt {
+            get {
+                return ResourceManager.GetString("SharingShareKeyPermissionsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only show flights matching saved query:.
+        /// </summary>
+        internal static string SharingShareKeyQuery {
+            get {
+                return ResourceManager.GetString("SharingShareKeyQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (All flights).
+        /// </summary>
+        internal static string SharingShareKeyQueryAny {
+            get {
+                return ResourceManager.GetString("SharingShareKeyQueryAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches:.
+        /// </summary>
+        internal static string SharingShareKeyQueryHeader {
+            get {
+                return ResourceManager.GetString("SharingShareKeyQueryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This view of the logbook has been restricted, so the applied search cannot be modified..
+        /// </summary>
+        internal static string SharingShareKeySearchRestricted {
+            get {
+                return ResourceManager.GetString("SharingShareKeySearchRestricted", resourceCulture);
             }
         }
     }
