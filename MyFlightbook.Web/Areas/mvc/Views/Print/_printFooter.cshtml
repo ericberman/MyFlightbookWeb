@@ -7,7 +7,7 @@
     {
         <div>
             <div style="float: right">
-                <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, ViewBag.pageNum + 1)</div>
+                <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, ViewBag.pageNum)</div>
             </div>
             <div>
                 <div>@Resources.LogbookEntry.LogbookCertification@(String.IsNullOrEmpty(pf?.FirstName ?? string.Empty + pf?.LastName ?? string.Empty) ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)) _____________________________</div>

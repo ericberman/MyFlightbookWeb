@@ -1377,7 +1377,7 @@ namespace MyFlightbook.Printing
 
             // Finally, renumber the pages
             for (int i = 0; i < lstOut.Count; i++)
-                lstOut[i].PageNum = po.StartingPageNumberOffset + i;
+                lstOut[i].PageNum = po.StartingPageNumberOffset + 1 + i;
         }
 
         private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, Collection<OptionalColumn> optionalColumns)
