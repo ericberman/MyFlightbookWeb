@@ -283,7 +283,7 @@
         <div class="vfSection @(CategoryClass.HasICAO(mm.CategoryClassID) ? string.Empty : "dn")" id="rowFamily">
             <div class="vfPrompt">
                 <span id=lblFamilyName>@Resources.Makes.editMakeICAOCode</span>
-                <div class="vfSubDesc"><a href="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" target="_blank">@Resources.Makes.editMakeICAOCodeLookup</a></div>
+                <div class="vfSubDesc"><a href="https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7360.1K_Aircraft_Type_Designators.pdf" target="_blank">@Resources.Makes.editMakeICAOCodeLookup</a></div>
             </div>
             <div class="vfValue">
                 <input type="text" maxlength="4" pattern="^[a-zA-Z0-9]{0,4}$" id="txtFamilyName" name="familyName" placeholder="@Resources.LocalizedText.EditMakeWatermarkFamily" value="@(CategoryClass.HasICAO(mm.CategoryClassID) ? mm.FamilyName : string.Empty)" class="w15em" />
