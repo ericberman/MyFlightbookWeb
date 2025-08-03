@@ -146,6 +146,7 @@
                 <td><label for="rbAutofillPreferred">@Html.Raw(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportWizardAutofillTryPreferred, pf.PreferredTimeZone.DisplayName).Linkify())</label></td>
             </tr>
         </table>
+        <div class="fineprint"><span class="b">@Resources.LocalizedText.Note</span> @Html.Raw(Resources.LogbookEntry.ImportWizardAutofillNotesConditions.Linkify())</div>
         <div style="margin: 10pt auto;">
             <div id="divUploadFlightCSV"></div>
             <div id="divDropAcCSV">

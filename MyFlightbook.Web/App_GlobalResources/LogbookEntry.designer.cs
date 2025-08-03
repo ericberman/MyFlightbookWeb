@@ -2472,6 +2472,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autofill will not run if a cross-country time, or night time are specified in your file.  Night time specifically will only be computed under certain conditions; see [this blog post](https://myflightbookblog.blogspot.com/2022/01/auto-fill-functionality.html) for more information..
+        /// </summary>
+        internal static string ImportWizardAutofillNotesConditions {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillNotesConditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ... all times are *UTC*.
         /// </summary>
         internal static string ImportWizardAutofillPrompt {
