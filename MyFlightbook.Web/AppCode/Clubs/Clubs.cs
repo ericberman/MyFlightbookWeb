@@ -21,7 +21,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2024 MyFlightbook LLC
+ * Copyright (c) 2014-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1056,19 +1056,16 @@ namespace MyFlightbook.Clubs
                     string szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute(szPath));
                     byte[] rgdata = wc.DownloadData(szURL);
                     string szReportBody = Encoding.UTF8.GetString(rgdata);
-                    msg.Body = String.Format(CultureInfo.InvariantCulture, @"
+                    msg.Body = $@"
 <html>
 <head>
-<link href=""https://{0}{1}"" rel=""stylesheet"" type=""text/css"" />
+<link href=""https://{Branding.CurrentBrand.HostName}{MFBConstants.BaseCssVars(false)}"" rel=""stylesheet"" type=""text/css"" />
+<link href=""https://{Branding.CurrentBrand.HostName}{MFBConstants.BaseStylesheet.ToAbsolute()}"" rel=""stylesheet"" type=""text/css"" />
 </head>
 <body>
-<p>{2}</p>
-<div>{3}</div>
-</body>", 
-                    Branding.CurrentBrand.HostName, 
-                    VirtualPathUtility.ToAbsolute(MFBConstants.BaseStylesheet), 
-                    HttpUtility.HtmlEncode(szReportPrefix), 
-                    szReportBody);
+<p>{HttpUtility.HtmlEncode(szReportPrefix)}</p>
+<div>{szReportBody}</div>
+</body>";
                 }
 
                 util.SendMessage(msg);

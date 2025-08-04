@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -259,10 +259,15 @@ namespace MyFlightbook
             }
         }
 
-        private static void WriteHtmlHeaders(HtmlTextWriter tw, string szStylesheetRef, string szUserFullName)
+        private static void WriteHtmlHeaders(HtmlTextWriter tw, string szCSSBaseRef, string szStylesheetRef, string szUserFullName)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.Html);
             tw.RenderBeginTag(HtmlTextWriterTag.Head);
+            tw.AddAttribute("href", szCSSBaseRef);
+            tw.AddAttribute("rel", "stylesheet");
+            tw.AddAttribute("type", "text/css");
+            tw.RenderBeginTag(HtmlTextWriterTag.Link);
+            tw.RenderEndTag();   // Link
             tw.AddAttribute("href", szStylesheetRef);
             tw.AddAttribute("rel", "stylesheet");
             tw.AddAttribute("type", "text/css");
@@ -408,7 +413,7 @@ namespace MyFlightbook
                         string szUserFullName = User.UserFullName;
 
                         // Write header tags.  This leaves an open body tag and an open html tag.
-                        WriteHtmlHeaders(tw, Branding.ReBrand("https://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand ?? Branding.CurrentBrand), szUserFullName);
+                        WriteHtmlHeaders(tw, Branding.ReBrand($"https://%APP_URL%%APP_ROOT%/public/CSS/day.css?v={MFBConstants.StyleSheetVer}", activeBrand ?? Branding.CurrentBrand), Branding.ReBrand($"https://%APP_URL%%APP_ROOT%/public/stylesheet.css?v={MFBConstants.StyleSheetVer}", activeBrand ?? Branding.CurrentBrand), szUserFullName);
 
                         // Write out pilot information
                         WritePilotInformation(tw, User);

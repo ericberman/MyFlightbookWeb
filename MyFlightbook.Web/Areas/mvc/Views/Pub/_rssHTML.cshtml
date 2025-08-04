@@ -9,7 +9,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, MFBConstants.BaseStylesheet.ToAbsolute())" />
+    <link href="@($"https://{Request.Url.Host}{MFBConstants.BaseCssVars(false)}")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@($"https://{Request.Url.Host}{MFBConstants.BaseStylesheet.ToAbsolute()}")" />
 </head>
 <body>
     @if (fTotals)

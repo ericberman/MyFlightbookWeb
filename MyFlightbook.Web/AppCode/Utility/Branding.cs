@@ -4,7 +4,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2024 MyFlightbook LLC
+ * Copyright (c) 2012-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -303,6 +303,7 @@ namespace MyFlightbook
         ///  %APP_URL%: the URL (host) for the current request.
         ///  %APP_ROOT%: The root (analogous to "~") for the app brand.
         ///  %APP_LOGO%: the URL for the app logo
+        ///  %APP_CSS%: The stylesheet for the app brand.
         /// </summary>
         /// <param name="szTemplate">The template</param>
         /// <param name="brand">The brand to use (omit for current brand)</param>
@@ -318,7 +319,8 @@ namespace MyFlightbook
                 Replace("%DATE_TIME%", DateTime.UtcNow.UTCDateFormatString()).
                 Replace("%APP_URL%", brand.HostName).
                 Replace("%APP_LOGO%", String.IsNullOrWhiteSpace(brand.LogoHRef) ? string.Empty : VirtualPathUtility.ToAbsolute(brand.LogoHRef)).
-                Replace("%APP_ROOT%", brand.Root);
+                Replace("%APP_ROOT%", brand.Root).
+                Replace("%APP_CSS%", (String.IsNullOrEmpty(brand.StyleSheet) ? MFBConstants.BaseStylesheet : brand.StyleSheet).ToAbsolute());
 
             return szNew;
         }

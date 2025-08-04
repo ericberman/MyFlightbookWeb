@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width" />
     <title>Site Stats</title>
     <base href="@Branding.ReBrand("https://%APP_URL%")" />
-    <link href="@MFBConstants.BaseStylesheet.ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString()" rel="stylesheet" type="text/css" />
+    <link href="@($"https://{Request.Url.Host}{MFBConstants.BaseCssVars(false)}")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@($"https://{Request.Url.Host}{MFBConstants.BaseStylesheet.ToAbsolute()}")" />
     <link href="@ViewBag.BrandCSS" rel="Stylesheet" type="text/css" />
     <link rel="Stylesheet" type="text/css" href='@ViewBag.MobileCSS' />
 </head>
