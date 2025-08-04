@@ -1637,7 +1637,6 @@
     <Content Include="Areas\mvc\Views\Pub\_recentStats.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\deadlineEditor.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\newUnauthHome.cshtml" />
-    <Content Include="Areas\mvc\Views\Pub\homeUnauth.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\homeAuth.cshtml" />
     <Content Include="Public\Fonts\web.config" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />

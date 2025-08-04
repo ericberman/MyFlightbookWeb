@@ -401,14 +401,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("shunt");
         }
 
-        public ActionResult BetaHome()
-        {
-            return View("newUnauthHome");
-        }
-
         public ActionResult UnAuth()
         {
-            return View("homeUnauth");
+            return View("newUnauthHome");
         }
 
         /// <summary>
@@ -429,7 +424,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("homemini");
             }
 
-            return View(User.Identity.IsAuthenticated ? "homeAuth" : "homeUnauth");
+            return View(User.Identity.IsAuthenticated ? "homeAuth" : "newUnauthHome");
         }
     }
 }
