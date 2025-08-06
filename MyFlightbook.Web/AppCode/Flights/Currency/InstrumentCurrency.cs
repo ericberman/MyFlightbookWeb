@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2021 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -127,7 +127,8 @@ namespace MyFlightbook.Currency
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
 
-            if (!cfr.fIsCertifiedIFR)
+            // Issue #1456 - Ignore any flight where you were monitoring the whole flight or in something that is not IFR certified.
+            if (!cfr.fIsCertifiedIFR || cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
                 return;
 
             // Once we see a checkride (vs. a vanilla IPC), any prior approaches/holds/etc. are clearly for training and
