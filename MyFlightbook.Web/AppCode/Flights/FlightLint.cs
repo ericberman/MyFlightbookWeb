@@ -320,13 +320,14 @@ namespace MyFlightbook.Lint
             if (currentAircraft.InstanceType != AircraftInstanceTypes.RealAircraft)
                 return;
 
+            decimal safetyPilotTime = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime);
             AddConditionalIssue(le.CrossCountry > 0 && le.CrossCountry.ToMinutes() < le.TotalFlightTime.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCNotWholeFlightXC);
             AddConditionalIssue(le.CrossCountry > 0 && (le.CFI + le.Dual + le.SIC + le.PIC).ToMinutes() == 0, LintOptions.XCIssues, Resources.FlightLint.warningXCTimeFoundButNoRole);
-            AddConditionalIssue(le.CrossCountry > 0 && le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime) > 0, LintOptions.XCIssues, Resources.FlightLint.warningXCTimeFoundForSafetyPilot);
+            AddConditionalIssue(le.CrossCountry > 0 && safetyPilotTime > 0, LintOptions.XCIssues, Resources.FlightLint.warningXCTimeFoundForSafetyPilot);
 
             double distance = alSubset.MaxDistanceFromStartingAirport();
 
-            if (le.CrossCountry == 0)
+            if (le.CrossCountry == 0 && safetyPilotTime == 0)
             {
                 int minDistanceXC = (currentCatClassID == CategoryClass.CatClassID.Helicopter ? 25 : 50);
                 AddConditionalIssue(distance > minDistanceXC, LintOptions.XCIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningXCMissingXC, minDistanceXC));
