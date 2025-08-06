@@ -16,6 +16,30 @@
 
     var wiz = null;
 
+    function startProgressPolling(onComplete, onError) {
+        $("#divPrgStatus").text("");
+        $("div.importProgress").text("");
+        var intrvl = setInterval(function () {
+            $.ajax({
+                url: '@Url.Action("ImportProgress", "Import")',
+                method: 'POST',
+                dataType: 'json',
+                success: function (d) {
+                    $("div.importProgress").text(d.ProgressText);
+                    if (d.IsError) {
+                        clearInterval(intrvl);
+                        onError(d.ErrorMessage);
+                    }
+                    if (d.IsComplete) {
+                        clearInterval(intrvl);
+                        onComplete();
+                    }
+                }
+            });
+        }, 1000); // Poll every second
+        return intrvl;
+    }
+
     function stepChange(oldStep, newStep) {
         $("#btnWizNext").text(newStep == 0 ? "@Resources.LogbookEntry.ImportWizardBeginButton" : "@Resources.LocalizedText.NextPrompt");
         $("#btnWizNewFile").toggle(newStep == 3);
@@ -34,9 +58,22 @@
             $.ajax({
                 url: "@Url.Action("PreviewResults", "Import")",
                 type: "POST", data: d, dataType: "html", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseText); },
-                success: function (response) { $("#divImportPreview").html(response); }
+                error: function (xhr, status, error) { window.alert(xhr.responseText); }
             });
+            startProgressPolling(
+                () => {
+                    $.ajax({
+                        url: "@Url.Action("PreviewFlightsResult", "Import")", type: "POST", data: d, dataType: "html", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseText);
+                        },
+                        success: function (response) { $("#divImportPreview").html(response); }
+                    });
+                },
+                (err) => {
+                    $("#divImportPreview").html("");
+                    $("#lblError").text(err);
+                });
         }
         return true;
     }
@@ -72,16 +109,26 @@
                 $("#btnWizNext")[0].click();
                 $.ajax({
                     url: "@Url.Action("ReviewAircraft", "Import")",
-                    type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: "application/json",
+                    type: "POST", data: JSON.stringify(new Object()), dataType: "text", contentType: "application/json",
                     error: function (xhr, status, error) {
                         wiz.setStep(1);
                         $("#btnWizNext").attr("disabled", true);
                         $("#lblUploadErr").text(xhr.responseText);
                     },
-                    success: function (response) {
-                        $("#divImportReviewaircraft").html(response);
-                    }
                 });
+                startProgressPolling(
+                    () => {
+                        $.ajax({
+                            url: "@Url.Action("ReviewAircraftResults", "Import")",
+                            type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: "application/json",
+                            success: function (response) { $("#divImportReviewaircraft").html(response); }
+                        });
+                    },
+                    (err) => {
+                        wiz.setStep(1);
+                        $("#btnWizNext").attr("disabled", true);
+                        $("#lblUploadErr").text(err);
+                    });
             },
             onErr: function (err) { $("#lblUploadErr").text(err); },
             promptID: "divDropAcCSV",
@@ -97,6 +144,7 @@
             <div class="holdProgressPlane"></div>
         </div>
         <h2>@Resources.LocalizedText.PleaseHold</h2>
+        <div class="b c importProgress"></div>
     </div>
 </div>
 <div class="dn" id="divConfirmHome">@Resources.LogbookEntry.ImportErrorsConfirm</div>

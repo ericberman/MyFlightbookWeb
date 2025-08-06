@@ -26,15 +26,10 @@ namespace MyFlightbook.ImportFlights
 
         #region properties
         /// <summary>
-        /// Result of last import file run
-        /// </summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>
         /// Any errors in the last run?
         /// </summary>
         public bool HasErrors { get; set; }
-
+        
         /// <summary>
         /// The set of flights to import.
         /// </summary>
@@ -74,6 +69,8 @@ namespace MyFlightbook.ImportFlights
         /// A set of mappings between a user-supplied name for a model (e.g., "Cheyenne") and the model to which it was ultimately assigned (e.g., "PA31")
         /// </summary>
         public IReadOnlyDictionary<string, MakeModel> ModelNameMappings { get; private set; }
+
+        public ImportProgress Progress { get; set; } = new ImportProgress();
         #endregion
 
         //  TODO: Pull these out of here so that we can reference them from externalformat.
@@ -1096,6 +1093,7 @@ namespace MyFlightbook.ImportFlights
         /// <returns>false for an error (look at "ErrorString" for information).</returns>
         public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo, IDictionary<string, AircraftImportSpec> dMappingContext = null)
         {
+            Progress.Clear();
             using (MemoryStream ms2 = new MemoryStream(rgb))
             {
                 using (CSVReader csvr = new CSVReader(ms2))
@@ -1103,9 +1101,6 @@ namespace MyFlightbook.ImportFlights
                     FlightsToImport.Clear();
                     OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
                     int iRow = 0;
-
-                    HasErrors = false;
-                    ErrorMessage = string.Empty;
 
                     try
                     {
@@ -1116,6 +1111,7 @@ namespace MyFlightbook.ImportFlights
                         string[] rgszRow = null;
                         while ((rgszRow = csvr.GetCSVLine()) != null)
                         {
+                            Progress.Row++;
                             // Check for empty row; skip it if necessary
                             bool fHasData = false;
                             Array.ForEach(rgszRow, (sz) => { if (sz.Trim().Length > 0) fHasData = true; });
@@ -1160,13 +1156,14 @@ namespace MyFlightbook.ImportFlights
                     }
                     catch (Exception ex) when (ex is MyFlightbookException || ex is CSVReaderInvalidCSVException)
                     {
-                        HasErrors = true;
-                        ErrorMessage = ex.Message;
+                        Progress.IsError = HasErrors = true;
+                        Progress.ErrorMessage = ex.Message;
                         FlightsToImport.Clear();
                         return false;
                     }
                 }
 
+                Progress.IsComplete = true;
                 return !HasErrors;
             }
         }
@@ -1212,6 +1209,33 @@ namespace MyFlightbook.ImportFlights
 
             EventRecorder.UpdateCount(EventRecorder.MFBCountID.ImportedFlight, cFlightsImported);
             return true;
+        }
+    }
+
+    [Serializable]
+    public class ImportProgress
+    {
+        public int Row { get; set; }
+        public int RowCount { get; set; }
+        public bool IsComplete { get; set; }
+        public bool IsError { get; set; }
+
+        public string ProgressText { get { return ToString(); } }
+
+        public string ErrorMessage { get; set; } = string.Empty;
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportProgress, Row, RowCount);
+        }
+
+        public void Clear(bool fClearCount = false)
+        {
+            Row = 0;
+            if (fClearCount)
+                RowCount = 0;
+            IsComplete = false;
+            ErrorMessage = string.Empty;
         }
     }
 }

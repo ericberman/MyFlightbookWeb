@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Currency;
+﻿using JouniHeikniemi.Tools.Text;
+using MyFlightbook.Currency;
 using MyFlightbook.ImportFlights;
 using MyFlightbook.OAuth;
 using MyFlightbook.StartingFlights;
@@ -14,7 +15,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -200,8 +201,50 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Import Flights
-        private const string keyImportFlightSessionRawBytes = "sessImportFlightRawBytes";
-        private const string keyImportFlightsImporter = "sessImportImporter";
+        private const string keyResults = "sessImportResultDict";
+        private const string keyResultImporter = "sessImportResultImporter";
+        private const string keyResultBytes = "sessImportResultBytes";
+        private const string keyResultConversionResults = "sessImportResultsConversion";
+        private const string keyResultErrorContext = "sessImportErrorContext";
+        private const string keyResultIsPendingOnly = "sessImportIsPendingOnly";
+
+        private void SaveImportResult(string key, object o)
+        {
+            Dictionary<string, object> d = (Dictionary<string, object>) Session[keyResults];
+            if (d == null)
+                Session[keyResults] = d = new Dictionary<string, object>();
+            if (o == null && d.ContainsKey(key))
+                d.Remove(key);
+            else 
+                d[key] = o;
+        }
+
+        /// <summary>
+        /// Gets an import result.  WILL THROW A SESSION TIMED OUT IF NOT FOUND.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private object GetImportResult(string key)
+        {
+            Dictionary<string, object> d = (Dictionary<string, object>)Session[keyResults];
+            return d.TryGetValue(key, out object o) ? o : throw new InvalidOperationException(Resources.LogbookEntry.ImportFlightSessionExpired);
+        }
+
+        private void ClearImportResult()
+        {
+            Session[keyResults] = null;
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImportProgress()
+        {
+            return SafeOp(() =>
+            {
+                return Json(((CSVImporter)GetImportResult(keyResultImporter)).Progress);
+            });
+        }
 
         [Authorize]
         [HttpPost]
@@ -222,8 +265,38 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         rgb = ms.ToArray();
                     }
                 }
-                Session[keyImportFlightSessionRawBytes] = rgb;
+
+                // clear all results
+                ClearImportResult();
+                SaveImportResult(keyResultBytes, rgb);
+
+                // get the # of rows
+                using (MemoryStream ms2 = new MemoryStream(rgb))
+                {
+                    int cRows = 0;
+                    using (CSVReader csvr = new CSVReader(ms2)) 
+                    {
+                        while (csvr.GetCSVLine() != null)
+                            cRows++;
+                    }
+                    CSVImporter importer = new CSVImporter();
+                    importer.Progress.RowCount = cRows - 1;
+                    SaveImportResult(keyResultImporter, importer);
+                }
                 return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ReviewAircraftResults()
+        {
+            return SafeOp(() =>
+            {
+                ViewBag.importer = GetImportResult(keyResultImporter);
+                ViewBag.results = GetImportResult(keyResultConversionResults);
+
+                return PartialView("_importFlightsReviewAircraft");
             });
         }
 
@@ -233,25 +306,38 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                byte[] rgb = (byte[])Session[keyImportFlightSessionRawBytes];
+                byte[] rgb = (byte[])GetImportResult(keyResultBytes);
                 int cOriginalSize = rgb.Length;
-                Session[keyImportFlightSessionRawBytes] = null; // don't need these any more.
+                SaveImportResult(keyResultBytes, null);
 
                 ExternalFormatConvertResults results = ExternalFormatConvertResults.ConvertToCSV(rgb);
                 rgb = results.GetConvertedBytes();
                 int cConvertedSize = rgb.Length;
-                Session[keyImportFlightSessionRawBytes] = rgb;  // save the converted bytes instead.
-
-                CSVImporter csvimporter = new CSVImporter();
-                csvimporter.InitWithBytes(rgb, User.Identity.Name, null, null, null);
-                if (csvimporter.FlightsToImport == null | !String.IsNullOrEmpty(csvimporter.ErrorMessage))
-                    throw new InvalidOperationException(csvimporter.ErrorMessage);
-
+                SaveImportResult(keyResultBytes, rgb);
+                SaveImportResult(keyResultConversionResults, results);
+                CSVImporter csvimporter = (CSVImporter)GetImportResult(keyResultImporter);
+                csvimporter.Progress.Clear();
                 EventRecorder.LogCall("Import Preview - User: {user}, Upload size {cbin}, converted size {cbconvert}, flights found: {flightcount}", User.Identity.Name, cOriginalSize, cConvertedSize, csvimporter.FlightsToImport.Count);
 
-                ViewBag.importer = csvimporter;
-                ViewBag.results = results;
-                return PartialView("_importFlightsReviewAircraft");
+                String szUser = User.Identity.Name;
+                Task.Run(() =>
+                {
+                    csvimporter.InitWithBytes(rgb, szUser, null, null, null);
+                });
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PreviewFlightsResult()
+        {
+            return SafeOp(() =>
+            {
+                ViewBag.errorContext = GetImportResult(keyResultErrorContext);
+                ViewBag.importer = GetImportResult(keyResultImporter);
+                ViewBag.isPendingOnly = GetImportResult(keyResultIsPendingOnly);
+                return PartialView("_importFlightsPreview");
             });
         }
 
@@ -261,9 +347,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
+                SaveImportResult(keyResultIsPendingOnly, isPendingOnly);
+                Dictionary<int, string> errorContext = new Dictionary<int, string>();
+                SaveImportResult(keyResultErrorContext, errorContext);
+                CSVImporter importer = (CSVImporter)GetImportResult(keyResultImporter);
+                importer.Progress.Clear();
+                byte[] rgb = (byte[])GetImportResult(keyResultBytes);
+
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
 
-                byte[] rgb = (byte[])Session[keyImportFlightSessionRawBytes] ?? throw new InvalidOperationException(Resources.LogbookEntry.ImportFlightSessionExpired);
 
                 // make a copy of the autofill options so that we don't muck up user's settings in memory
                 AutoFillOptions afo = string.IsNullOrEmpty(autoFillOpt) ? null : new AutoFillOptions(AutoFillOptions.DefaultOptionsForUser(User.Identity.Name));
@@ -276,19 +368,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         afo.PreferredTimeZone = pf.PreferredTimeZone;
                 }
 
-                Dictionary<int, string> errorContext = new Dictionary<int, string>();
-                CSVImporter importer = new CSVImporter();
-                importer.InitWithBytes(rgb, User.Identity.Name, null, (le, szContext, iRow) =>
+                string szUser = User.Identity.Name;
+
+                Task.Run(() =>
                 {
-                    // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
-                    if (!isPendingOnly || le.LastError == LogbookEntryCore.ErrorCode.None)
-                        errorContext[iRow - 1] = szContext; // if we're here, we are *either* not pending only *or* we didn't have a logbookentry validation error (e.g., could be malformed row)
-                }, afo, String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping));
-                Session[keyImportFlightsImporter] = importer;
-                ViewBag.errorContext = errorContext;
-                ViewBag.importer = importer;
-                ViewBag.isPendingOnly = isPendingOnly;
-                return PartialView("_importFlightsPreview");
+                    importer.InitWithBytes(rgb, szUser, null, (le, szContext, iRow) =>
+                    {
+                        // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
+                        if (!isPendingOnly || le.LastError == LogbookEntryCore.ErrorCode.None)
+                            errorContext[iRow - 1] = szContext; // if we're here, we are *either* not pending only *or* we didn't have a logbookentry validation error (e.g., could be malformed row)
+                    }, afo, String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, AircraftImportSpec>() : JsonConvert.DeserializeObject<Dictionary<string, AircraftImportSpec>>(szJsonMapping));
+                });
+                return new EmptyResult();
             });
         }
         #endregion
@@ -332,7 +423,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult DownloadConverted()
         {
-            byte[] rgb = (byte[]) Session[keyImportFlightSessionRawBytes];
+            byte[] rgb = (byte[]) GetImportResult(keyResultBytes);
             if (rgb != null)
             {
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -378,7 +469,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DoImport(bool isPendingOnly)
         {
-            CSVImporter csvimporter = (CSVImporter)Session[keyImportFlightsImporter];
+            CSVImporter csvimporter = (CSVImporter)GetImportResult(keyResultImporter);
             if (csvimporter == null)
                 return Redirect("~/mvc/import/id=csv"); // session expired
 
@@ -423,8 +514,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.hasPending = hasPending;
             ViewBag.resultSummary = lstResults;
             MyFlightbook.Profile.GetUser(User.Identity.Name).SetAchievementStatus();
-            Session[keyImportFlightsImporter] = null;
-            Session[keyImportFlightSessionRawBytes] = null;
+            ClearImportResult();
             return View("importResults");
         }
 

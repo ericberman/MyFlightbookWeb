@@ -2041,4 +2041,7 @@ Proceed with import?</value>
   <data name="ImportWizardAutofillNotesConditions" xml:space="preserve">
     <value>Autofill will not run if a cross-country time, or night time are specified in your file.  Night time specifically will only be computed under certain conditions; see [this blog post](https://myflightbookblog.blogspot.com/2022/01/auto-fill-functionality.html) for more information.</value>
   </data>
+  <data name="ImportProgress" xml:space="preserve">
+    <value>{0} of {1} rows examined</value>
+  </data>
 </root>
