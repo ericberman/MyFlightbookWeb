@@ -467,4 +467,7 @@
   <data name="warningWaterOperationsInLandPlane" xml:space="preserve">
     <value>Water operations (Landings, Takeoffs, taxi, and/or docking) were specified in an ASEL or AMEL aircraft.  If you are Chesley Sullenberger, carry-on.  Otherwise, was this an amphib? Check that you used the correct version of an aircraft or consider overriding the category/class for the flight.</value>
   </data>
+  <data name="warningXCTimeFoundForSafetyPilot" xml:space="preserve">
+    <value>Safety-pilot time and cross-country time found.  Under FAA guidance, you may not be able to claim credit for cross-country time if you acted as the safety pilot.  Search "FAA Gebhart letter" for more information.</value>
+  </data>
 </root>

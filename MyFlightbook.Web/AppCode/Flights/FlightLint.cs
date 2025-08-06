@@ -322,6 +322,7 @@ namespace MyFlightbook.Lint
 
             AddConditionalIssue(le.CrossCountry > 0 && le.CrossCountry.ToMinutes() < le.TotalFlightTime.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCNotWholeFlightXC);
             AddConditionalIssue(le.CrossCountry > 0 && (le.CFI + le.Dual + le.SIC + le.PIC).ToMinutes() == 0, LintOptions.XCIssues, Resources.FlightLint.warningXCTimeFoundButNoRole);
+            AddConditionalIssue(le.CrossCountry > 0 && le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime) > 0, LintOptions.XCIssues, Resources.FlightLint.warningXCTimeFoundForSafetyPilot);
 
             double distance = alSubset.MaxDistanceFromStartingAirport();
 

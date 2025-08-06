@@ -1103,5 +1103,14 @@ namespace Resources {
                 return ResourceManager.GetString("warningXCTimeFoundButNoRole", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Safety-pilot time and cross-country time found.  Under FAA guidance, you may not be able to claim credit for cross-country time if you acted as the safety pilot.  Search &quot;FAA Gebhart letter&quot; for more information..
+        /// </summary>
+        internal static string warningXCTimeFoundForSafetyPilot {
+            get {
+                return ResourceManager.GetString("warningXCTimeFoundForSafetyPilot", resourceCulture);
+            }
+        }
     }
 }
