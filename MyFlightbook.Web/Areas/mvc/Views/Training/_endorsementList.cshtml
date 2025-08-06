@@ -5,7 +5,14 @@
     bool canDownload = ViewBag.canDownload;
     string onCopy = ViewBag.onCopy;
     string szStudent = ViewBag.userName;
-    IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
+    List<Endorsement> lstUndeleted = new List<Endorsement>(ViewBag.endorsements);
+    lstUndeleted.RemoveAll(e => e.DateDeleted != null);
+    List<Endorsement> lstDeleted = new List<Endorsement>(ViewBag.endorsements);
+    lstDeleted.RemoveAll(e => e.DateDeleted == null);
+    List<Endorsement> lstMerged = new List<Endorsement>();
+    lstMerged.AddRange(lstUndeleted);
+    lstMerged.AddRange(lstDeleted);
+    bool fDeleted = false;
 }
 <script type="text/javascript">
     function deleteExternalEndorsement(sender, id) {
@@ -60,24 +67,25 @@
     </a>
     }
 }
-@if (endorsements.Any())
+@if (lstMerged.Any())
 {
+    <div class="@(lstDeleted.Any() ? string.Empty : "dn")"><label><input type="checkbox" onclick="javascript:$('.deletedEndorsement').toggle();" />@Resources.SignOff.EndorsementViewDeleted</label></div>
     <table>
         <thead>
             <tr>
-                <th style="display:none;"></th>
-                <th style="display:none;"></th>
+                <th class="dn"></th>
+                <th class="dn"></th>
                 <th class="headerBase gvcCentered headerSortDesc" style="width: 45%" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
                 <th class="headerBase gvcCentered" style="width: 45%" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
-                <th style="display:none;"></th>
+                <th class="dn"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (Endorsement e in endorsements)
+            @foreach (Endorsement e in lstMerged)
             {
-                <tr>
-                    <td style="display:none;">@e.Date.YMDString()</td>
-                    <td style="display:none;">@e.Title</td>
+                <tr class="@(e.DateDeleted != null ? "dn deletedEndorsement" : string.Empty)">
+                    <td class="dn">@e.Date.YMDString()</td>
+                    <td class="dn">@e.Title</td>
                     <td colspan="2" style="width: 90%;">@Html.Raw(e.RenderHTML())</td>
                     <td class="noprint">
                         @if (e.IsExternalEndorsement && e.DateDeleted == null)

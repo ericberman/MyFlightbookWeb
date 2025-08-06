@@ -72,7 +72,7 @@
     {
         <br />
         <hr />
-        <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNotOwnedEndorsementHeader, szTargetUser)</h2>
+        <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNotOwnedEndorsementHeader, pfStudent.UserFullName)</h2>
         Html.RenderAction("RenderEndorsements", "Training", new { endorsements = nonOwnedEndorsements, fCanDelete = false, fCanSort = true, onCopy = string.Empty, userName = szTargetUser });
     }
     if (canEditStudent)

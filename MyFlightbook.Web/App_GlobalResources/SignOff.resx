@@ -585,4 +585,7 @@ The net effect is the expiration date hasn't gone away so much as the process fo
 
 Anywhere that you see an expiration date, use either your certificate's expiration, if it has one, or the expiration date of your recent experience, per AC 61-65J.</value>
   </data>
+  <data name="EndorsementViewDeleted" xml:space="preserve">
+    <value>Show deleted endorsements</value>
+  </data>
 </root>

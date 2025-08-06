@@ -493,6 +493,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show deleted endorsements.
+        /// </summary>
+        internal static string EndorsementViewDeleted {
+            get {
+                return ResourceManager.GetString("EndorsementViewDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must indicate your acceptance to continue..
         /// </summary>
         internal static string errAcceptDisclaimer {
