@@ -39,6 +39,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!CommitFlight(le) || !String.IsNullOrEmpty(le.ErrorString))
                     throw new InvalidOperationException(le.ErrorString);
 
+                // Issue #1458: if this is a flight being added by an instructor into a student's logbook, then implicitly request a signature.
+                // This is both good practice (right?) and it allows the instructor to edit the flight, in case there was a mistake.
+                if (User.Identity.Name.CompareCurrentCultureIgnoreCase(le.User) != 0)
+                        le.RequestSignature(User.Identity.Name, MyFlightbook.Profile.GetUser(User.Identity.Name).Email, true);
+
                 return new EmptyResult();
             });
         }

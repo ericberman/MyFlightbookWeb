@@ -1641,8 +1641,15 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szCFIUserName">The username of the CFI</param>
         /// <param name="szCFIEmail">The email for the CFI</param>
-        public void RequestSignature(string szCFIUserName, string szCFIEmail)
+        /// <param name="fValidateStudent">True to validate that the CFIUserName is an instructor of the student.</param>
+        public void RequestSignature(string szCFIUserName, string szCFIEmail, bool fValidateStudent = false)
         {
+            if (fValidateStudent)
+            {
+                CFIStudentMap map = new CFIStudentMap(szCFIUserName);
+                if (!map.IsInstructorOf(User))
+                    throw new UnauthorizedAccessException($"{szCFIUserName} is not an instructor for {User}");
+            }
             if ((this.CFISignatureState == SignatureState.None || this.CFISignatureState == SignatureState.Invalid) && !IsNewFlight)
             {
                 DBHelper dbh = new DBHelper("UPDATE Flights f SET f.CFIEmail=?email, f.CFIUserName=?name, f.flighthash=NULL, f.SignatureHash=NULL, f.CFIComment=NULL, f.SignatureDate=NULL, f.CFICertificate=NULL, f.CFIExpiration=NULL, f.CFIName=NULL, f.DigitizedSignature=NULL, f.SignatureState=0 WHERE idFlight=?idFlight");
