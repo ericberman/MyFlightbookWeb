@@ -642,6 +642,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ProfileCurrency _ = new ProfileCurrency(pf) { TypeOfMedical = pilotInfoMedicalType };
                 pf.SetPreferenceForKey(MFBConstants.keyMedicalNotes, pilotInfoMedicalNotes, String.IsNullOrWhiteSpace(pilotInfoMedicalNotes));
                 pf.DateOfBirth = dob;
+                pf.FCommit();   // see issue #1457 - may not have committed if typeofmedical is "Other" or notes are empty...
 
                 return Content(Resources.Preferences.PilotInfoMedicalUpdated);
             });
