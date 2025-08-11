@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -121,7 +121,6 @@ function MFBMap()
     this.rgAirports = new Array();
     this.rgImages = new Array();
     this.rgClubs = new Array();
-    this.zoom = 0;
     this.fShowMap = false;
     this.fShowMarkers = true;
     this.fShowRoute = true;
@@ -146,7 +145,7 @@ function MFBMap()
     
     this.NewMap = function () {
         this.center = new google.maps.LatLng(this.defaultLat, this.defaultLong);
-        var options = { zoom: this.zoom, center: this.center, mapTypeId: this.mapType, mapId: this.gMapID, scrollwheel: true, disableDoubleClickZoom: false };
+        var options = { center: this.center, mapTypeId: this.mapType, mapId: this.gMapID, scrollwheel: true, disableDoubleClickZoom: false };
         this.gmap = new google.maps.Map(document.getElementById(this.divContainer), options);
         var mfbMap = this;
         google.maps.event.addListenerOnce(this.gmap, 'idle', function () {
