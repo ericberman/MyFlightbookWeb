@@ -441,7 +441,7 @@
     <value>Request signatures</value>
   </data>
   <data name="SignFlightATP" xml:space="preserve">
-    <value>Sign as ATP (61.167(2))</value>
+    <value>No expiration (e.g., 61.167(a)(2), or 61.159(c)(3))</value>
   </data>
   <data name="CopyEndorsement" xml:space="preserve">
     <value>Create a new endorsement starting from the text of this one</value>

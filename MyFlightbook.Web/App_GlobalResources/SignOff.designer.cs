@@ -1261,7 +1261,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign as ATP (61.167(2)).
+        ///   Looks up a localized string similar to No expiration (e.g., 61.167(a)(2), or 61.159(c)(3)).
         /// </summary>
         internal static string SignFlightATP {
             get {
