@@ -42,7 +42,7 @@
 
                 <th class="rowHeader">@Resources.LogbookEntry.FieldXCountry</th>
                 <th class="rowHeader">@Resources.LogbookEntry.FieldNight</th>
-                <th class="rowHeader">@Resources.LogbookEntry.PrintHeaderLandingsShort</th>
+                <th class="rowHeader">@Resources.LogbookEntry.PrintHeaderLandingsShort*</th>
 
                 <th class="rowHeader">@Resources.LogbookEntry.FieldIMC</th>
                 <th class="rowHeader">@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</th>
@@ -172,6 +172,6 @@
             }
         </tbody>
     </table>
-    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter, layoutNotesPartial = "_footerLandingDesc" });
 }
 

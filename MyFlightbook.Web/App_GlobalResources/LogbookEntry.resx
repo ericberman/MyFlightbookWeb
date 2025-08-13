@@ -2044,4 +2044,7 @@ Proceed with import?</value>
   <data name="ImportProgress" xml:space="preserve">
     <value>{0} of {1} rows examined</value>
   </data>
+  <data name="LogbookLandingKeySingleLine" xml:space="preserve">
+    <value>D=Full Stop Day, N=Full Stop Night</value>
+  </data>
 </root>

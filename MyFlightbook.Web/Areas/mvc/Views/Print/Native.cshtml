@@ -21,7 +21,7 @@
                 }
                 <th><div>@Resources.LogbookEntry.PrintHeaderApproachesShort</div></th>
                 <th><div>@Resources.LogbookEntry.FieldHold</div></th>
-                <th><div>@Resources.LogbookEntry.PrintHeaderLandingsShort</div></th>
+                <th><div>*@Resources.LogbookEntry.PrintHeaderLandingsShort</div></th>
                 <th><div>@Resources.LogbookEntry.FieldXCountry</div></th>
                 <th><div>@Resources.LogbookEntry.FieldNight</div></th>
                 <th><div>@Html.Raw(Resources.LogbookEntry.FieldSimIMC)</div></th>
@@ -149,5 +149,5 @@
             }
         </tbody>
     </table>
-    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter });
+    Html.RenderAction("PageFooter", "Print", new { pf = pl.CurrentUser, pageNum = lpp.PageNum, totalPages = lpp.TotalPages, showFoot = pl.ShowFooter, layoutNotesPartial = "_footerLandingDesc" });
 }

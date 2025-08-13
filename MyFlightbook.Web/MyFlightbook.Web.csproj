@@ -1639,6 +1639,7 @@
     <Content Include="Areas\mvc\Views\Pub\newUnauthHome.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\homeAuth.cshtml" />
     <Content Include="Public\Fonts\web.config" />
+    <Content Include="Areas\mvc\Views\Print\_footerLandingDesc.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

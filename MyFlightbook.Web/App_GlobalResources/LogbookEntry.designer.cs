@@ -2931,6 +2931,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to D=Full Stop Day, N=Full Stop Night.
+        /// </summary>
+        internal static string LogbookLandingKeySingleLine {
+            get {
+                return ResourceManager.GetString("LogbookLandingKeySingleLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page .
         /// </summary>
         internal static string LogbookPagePrompt {
