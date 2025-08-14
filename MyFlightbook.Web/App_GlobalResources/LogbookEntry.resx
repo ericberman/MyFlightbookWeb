@@ -2026,9 +2026,6 @@ Proceed with import?</value>
   <data name="FlightMeterXFillTip" xml:space="preserve">
     <value>Set to highest previous flight meter ending value you've recorded in the selected aircraft</value>
   </data>
-  <data name="ProSoftPartnership" xml:space="preserve">
-    <value>For professional printing and binding, %APP_NAME% has partnered with ProSoft</value>
-  </data>
   <data name="CrossFillDistanceTip" xml:space="preserve">
     <value>Fills in the estimated distance (in nautical miles) based on the route of flight</value>
   </data>
@@ -2046,5 +2043,8 @@ Proceed with import?</value>
   </data>
   <data name="LogbookLandingKeySingleLine" xml:space="preserve">
     <value>D=Full Stop Day, N=Full Stop Night</value>
+  </data>
+  <data name="BindingPartnership" xml:space="preserve">
+    <value>For professional printing and binding, %APP_NAME% has partnered with the sponsors listed below.</value>
   </data>
 </root>

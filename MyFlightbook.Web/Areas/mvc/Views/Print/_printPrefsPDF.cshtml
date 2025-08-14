@@ -16,8 +16,9 @@
     });
 </script>
 <div style="float:right; width: 170px;">
-    <div style="text-align:center;">@Branding.ReBrand(Resources.LogbookEntry.ProSoftPartnership)</div>
-    @{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 3 });}
+    <div style="text-align:center;">@Branding.ReBrand(Resources.LogbookEntry.BindingPartnership)</div>
+    <div style="margin-top: 7pt; margin-bottom: 3pt;">@{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 3 });}</div>
+    <div style="margin-top: 7pt;">@{ Html.RenderAction("RenderSponsoredAd", "MFBTemplate", new { id = 5 });}</div>
 </div>
 <table>
     <tr style="vertical-align:top;">

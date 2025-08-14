@@ -187,6 +187,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to For professional printing and binding, %APP_NAME% has partnered with the sponsors listed below..
+        /// </summary>
+        internal static string BindingPartnership {
+            get {
+                return ResourceManager.GetString("BindingPartnership", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload Telemetry to Existing Flights.
         /// </summary>
         internal static string BulkImportLink {
@@ -4268,15 +4277,6 @@ namespace Resources {
         internal static string propSelectAdditionalProperty {
             get {
                 return ResourceManager.GetString("propSelectAdditionalProperty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For professional printing and binding, %APP_NAME% has partnered with ProSoft.
-        /// </summary>
-        internal static string ProSoftPartnership {
-            get {
-                return ResourceManager.GetString("ProSoftPartnership", resourceCulture);
             }
         }
         
