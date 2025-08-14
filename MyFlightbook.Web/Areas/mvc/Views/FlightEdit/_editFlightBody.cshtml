@@ -96,14 +96,17 @@
             <select id="cmbAircraft" name="flightAircraft" required style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" onchange="javascript: aircraftSelected(this, @Json.Encode(fHHMM), allAircraft)">
                 @{
                     int cAircraft = 0;
+                    HashSet<string> hs = new HashSet<string>();
+
                     foreach (Aircraft ac in rgAircraft)
                     {
                         bool fIncludeByDefault = !ac.HideFromSelection || ac.AircraftID == le.AircraftID;
                         if (fIncludeByDefault)
                         {
                             cAircraft++;
-                            <option value="@ac.AircraftID" @((ac.AircraftID == le.AircraftID).ToSelected())>@ac.DisplayTailnumberWithModel</option>
+                            <option value="@ac.AircraftID" @((ac.AircraftID == le.AircraftID).ToSelected())>@ac.DisplayTailnumberWithModel@(hs.Contains(ac.TailNumber) ? $" ({ac.CategoryClassDisplay})" : string.Empty)</option>
                         }
+                        hs.Add(ac.TailNumber);
                     }
                     if (cAircraft < rgAircraft.Count())
                     {
