@@ -3,7 +3,6 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -46,7 +45,7 @@ namespace MyFlightbook
 
         public static SimpleMakeModel[] GetAllMakeModels()
         {
-            ArrayList al = new ArrayList();
+            List<SimpleMakeModel> al = new List<SimpleMakeModel>();
             DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["MakesAndModels"]);
             if (!dbh.ReadRows(
                 (comm) => { },
@@ -57,7 +56,56 @@ namespace MyFlightbook
                 }))
                 throw new MyFlightbookException("Error in GetAllMakeModels: " + dbh.LastError);
 
-            return (SimpleMakeModel[])al.ToArray(typeof(SimpleMakeModel));
+            return al.ToArray();
+        }
+
+
+        /// <summary>
+        /// Returns a very simple list of models that are similar to the specified model.  ONLY WORKS FOR SIM-ONLY MODELS
+        /// </summary>
+        /// <param name="idModel"></param>
+        /// <returns></returns>
+        public static IEnumerable<SimpleMakeModel> ADMINModelsSimilarToSIM(int idModel)
+        {
+            List<SimpleMakeModel> lst = new List<SimpleMakeModel>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+    m1.idmodel,
+    m1.model,
+    m1.typename,
+    m1.family,
+    man.manufacturer
+FROM
+    models m1
+        INNER JOIN
+    manufacturers man on m1.idmanufacturer = man.idmanufacturer
+        LEFT JOIN
+    models m2 on m2.idmodel = ?targetID
+WHERE
+    m1.idmodel <> m2.idmodel
+		AND m1.family=m2.family
+        AND m1.fSimOnly = 1
+        AND m1.idcategoryclass = m2.idcategoryclass
+        AND m1.fComplex = m2.fComplex
+        AND m1.fhighperf = m2.fHighPerf
+        AND m1.f200HP = m2.f200HP
+        AND m1.fTailwheel = m2.fTailwheel
+        AND m1.fConstantProp = m2.fConstantProp
+        AND m1.fturbine = m2.fturbine
+        AND m1.fretract = m2.fretract
+        AND m1.fcertifiedsinglepilot = m2.fcertifiedsinglepilot
+        AND m1.fcowlflaps = m2.fCowlFlaps
+        AND m1.armymissiondesignseries = m2.armymissiondesignseries
+        AND m1.fTAA = m2.fTAA 
+        AND m1.fMotorGlider = m2.fMotorGlider
+        AND m1.fMultiHelicopter = m2.fMultiHelicopter
+ORDER BY man.manufacturer ASC, m1.model ASC");
+
+            dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("targetID", idModel); },
+                (dr) => {
+                    lst.Add(new SimpleMakeModel() { Description = $"{dr["manufacturer"]} - {dr["model"]}/{dr["family"]} Type: {dr["typename"]}", ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture) });
+            });
+            return lst;
         }
     }
 

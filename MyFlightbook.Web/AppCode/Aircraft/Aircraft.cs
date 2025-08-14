@@ -1503,9 +1503,9 @@ ORDER BY user ASC");
         private void FixTail()
         {
             if (IsAnonymous)
-                TailNumber = Aircraft.AnonymousTailnumberForModel(ModelID);
+                TailNumber = AnonymousTailnumberForModel(ModelID);
             if (InstanceType != AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
-                TailNumber = Aircraft.SuggestSims(ModelID, InstanceType)[0].TailNumber;
+                TailNumber = SuggestSims(ModelID, InstanceType).First().TailNumber;
         }
 
         /// <summary>
@@ -2123,7 +2123,7 @@ ORDER BY user ASC");
         /// <param name="fAllSims">True for all sims, else restrict to instanceType</param>
         /// <param name="instanceType">Restrict on a particular instance type; ignored if fAllSims is true</param>
         /// <returns>All matching aircraft in the system</returns>
-        public static Collection<Aircraft> GetSims(int idmodel, Boolean fAllSims, AircraftInstanceTypes instanceType)
+        private static IEnumerable<Aircraft> GetSims(int idmodel, Boolean fAllSims, AircraftInstanceTypes instanceType)
         {
             // get ALL of the aircraft.
             List<Aircraft> lstAc = new List<Aircraft>((new UserAircraft(string.Empty)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, idmodel));
@@ -2133,7 +2133,7 @@ ORDER BY user ASC");
                                   !ac.TailNumber.StartsWith(CountryCodePrefix.SimCountry.Prefix, StringComparison.OrdinalIgnoreCase));
             lstAc.Sort((ac1, ac2) => { return string.Compare(ac1.ModelCommonName, ac2.ModelCommonName, StringComparison.CurrentCultureIgnoreCase); });
 
-            return new Collection<Aircraft>(lstAc);
+            return lstAc;
         }
         #endregion
 
@@ -2236,17 +2236,11 @@ ORDER BY user ASC");
         /// <param name="idmodel">The model</param>
         /// <param name="instancetype">The instance type</param>
         /// <returns></returns>
-        public static Collection<Aircraft> SuggestSims(int idmodel, AircraftInstanceTypes instancetype)
+        public static IEnumerable<Aircraft> SuggestSims(int idmodel, AircraftInstanceTypes instancetype)
         {
             // First see if there is an existing aircraft that is this model/instancetype
-            Collection<Aircraft> rgac = Aircraft.GetSims(idmodel, false, instancetype);
-            if (rgac.Count > 0)
-                return rgac;
-            else
-            {
-                rgac = new Collection<Aircraft>() { SuggestTail(idmodel, instancetype) };
-                return rgac;
-            }
+            IEnumerable<Aircraft> rgac = GetSims(idmodel, false, instancetype);
+            return rgac.Any() ? rgac : new Aircraft[] { SuggestTail(idmodel, instancetype) };
         }
 
         #region Looking up registrations
@@ -2806,7 +2800,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
             AircraftInstanceTypes ait = AircraftUtility.PseudoSimTypeFromTail(acOriginal.TailNumber);
 
             // see if the specified sim exists
-            string szSimTail = Aircraft.SuggestSims(acOriginal.ModelID, ait)[0].TailNumber;
+            string szSimTail = Aircraft.SuggestSims(acOriginal.ModelID, ait).First().TailNumber;
             Aircraft acNew = new Aircraft(szSimTail);
 
             if (acNew.IsNew)
@@ -2843,6 +2837,112 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
             AircraftUtility.AdminMergeDupeAircraft(acNew, acOriginal);
 
             return acNew.AircraftID;
+        }
+
+        /// <summary>
+        /// Admin function to map a suspicious sim model to another similar model (issue #1428)
+        /// This happens because people often fly a sim with identifier, say, FAA2034 and so they create a model that is, say, "Redbird FAA2034".  
+        /// This should properly be some "Redbird AMEL Sim" or whatever, with "FAA2034" in the Simulator/Training Device Identifier field.
+        /// This method migrates everyone in this "bogus" sim to a better model, as follows:
+        /// a) For each aircraft (Should only ever be a maximum of 4: uncertified, ATD, FTD, FFS), it finds the corresponding sim in the target model
+        /// b) For each user with flights in that aircraft, it finds their flights
+        /// c) For each of those flights, it maps to the target aircraft and preserves the correct identifier ("DeviceID") into the Simulator/Training Device Identifier property.
+        /// Since this can impact signed flights, it returns a list of any VALIDLY signed flights that were so affected, so that they can then be force-validated. 
+        /// (Flights with an invalid signature, obviously, were already invalid).
+        /// </summary>
+        /// <param name="idOriginal">The id of the source (suspicious) model</param>
+        /// <param name="idNew">The id of the target model</param>
+        /// <param name="deviceID">Text to use in the Simulator/Training Device Identifier field</param>
+        /// <returns>A list of ids of flights that were signed but now modified, and thus need review.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static IDictionary<string, object> MigrateSim(int idOriginal, int idNew, string deviceID)
+        {
+            if (idOriginal < 0)
+                throw new InvalidOperationException("Invalid source model");
+            if (idNew < 0 || idNew == idOriginal)
+                throw new InvalidOperationException("Invalid target model");
+            if (String.IsNullOrEmpty(deviceID))
+                throw new ArgumentNullException(nameof(deviceID));
+
+            MakeModel mmSource = MakeModel.GetModel(idOriginal);
+            MakeModel mmTarget = MakeModel.GetModel(idNew);
+
+            if (mmSource.AllowedTypes != AllowedAircraftTypes.SimulatorOnly || mmTarget.AllowedTypes != AllowedAircraftTypes.SimulatorOnly)
+                throw new InvalidOperationException("Both source and target models MUST be sim-only");
+
+            List<int> lstSignedFlightsToReview = new List<int>();
+
+            // Step one: get the aircraft for the model
+            UserAircraft uaAdmin = new UserAircraft(string.Empty);
+            IEnumerable<Aircraft> srcAircraft = uaAdmin.GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idOriginal);
+            IEnumerable<Aircraft> targetAircraft = uaAdmin.GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idNew);
+
+            Dictionary<AircraftInstanceTypes, Aircraft> dTargetByType = new Dictionary<AircraftInstanceTypes, Aircraft>();
+            foreach (Aircraft acTarget in targetAircraft)
+                dTargetByType[acTarget.InstanceType] = acTarget;
+
+            // Sanity check for any real aircraft!
+            foreach (Aircraft ac in srcAircraft)
+                if (ac.InstanceType == AircraftInstanceTypes.RealAircraft)
+                    throw new InvalidOperationException("One or more of the aircraft tied to the source model is real!!!");
+            foreach (Aircraft ac in targetAircraft)
+                if (ac.InstanceType == AircraftInstanceTypes.RealAircraft)
+                    throw new InvalidOperationException("One or more of the aircraft tied to the target model is real!!!");
+
+            int cAircraft = srcAircraft.Count();
+            HashSet<string> hsUsers = new HashSet<string>();
+            int cFlights = 0;
+
+            // First find the aircraft from the source model and figure out the correct target aircraft to map it to.
+            foreach (Aircraft aircraft in srcAircraft)
+            {
+                // Find or create the appropriate target aircraft
+                if (!dTargetByType.TryGetValue(aircraft.InstanceType, out Aircraft acTarget))
+                {
+                    acTarget = Aircraft.SuggestSims(idNew, aircraft.InstanceType).First();
+                    acTarget.Commit();
+                }
+
+                // now get all of the users with flights in the current aircraft
+                IEnumerable<Dictionary<string, object>>  acs = AircraftStats.AdminAircraftUsersDetails(aircraft.AircraftID);
+                foreach (Dictionary<string, object> d in acs)
+                {
+                    // Make sure that the target aircraft is in the user's account
+                    string szUser = (string) d["User"];
+                    hsUsers.Add(szUser);
+                    if (String.IsNullOrEmpty(szUser))
+                        throw new InvalidOperationException($"No specified user in dictionary of flights for aircraft {aircraft.AircraftID}- how did this happen?");
+                    FlightQuery fq = new FlightQuery(szUser);
+                    fq.AircraftList.Add(aircraft);
+
+                    UserAircraft ua = new UserAircraft(szUser);
+                    if (ua[acTarget.AircraftID] == null)
+                        ua.FAddAircraftForUser(acTarget);
+
+                    // Finally, migrate the flights for that user that are in the source aircraft
+                    IEnumerable<LogbookEntry> lstFlightsToMap = LogbookEntry.GetFlightsForUser(fq, -1, -1);
+                    foreach (LogbookEntry le in lstFlightsToMap)
+                    {
+                        cFlights++;
+                        // If the flight has a valid signature, we're going to need to review it
+                        if (le.CFISignatureState == LogbookEntryCore.SignatureState.Valid)
+                            lstSignedFlightsToReview.Add(le.FlightID);
+
+                        // Update the aircraft
+                        le.AircraftID = acTarget.AircraftID;
+
+                        // If the flight already used a simulator/training device identifier, then super, that wins.  Otherwise, add the new one.
+                        if (!le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSimRegistration))
+                            le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSimRegistration, deviceID));
+                        le.FCommit();
+                    }
+
+                    // Finally remove the old aircraft from their profile so that, hopefully, the model becomes orphaned.
+                    ua.FDeleteAircraftforUser(aircraft.AircraftID);
+                }
+            }
+
+            return new Dictionary<string, object>() { { "SignedFlightIDs", lstSignedFlightsToReview }, { "AircraftCount", cAircraft }, { "UserCount", hsUsers.Count }, { "FlightCount", cFlights } };
         }
 
         /// <summary>

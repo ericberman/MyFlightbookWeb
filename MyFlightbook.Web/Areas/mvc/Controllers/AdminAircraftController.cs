@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -77,6 +77,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.name = "types";
             ViewBag.includeDelete = false;
             return PartialView("_modelsTable");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult MigrateSim(int idOriginal, int idNew, string deviceID)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                IDictionary<string, object> dResult = AircraftUtility.MigrateSim(idOriginal, idNew, deviceID);
+                IEnumerable<int> flights = (IEnumerable<int>) dResult["SignedFlightIDs"];
+                List<string> lstFlightsToReview = new List<string>();
+                foreach (int flight in flights)
+                    lstFlightsToReview.Add($"~/mvc/flightedit/flight/{flight}?a=1".ToAbsoluteURL("https", Branding.CurrentBrand.HostName).ToString());
+                dResult.Add("Links", lstFlightsToReview);
+                return Json(dResult);
+            });
         }
 
         [Authorize]

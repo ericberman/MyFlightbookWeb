@@ -357,7 +357,7 @@ namespace MyFlightbook
 
             // Always auto-assign tails for non-real aircraft
             if (ait != AircraftInstanceTypes.RealAircraft)
-                szTail = Aircraft.SuggestSims(idModel, ait)[0].TailNumber; // we'll create the aircraft itself below.
+                szTail = Aircraft.SuggestSims(idModel, ait).First().TailNumber; // we'll create the aircraft itself below.
             else if (szTail.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase))
                 // Fix up the anonymous tailnumber for an anonymous aircraft
                 szTail = Aircraft.AnonymousTailnumberForModel(idModel);

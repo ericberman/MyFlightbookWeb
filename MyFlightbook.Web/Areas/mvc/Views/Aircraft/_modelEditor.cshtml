@@ -386,6 +386,66 @@
             <div><input type="radio" name="allowedTypes" id="rbSimOnly" value="@AllowedAircraftTypes.SimulatorOnly" @((mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly).ToChecked()) /><label for="rbSimOnly">@Resources.Makes.editMakeSimSimOnly</label></div>
             <div><input type="radio" name="allowedTypes" id="rbSimOrGeneric" value="@AllowedAircraftTypes.SimOrAnonymous" @((mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous).ToChecked()) /><label for="rbSimOrGeneric">@Resources.Makes.editMakeSimSimOrGeneric</label></div>
         </div>
+        if (fAdmin && !mm.IsNew && mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly)
+        {
+            <script type="text/javascript">
+                function migrateSim() {
+                    $("#imgPrgMapModels").show();
+                    var params = new Object();
+                    params.idOriginal = $("#admMapSimOriginalModel").val();
+                    params.idNew = $("#admMapSimTargetModel").val();
+                    params.deviceID = $("#admMapSimID").val();
+                    var d = JSON.stringify(params);
+                    $.ajax({
+                        url: "@Url.Action("MigrateSim", "AdminAircraft")",
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        complete: function () { $("#imgPrgMapModels").hide() },
+                        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                        success: function (r) {
+                            $("#admMapSimResult").show();
+                            let html = "";
+                            html += `<div>${r.AircraftCount} Aircraft, ${r.UserCount} Users, and ${r.FlightCount} Flights affected</div>`;
+                            if (r.Links.length == 0)
+                                html += "<div>No signed flights affected!</div>";
+                            else
+                                r.Links.forEach(function (url) {
+                                    html += `<div><a href="${url}" target="_blank">${url}</a></div>`;
+                                });
+                            $("#admMapSimResultFlights").html(html);
+                        }
+                    });
+				}
+            </script>
+            <h3>ADMIN Migrate redundant sims @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "admMigrateSimsSection" }); }</h3>
+            <div id="admMigrateSimsSection" class="dn">
+                <p>If this model looks like it might be a specific device, or otherwise redundant with another sim, then pick a target model above and the system will remap to that.</p>
+                <ul>
+                    <li>For each of the sim types (ATD, FTD, FFS, and ATD), each user's flights will be mapped to the equivalent sim type in the target model'</li>
+                    <li>The Simulator/Training device Identifier field will be added (if not present) using the value you put below</li>
+                    <li>This model will then be deleted from the system.</li>
+                    <li>If any flights were signed that need to be reviewed/revalidated, they will be shown here</li>
+                </ul>
+                <p>Note that the alternatives below must match EXACTLY in characteristics; be sure to modify the model to match on engine, complex, type-rating, etc., before trying to map.</p>
+                <input type="hidden" id="admMapSimOriginalModel" value="@mm.MakeModelID" />
+                <div>Map to:</div>
+                <div>
+                    <select id="admMapSimTargetModel">
+                        <option value="-1">(Please select)</option>
+                        @foreach (SimpleMakeModel smm in SimpleMakeModel.ADMINModelsSimilarToSIM(mm.MakeModelID))
+                        {
+                            <option value="@smm.ModelID">@smm.Description</option>
+                        }
+                    </select>
+                    <input type="text" id="admMapSimID" value="@mm.Model" placeholder="Sim/Training device ID" />
+                    <input type="button" value="Map" onclick="javascript: migrateSim(); return false;" />
+                    <img src="~/images/progress.gif" class="prgSpin dn" id="imgPrgMapModels" />
+                </div>
+                <div class="callout shadowed dn" id="admMapSimResult">
+                    <div>Success!  The following flights need their signatures reviewed:</div>
+                    <div id="admMapSimResultFlights"></div>
+                </div>
+            </div>
+        }
         <div id="rowEngineType" class="vfSection @(hasEngine ? string.Empty : "dn")">
             <div class="vfPrompt"><span id=lblEngineType>@Resources.Makes.editMakeEngineType</span></div>
             <div>
