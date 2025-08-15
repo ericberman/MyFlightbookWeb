@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2022 MyFlightbook LLC
+ * Copyright (c) 2020-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,6 +51,13 @@ namespace MyFlightbook.Charting
         public bool HasY2
         {
             get { return Y2Vals.Count > 0; }
+        }
+
+        public bool ShowTrendline { get; set; }
+
+        public string TrendlineLabel
+        {
+            get { return Resources.FlightData.TrendLineLabel; }
         }
 
         /// <summary>

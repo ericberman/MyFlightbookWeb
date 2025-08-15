@@ -90,7 +90,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.PaymentsByYearMonth = YearlyPayments.PaymentsByYearAndMonth();
 
-            GoogleChartData gcd = new GoogleChartData() { ChartType = GoogleChartType.LineChart, Title = "Running 30 donations", YDataType = GoogleColumnDataType.number, Width = 800, YLabel = "Donations", XDataType = GoogleColumnDataType.date, XLabel = "Date", ContainerID = "runningTotals", Height = 300 };
+            GoogleChartData gcd = new GoogleChartData() { ChartType = GoogleChartType.LineChart, Title = "Running 30 donations", YDataType = GoogleColumnDataType.number, Width = 800, YLabel = "Donations", XDataType = GoogleColumnDataType.date, XLabel = "Date", ContainerID = "runningTotals", Height = 300, ShowTrendline = true };
             IDictionary<DateTime, decimal> d = Payment.RunningPaymentsForTrailingPeriod();
             foreach (DateTime dtKey in d.Keys)
             {

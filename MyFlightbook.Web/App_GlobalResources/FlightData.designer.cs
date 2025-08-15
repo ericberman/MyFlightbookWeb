@@ -590,6 +590,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trend (linear).
+        /// </summary>
+        internal static string TrendLineLabel {
+            get {
+                return ResourceManager.GetString("TrendLineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom In.
         /// </summary>
         internal static string ZoomIn {

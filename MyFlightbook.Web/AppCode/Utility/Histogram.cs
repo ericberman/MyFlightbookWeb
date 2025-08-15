@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,6 +141,7 @@ namespace MyFlightbook.Histogram
                 gcd.XDatePattern = "{0}";
                 gcd.XDataType = GoogleColumnDataType.@string;
             }
+            gcd.ShowTrendline = bm.SupportsTrendline;   
 
             int count = 0;
             double average = 0;
@@ -366,6 +367,12 @@ namespace MyFlightbook.Histogram
         /// Does this bucketing model support running totals?  E.g., dates do, groupings by model of aircraft doesn't
         /// </summary>
         public virtual bool SupportsRunningTotals { get { return true; } }
+
+        /// <summary>
+        /// Does this bucketing model support trendlines?  E.g., a trendline makes sense for dates, but not for models of aircraft.
+        /// Default value is that if you support running totals, then you support a trendline.
+        /// </summary>
+        public virtual bool SupportsTrendline { get { return SupportsRunningTotals; } }
 
         /// <summary>
         /// The buckets

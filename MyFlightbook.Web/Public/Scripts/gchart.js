@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2022-2023 MyFlightbook LLC
+ * Copyright (c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -48,6 +48,18 @@ function drawGChart(chartdata) {
 
     if (chartdata.HasTooltips) {
         options.tooltip = { isHtml: true };
+    }
+
+    if (chartdata.ShowTrendline) {
+        options.trendlines = {
+            0: {
+                visibleInLegend: true,
+                lineWidth: 6,
+                opacity: 0.2,
+                pointsVisible: true,
+                labelInLegend: chartdata.TrendlineLabel
+            }
+        }
     }
 
     if (chartdata.HasY2) {

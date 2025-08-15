@@ -297,4 +297,7 @@
   <data name="TelemetryCropReset" xml:space="preserve">
     <value>Reset Crop</value>
   </data>
+  <data name="TrendLineLabel" xml:space="preserve">
+    <value>Trend (linear)</value>
+  </data>
 </root>
