@@ -228,7 +228,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private object GetImportResult(string key)
         {
             Dictionary<string, object> d = (Dictionary<string, object>)Session[keyResults];
-            return d.TryGetValue(key, out object o) ? o : throw new InvalidOperationException(Resources.LogbookEntry.ImportFlightSessionExpired);
+            return (d?.TryGetValue(key, out object o) ?? false) ? o : throw new InvalidOperationException(Resources.LogbookEntry.ImportFlightSessionExpired);
         }
 
         private void ClearImportResult()
