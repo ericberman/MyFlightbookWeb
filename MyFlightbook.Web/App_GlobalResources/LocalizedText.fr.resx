@@ -154,4 +154,10 @@
   <data name="ContactUsReadFAQ" xml:space="preserve">
     <value>S'il vous plaît noter que de nombreuses questions peuvent être répondu dans la FAQ.</value>
   </data>
+  <data name="SessionExpiredHeader" xml:space="preserve">
+    <value>Session expirée</value>
+  </data>
+  <data name="SessionExpiredBody" xml:space="preserve">
+    <value>Votre session a expiré. Veuillez revenir à la page que vous consultiez pour reprendre vos activités.</value>
+  </data>
 </root>

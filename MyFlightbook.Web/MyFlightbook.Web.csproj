@@ -1641,6 +1641,7 @@
     <Content Include="Areas\mvc\Views\Pub\homeAuth.cshtml" />
     <Content Include="Public\Fonts\web.config" />
     <Content Include="Areas\mvc\Views\Print\_footerLandingDesc.cshtml" />
+    <Content Include="Areas\mvc\Views\Pub\sessionExpired.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

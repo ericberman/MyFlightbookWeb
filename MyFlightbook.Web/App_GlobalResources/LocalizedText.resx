@@ -2114,4 +2114,10 @@
   <data name="PrintViewPrintPartialPrompt" xml:space="preserve">
     <value>Resume from last printout</value>
   </data>
+  <data name="SessionExpiredHeader" xml:space="preserve">
+    <value>Session Expired</value>
+  </data>
+  <data name="SessionExpiredBody" xml:space="preserve">
+    <value>Your session has expired.  Please navigate back to the page you were on to resume what you were doing.</value>
+  </data>
 </root>

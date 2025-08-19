@@ -107,8 +107,15 @@ namespace MyFlightbook.Web
             if ((myError is HttpException err && err.GetHttpCode() == 404))
                 return;
 
-            if (myError is HttpAntiForgeryException && !(Context?.User?.Identity?.IsAuthenticated ?? true))
+            if (myError is HttpAntiForgeryException)
+            {
+                if (!(Context?.User?.Identity?.IsAuthenticated ?? true))
+                    return;
+                Context.ClearError();
+                Response.Redirect("~/mvc/pub/SessionExpired");
+                Response.End();
                 return;
+            }
 
             if (Context != null)
             {

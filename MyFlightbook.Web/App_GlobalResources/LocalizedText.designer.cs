@@ -5171,6 +5171,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your session has expired.  Please navigate back to the page you were on to resume what you were doing..
+        /// </summary>
+        internal static string SessionExpiredBody {
+            get {
+                return ResourceManager.GetString("SessionExpiredBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session Expired.
+        /// </summary>
+        internal static string SessionExpiredHeader {
+            get {
+                return ResourceManager.GetString("SessionExpiredHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this link?  This cannot be undone, and once deleted the link will no longer work for anybody that has it..
         /// </summary>
         internal static string ShareKeyDeleteConfirm {

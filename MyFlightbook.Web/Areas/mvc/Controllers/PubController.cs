@@ -396,6 +396,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("contact");
         }
 
+        [HttpGet]
+        public ActionResult SessionExpired()
+        {
+            return View("sessionExpired");
+        }
+
         public ActionResult Shunt()
         {
             return View("shunt");
