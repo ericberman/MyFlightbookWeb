@@ -469,9 +469,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DoImport(bool isPendingOnly)
         {
-            CSVImporter csvimporter = (CSVImporter)GetImportResult(keyResultImporter);
-            if (csvimporter == null)
-                return Redirect("~/mvc/import/id=csv"); // session expired
+            CSVImporter csvimporter = null;
+            try
+            {
+                csvimporter = (CSVImporter)GetImportResult(keyResultImporter);
+            }
+            catch (InvalidOperationException)
+            {
+                return Redirect("~/mvc/pub/SessionExpired"); // session expired
+            }
 
             int cFlightsAdded = 0;
             int cFlightsUpdated = 0;
