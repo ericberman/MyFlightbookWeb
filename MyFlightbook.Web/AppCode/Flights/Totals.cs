@@ -402,6 +402,7 @@ namespace MyFlightbook.Currency
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Tailwheel, Resources.Totals.Tailwheel, " fTailwheel <> 0 AND CatClassOverride <> 3 AND CatClassOverride <> 4 "), /* don't count sea time as tailwheel */
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.TAA, Resources.Totals.TAA, "IsTAA <> 0 AND CatClassOverride in (1, 2, 3, 4) "),    /* TAA is exclusive to AIRPLANES */
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Turbine, Resources.Totals.Turbine, " (fTurbine > 0 AND fTurbine < 4) "),
+                                                            new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.MotorGlider, Resources.Aircraft.EASACategoryClassMotorGlider, " (fMotorGlider <> 0)"),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.MEHelicopter, Resources.Totals.MEHelicopter, " (fMultiHelicopter <> 0) ") };
 
         /// <summary>
@@ -531,7 +532,7 @@ namespace MyFlightbook.Currency
         /// </summary>
         private class ModelFeatureTotal
         {
-            public enum FeatureTotalType { Complex, Retract, HighPerf, Tailwheel, Turbine, TAA, MEHelicopter };
+            public enum FeatureTotalType { Complex, Retract, HighPerf, Tailwheel, Turbine, TAA, MEHelicopter, MotorGlider };
             private enum FeatureSubtotal { PIC, SIC, Total };
             public string Restriction { get; set; }
             public string Name { get; set; }
