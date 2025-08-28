@@ -1184,8 +1184,11 @@ namespace MyFlightbook.ImportFlights
 
             int cFlightsImported = 0;
 
+            // Been seeing a few "collection was modified" exceptions, so make a local copy of the flights
+            List<LogbookEntry> lstFlights = new List<LogbookEntry>(FlightsToImport);
+
             // Write the data to the db.
-            foreach (LogbookEntry le in FlightsToImport)
+            foreach (LogbookEntry le in lstFlights)
             {
                 le.ErrorString = string.Empty;
                 List<CustomFlightProperty> lstCFPToDelete = le.IsNewFlight ? null : m_ImportContext.OrphanedPropsByFlightID[le.FlightID];
