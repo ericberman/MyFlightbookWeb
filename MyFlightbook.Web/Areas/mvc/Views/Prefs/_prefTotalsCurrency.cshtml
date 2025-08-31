@@ -38,8 +38,8 @@
 <div><label><input type="checkbox" id="ckUseArmyCurrency"  onclick="javascript: tcEditor.setLocalPrefChecked('useArmyCurrency', this);" @(m_pf.UsesArmyCurrency.ToChecked()) />@Resources.Currency.CurrencyOptionsArmyCurreny</label></div>
 <div><label><input type="checkbox" id="ckUse117DutyTime"  onclick="javascript: tcEditor.setLocalPrefChecked('use117DutyTime', this);" @(m_pf.UsesFAR117DutyTime.ToChecked()) />@Resources.Currency.CurrencyOptionsFAR117DutyTime</label></div>
 <div style="margin-left:2em;">
-    <div><label><input type="radio" id="rb117OnlyDutyTimeFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'false');" @(m_pf.UsesFAR117DutyTimeAllFlights.ToChecked()) />@Resources.Currency.Currency117OnlyDutyTimeFlights</label></div>
-    <div><label><input type="radio" id="rb117AllFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'true');" @((!m_pf.UsesFAR117DutyTimeAllFlights).ToChecked()) />@Resources.Currency.Currency117AllFlights</label></div>
+    <div><label><input type="radio" id="rb117OnlyDutyTimeFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'false');" @((!m_pf.UsesFAR117DutyTimeAllFlights).ToChecked()) />@Resources.Currency.Currency117OnlyDutyTimeFlights</label></div>
+    <div><label><input type="radio" id="rb117AllFlights" name="117Flights" onclick="javascript: tcEditor.setLocalPref('use117DutyAllFlights', 'true');" @(m_pf.UsesFAR117DutyTimeAllFlights.ToChecked()) />@Resources.Currency.Currency117AllFlights</label></div>
 </div>
 <div id="div135DutyTime" style="display:none;">
     <label><input type="checkbox" id="ckUse135DutyTime"  onclick="javascript: tcEditor.setLocalPrefChecked('use135DutyTime', this);" @(m_pf.UsesFAR135DutyTime.ToChecked()) />@Resources.Currency.CurrencyOptions135DutyTime</label>
