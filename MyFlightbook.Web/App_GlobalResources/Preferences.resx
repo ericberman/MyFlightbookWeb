@@ -509,7 +509,7 @@
     <value>Create a new deadline</value>
   </data>
   <data name="PrefBlockListDesc" xml:space="preserve">
-    <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
+    <value>If another template isn't used by default, then new flights will automatically show you properties that you have used on previous flights.  To reduce clutter in new flights and in totals, though, you can choose to not display some properties.</value>
   </data>
   <data name="PrefBlockListHide" xml:space="preserve">
     <value>...but not these</value>

@@ -1231,7 +1231,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default..
+        ///   Looks up a localized string similar to If another template isn&apos;t used by default, then new flights will automatically show you properties that you have used on previous flights.  To reduce clutter in new flights and in totals, though, you can choose to not display some properties..
         /// </summary>
         internal static string PrefBlockListDesc {
             get {
