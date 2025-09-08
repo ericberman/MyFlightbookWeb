@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2022 MyFlightbook LLC
+ * Copyright (c) 2013-2024 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -245,7 +245,7 @@ namespace MyFlightbook.RatingsProgress
                     miMinTime.Threshold = 3;
                     miMinTrainingFlights.Threshold = 5;
                     miMinSolo.Threshold = 1;
-                    miMinSolo.Threshold = 3;
+                    miMinSoloFlights.Threshold = 3;
                 }
             }
 
