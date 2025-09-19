@@ -2670,7 +2670,7 @@ WHERE
     OR LEFT(aircraft.tailnormal, 4) = LEFT(REPLACE(models.model, '-', ''), 4)
     OR RIGHT(aircraft.tailnormal, LENGTH(aircraft.tailnumber) - 1) = REPLACE(RIGHT(models.model, LENGTH(models.model) - 1), '-', '')
     OR (LEFT(aircraft.tailnumber, 3) <> 'SIM' AND (LEFT(aircraft.tailnormal, 4) = LEFT(manufacturers.manufacturer, 4)))
-    OR (aircraft.instancetype=1 AND aircraft.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL'))
+    OR (aircraft.instancetype=1 AND aircraft.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|FSTD|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL'))
     AND aircraft.publicnotes NOT LIKE '% '
 GROUP BY aircraft.idaircraft
 ORDER BY tailnumber ASC");
