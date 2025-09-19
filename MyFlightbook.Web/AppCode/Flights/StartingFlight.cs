@@ -8,7 +8,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -181,6 +181,7 @@ namespace MyFlightbook.StartingFlights
         public enum RepresentativeTypeMode { CatClassType, CatClassCapabilities, ByModel };
 
         #region Querystrings
+        // Issue #1461 - wasn't striping correctly by type if you have multiple type ratings.
         private const string sqlRepresentativeTypesBase = @"
     SELECT
     CONCAT(cc.CatClass, IF(m.typename = '', '', CONCAT(' (', m.typename, ')'))) AS catclasstype,
@@ -191,7 +192,8 @@ namespace MyFlightbook.StartingFlights
       IF(m.fComplex, 'X', ' '),
       IF(m.fHighPerf, 'H', ' '),
       IF(m.fTailwheel, 'T', ' '),
-      IF(m.fConstantProp, 'C', ' ')
+      IF(m.fConstantProp, 'C', ' '),
+      m.typename
       ) AS ModelSignature,
 m.fComplex+m.fHighPerf+m.fTailwheel+m.fConstantProp+m.fTurbine+m.fRetract AS Capabilities,
 GROUP_CONCAT(cast(ac.idAircraft AS char(8)) separator ',') AS AircraftIDs,
