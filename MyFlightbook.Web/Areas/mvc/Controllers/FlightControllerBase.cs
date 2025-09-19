@@ -1,14 +1,17 @@
 ﻿using MyFlightbook.Instruction;
 using MyFlightbook.Web.Sharing;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI.WebControls;
+using static MyFlightbook.UserAircraft;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -202,6 +205,38 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         protected static int FlightsPerPageForUser(Profile pf)
         {
             return pf?.GetPreferenceForKey(MFBConstants.keyPrefFlightsPerPage, MFBConstants.DefaultFlightsPerPage) ?? MFBConstants.DefaultFlightsPerPage;
+        }
+
+        /// <summary>
+        /// Handy utility to get/set the last tail used by the user
+        /// </summary>
+        protected static int LastTailID
+        {
+            get { return AircraftUtility.LastTail; }
+            set { AircraftUtility.LastTail = value; }
+        }
+
+        /// <summary>
+        /// Issue #1462: we sometimes have a bad "last tail" that is referencing an aircraft not in the user's account (perhaps it was deleted)
+        /// Getting it gets a valid "last tail" according to the following priority:
+        ///  * If the current ID is valid, return that
+        ///  * Otherwise, if the last tail is in the user's aircraft list, use that
+        ///  * Otherwise, return the first active aircraft in the list
+        ///  * Otherwise, return the first aircraft in the list
+        ///  * Otherwise, return Aircraft.idAircraftUnknown
+        /// </summary>
+        /// <param name="currID">The currently proposed ID</param>
+        /// <param name="ua">The user's aircraft list.</param>
+        protected static int BestLastTail(int currID, UserAircraft ua)
+        {
+            if (ua == null)
+                throw new ArgumentNullException(nameof(ua));
+            List<Aircraft> lst = new List<Aircraft>(ua.GetAircraftForUser(AircraftRestriction.UserAircraft));
+            int lastTail = LastTailID;
+            return ua[currID]?.AircraftID ??
+                ua[lastTail]?.AircraftID ??
+                lst.FirstOrDefault(ac => !ac.HideFromSelection)?.AircraftID ??
+                (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
         }
         #endregion
     }

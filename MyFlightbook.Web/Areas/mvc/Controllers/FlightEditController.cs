@@ -505,7 +505,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     if (le.FCommit(le.HasFlightData))
                     {
                         if (le.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
-                            AircraftUtility.LastTail = le.AircraftID;
+                            LastTailID = le.AircraftID;
 
                         if (fIsNew)
                         {
@@ -593,13 +593,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             le = le ?? new LogbookEntry() { User = targetUser };
 
             PendingFlight pf = le as PendingFlight;
+            UserAircraft ua = new UserAircraft(targetUser);
+            int lastTail = LastTailID;
 
             // If this is a new flight and we have an existing flight in progress, pick that one up instead.
             if (le.IsNewFlight && pf == null && Session[keySessionInProgress] != null)
             {
                 le = (LogbookEntry)Session[keySessionInProgress];
                 // Issue #1312 - coming back from add new aircraft should use that aircraft
-                int lastTail = AircraftUtility.LastTail;
                 if (lastTail > 0)
                     le.AircraftID = lastTail;
             }
@@ -609,15 +610,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             Session.Remove(keySessionInProgress);   // clear it regardless.
 
             // If no aircraft ID provided, try using the last tail, if present, otherwise take the first one from their aircraft list that isn't hidden.
-            List<Aircraft> lst = new List<Aircraft>(new UserAircraft(targetUser).GetAircraftForUser());
-            if (le.AircraftID <= 0)
-                le.AircraftID = AircraftUtility.LastTail;
-            if (le.AircraftID <= 0)
-            {
-                le.AircraftID = lst.FirstOrDefault(ac => !ac.HideFromSelection)?.AircraftID ?? (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
-            }
+            le.AircraftID = BestLastTail(le.AircraftID, ua);
 
-            ViewBag.rgAircraft = lst;
+            ViewBag.rgAircraft = new List<Aircraft>(ua.GetAircraftForUser());
             ViewBag.pf = pf;
             ViewBag.le = le;
             ViewBag.pfTarget = MyFlightbook.Profile.GetUser(targetUser);
