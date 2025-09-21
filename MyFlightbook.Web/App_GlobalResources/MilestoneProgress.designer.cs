@@ -1915,7 +1915,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For large turbine-powered aircraft, you also need 300 hours acting as PIC in large turbine-powered aircraft, of which 50 hours are in the type sought..
+        ///   Looks up a localized string similar to For large turbine-powered aircraft, you also need 300 hours acting as PIC in large turbine-powered aircraft, of which 50 hours are in the type sought.  You also need to have spent 150 hours preparing airmen for commercial or ATP certificates.
         /// </summary>
         internal static string DPECommInstrumentDisclaimer {
             get {
@@ -1929,6 +1929,15 @@ namespace Resources {
         internal static string DPEComplex {
             get {
                 return ResourceManager.GetString("DPEComplex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You also need 150 hours preparing airmen for Commercial or ATP certificates with Airplane categories.
+        /// </summary>
+        internal static string DPEDisclaimerPreparing {
+            get {
+                return ResourceManager.GetString("DPEDisclaimerPreparing", resourceCulture);
             }
         }
         
@@ -1978,15 +1987,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Per 8900.2A, Chapter 7, (1)(f)(2)(a), you must also have 5 hours in the same make and model of multi-engine airplane or helicopter in which you are to conduct tests..
-        /// </summary>
-        internal static string DPEMultiHelicopterDisclaimer {
-            get {
-                return ResourceManager.GetString("DPEMultiHelicopterDisclaimer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in *{1}*.
         /// </summary>
         internal static string DPEPICCategory {
@@ -2023,6 +2023,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in past *12 months*.
+        /// </summary>
+        internal static string DPEPICTimeLastYear {
+            get {
+                return ResourceManager.GetString("DPEPICTimeLastYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to *{0:#,##0}* hours *PIC* time in past *12 months* in *{1}*.
         /// </summary>
         internal static string DPEPICTimePastYear {
@@ -2032,11 +2041,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C also requires 100 hours (50 for gyroplanes) preparing airmen for commercial or ATP certificates; this requirement is not reflected here.  For large helicopters, you also need 100 hours acting as PIC in large helicopters, including at least 50 hours in the type sought; this, too, is also not reflected here..
+        ///   Looks up a localized string similar to Order 8000.95D also requires 100 hours (50 for gyroplanes) preparing airmen for commercial or ATP certificates; this requirement is not reflected here.  For large helicopters, you also need 100 hours acting as PIC in large helicopters, including at least 50 hours in the type sought; this, too, is also not reflected here..
         /// </summary>
-        internal static string DPERotorcraft800095CDisclaimer {
+        internal static string DPERotorcraft800095DDisclaimer {
             get {
-                return ResourceManager.GetString("DPERotorcraft800095CDisclaimer", resourceCulture);
+                return ResourceManager.GetString("DPERotorcraft800095DDisclaimer", resourceCulture);
             }
         }
         
@@ -4507,61 +4516,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, Airplane - Multi-Engine Land.
+        ///   Looks up a localized string similar to Order 8000.95D - Helicopter, Commercial-Instrument/ATP.
         /// </summary>
-        internal static string TitleDPECommAMEL {
+        internal static string TitleDPEHelicopter {
             get {
-                return ResourceManager.GetString("TitleDPECommAMEL", resourceCulture);
+                return ResourceManager.GetString("TitleDPEHelicopter", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, Airplane - Multi-Engine Sea.
-        /// </summary>
-        internal static string TitleDPECommAMES {
-            get {
-                return ResourceManager.GetString("TitleDPECommAMES", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, Airplane - Single-Engine Land.
-        /// </summary>
-        internal static string TitleDPECommASEL {
-            get {
-                return ResourceManager.GetString("TitleDPECommASEL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, Airplane - Single-Engine Sea.
-        /// </summary>
-        internal static string TitleDPECommASES {
-            get {
-                return ResourceManager.GetString("TitleDPECommASES", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, Glider.
-        /// </summary>
-        internal static string TitleDPECommGlider {
-            get {
-                return ResourceManager.GetString("TitleDPECommGlider", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Commercial, RotorCraft - Helicopter.
-        /// </summary>
-        internal static string TitleDPECommHelicopter {
-            get {
-                return ResourceManager.GetString("TitleDPECommHelicopter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Airplane - Multi-Engine Land.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Multi-Engine Land, PPL and Comm..
         /// </summary>
         internal static string TitleDPEPPLAMEL {
             get {
@@ -4570,7 +4534,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Airplane - Multi-Engine Sea.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Multi-Engine Sea, PPL and Comm.
         /// </summary>
         internal static string TitleDPEPPLAMES {
             get {
@@ -4579,7 +4543,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Airplane - Single-Engine Land.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Single-Engine Land, PPL and Comm.
         /// </summary>
         internal static string TitleDPEPPLASEL {
             get {
@@ -4588,7 +4552,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Airplane - Single-Engine Sea.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Single-Engine Sea, PPL and Comm.
         /// </summary>
         internal static string TitleDPEPPLASES {
             get {
@@ -4597,83 +4561,65 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Multi-Engine Land.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Multi-Engine Land, Commercial-Instrument/ATP.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CAMEL {
+        internal static string TitleDPEPPLCOMM800095DAMEL {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CAMEL", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DAMEL", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Multi-Engine Sea.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Multi-Engine Sea, Commercial-Instrument/ATP.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CAMES {
+        internal static string TitleDPEPPLCOMM800095DAMES {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CAMES", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DAMES", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Single-Engine Land.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Single-Engine Land, Commercial-Instrument/ATP.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CASEL {
+        internal static string TitleDPEPPLCOMM800095DASEL {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CASEL", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DASEL", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Single-Engine Sea.
+        ///   Looks up a localized string similar to Order 8000.95D - Airplane - Single-Engine Sea, Commercial-Instrument/ATP.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CASES {
+        internal static string TitleDPEPPLCOMM800095DASES {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CASES", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DASES", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Gyroplane.
+        ///   Looks up a localized string similar to Order 8000.95D - Gyroplane, PPL and Comm.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CGyroplane {
+        internal static string TitleDPEPPLCOMM800095DGyroplane {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CGyroplane", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DGyroplane", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8000.95C - Private/Commercial, Airplane - Helicopter.
+        ///   Looks up a localized string similar to Order 8000.95D - Helicopter, PPL and Comm.
         /// </summary>
-        internal static string TitleDPEPPLCOMM800095CHelicopter {
+        internal static string TitleDPEPPLCOMM800095DHelicopter {
             get {
-                return ResourceManager.GetString("TitleDPEPPLCOMM800095CHelicopter", resourceCulture);
+                return ResourceManager.GetString("TitleDPEPPLCOMM800095DHelicopter", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Glider.
+        ///   Looks up a localized string similar to Order 8000.95D - Glider, PPL and Comm.
         /// </summary>
         internal static string TitleDPEPPLGlider {
             get {
                 return ResourceManager.GetString("TitleDPEPPLGlider", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Rotorcraft - Gyroplane.
-        /// </summary>
-        internal static string TitleDPEPPLGyroplane {
-            get {
-                return ResourceManager.GetString("TitleDPEPPLGyroplane", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Order 8900.2C - Private Pilot, Rotorcraft - Helicopter.
-        /// </summary>
-        internal static string TitleDPEPPLHelicopter {
-            get {
-                return ResourceManager.GetString("TitleDPEPPLHelicopter", resourceCulture);
             }
         }
         

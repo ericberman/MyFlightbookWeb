@@ -1254,7 +1254,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>*{0:#,##0}* hours *CFI* time in *{1}*</value>
   </data>
   <data name="DPECommInstrumentDisclaimer" xml:space="preserve">
-    <value>For large turbine-powered aircraft, you also need 300 hours acting as PIC in large turbine-powered aircraft, of which 50 hours are in the type sought.</value>
+    <value>For large turbine-powered aircraft, you also need 300 hours acting as PIC in large turbine-powered aircraft, of which 50 hours are in the type sought.  You also need to have spent 150 hours preparing airmen for commercial or ATP certificates</value>
   </data>
   <data name="DPEComplex" xml:space="preserve">
     <value>*{0:#,##0}* hours *PIC* time in *complex* airplanes</value>
@@ -1274,9 +1274,6 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="DPEInstrumentInstructionInCategory" xml:space="preserve">
     <value>*{0:#,##0}* hours of instrument instruction in *{1}*</value>
   </data>
-  <data name="DPEMultiHelicopterDisclaimer" xml:space="preserve">
-    <value>Per 8900.2A, Chapter 7, (1)(f)(2)(a), you must also have 5 hours in the same make and model of multi-engine airplane or helicopter in which you are to conduct tests.</value>
-  </data>
   <data name="DPEPICCategory" xml:space="preserve">
     <value>*{0:#,##0}* hours *PIC* time in *{1}*</value>
   </data>
@@ -1295,44 +1292,17 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="RatingGroupDPE" xml:space="preserve">
     <value>Designated Pilot Examiner (DPE) Ratings</value>
   </data>
-  <data name="TitleDPECommAMEL" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, Airplane - Multi-Engine Land</value>
-  </data>
-  <data name="TitleDPECommAMES" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, Airplane - Multi-Engine Sea</value>
-  </data>
-  <data name="TitleDPECommASEL" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, Airplane - Single-Engine Land</value>
-  </data>
-  <data name="TitleDPECommASES" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, Airplane - Single-Engine Sea</value>
-  </data>
-  <data name="TitleDPECommGlider" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, Glider</value>
-  </data>
-  <data name="TitleDPECommHelicopter" xml:space="preserve">
-    <value>Order 8900.2C - Commercial, RotorCraft - Helicopter</value>
-  </data>
   <data name="TitleDPEPPLAMEL" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Airplane - Multi-Engine Land</value>
+    <value>Order 8000.95D - Airplane - Multi-Engine Land, PPL and Comm.</value>
   </data>
   <data name="TitleDPEPPLAMES" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Airplane - Multi-Engine Sea</value>
+    <value>Order 8000.95D - Airplane - Multi-Engine Sea, PPL and Comm</value>
   </data>
   <data name="TitleDPEPPLASEL" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Airplane - Single-Engine Land</value>
+    <value>Order 8000.95D - Airplane - Single-Engine Land, PPL and Comm</value>
   </data>
   <data name="TitleDPEPPLASES" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Airplane - Single-Engine Sea</value>
-  </data>
-  <data name="TitleDPEPPLGlider" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Glider</value>
-  </data>
-  <data name="TitleDPEPPLGyroplane" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Rotorcraft - Gyroplane</value>
-  </data>
-  <data name="TitleDPEPPLHelicopter" xml:space="preserve">
-    <value>Order 8900.2C - Private Pilot, Rotorcraft - Helicopter</value>
+    <value>Order 8000.95D - Airplane - Single-Engine Sea, PPL and Comm</value>
   </data>
   <data name="Title141CommercialMultiEngineSea" xml:space="preserve">
     <value>Part 141 - Commercial, Airplane, Multi Engine Sea</value>
@@ -1696,25 +1666,37 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="DPEAirplane800095CDisclaimer" xml:space="preserve">
     <value>Order 8000.95C also requires 150 hours preparing airmen for commercial or ATP certificates; this requirement is not reflected here.</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CASEL" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Single-Engine Land</value>
+  <data name="TitleDPEPPLCOMM800095DASEL" xml:space="preserve">
+    <value>Order 8000.95D - Airplane - Single-Engine Land, Commercial-Instrument/ATP</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CAMEL" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Multi-Engine Land</value>
+  <data name="TitleDPEPPLCOMM800095DAMEL" xml:space="preserve">
+    <value>Order 8000.95D - Airplane - Multi-Engine Land, Commercial-Instrument/ATP</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CAMES" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Multi-Engine Sea</value>
+  <data name="TitleDPEPPLCOMM800095DAMES" xml:space="preserve">
+    <value>Order 8000.95D - Airplane - Multi-Engine Sea, Commercial-Instrument/ATP</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CASES" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Single-Engine Sea</value>
+  <data name="TitleDPEPPLCOMM800095DASES" xml:space="preserve">
+    <value>Order 8000.95D - Airplane - Single-Engine Sea, Commercial-Instrument/ATP</value>
   </data>
-  <data name="DPERotorcraft800095CDisclaimer" xml:space="preserve">
-    <value>Order 8000.95C also requires 100 hours (50 for gyroplanes) preparing airmen for commercial or ATP certificates; this requirement is not reflected here.  For large helicopters, you also need 100 hours acting as PIC in large helicopters, including at least 50 hours in the type sought; this, too, is also not reflected here.</value>
+  <data name="DPERotorcraft800095DDisclaimer" xml:space="preserve">
+    <value>Order 8000.95D also requires 100 hours (50 for gyroplanes) preparing airmen for commercial or ATP certificates; this requirement is not reflected here.  For large helicopters, you also need 100 hours acting as PIC in large helicopters, including at least 50 hours in the type sought; this, too, is also not reflected here.</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CHelicopter" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Helicopter</value>
+  <data name="TitleDPEPPLCOMM800095DHelicopter" xml:space="preserve">
+    <value>Order 8000.95D - Helicopter, PPL and Comm</value>
   </data>
-  <data name="TitleDPEPPLCOMM800095CGyroplane" xml:space="preserve">
-    <value>Order 8000.95C - Private/Commercial, Airplane - Gyroplane</value>
+  <data name="TitleDPEPPLCOMM800095DGyroplane" xml:space="preserve">
+    <value>Order 8000.95D - Gyroplane, PPL and Comm</value>
+  </data>
+  <data name="DPEPICTimeLastYear" xml:space="preserve">
+    <value>*{0:#,##0}* hours *PIC* time in past *12 months*</value>
+  </data>
+  <data name="DPEDisclaimerPreparing" xml:space="preserve">
+    <value>You also need 150 hours preparing airmen for Commercial or ATP certificates with Airplane categories</value>
+  </data>
+  <data name="TitleDPEPPLGlider" xml:space="preserve">
+    <value>Order 8000.95D - Glider, PPL and Comm</value>
+  </data>
+  <data name="TitleDPEHelicopter" xml:space="preserve">
+    <value>Order 8000.95D - Helicopter, Commercial-Instrument/ATP</value>
   </data>
 </root>
