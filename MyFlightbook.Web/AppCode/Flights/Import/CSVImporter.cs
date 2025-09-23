@@ -80,8 +80,8 @@ namespace MyFlightbook.ImportFlights
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
         private readonly static string[] colFlightID = { "Flight ID" };
-        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime" };
+        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime", "fcv_tail_number", "tail_number" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr" };
@@ -99,18 +99,18 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "Co-Plt", "co_pilot", "copilot", "Co-Pilot" };
         private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD" };
         private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM", "Route of Flight Via", "Enroute", "Dept-Dest" };
-        private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport", "Route of Flight From", "ADEP", "AF_DEP", "Dep" };
-        private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES", "AF_ARR", "Arr" };
+        private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport", "Route of Flight From", "ADEP", "AF_DEP", "Dep", "dep_airport" };
+        private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES", "AF_ARR", "Arr", "arr_airport" };
         private readonly static string[] colComment = { "Comments", "Remarks", "remarks_and_endorsements", "Comment", "Remark", "Notes", "PilotComments" };
         private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
         private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
         private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
-        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off", "departure_time", "Flight Departure", "TIME_TO" };
-        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On", "arrival_time", "Flight Arrival", "TIME_LDG" };
+        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off", "departure_time", "Flight Departure", "TIME_TO", "fcv_off_datetime_utc", "off_datetime_utc" };
+        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On", "arrival_time", "Flight Arrival", "TIME_LDG", "fcv_on_datetime_utc", "on_datetime_utc" };
         private readonly static string[] colHobbsStart = { "Hobbs Start", "Hobbs Out", "HobbsStart" };
         private readonly static string[] colHobbsEnd = { "Hobbs End", "Hobbs In", "HobbsEnd" };
         private readonly static string[] colPublic = { "Public" };
-        private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS", "ACFT_MDS", "ACType", "type_of_aircraft", "acModel", "aircraft_type", "AC Type", "AC_MODEL", "Type" };
+        private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS", "ACFT_MDS", "ACType", "type_of_aircraft", "acModel", "aircraft_type", "AC Type", "AC_MODEL", "Type", "fcv_aircraft_type" };
         private readonly static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
         private readonly static string[] colPilotRole = { "DS_ID", "DUTY", "Duty Posn", "Duty Position" };    // For CAFRS - specifies role of pilot ("Duty Position")
         private readonly static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
@@ -125,7 +125,7 @@ namespace MyFlightbook.ImportFlights
             { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo", "1"}},
             { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name", "Name PIC", "Crew Captain", "COM" }},
             { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer" }},
-            { "Additional Crew Member(s)", new string[] { "Additional Crew Member(s)", "Crew" } },
+            { "Additional Crew Member(s)", new string[] { "Additional Crew Member(s)", "Crew", "crew_list" } },
             { "Instructor Name", new string[] {"Instructor Name", "instructor_name" } },
             { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night", "Night T-O", "TNight", "TO_NIGHT", "NightTakeoffs" }},
             { "Landings - Water", new string[] {"Landings - Water", "flight_waterLandings"}},
@@ -142,9 +142,9 @@ namespace MyFlightbook.ImportFlights
             {"Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135", "PT135"}},
             {"Tachometer End", new string[] {"Tachometer End", "Tach In", "TachEnd"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out", "TachStart"}},
-            {"Flight Number", new string[] {"Flight Number", "Flight", "flightNo", "Flight No.", "FLIGHTNUMBER", "Flight #" } },
-            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off", "Time Out", "Out" } },
-            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On", "Time In", "In" } },
+            {"Flight Number", new string[] {"Flight Number", "Flight", "flightNo", "Flight No.", "FLIGHTNUMBER", "Flight #", "flight_number" } },
+            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off", "Time Out", "Out", "dep_datetime_utc" } },
+            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On", "Time In", "In", "arr_datetime_utc" } },
             { "Pilot Monitoring Time", new string[] { "Pilot Monitoring Time", "PM" } },
             { "Pilot Flying Time", new string[] { "Pilot Flying Time", "PF" } },
             {"Scheduled Departure Time", new string[] { "Scheduled Departure Time", "ETD", "TIME_DEPSCH" } },

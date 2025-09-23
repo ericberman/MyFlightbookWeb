@@ -15,7 +15,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -362,7 +362,7 @@ namespace MyFlightbook
                 return false;
             else
             {
-                if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1')
+                if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1' || sz.CompareCurrentCultureIgnoreCase("DH") == 0)
                     return true;
                 if (Boolean.TryParse(sz, out bool f))
                     return f;
