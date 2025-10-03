@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -144,6 +144,7 @@ namespace MyFlightbook
             IDPropMilitaryKindOfFlightCode = 399,
             IDPropXCLessThan25nm = 405,
             IDPropSinglePilot = 413,
+            IDPropPart91K = 414,
             IDPropFlightCost = 415,
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,

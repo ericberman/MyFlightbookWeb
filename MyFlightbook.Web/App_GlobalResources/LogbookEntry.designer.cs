@@ -214,6 +214,78 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Part 121 PIC.
+        /// </summary>
+        internal static string Combo121PIC {
+            get {
+                return ResourceManager.GetString("Combo121PIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 121 SIC.
+        /// </summary>
+        internal static string Combo121SIC {
+            get {
+                return ResourceManager.GetString("Combo121SIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 135 PIC.
+        /// </summary>
+        internal static string Combo135PIC {
+            get {
+                return ResourceManager.GetString("Combo135PIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 135 SIC.
+        /// </summary>
+        internal static string Combo135SIC {
+            get {
+                return ResourceManager.GetString("Combo135SIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 91K PIC.
+        /// </summary>
+        internal static string Combo91KPIC {
+            get {
+                return ResourceManager.GetString("Combo91KPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 91K SIC.
+        /// </summary>
+        internal static string Combo91KSIC {
+            get {
+                return ResourceManager.GetString("Combo91KSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 91 PIC.
+        /// </summary>
+        internal static string Combo91PIC {
+            get {
+                return ResourceManager.GetString("Combo91PIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Part 91 SIC.
+        /// </summary>
+        internal static string Combo91SIC {
+            get {
+                return ResourceManager.GetString("Combo91SIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Night Dual.
         /// </summary>
         internal static string ComboNightInstruction {

@@ -15,7 +15,50 @@ namespace MyFlightbook.Printing
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp, CrossCountry, Gyroplane, HotAirBalloon, GasBalloon, UAS, TurbinePIC, TurbineSIC, XCInstruction, XCSolo, XCPIC, XCSIC, NightInstruction, NightSolo, NightPIC, NightSIC }
+    public enum OptionalColumnType
+    {
+        None,
+        Complex,
+        Retract,
+        Tailwheel,
+        HighPerf,
+        TAA,
+        Turbine,
+        Jet,
+        TurboProp,
+        ATD,
+        FTD,
+        FFS,
+        ASEL,
+        ASES,
+        AMEL, 
+        AMES,
+        Helicopter, 
+        Glider, 
+        CustomProp, 
+        CrossCountry, 
+        Gyroplane, 
+        HotAirBalloon, 
+        GasBalloon, UAS, 
+        TurbinePIC, 
+        TurbineSIC, 
+        XCInstruction, 
+        XCSolo, 
+        XCPIC, 
+        XCSIC, 
+        NightInstruction, 
+        NightSolo, 
+        NightPIC, 
+        NightSIC,
+        Part91PIC,
+        Part91SIC,
+        Part91KPIC,
+        Part91KSIC,
+        Part121PIC,
+        Part121SIC,
+        Part135PIC,
+        Part135SIC,
+    }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -124,6 +167,14 @@ namespace MyFlightbook.Printing
             { OptionalColumnType.NightSolo, Resources.LogbookEntry.ComboNightSolo },
             { OptionalColumnType.NightPIC, Resources.LogbookEntry.ComboNightPIC},
             { OptionalColumnType.NightSIC, Resources.LogbookEntry.ComboNightSIC },
+            { OptionalColumnType.Part91SIC, Resources.LogbookEntry.Combo91SIC },
+            { OptionalColumnType.Part91PIC, Resources.LogbookEntry.Combo91PIC },
+            { OptionalColumnType.Part91KSIC, Resources.LogbookEntry.Combo91KSIC },
+            { OptionalColumnType.Part91KPIC, Resources.LogbookEntry.Combo91KPIC },
+            { OptionalColumnType.Part121SIC, Resources.LogbookEntry.Combo121SIC },
+            { OptionalColumnType.Part121PIC, Resources.LogbookEntry.Combo121PIC },
+            { OptionalColumnType.Part135SIC, Resources.LogbookEntry.Combo135SIC },
+            { OptionalColumnType.Part135PIC, Resources.LogbookEntry.Combo135PIC },
         };
 
         public static string TitleForType(OptionalColumnType type)

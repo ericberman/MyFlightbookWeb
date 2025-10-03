@@ -2047,4 +2047,28 @@ Proceed with import?</value>
   <data name="BindingPartnership" xml:space="preserve">
     <value>For professional printing and binding, %APP_NAME% has partnered with the sponsors listed below.</value>
   </data>
+  <data name="Combo121PIC" xml:space="preserve">
+    <value>Part 121 PIC</value>
+  </data>
+  <data name="Combo121SIC" xml:space="preserve">
+    <value>Part 121 SIC</value>
+  </data>
+  <data name="Combo135PIC" xml:space="preserve">
+    <value>Part 135 PIC</value>
+  </data>
+  <data name="Combo135SIC" xml:space="preserve">
+    <value>Part 135 SIC</value>
+  </data>
+  <data name="Combo91PIC" xml:space="preserve">
+    <value>Part 91 PIC</value>
+  </data>
+  <data name="Combo91SIC" xml:space="preserve">
+    <value>Part 91 SIC</value>
+  </data>
+  <data name="Combo91KPIC" xml:space="preserve">
+    <value>Part 91K PIC</value>
+  </data>
+  <data name="Combo91KSIC" xml:space="preserve">
+    <value>Part 91K SIC</value>
+  </data>
 </root>

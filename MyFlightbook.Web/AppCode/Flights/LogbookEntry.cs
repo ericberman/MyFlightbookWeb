@@ -4440,6 +4440,22 @@ WHERE f1.username = ?uName ");
                     return Math.Min(CrossCountry, PIC);
                 case OptionalColumnType.XCSIC:
                     return Math.Min(CrossCountry, SIC);
+                case OptionalColumnType.Part91SIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91) ? SIC : 0.0M;
+                case OptionalColumnType.Part91PIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91) ? PIC : 0.0M;
+                case OptionalColumnType.Part91KSIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91K) ? SIC : 0.0M;
+                case OptionalColumnType.Part91KPIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91K) ? PIC : 0.0M;
+                case OptionalColumnType.Part121SIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart121) ? SIC : 0.0M;
+                case OptionalColumnType.Part121PIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart121) ? PIC : 0.0M;
+                case OptionalColumnType.Part135SIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart135) ? SIC : 0.0M;
+                case OptionalColumnType.Part135PIC:
+                    return CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart135) ? PIC : 0.0M;
                 default:
                     return 0.0M;
             }
