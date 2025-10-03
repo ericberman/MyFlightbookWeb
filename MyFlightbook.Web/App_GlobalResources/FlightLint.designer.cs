@@ -655,6 +655,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates that it was logged under multiple potentially incompatible flight rules (e.g., part 91 and part 121) at the same time..
+        /// </summary>
+        internal static string warningIncompatibleFlightRules {
+            get {
+                return ResourceManager.GetString("warningIncompatibleFlightRules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Primary + Secondary time doesn&apos;t equal Total Time.
         /// </summary>
         internal static string warningMilitaryTimeUnaccounted {

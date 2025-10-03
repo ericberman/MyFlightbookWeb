@@ -470,4 +470,7 @@
   <data name="warningXCTimeFoundForSafetyPilot" xml:space="preserve">
     <value>Safety-pilot time and cross-country time found.  Under FAA guidance, you may not be able to claim credit for cross-country time if you acted as the safety pilot.  Search "FAA Gebhart letter" for more information.</value>
   </data>
+  <data name="warningIncompatibleFlightRules" xml:space="preserve">
+    <value>Flight indicates that it was logged under multiple potentially incompatible flight rules (e.g., part 91 and part 121) at the same time.</value>
+  </data>
 </root>

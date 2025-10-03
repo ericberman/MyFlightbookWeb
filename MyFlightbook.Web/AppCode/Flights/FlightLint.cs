@@ -590,6 +590,15 @@ namespace MyFlightbook.Lint
         // Here's a quick way to check for water ops: Water landings, Water Takeoffs, Water Taxi, Water Step Taxi, Water Docking, Water Docking (CrossWind)
         private static readonly HashSet<int> _waterOpsProps = new HashSet<int>() { (int) CustomPropertyType.KnownProperties.IDPropWaterLandings, (int)CustomPropertyType.KnownProperties.IDPropWaterTakeoffs, 423, 424, 425, 426 };
 
+        private void CheckIncompatibleRules(LogbookEntryBase le)
+        {
+            int rules = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91) || le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart91K) ? 1 : 0;
+            rules += le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart121) ? 1 : 0;
+            rules += le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPart135) ? 1 : 0;
+
+            AddConditionalIssue(rules > 1, LintOptions.MiscIssues, Resources.FlightLint.warningIncompatibleFlightRules);
+        }
+
         private void CheckMiscIssues(LogbookEntryBase le)
         {
             bool fHasWaterOps = false;
@@ -621,6 +630,8 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(le.IsEqualTo(leDefault), LintOptions.MiscIssues, Resources.FlightLint.warningFlightHasNoData);
 
             AddConditionalIssue(previousFlight != null && le.IsEqualTo(previousFlight), LintOptions.MiscIssues, Resources.FlightLint.warningMiscDuplicateFlight);
+
+            CheckIncompatibleRules(le);
         }
     }
 }
