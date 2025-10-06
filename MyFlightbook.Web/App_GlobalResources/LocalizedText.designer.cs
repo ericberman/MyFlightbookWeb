@@ -4544,6 +4544,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can adjust pagination manually below.  Click a flight to designate it to be the first flight on a new page; you will see a red top border to indicate that this has been so designated (the red will not print or show in the PDF).  Click it again to remove the designation and the flight will resume its position in regular pagination..
+        /// </summary>
+        internal static string PrintViewPaginationNote {
+            get {
+                return ResourceManager.GetString("PrintViewPaginationNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save a link to this page with these settings.
         /// </summary>
         internal static string PrintViewPermaLink {

@@ -616,6 +616,8 @@ namespace MyFlightbook.Printing
         [System.ComponentModel.DefaultValue(false)]
         public bool BreakAtYearBoundary { get; set; }
 
+        public HashSet<int> PageBreaks { get; set; } = new HashSet<int>();
+
         /// <summary>
         /// Use flight coloring in the print view?
         /// </summary>
@@ -1218,6 +1220,11 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(po));
         }
 
+        private static bool ShouldStartNewPage(PrintingOptions po, int flightIndexOnPage, LogbookEntryCore led)
+        {
+            return ((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || flightIndexOnPage < 0) || led.Comment.Contains("///--") || po.PageBreaks.Contains(led.FlightID);
+        }
+
         /// <summary>
         /// Inserts subtotals into an enumerable set of flights, returning an enumerable set of LogbookPrintedPages.
         /// </summary>
@@ -1254,7 +1261,7 @@ namespace MyFlightbook.Printing
 
                 dtLastEntry = led.Date;
                 led.SetOptionalColumns(po.OptionalColumns);
-                if (((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || flightIndexOnPage < 0) || currentPage == null || led.Comment.Contains("///--"))   // need to start a new page.
+                if (currentPage == null || ShouldStartNewPage(po, flightIndexOnPage, led))   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
                     dictPageTotals = new Dictionary<string, LogbookEntryDisplay>();

@@ -25,6 +25,22 @@
     ViewBag.PrintingCSS = pl.CSSPath.ToAbsolute();
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
+<style type="text/css">
+    @@media screen {
+        tbody tr.bordered.breakable:hover td {
+            border-top: 18pt double black;
+        }
+
+        tbody tr.bordered.breakable.breakBefore td {
+            border-top: 2pt solid red;
+        }
+
+        tbody tr.bordered.breakable.breakBefore:hover td {
+            background-color: var(--menu-background-selected);
+            color: var(----menu-color-selected);
+        }
+    }
+</style>
 <script type="text/javascript">
     $(() => {
         $("#printPrefsContainer").tabs({
@@ -41,11 +57,23 @@
             pdfCustWidth: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions",
             pdfCustHeight: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions"
         });
+
+        $("tbody tr.bordered.breakable").on("click", function (e) {
+            var ck = $(this).find("input[type='checkbox'][name='ckpb']");
+            ck[0].checked = !ck[0].checked;
+            prefsUpdated();
+        });
     });
+
+    function updateBreaks() {
+        var breaks = $("#divLogbookPages").find("input[name='ckpb']:checked").map(function () { return this.value }).get().join(',');
+        $("#hdnPageBreaks").val(breaks);
+    }
 
     function prefsUpdated() {
         $("#divPreview").hide();
         $("#imgPrg").show();
+        updateBreaks();
         $("#btnRefreshScreen").click();
     }
 
@@ -63,6 +91,11 @@
         $("#hdnPropToDelete").val(propName);
         prefsUpdated();
         return false;
+    }
+
+    function getPDF() {
+        updateBreaks();
+        $("#btnPDF").click();
     }
 
     function toggleSearch() {
@@ -89,6 +122,7 @@
                 <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
                 <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
                 <input type="hidden" value="@selTab" name="t" id="hdnCurTab" />
+                <input type="hidden" value="" name="pageBreaks" id="hdnPageBreaks" />
                 <button name="refreshPrintView" value="" style="display: none;" type="submit" id="btnRefreshScreen"></button>
                 <div id="printPrefsContainer">
                     <ul>
@@ -133,9 +167,7 @@
         }
         @if (po.Sections.IncludeFlights)
         {
-            <div>
-                @{ Html.RenderAction("FlightPages", "Print", new { pl = pl, pf = pf, fq = fq, po = po, suppressFooter = suppressFooter }); }
-            </div>
+            <div id="divLogbookPages">@{ Html.RenderAction("FlightPages", "Print", new { pl = pl, pf = pf, fq = fq, po = po, suppressFooter = suppressFooter }); }</div>
         }
         @if (po.Sections.IncludeTotals)
         {

@@ -54,8 +54,8 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 string directColor = pl.ColorForFlight(led);
-                <tr class="bordered">
-                    <td class="row1" @Html.Raw(directColor)>@pl.ChangeMarkerForFlight(led)<span class="b">@led.Date.ToShortDateString()</span></td>
+                <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)">
+                    <td class="row1" @Html.Raw(directColor)><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)<span class="b">@led.Date.ToShortDateString()</span></td>
                     <td class="row1" @Html.Raw(directColor)>@pl.ModelDisplay(led)</td>
                     <td class="row1" @Html.Raw(directColor)>@led.CatClassDisplay</td>
                     <td class="row1" @Html.Raw(directColor)>@led.TailNumOrSimDisplay</td>
@@ -91,7 +91,7 @@
                     </td>
                 </tr>
                 <tr class="bordered">
-                    <td colspan="@colCount">
+                    <td colspan="@colCount">                        
                         <span>@led.Route</span>
                         <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
                         @if (pl.CurrentUser.DisplayTimesByDefault)

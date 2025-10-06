@@ -82,6 +82,5 @@
         <td colspan="2"><label><input type="checkbox" name="pdfIncludePageCount" /> @Resources.LocalizedText.PrintViewShowTotalPages</label></td>
     </tr>
 </table>
-<div style="margin-top: 10pt;"><a style="vertical-align: middle;" href="#" onclick="javascript: $('#btnPDF').click();"><img style="vertical-align: middle;" src="@("~/images/download.png".ToAbsolute())" /><img style="vertical-align: middle; margin-left: 10px; margin-right: 10px;" src="@("~/images/pdficon_med.png".ToAbsolute())" />@Resources.LocalizedText.DownloadAsPDF</a><button name="refreshPrintView" value="PDF" style="display: none;" type="submit" id="btnPDF"></button></div>
-
+<div style="margin-top: 10pt;"><a style="vertical-align: middle;" href="#" onclick="javascript: getPDF();"><img style="vertical-align: middle;" src="@("~/images/download.png".ToAbsolute())" /><img style="vertical-align: middle; margin-left: 10px; margin-right: 10px;" src="@("~/images/pdficon_med.png".ToAbsolute())" />@Resources.LocalizedText.DownloadAsPDF</a><button name="refreshPrintView" value="PDF" style="display: none;" type="submit" id="btnPDF"></button></div>
 <div style="margin-top: 10pt;" class="fineprint"><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> @Html.Raw(Resources.LocalizedText.wkhtmlnote)</div>

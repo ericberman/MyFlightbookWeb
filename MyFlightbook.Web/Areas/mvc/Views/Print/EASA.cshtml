@@ -72,9 +72,9 @@
             {
                 string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassificationForCatClass((CategoryClass.CatClassID) led.EffectiveCatClass);
                 string catClassDisplay = EASACatClass == null ? led.CatClassDisplay : $"{EASACatClass} / {led.CatClassDisplay}";
-                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
+                <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
                     <td>@led.Index</td>
-                    <td>@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
                     <td>@led.Departure</td>
                     <td>@Html.Raw(led.DepartureTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
                     <td>@led.Destination</td>

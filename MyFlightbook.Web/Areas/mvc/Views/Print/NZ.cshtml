@@ -54,8 +54,8 @@
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
-                <tr class="bordered" @Html.Raw(pl.ColorForFlight(led))>
-                    <td class="b">@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
+                <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
+                    <td class="b"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
                     <td><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></td>
                     <td>@led.TailNumOrSimDisplay</td>
                     <td>@led.PICName</td>

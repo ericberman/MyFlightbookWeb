@@ -2120,4 +2120,7 @@
   <data name="SessionExpiredBody" xml:space="preserve">
     <value>Your session has expired.  Please navigate back to the page you were on to resume what you were doing.</value>
   </data>
+  <data name="PrintViewPaginationNote" xml:space="preserve">
+    <value>You can adjust pagination manually below.  Click a flight to designate it to be the first flight on a new page; you will see a red top border to indicate that this has been so designated (the red will not print or show in the PDF).  Click it again to remove the designation and the flight will resume its position in regular pagination.</value>
+  </data>
 </root>

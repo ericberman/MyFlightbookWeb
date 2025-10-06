@@ -158,6 +158,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     po.OptionalColumns.Add(new OptionalColumn(oct));
             }
 
+            // get the requested page breaks
+            po.PageBreaks = new HashSet<int>((Request["pageBreaks"] ?? string.Empty).ToInts());
+
             po.ExcludedPropertyIDs.Clear();
             foreach (int propID in (Request["poExcludedProp"] ?? string.Empty).ToInts())
                 po.ExcludedPropertyIDs.Add(propID);
