@@ -604,6 +604,26 @@ namespace MyFlightbook
                 blockIn.DateValue = blockIn.DateValue.AddDays(1);
         }
 
+        /// <summary>
+        /// For autodetect, returns the best choice starting time (goes for shortest time, using flight, then engine, then block)
+        /// </summary>
+        /// <returns>The time to use, or DateTime.MinValue</returns>
+        public DateTime BestStartDateTime()
+        {
+            CustomFlightProperty cfpBlockOut = CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+            return FlightStart.HasValue()? FlightStart : (EngineStart.HasValue()? EngineStart : (cfpBlockOut != null && cfpBlockOut.DateValue.HasValue()? cfpBlockOut.DateValue : DateTime.MinValue));
+        }
+
+        /// <summary>
+        /// For autodetect, returns the best choice ending time (goes for shortest time, using flight, then engine, then block)
+        /// </summary>
+        /// <returns>The time to use, or DateTime.MinValue</returns>
+        public DateTime BestEndDateTime()
+        {
+            CustomFlightProperty cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
+            return FlightEnd.HasValue() ? FlightEnd : (EngineEnd.HasValue() ? EngineEnd : (cfpBlockIn != null && cfpBlockIn.DateValue.HasValue() ? cfpBlockIn.DateValue : DateTime.MinValue));
+        }
+
         private bool ValidateMainFields()
         {
             if (CrossCountry < 0 || Nighttime < 0 || IMC < 0 || SimulatedIFR < 0 || GroundSim < 0 || Dual < 0 || PIC < 0 || TotalFlightTime < 0 || CFI < 0 || SIC < 0)

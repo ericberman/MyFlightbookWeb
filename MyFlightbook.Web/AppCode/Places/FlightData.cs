@@ -1936,10 +1936,8 @@ namespace MyFlightbook.Telemetry
             string result = string.Empty;
             if (le != null && String.IsNullOrEmpty(le.FlightData))
             {
-                CustomFlightProperty cfpBlockOut = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
-                CustomFlightProperty cfpBlockIn = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
-                DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : (cfpBlockOut != null && cfpBlockOut.DateValue.HasValue() ? cfpBlockOut.DateValue : DateTime.MinValue));
-                DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : (cfpBlockIn != null && cfpBlockIn.DateValue.HasValue() ? cfpBlockIn.DateValue : DateTime.MinValue));
+                DateTime dtStart = le.BestStartDateTime();
+                DateTime dtEnd = le.BestEndDateTime();
 
                 if (dtStart.HasValue() && dtEnd.HasValue())
                 {
@@ -1992,6 +1990,13 @@ namespace MyFlightbook.Telemetry
                         }
 
                         le.FixAmbiguousTimes(); // ensure that ambiguous times are fixed.
+
+                        // Verify that the fix applied to our dtStart/dtEnd
+                        if (dtStart.CompareTo(dtEnd) > 0)
+                        {
+                            dtStart = le.BestStartDateTime();
+                            dtEnd = le.BestEndDateTime();
+                        }
 
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
                         SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
