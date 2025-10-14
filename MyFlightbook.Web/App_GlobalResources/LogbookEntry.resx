@@ -1709,10 +1709,10 @@ Proceed with import?</value>
     <value>Approach Details</value>
   </data>
   <data name="PrintHeaderTurbinePIC" xml:space="preserve">
-    <value>PIC/Turbine</value>
+    <value>Turbine - PIC</value>
   </data>
   <data name="PrintHeaderTurbineSIC" xml:space="preserve">
-    <value>SIC/Turbine</value>
+    <value>Turbine - SIC</value>
   </data>
   <data name="PrintFormatAirline" xml:space="preserve">
     <value>Airline</value>
@@ -2070,5 +2070,17 @@ Proceed with import?</value>
   </data>
   <data name="Combo91KSIC" xml:space="preserve">
     <value>Part 91K SIC</value>
+  </data>
+  <data name="PrintHeaderJetPIC" xml:space="preserve">
+    <value>Jet - PIC</value>
+  </data>
+  <data name="PrintHeaderJetSIC" xml:space="preserve">
+    <value>Jet - SIC</value>
+  </data>
+  <data name="PrintHeaderTurboPropPIC" xml:space="preserve">
+    <value>Turboprop - PIC</value>
+  </data>
+  <data name="PrintHeaderTurbopropSIC" xml:space="preserve">
+    <value>Turboprop - SIC</value>
   </data>
 </root>

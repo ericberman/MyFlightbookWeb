@@ -4414,6 +4414,26 @@ WHERE f1.username = ?uName ");
                         MakeModel m = MakeModel.GetModel(ModelID);
                         return m.EngineType == MakeModel.TurbineLevel.TurboProp || m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet ? SIC : 0;
                     }
+                case OptionalColumnType.TurboPropSIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.TurboProp ? SIC : 0;
+                    }
+                case OptionalColumnType.TurboPropPIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.TurboProp ? PIC : 0;
+                    }
+                case OptionalColumnType.JetSIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.Jet ? SIC : 0;
+                    }
+                case OptionalColumnType.JetPIC:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return m.EngineType == MakeModel.TurbineLevel.Jet ? PIC : 0;
+                    }
                 case OptionalColumnType.TurboProp:
                     return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.TurboProp);
                 case OptionalColumnType.ASEL:

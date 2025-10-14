@@ -58,6 +58,10 @@ namespace MyFlightbook.Printing
         Part121SIC,
         Part135PIC,
         Part135SIC,
+        JetPIC,
+        JetSIC,
+        TurboPropPIC,
+        TurboPropSIC
     }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
@@ -143,6 +147,10 @@ namespace MyFlightbook.Printing
             { OptionalColumnType.Turbine, Resources.Makes.IsTurbine },
             { OptionalColumnType.TurbinePIC, Resources.LogbookEntry.PrintHeaderTurbinePIC },
             { OptionalColumnType.TurbineSIC, Resources.LogbookEntry.PrintHeaderTurbineSIC },
+            { OptionalColumnType.JetPIC, Resources.LogbookEntry.PrintHeaderJetPIC},
+            { OptionalColumnType.JetSIC, Resources.LogbookEntry.PrintHeaderJetSIC},
+            { OptionalColumnType.TurboPropPIC, Resources.LogbookEntry.PrintHeaderTurboPropPIC },
+            { OptionalColumnType.TurboPropSIC, Resources.LogbookEntry.PrintHeaderTurbopropSIC },
             { OptionalColumnType.Jet, Resources.Makes.IsJet },
             { OptionalColumnType.TurboProp, Resources.Makes.IsTurboprop },
             { OptionalColumnType.ASEL, CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).CatClass },

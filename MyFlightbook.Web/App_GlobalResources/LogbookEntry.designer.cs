@@ -3768,6 +3768,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Jet - PIC.
+        /// </summary>
+        internal static string PrintHeaderJetPIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderJetPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jet - SIC.
+        /// </summary>
+        internal static string PrintHeaderJetSIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderJetSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kind of Flight Code.
         /// </summary>
         internal static string PrintHeaderKindOfFlight {
@@ -4173,7 +4191,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PIC/Turbine.
+        ///   Looks up a localized string similar to Turbine - PIC.
         /// </summary>
         internal static string PrintHeaderTurbinePIC {
             get {
@@ -4182,11 +4200,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SIC/Turbine.
+        ///   Looks up a localized string similar to Turbine - SIC.
         /// </summary>
         internal static string PrintHeaderTurbineSIC {
             get {
                 return ResourceManager.GetString("PrintHeaderTurbineSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turboprop - PIC.
+        /// </summary>
+        internal static string PrintHeaderTurboPropPIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderTurboPropPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turboprop - SIC.
+        /// </summary>
+        internal static string PrintHeaderTurbopropSIC {
+            get {
+                return ResourceManager.GetString("PrintHeaderTurbopropSIC", resourceCulture);
             }
         }
         
