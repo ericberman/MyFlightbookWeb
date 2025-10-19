@@ -44,6 +44,23 @@
         });
     });
 </script>
+<style type="text/css">
+@@media print {
+    .accordionMenuContent {
+        border: none;
+        width: 90%;
+        margin: 8pt;
+    }
+
+    .accordionMenuContent table tr {
+        page-break-inside: avoid;
+    }
+
+    .totalsGroupHeaderRow {
+        page-break-after: avoid;
+    }
+}
+</style>
 <div class="dn">
     @using (Html.BeginForm("Reports", "Training", FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
     {
@@ -54,11 +71,13 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
-<div id="accordionproxycontainer" class="dn">
-    <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
-    <div id="apc8710">@Resources.Totals.CommonReports8710</div>
-    <div id="apcModel">@Resources.Totals.CommonReportsAirline</div>
-    <div id="apcTime">@Resources.Totals.CommonReportsByTime</div>
+<div class="noprint">
+    <div id="accordionproxycontainer" class="dn noprint">
+        <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
+        <div id="apc8710">@Resources.Totals.CommonReports8710</div>
+        <div id="apcModel">@Resources.Totals.CommonReportsAirline</div>
+        <div id="apcTime">@Resources.Totals.CommonReportsByTime</div>
+    </div>
 </div>
 @if (!fIsDefaultQuery)
 {
@@ -72,7 +91,7 @@
     </script>
 </div>
 }
-<div id="targetFilter" class="dn">
+<div id="targetFilter" class="dn noprint">
     <div class="hc">
         @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
     </div>
@@ -212,7 +231,7 @@
 <div id="targetModel" class="dn overX">
     @if (reports.ReportByModel.Any())
     {
-        <div class="ra"><label><input type="checkbox" onclick="javascript: $('.t12rollup').toggle();" />@Resources.Totals.ShowTrailing12</label></div>
+        <div class="ra noprint"><label><input type="checkbox" onclick="javascript: $('.t12rollup').toggle();" />@Resources.Totals.ShowTrailing12</label></div>
         <table class="rollupReport modelRollup" cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
