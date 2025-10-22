@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2024 MyFlightbook LLC
+ * Copyright (c) 2017-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -355,7 +355,7 @@ namespace MyFlightbook.ImportFlights
                     // Now find the start of the flight table and stop - the regular CSVAnalyzer can pick up from here, and our aircraft table is now set up.
                     while ((rgHeaders = reader.GetCSVLine()) != null)
                     {
-                        if (rgHeaders != null && rgHeaders.Length > 0 && rgHeaders[0].CompareCurrentCultureIgnoreCase("Flights Table") == 0)
+                        if ((rgHeaders?.Length ?? 0) > 0 && rgHeaders[0].StartsWith("Flights Table", StringComparison.CurrentCultureIgnoreCase))
                             break;
                     }
 

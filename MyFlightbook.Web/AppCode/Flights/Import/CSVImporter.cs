@@ -83,7 +83,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local" };
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime", "fcv_tail_number", "tail_number" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
-        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight", "TotalTime" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold", "HLD" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD", "Lnd", "AllLandings" };
@@ -149,7 +149,7 @@ namespace MyFlightbook.ImportFlights
             { "Pilot Flying Time", new string[] { "Pilot Flying Time", "PF" } },
             {"Scheduled Departure Time", new string[] { "Scheduled Departure Time", "ETD", "TIME_DEPSCH" } },
             {"Scheduled Arrival Time", new string[] { "Scheduled Arrival Time", "ETA", "TIME_ARRSCH" } },
-            {"Ground Instruction Received", new string[] { "Ground Instruction Received", "Ground Instruction Duration" } },
+            {"Ground Instruction Received", new string[] { "Ground Instruction Received", "Ground Instruction Duration", "GroundTraining" } },
             {"Fuel Remaining At Landing", new string[] { "Fuel Remaining At Landing", "Fuel Remaining" } },
             {"Maximum Altitude", new string[] { "Maximum Altitude", "Max Altitude" } },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
