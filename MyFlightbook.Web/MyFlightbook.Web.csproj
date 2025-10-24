@@ -1728,6 +1728,7 @@
     <Compile Include="AppCode\Flights\Import\Leon.cs" />
     <Compile Include="AppCode\Flights\Import\LogTenPro.cs" />
     <Compile Include="AppCode\Flights\Import\MccPilot.cs" />
+    <Compile Include="AppCode\Flights\Import\PilotPro.cs" />
     <Compile Include="AppCode\Flights\Import\RosterBuster.cs" />
     <Compile Include="AppCode\Flights\Import\TASC.cs" />
     <Compile Include="AppCode\Flights\LogbookEntry.cs" />

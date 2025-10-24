@@ -287,7 +287,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewLoungeImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew(), new FFDOImporter(), new FlicaExportImporter() };
+        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewLoungeImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog(), new TASCImporter(), new AASchedulerImporter(), new eCrew(), new FFDOImporter(), new FlicaExportImporter(), new PilotProImporter() };
 
         /// <summary>
         /// Creates a converted CSV file from the data table.
