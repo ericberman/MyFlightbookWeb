@@ -53,6 +53,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * AdminAuthAccessKey - Enables use of certain admin-only functionality (provides an encrytion seed)
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services (i.e., the iOS and Android apps)
  * AWSAccessKey - Access key for Amazon Web services
+ * AWSMediaConvertRoleArn - Arn for converting media (video) files on AWS
  * AWSSecretKey - Secret for Amazon Web Services
  * BoxClientID - oAuth ID for Box.com
  * BoxClientSecret - oAuth secret for Box.com
@@ -67,6 +68,10 @@ and the application should be called "logbook" and point to the /logbook branch.
  * FacebookAccessID - Access key for Facebook (Obsolete)
  * facebookAppId - ID to link to the MyFlightbook Facebook page
  * FacebookClientSecret - Secret for Facebook (Obsolete)
+ * FlightCrewViewClientID - oAuth clientID for interacting with FlightCrewView
+ * FlightCrewViewClientSecret - oAuth secret for interacting with FlightCrewView
+ * FlyStoAccessID - oAuth clientID for interacting with FlySto
+ * FlyStoClientSecret - oAuth secret for interacting with FlySto
  * GoogleAdClient - ID for google adsense ads (shown only on select public pages)
  * GoogleAdHorizontalSlot - ID for adsense horizontal ads
  * GoogleAdVerticalSlot - ID for adsense vertical ads
@@ -92,6 +97,10 @@ and the application should be called "logbook" and point to the /logbook branch.
  * recaptchaKey - ID for using Google's recaptcha
  * recaptchValidateEndpoint - the url for validating recaptcha
  * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
+ * StripeLiveKey - key for interacting with stripe in the live environment
+ * StripeLiveWebhook - webhook for receiving notifications in the live environment from Stripe
+ * StripeTestKey - key for interacting with stripe in the development environment
+ * StripeTestWebhook - webhook for receiving notifications in the development environment from Stripe
  * TwitterAccessID - oAuth ID for Twitter (obsolete)
  * TwitterClientSecret - Secret for Twitter (Obsolete)
  * UseAWSS3 - Set to "yes" to migrate images to S3. Best to leave this "no" for local debugging
