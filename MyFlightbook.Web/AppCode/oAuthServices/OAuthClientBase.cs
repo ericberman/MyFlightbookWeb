@@ -18,7 +18,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2024 MyFlightbook LLC
+ * Copyright (c) 2019-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -230,7 +230,7 @@ namespace MyFlightbook.OAuth
             Scopes = scopes;
 
             // Do everything with at least Tls1.2
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
 
         private AuthorizationServerDescription Description()
