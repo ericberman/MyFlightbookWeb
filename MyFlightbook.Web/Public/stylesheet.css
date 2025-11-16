@@ -539,10 +539,12 @@ input[type=text].errorItem, input[type=password].errorItem, input[type=number].e
 
 /* Grouped Totals */
 .totalsBox {
-    display: inline-block;
     vertical-align: top;
-    width: 230px;
+    width: 20em;
     padding: 3px;
+}
+
+.totalsLabel {
 }
 
 .totalsValue {

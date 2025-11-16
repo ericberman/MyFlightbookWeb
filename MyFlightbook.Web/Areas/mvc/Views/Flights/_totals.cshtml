@@ -1,26 +1,29 @@
 ﻿@using System.Globalization
 @using MyFlightbook.Currency
 @{
-    IEnumerable<TotalsItem> rgti = ViewBag.rgti;
     bool fGrouped = ViewBag.grouped;
     bool fLinked = ViewBag.linkItems;
     bool fUseHHMM = ViewBag.fUseHHMM;
+    IEnumerable<TotalsItem> rgti = ViewBag.rgti;
+    IEnumerable<TotalsItemCollection> rgtic = fGrouped ? TotalsItemCollection.AsGroups(rgti) : new TotalsItemCollection[] { new TotalsItemCollection(TotalsGroup.None) { Items = rgti } };
 }
 @if (!rgti.Any())
 {
     <p>@Resources.Totals.NoTotals</p>
 }
-else if (fGrouped)
+else
 {
-    IEnumerable<TotalsItemCollection> rgtic = TotalsItemCollection.AsGroups(rgti);
     foreach (TotalsItemCollection tic in rgtic)
     {
-        <div class="header">@tic.GroupName</div>
+        if (fGrouped)
+        {
+            <div class="header">@tic.GroupName</div>
+        }
         foreach (TotalsItem ti in tic.Items)
         {
-            <div class="totalsBox">
+            <div class="totalsBox @(fGrouped ? "dib" : string.Empty)">
                 <div class="totalsValue">@ti.ValueString(fUseHHMM)</div>
-                <div>
+                <div class="totalsLabel">
                     @if (fLinked && ti.Query != null)
                     {
                         <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
@@ -29,39 +32,12 @@ else if (fGrouped)
                     {
                         <div>@ti.Description</div>
                     }
-                    @if (!String.IsNullOrEmpty(ti.SubDescription))
-                    {
-                        <div class="fineprint">@ti.SubDescription</div>
-                    }
                 </div>
+                @if (!String.IsNullOrEmpty(ti.SubDescription))
+                {
+                    <div class="fineprint">@ti.SubDescription</div>
+                }
             </div>
         }
     }
-}
-else
-{
-    <table cellpadding="3">
-        <tbody>
-            @foreach (TotalsItem ti in rgti)
-            {
-                <tr style="vertical-align: top;">
-                    <td style="text-align: left;">
-                        @if (fLinked && ti.Query != null)
-                        {
-                            <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
-                        }
-                        else
-                        {
-                            <div>@ti.Description</div>
-                        }
-                        @if (!String.IsNullOrEmpty(ti.SubDescription))
-                        {
-                            <div class="fineprint">@ti.SubDescription</div>
-                        }
-                    </td>
-                    <td style="text-align: right">@ti.ValueString(fUseHHMM)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 }
