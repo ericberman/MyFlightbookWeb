@@ -1635,8 +1635,8 @@ namespace MyFlightbook
                         Route = (string) dr["Route"],
                         User = pfStudent.UserName 
                     };
-                    string szCFIUser = (string)dr["CFIUsername"];
-                    string szCFIEmail = (string)dr["CFIEmail"];
+                    string szCFIUser = util.ReadNullableString(dr, "CFIUsername");
+                    string szCFIEmail = util.ReadNullableString(dr, "CFIEmail");
 
                     if (!String.IsNullOrEmpty(szCFIUser))
                         le.CFIName = Profile.GetUser(szCFIUser).UserFullName;
