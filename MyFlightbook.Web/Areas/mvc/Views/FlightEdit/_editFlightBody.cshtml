@@ -79,6 +79,15 @@
 
         populateApproachHelper("#divAddAppch", $("#appchType"), $("#appchSuffix"), $("#appchRnwyNum"), $("#appchRnwySuffix"), $("#appchApt"), $("#txtRoute"));
         defaultButtonForDiv("divAddAppch", "btnAddAppchDesc");
+        @if (Request["appchHelpCount"] != null)
+        {
+            // Issue #1474 - re-populate the approach helper
+            @:$("#appchType").val("@(Request["appchHelpType"] ?? string.Empty)");
+            @:$("#appchSuffix").val("@(Request["appchHelpTypeSfx"] ?? string.Empty)");
+            @:$("#appchRnwyNum").val("@(Request["appchHelpRwy"] ?? string.Empty)");
+            @:$("#appchRnwySuffix").val("@(Request["appchHelpRwySfx"] ?? string.Empty)");
+            @:$("#appchApt").val("@(Request["appchHelpApt"] ?? string.Empty)");
+        }
     });
 </script>
 <div class="flightinfoblock">
