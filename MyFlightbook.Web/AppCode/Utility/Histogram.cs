@@ -531,9 +531,12 @@ namespace MyFlightbook.Histogram
         {
             using (DataTable dt = ToDataTable(hm))
             {
-                // Remove the HREF column, rename the DisplayName column
-                dt.Columns.Remove(ColumnNameHRef);
-                dt.Columns[ColumnNameDisplayName].ColumnName = DisplayName;
+                if (dt.Columns.Count > 0)
+                {
+                    // Remove the HREF column, rename the DisplayName column
+                    dt.Columns.Remove(ColumnNameHRef);
+                    dt.Columns[ColumnNameDisplayName].ColumnName = DisplayName;
+                }
                 return CsvWriter.WriteToString(dt, true, true);
             }
         }
