@@ -84,7 +84,6 @@
                     <td>@led.PICName</td>
                     <td>
                         <div class="b">@led.Route</div>
-                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
                         <div class="wsprel">@led.CustPropertyDisplay</div>
                     </td>
                     <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName)</td>
@@ -103,6 +102,7 @@
                     <td>@led.NetDayLandings.FormatInt()</td>
                     <td>@led.NetNightLandings.FormatInt()</td>
                     <td>
+                        <div class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
