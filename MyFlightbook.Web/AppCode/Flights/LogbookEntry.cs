@@ -1153,7 +1153,7 @@ namespace MyFlightbook
 
             List<int> lstSigned = new List<int>();
 
-            const int chunkSize = 250;
+            const int chunkSize = 1000;
 
             DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 LIMIT ?lim, ?chunk");
             dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
