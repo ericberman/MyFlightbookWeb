@@ -1292,16 +1292,49 @@ ORDER BY dateEarned ASC ";
             return session.Url;
         }
 
-        public static void ProcessStripeNotification(bool testMode, string webHookSignature, string json)
+        private enum CurrentWebhookKey { Main, Standby, Test }
+        private readonly static Dictionary<CurrentWebhookKey, string> _dictWebHookKeys = new Dictionary<CurrentWebhookKey, string>() { { CurrentWebhookKey.Main, "StripeLiveWebhook" }, { CurrentWebhookKey.Standby, "StripeLiveWebhookStandby" }, { CurrentWebhookKey.Test, "StripeTestWebhook" } };
+
+        /// <summary>
+        /// The current stripe API version.  When updating this, switch the webhook key as well between MAIN and STANDBY
+        /// </summary>
+        private const string CURRENT_API_VERSION = "2025-11-17";
+        public const string ORIGINAL_API_VERSION = "2025-03-31";
+
+        /// <summary>
+        /// Handles a notification from stripe
+        /// </summary>
+        /// <param name="testMode">True for local events</param>
+        /// <param name="webHookSignature">signature parameter</param>
+        /// <param name="versionParam">Additional endpoint parameter that indicates the version being used</param>
+        /// <param name="json">JSON of the request</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static HttpStatusCode ProcessStripeNotification(bool testMode, string webHookSignature, string versionParam, string json)
         {
             if (String.IsNullOrEmpty(json))
                 throw new ArgumentNullException(nameof(json));
             if (String.IsNullOrEmpty(webHookSignature))
                 throw new ArgumentNullException(nameof(webHookSignature));
 
+            // Per https://docs.stripe.com/webhooks/versioning, if this request is for LATER than the current version, just return OK.  Well, 204 to indicate success.
+            if (versionParam.CompareCurrentCultureIgnoreCase(CURRENT_API_VERSION) > 0)
+                return HttpStatusCode.NoContent;
+            // Per https://docs.stripe.com/webhooks/versioning, if this request is for EARLIER than the current version, return 400
+            if (versionParam.CompareCurrentCultureIgnoreCase(CURRENT_API_VERSION) < 0)
+                return HttpStatusCode.BadRequest;
+
             try
             {
-                var stripeEvent = EventUtility.ConstructEvent(json, webHookSignature, LocalConfig.SettingForKey(testMode ? "StripeTestWebhook" : "StripeLiveWebhook"));
+                Event stripeEvent = null;
+                try
+                {
+                    stripeEvent = EventUtility.ConstructEvent(json, webHookSignature, LocalConfig.SettingForKey(_dictWebHookKeys[testMode ? CurrentWebhookKey.Test : CurrentWebhookKey.Main]));
+                }
+                catch (StripeException)
+                {
+                    stripeEvent = EventUtility.ConstructEvent(json, webHookSignature, LocalConfig.SettingForKey(_dictWebHookKeys[testMode ? CurrentWebhookKey.Test : CurrentWebhookKey.Standby]));
+                }
 
                 // Handle the event
                 switch (stripeEvent.Type)
@@ -1375,6 +1408,8 @@ ORDER BY dateEarned ASC ";
                 // notify admin, but don't throw the exception.  Otherwise, stripe will keep trying!
                 util.NotifyAdminException($"Unsuccessful Stripe notification: {e.Message}\r\n\r\n{json}\r\n\r\nStripe Sig: {webHookSignature.LimitTo(8)}...{(webHookSignature.Length > 15 ? webHookSignature.Substring(webHookSignature.Length - 5) : string.Empty)}", e);
             }
+
+            return HttpStatusCode.OK;
         }
     }
 
