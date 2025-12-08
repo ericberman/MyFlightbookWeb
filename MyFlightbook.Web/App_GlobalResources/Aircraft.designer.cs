@@ -2436,6 +2436,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aircraft/Simulator Type.
+        /// </summary>
+        internal static string ViewAircraftSimType {
+            get {
+                return ResourceManager.GetString("ViewAircraftSimType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View your totals in this aircraft.
         /// </summary>
         internal static string ViewAircraftTotalsPrompt {
