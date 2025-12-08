@@ -923,6 +923,6 @@ Do you still want to delete?</value>
     <value>* This is ignored on any initial import; it is only used when re-importing existing aircraft that are already in your account.  Specifically, the "Aircraft ID" column must be present and filled with the internal ID (not the tail number) of the aircraft being updated.</value>
   </data>
   <data name="ViewAircraftSimType" xml:space="preserve">
-    <value>Aircraft/Simulator Type</value>
+    <value>Aircraft / Simulator Type</value>
   </data>
 </root>

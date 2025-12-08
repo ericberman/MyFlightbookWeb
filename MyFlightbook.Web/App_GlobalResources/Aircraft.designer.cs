@@ -2436,7 +2436,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aircraft/Simulator Type.
+        ///   Looks up a localized string similar to Aircraft / Simulator Type.
         /// </summary>
         internal static string ViewAircraftSimType {
             get {
