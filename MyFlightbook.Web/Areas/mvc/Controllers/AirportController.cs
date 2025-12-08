@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -490,7 +490,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
         {
-            IEnumerable<airport> result = Request.IsLocal || Request.UrlReferrer.Host.EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase) ?
+            IEnumerable<airport> result = Request.IsLocal || (Request.UrlReferrer?.Host ?? string.Empty).EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase) ?
                 airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports) : 
                 Array.Empty<airport>();
 
