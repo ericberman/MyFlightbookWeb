@@ -150,7 +150,7 @@ else
                             {
                                 <img src="@("~/images/expand.png".ToAbsolute())" onclick="javascript: toggleImage(this, '@szExpandoID', null, null);" />
                             }
-                        <div id="@szExpandoID" class="@(showCollapsed ? "dn" : string.Empty)">
+                        <div id="@szExpandoID" style="@(showCollapsed ? "display: none;" : string.Empty)">
                             @if (pfViewer.DisplayTimesByDefault)
                             {
                                 <div>@led.EngineTimeDisplay</div>
