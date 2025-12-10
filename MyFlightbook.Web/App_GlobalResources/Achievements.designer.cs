@@ -1078,6 +1078,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hours of instruction given.
+        /// </summary>
+        internal static string RecentAchievementsInstructorHours {
+            get {
+                return ResourceManager.GetString("RecentAchievementsInstructorHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0:#,##0.0} hours on {1:d}.
         /// </summary>
         internal static string RecentAchievementsLongestFlight {
@@ -1128,6 +1137,24 @@ namespace Resources {
         internal static string RecentAchievementsNoFlyingStreakTitle {
             get {
                 return ResourceManager.GetString("RecentAchievementsNoFlyingStreakTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passengers carried.
+        /// </summary>
+        internal static string RecentAchievementsPassengersCarried {
+            get {
+                return ResourceManager.GetString("RecentAchievementsPassengersCarried", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Students taught.
+        /// </summary>
+        internal static string RecentAchievementsStudentsTaught {
+            get {
+                return ResourceManager.GetString("RecentAchievementsStudentsTaught", resourceCulture);
             }
         }
         

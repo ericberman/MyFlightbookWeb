@@ -494,4 +494,13 @@
   <data name="nameOSHVisits" xml:space="preserve">
     <value>Visited EAA AirVenture in OSH!</value>
   </data>
+  <data name="RecentAchievementsStudentsTaught" xml:space="preserve">
+    <value>Students taught</value>
+  </data>
+  <data name="RecentAchievementsPassengersCarried" xml:space="preserve">
+    <value>Passengers carried</value>
+  </data>
+  <data name="RecentAchievementsInstructorHours" xml:space="preserve">
+    <value>Hours of instruction given</value>
+  </data>
 </root>

@@ -230,6 +230,9 @@ namespace MyFlightbook.RatingsProgress
         protected FastestTimeToTotal fs100 { get; set; } = new FastestTimeToTotal(100);
         protected FastestTimeToTotal fs1000 { get; set; } = new FastestTimeToTotal(1000);
 
+        // Misc
+        protected HashSet<string> DistinctStudents { get; private set; } = new HashSet<string>();
+
         #region MilestoneItems
         /// <summary>
         /// Top-line hours logged
@@ -319,9 +322,13 @@ namespace MyFlightbook.RatingsProgress
         protected RecentAchievementMilestone miCountries { get; set; }
 
         /// <summary>
-        /// Countries visited
+        /// States/provinces visited
         /// </summary>
         protected RecentAchievementMilestone miAdmin1 { get; set; }
+
+        protected RecentAchievementMilestone miHoursInstruction { get; set; }
+        protected RecentAchievementMilestone miDistinctStudents { get; set; }
+        protected RecentAchievementMilestone miPassengersCarried { get; set; }
         #endregion
         #endregion
 
@@ -346,6 +353,9 @@ namespace MyFlightbook.RatingsProgress
             EndDate = dtEnd.Date;
 
             miHoursLogged = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsHoursLogged, MilestoneItem.MilestoneType.Time, 1) { Category = RecentAchievementCategory.Trends };
+            miHoursInstruction = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsInstructorHours, MilestoneItem.MilestoneType.Time, 1) { Category = RecentAchievementCategory.Trends };
+            miDistinctStudents = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsStudentsTaught, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Trends };
+            miPassengersCarried = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsPassengersCarried, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Trends };
             miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
             miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1) { Category = RecentAchievementCategory.Time };
@@ -461,6 +471,11 @@ namespace MyFlightbook.RatingsProgress
                 miHoursLogged.MatchingEventText = miHoursLogged.Progress.FormatDecimal(User.UsesHHMM);
                 miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).PrettyString();
 
+                miHoursInstruction.MatchingEventText = miHoursInstruction.Progress.FormatDecimal(User.UsesHHMM);
+                miDistinctStudents.Progress = DistinctStudents.Count;
+                miDistinctStudents.MatchingEventText = ((int)miDistinctStudents.Progress).PrettyString();
+                miPassengersCarried.MatchingEventText = ((int)miPassengersCarried.Progress).PrettyString();
+
                 miFlyingDates.Progress = FlightDates.Count;
                 int DaysInPeriod = EndDate.Subtract(StartDate).Days + 1;
                 miFlyingDates.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsFlyingDayCount, FlightDates.Count, DaysInPeriod, (FlightDates.Count * 100.0) / DaysInPeriod);
@@ -495,6 +510,9 @@ namespace MyFlightbook.RatingsProgress
                 {
                     miHoursLogged,
                     miFlightCount,
+                    miHoursInstruction,
+                    miDistinctStudents,
+                    miPassengersCarried,
                     miFlyingDates,
                     miLongestStreak,
                     miLongestNoFlyStreak,
@@ -641,6 +659,12 @@ namespace MyFlightbook.RatingsProgress
 
             miFlightCount.AddEvent(1);
             miHoursLogged.AddEvent(Math.Round(User.MathRoundingUnit * cfr.Total) / (decimal) User.MathRoundingUnit);
+            miHoursInstruction.AddEvent(Math.Round(User.MathRoundingUnit*cfr.CFI) / (decimal)User.MathRoundingUnit);
+
+            miPassengersCarried.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropPassengerCount));
+            string szStudent = cfr.FlightProps.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropStudentName).Trim().ToUpper(CultureInfo.CurrentCulture);
+            if (!String.IsNullOrEmpty(szStudent))
+                DistinctStudents.Add(szStudent);
 
             string szDateKey = dtFlight.YMDString();
 
