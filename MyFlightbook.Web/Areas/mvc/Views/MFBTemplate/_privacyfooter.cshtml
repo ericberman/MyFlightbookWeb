@@ -1,5 +1,25 @@
-﻿<div id="privacyFooter">
+﻿<script type="text/javascript">
+    function acceptCookies(val) {
+        params = new Object();
+        params.val = val;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AcceptCookies", "MFBTemplate")',
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                document.cookie = response.cookie;
+                $('#privacyFooter').hide();
+            },
+            error: function (e) { }
+        });
+        return false;
+    }
+</script>
+<div id="privacyFooter">
     @Resources.LocalizedText.CookieNotice
-    <input type="button" onclick="acceptCookies()" value="@Resources.LocalizedText.CookieNoticeAccept" />
+    <input type="button" onclick="acceptCookies(1)" value="@Resources.LocalizedText.CookieNoticeAccept" />
+    <input type="button" onclick="acceptCookies(2)" value="@Resources.LocalizedText.CookieNoticeAcceptOnlyNecessary" />
     <a href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/Privacy")">@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName)</a>
 </div>

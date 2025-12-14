@@ -1503,7 +1503,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisement..
+        ///   Looks up a localized string similar to This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisements..
         /// </summary>
         internal static string CookieNotice {
             get {
@@ -1517,6 +1517,15 @@ namespace Resources {
         internal static string CookieNoticeAccept {
             get {
                 return ResourceManager.GetString("CookieNoticeAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit to necessary cookies only.
+        /// </summary>
+        internal static string CookieNoticeAcceptOnlyNecessary {
+            get {
+                return ResourceManager.GetString("CookieNoticeAcceptOnlyNecessary", resourceCulture);
             }
         }
         

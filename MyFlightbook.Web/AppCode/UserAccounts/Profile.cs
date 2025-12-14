@@ -34,6 +34,13 @@ using System.Web.Security;
 
 namespace MyFlightbook
 {
+    public enum CookiesAcceptedStatus
+    {
+        Unknown = 0,        // haven't responded yet
+        All = 1,    // accepted all cookies
+        Partial = 2 // accepted only essential cookies
+    }
+
     public static class ProfileRoles
     {
         [FlagsAttribute]

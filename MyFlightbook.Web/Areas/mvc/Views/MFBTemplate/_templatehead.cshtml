@@ -1,12 +1,15 @@
 ﻿<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src='@String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://www.googletagmanager.com/gtag/js?id={0}", LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4Developer" : "GoogleAnalyticsGA4Production"))'></script>
-<script>
+@if (ViewBag.useAnalytics)
+{
+    <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', '@LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4Developer" : "GoogleAnalyticsGA4Production")');
-</script>
+    </script>
+}
 @if (ViewBag.BaseRef != null)
 {
     <base href="@ViewBag.BaseRef" />
@@ -19,7 +22,7 @@
 <meta name="apple-itunes-app" content="app-id=349983064" />
 @if (ViewBag.NoIndex ?? false)
 {
-<meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="noindex, nofollow">
 }
 
 <title>@(String.IsNullOrEmpty(ViewBag.Title) ? Branding.CurrentBrand.AppName : ViewBag.Title)</title>

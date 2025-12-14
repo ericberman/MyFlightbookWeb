@@ -32,7 +32,8 @@ namespace MyFlightbook
         public const string keyIsImpersonating = "IsImpersonating";
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
-        public const string keyCookiePrivacy = "cookiesAccepted";
+        public const string keyCookiePrivacyOld = "cookiesAccepted";
+        public const string keyCookiePrivacy = "cookiesAcceptedNEW";
         public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
         public const string keyMathRoundingUnits = "prefMath";   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding

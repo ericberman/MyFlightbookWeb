@@ -1392,7 +1392,7 @@
     <value>(Space)</value>
   </data>
   <data name="CookieNotice" xml:space="preserve">
-    <value>This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisement.</value>
+    <value>This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisements.</value>
   </data>
   <data name="CookieNoticeAccept" xml:space="preserve">
     <value>Got it, I consent</value>
@@ -2122,5 +2122,8 @@
   </data>
   <data name="PrintViewPaginationNote" xml:space="preserve">
     <value>You can adjust pagination manually below.  Click a flight to designate it to be the first flight on a new page; you will see a red top border to indicate that this has been so designated (the red will not print or show in the PDF).  Click it again to remove the designation and the flight will resume its position in regular pagination.</value>
+  </data>
+  <data name="CookieNoticeAcceptOnlyNecessary" xml:space="preserve">
+    <value>Limit to necessary cookies only</value>
   </data>
 </root>

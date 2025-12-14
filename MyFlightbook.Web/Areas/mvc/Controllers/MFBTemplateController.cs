@@ -56,16 +56,29 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AcceptCookies()
+        public ActionResult AcceptCookies(int val)
         {
-            if (User.Identity.IsAuthenticated)
-                MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(MFBConstants.keyCookiePrivacy, true);
+            if (Enum.IsDefined(typeof(CookiesAcceptedStatus), val))
+            {
+                CookiesAcceptedStatus status = (CookiesAcceptedStatus)val;
+                if (User.Identity.IsAuthenticated)
+                {
+                    Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                    pf.SetPreferenceForKey(MFBConstants.keyCookiePrivacy, status);
+                    pf.SetPreferenceForKey(MFBConstants.keyCookiePrivacyOld, false, true);    // clear the old cookie state since we now have multiple levels.
+                }
 
-            HttpCookie cookie = new HttpCookie("cookie") { Value = true.ToString(), Expires = DateTime.UtcNow.AddYears(5) };
-            Response.Cookies.Add(cookie);
+                HttpCookie cookie = new HttpCookie("cookie") { Value = status.ToString(), Expires = DateTime.UtcNow.AddYears(5) };
+                Response.Cookies.Add(cookie);
 
-            // Return the cookie to save in the calling browser
-            return Json(new { cookie = String.Format(CultureInfo.InvariantCulture, "{0}=true; expires={1}; path=/", MFBConstants.keyCookiePrivacy, cookie.Expires.ToString("ddd, dd MMM yyyy HH':'mm':'ss 'UTC'", CultureInfo.InvariantCulture)) });
+                // Return the cookie to save in the calling browser
+                return Json(new { cookie = String.Format(CultureInfo.InvariantCulture, "{0}={1}; expires={2}; path=/", MFBConstants.keyCookiePrivacy, status.ToString(), cookie.Expires.ToString("ddd, dd MMM yyyy HH':'mm':'ss 'UTC'", CultureInfo.InvariantCulture)) });
+            }
+            else // invalid value
+            {
+                Response.StatusCode = 400;
+                return Json(new { error = "Invalid cookie acceptance value" });
+            }
         }
 
         private void AddProfileToViewBag(Profile pf)
@@ -213,11 +226,24 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_dateEdit");
         }
 
+        private CookiesAcceptedStatus CurrentUserCookieStatus
+        {
+            get
+            {
+                if (Enum.TryParse(Request.Cookies[MFBConstants.keyCookiePrivacy]?.Value ?? string.Empty, out CookiesAcceptedStatus status))
+                    return status;
+                else if (User.Identity.IsAuthenticated)
+                    return MyFlightbook.Profile.GetUser(User.Identity.Name)?.GetPreferenceForKey(MFBConstants.keyCookiePrivacy, CookiesAcceptedStatus.Unknown) ?? CookiesAcceptedStatus.Unknown;
+                else
+                    return CookiesAcceptedStatus.Unknown;
+            }
+        }
+
         [ChildActionOnly]
         public ActionResult RenderGoogleAd(bool fVertical)
         {
             ViewBag.Vertical = fVertical;
-            return PartialView("_googleAd");
+            return CurrentUserCookieStatus == CookiesAcceptedStatus.Partial ? (ActionResult)Content(string.Empty) : PartialView("_googleAd");
         }
         #endregion
 
@@ -233,12 +259,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.UtcNow.AddDays(-5);
                 pf?.SetPreferenceForKey(MFBConstants.keyCookiePrivacy, false, true);
+                pf?.SetPreferenceForKey(MFBConstants.keyCookiePrivacyOld, false, true);    // clear the old cookie state since we now have multiple levels.
             }
 
-            bool fHasCookie = Request.Cookies[MFBConstants.keyCookiePrivacy] != null && Request.Cookies[MFBConstants.keyCookiePrivacy].Value.CompareOrdinalIgnoreCase(true.ToString()) == 0;
-
             // Need a cookie if you've neither accepted them in a cookie nor in your profile.
-            bool fNeedsCookieOK = fDeclineCookies || (!fHasCookie && (pf == null || !pf.GetPreferenceForKey<bool>(MFBConstants.keyCookiePrivacy, false)));
+            bool fNeedsCookieOK = fDeclineCookies || CurrentUserCookieStatus == CookiesAcceptedStatus.Unknown;
 
             return fNeedsCookieOK ? PartialView("_privacyfooter") : (ActionResult) Content(string.Empty);
         }
@@ -365,7 +390,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
             ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();
-            
+            ViewBag.useAnalytics = CurrentUserCookieStatus != CookiesAcceptedStatus.Partial;
+
             return PartialView("_templatehead");
         }
 
