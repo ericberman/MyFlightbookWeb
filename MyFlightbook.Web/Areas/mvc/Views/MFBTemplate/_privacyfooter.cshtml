@@ -18,8 +18,9 @@
     }
 </script>
 <div id="privacyFooter">
-    @Resources.LocalizedText.CookieNotice
-    <input type="button" onclick="acceptCookies(1)" value="@Resources.LocalizedText.CookieNoticeAccept" />
-    <input type="button" onclick="acceptCookies(2)" value="@Resources.LocalizedText.CookieNoticeAcceptOnlyNecessary" />
-    <a href="@VirtualPathUtility.ToAbsolute("~/mvc/pub/Privacy")">@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName)</a>
+    <p>@Resources.LocalizedText.CookieNotice</p>
+    <p class="c">
+        <input type="button" onclick="acceptCookies(1)" value="@Resources.LocalizedText.CookieNoticeAccept" />&nbsp;&nbsp;
+        <a href="#" onclick="acceptCookies(2); return false;">@Resources.LocalizedText.CookieNoticeAcceptOnlyNecessary</a>
+    </p>
 </div>

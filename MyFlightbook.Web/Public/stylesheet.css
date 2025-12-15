@@ -1603,13 +1603,16 @@ table.tblAvailablityMap th.dateHeader {
 
 /* Privacy footer */
 #privacyFooter {
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-bottom: 2px;
-    border: 1px solid var(--callout-border-color);
-    border-radius: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 40em;
+    margin-bottom: 2pt;
+    border: 1pt solid var(--callout-border-color);
+    border-radius: 3pt;
     background-color: var(--callout-background);
-    padding: 4px;
+    padding: 4pt;
     position: fixed;
 }
 
