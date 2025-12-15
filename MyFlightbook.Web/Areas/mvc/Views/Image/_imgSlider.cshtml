@@ -4,6 +4,10 @@
         .bxslider-wrap {
             visibility: hidden;
         }
+
+        .bx-wrapper .bx-controls-direction a {
+            z-index: 99;    /* issue #1481 */
+        }
     </style>
     <div class="bxslider-wrap">
         <div id="@ViewBag.sliderID" class="bxslider">
