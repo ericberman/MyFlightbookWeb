@@ -19,7 +19,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2024 MyFlightbook LLC
+ * Copyright (c) 2018-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -301,7 +301,7 @@ namespace OAuthAuthorizationServer.Services
         /// <summary>
         /// The request object passed in
         /// </summary>
-        protected HttpRequest OriginalRequest { get; set; }
+        protected HttpRequestWrapper OriginalRequest { get; set; }
 
         /// <summary>
         /// For JSONP support rather than JSON, here's the callback function name.
@@ -330,10 +330,10 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Constructor
-        public OAuthServiceCall(HttpRequest request, string requestedService = null)
+        private void init(HttpRequestBase request, string requestedService = null)
         {
-            OriginalRequest = request ?? throw new ArgumentNullException(nameof(request));
-            ServiceCall = RequestedService(new HttpRequestWrapper(request), requestedService);
+            OriginalRequest = (HttpRequestWrapper)(request ?? throw new ArgumentNullException(nameof(request)));
+            ServiceCall = RequestedService(request, requestedService);
             ResponseCallback = util.GetStringParam(request, "callback");
             ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
@@ -354,6 +354,16 @@ namespace OAuthAuthorizationServer.Services
                     GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
                 }
             }
+        }
+
+        public OAuthServiceCall(HttpRequest request, string requestedService = null)
+        {
+            init(new HttpRequestWrapper(request), requestedService);
+        }
+
+        public OAuthServiceCall(HttpRequestBase request, string requestedService = null)
+        {
+            init(request, requestedService);
         }
         #endregion
 

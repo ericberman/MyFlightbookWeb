@@ -1,6 +1,9 @@
 ﻿using ImageMagick;
 using MyFlightbook.Clubs;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
+using MyFlightbook.Payments;
+using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -188,6 +191,160 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
 
                 return Content(sb.ToString());
+            });
+        }
+
+        private string ProcessForImageUpload(string txtAuthToken)
+        {
+            if (!Request.IsSecureConnection)
+                throw new HttpException((int)HttpStatusCode.Forbidden, "Image upload MUST be on a secure channel");
+
+            if (ShuntState.IsShunted)
+                throw new MyFlightbookException(ShuntState.ShuntMessage);
+
+            if (Request.Files.Count == 0)
+                throw new MyFlightbookException(Resources.WebService.errNoImageProvided);
+
+            if (String.IsNullOrEmpty(txtAuthToken))
+            {
+                // check for an oAuth token
+                using (OAuthServiceCall service = new OAuthServiceCall(Request))
+                {
+                    txtAuthToken = service.GeneratedAuthToken;
+
+                    // Verify that you're allowed to modify images.
+                    if (!MFBOauthServer.CheckScope(service.Token.Scope, MFBOAuthScope.images))
+                        throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Requested action requires scope \"{0}\", which is not granted.", MFBOAuthScope.images.ToString()));
+                }
+            }
+
+            string szUser = MFBWebService.GetEncryptedUser(txtAuthToken);
+
+            if (string.IsNullOrEmpty(szUser))
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            return szUser;
+        }
+
+        [HttpPost]
+        public ActionResult UploadFlightImage(int idFlight = -1, string txtAuthToken = null, string txtComment = null)
+        {
+            return SafeOp(() =>
+            {
+                string szUser = ProcessForImageUpload(txtAuthToken);
+
+                if (idFlight <= 0)
+                    throw new MyFlightbookException(Resources.WebService.errInvalidFlight);
+
+                LogbookEntry le = new LogbookEntry
+                {
+                    FlightID = idFlight
+                };
+
+                if (!le.FLoadFromDB(le.FlightID, szUser, LogbookEntryCore.LoadTelemetryOption.None))
+                    throw new MyFlightbookException(Resources.WebService.errFlightDoesntExist);
+                if (le.User != szUser)
+                    throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
+
+
+                foreach (string key in Request.Files.Keys)
+                {
+                    HttpPostedFileBase pf = Request.Files[key];
+                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+
+                    // Check if authorized for videos
+                    if (MFBImageInfo.ImageTypeFromFile(mfbpf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
+                        throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
+
+                    LatLong ll = null;
+                    string szLat = Request["txtLat"];
+                    string szLon = Request["txtLon"];
+                    if (!String.IsNullOrEmpty(szLat) && !String.IsNullOrEmpty(szLon))
+                        ll = LatLong.TryParse(szLat, szLon, CultureInfo.InvariantCulture);
+                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture), mfbpf, txtComment ?? string.Empty, ll);
+                    mfbii.IdempotencyCheck();
+                }
+
+                return Content("OK");
+            });
+        }
+
+        [HttpPost]
+        public ActionResult UploadAircraftImage(string txtAircraft = null, string txtAuthToken = null, string txtComment = null, int id = 0)
+        {
+            return SafeOp(() =>
+            {
+                string szUser = ProcessForImageUpload(txtAuthToken);
+
+                int idAircraft = Aircraft.idAircraftUnknown;
+                bool fUseID = id != 0;
+                if (String.IsNullOrEmpty(txtAircraft))
+                    throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
+
+                if (fUseID)
+                {
+                    if (!int.TryParse(txtAircraft, out idAircraft) || idAircraft == Aircraft.idAircraftUnknown)
+                        throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
+                }
+                else if (txtAircraft.Length > Aircraft.maxTailLength || txtAircraft.Length < 3)
+                    throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
+
+                UserAircraft ua = new UserAircraft(szUser);
+                ua.InvalidateCache();   // in case the aircraft was added but cache is not refreshed.
+
+                Aircraft ac = null;
+                if (fUseID)
+                {
+                    ac = new Aircraft(idAircraft);
+                }
+                else
+                {
+                    string szTailNormal = Aircraft.NormalizeTail(txtAircraft);
+
+                    // Look for the aircraft in the list of the user's aircraft (that way you get the right version if it's a multi-version aircraft and no ID was specified
+                    // Hack for backwards compatibility with mobile apps and anonymous aircraft
+                    // Look to see if the tailnumber matches the anonymous tail 
+                    ac = ua.Find(uac =>
+                        (String.Compare(Aircraft.NormalizeTail(szTailNormal), Aircraft.NormalizeTail(uac.TailNumber), StringComparison.CurrentCultureIgnoreCase) == 0 ||
+                         String.Compare(txtAircraft, uac.HackDisplayTailnumber, StringComparison.CurrentCultureIgnoreCase) == 0));
+                }
+
+                if (ac == null || !ua.CheckAircraftForUser(ac))
+                    throw new MyFlightbookException(Resources.WebService.errNotYourAirplane);
+
+                foreach (string key in Request.Files.Keys)
+                {
+                    HttpPostedFileBase pf = Request.Files[key];
+                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+
+                    // Check if authorized for videos
+                    if (MFBImageInfo.ImageTypeFromFile(mfbpf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
+                        throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
+
+                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture), mfbpf, txtComment ?? string.Empty, null);
+                    mfbii.IdempotencyCheck();
+                }
+
+                return Content("OK");
+            });
+        }
+
+        public ActionResult UploadEndorsement(string txtAuthToken = null, string txtComment = null)
+        {
+            return SafeOp(() =>
+            {
+                string szUser = ProcessForImageUpload(txtAuthToken);
+
+                foreach (string key in Request.Files.Keys)
+                {
+                    HttpPostedFileBase pf = Request.Files[key];
+                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+
+                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser, mfbpf, txtComment ?? string.Empty, null);
+                    mfbii.IdempotencyCheck();
+                }
+
+                return Content("OK");
             });
         }
         #endregion

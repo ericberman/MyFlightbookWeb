@@ -15,7 +15,7 @@
                 custData = $("#txtCustomData").val();
             }
             var fUploadImage = (action == "UploadImage");
-            var target = (fUploadImage ? $("#txtImgUploadURL").val() : $("#txtResourceURL").val()) + "/" + action;
+            var target = (fUploadImage ? $("#txtImgUploadURL").val() : ($("#txtResourceURL").val()) + "/" + action);
 
             // hack to avoid multiple idFlights or redundant "id"
             if (fUploadImage) {
@@ -306,11 +306,11 @@
                             </tr>
                             <tr>
                                 <td>Latitude<br />(Optional)</td>
-                                <td><input type="number" id="decImgLat" value="0" name="txtLat" /></td>
+                                <td><input type="number" id="decImgLat" value="" name="txtLat" /></td>
                             </tr>
                             <tr>
                                 <td>Longitude<br />(Optional)</td>
-                                <td><input type="number" id="decImgLon" value="0" name="txtLon" /></td>
+                                <td><input type="number" id="decImgLon" value="" name="txtLon" /></td>
                             </tr>
                             <tr>
                                 <td>Additional params</td>

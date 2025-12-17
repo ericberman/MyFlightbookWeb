@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,6 +24,21 @@ namespace MyFlightbook.Web.Areas.mvc
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
+            context.MapRoute(
+                "uploadFlightImage",
+                "public/UploadPicture.aspx",
+                new { controller = "Image", action = "UploadFlightImage" }
+            );
+            context.MapRoute(
+                "uploadAircraftImage",
+                "public/UploadAirplanePicture.aspx",
+                new { controller = "Image", action = "UploadAircraftImage" }
+            );
+            context.MapRoute(
+                "uploadEndorsementImage",
+                "public/UploadEndorsement.aspx",
+                new { controller = "Image", action = "UploadEndorsement" }
+            );
             context.MapRoute(
                 "mvc_allmakes",
                 "mvc/AllMakes/{idman}/{idmodel}",

@@ -1409,9 +1409,6 @@
     <Content Include="Public\tabimages\LogbookTab.png" />
     <Content Include="Public\tabimages\ProfileTab.png" />
     <Content Include="Public\tabimages\TrainingTab.png" />
-    <Content Include="Public\UploadAirplanePicture.aspx" />
-    <Content Include="Public\UploadEndorsement.aspx" />
-    <Content Include="Public\UploadPicture.aspx" />
     <Content Include="Public\ViewPublicFlight.aspx" />
     <Content Include="Public\WebService.asmx" />
     <Content Include="Areas\mvc\Views\AdminAircraft\_modelsTable.cshtml" />
@@ -2034,27 +2031,6 @@
     </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadAirplanePicture.aspx.cs">
-      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadAirplanePicture.aspx.designer.cs">
-      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadEndorsement.aspx.cs">
-      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadEndorsement.aspx.designer.cs">
-      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadPicture.aspx.cs">
-      <DependentUpon>UploadPicture.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadPicture.aspx.designer.cs">
-      <DependentUpon>UploadPicture.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\ViewPublicFlight.aspx.cs">
       <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
