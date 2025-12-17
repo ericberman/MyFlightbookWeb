@@ -20,10 +20,23 @@ namespace MyFlightbook.Web.Areas.mvc
             }
         }
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public override void RegisterArea(AreaRegistrationContext context)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
+            // Old oAuthToken.aspx
+            context.MapRoute(
+                "oAuthToken",
+                "OAuth/oAuthToken.aspx/{id}",
+                new { controller = "OAuth", action = "OAuthResource", id = UrlParameter.Optional }
+            );
+            // Old viewPublicFlight
+            context.MapRoute(
+                "viewPublicFlight",
+                "public/ViewPublicFlight.aspx/{id}",
+                new { controller = "Pub", action = "ViewFlight", id = UrlParameter.Optional }
+            ); 
+            // Old upload Image routes
             context.MapRoute(
                 "uploadFlightImage",
                 "public/UploadPicture.aspx",
@@ -39,6 +52,7 @@ namespace MyFlightbook.Web.Areas.mvc
                 "public/UploadEndorsement.aspx",
                 new { controller = "Image", action = "UploadEndorsement" }
             );
+            // Remaining MVC routes
             context.MapRoute(
                 "mvc_allmakes",
                 "mvc/AllMakes/{idman}/{idmodel}",
