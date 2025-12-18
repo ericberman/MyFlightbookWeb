@@ -498,6 +498,7 @@
     <Content Include="App_GlobalResources\Content.en\MobileAppPromo.txt" />
     <Content Include="App_GlobalResources\Content.en\PrintOptionsEntriesPerPageDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Privacy.htm" />
+    <Content Include="App_GlobalResources\Content.en\PrivacyDataFeatures.htm" />
     <Content Include="App_GlobalResources\Content.en\SharingDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\TAADefinition.htm" />
     <Content Include="App_GlobalResources\Content.en\TermsAndConditions.htm" />

@@ -265,6 +265,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return View("_localizedContent");
         }
 
+        public ActionResult PrivacyUsage()
+        {
+            ViewBag.defaultTab = tabID.tabUnknown;
+            ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
+            ViewBag.HTMLContent = Branding.ReBrand(Resources.LocalizedText.PrivacyDataFeatures);
+            return View("_localizedContent");
+        }
+
         public ActionResult FeatureChart()
         {
             ViewBag.defaultTab = tabID.tabUnknown;

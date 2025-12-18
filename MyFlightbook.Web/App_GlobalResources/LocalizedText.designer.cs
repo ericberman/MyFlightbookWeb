@@ -4805,18 +4805,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;h2&gt;General policy around personal information and logbook data&lt;/h2&gt;
-        ///&lt;p&gt;&lt;span style=&quot;font-style:italic&quot;&gt;Last Updated Aug 24, 2020&lt;/span&gt;&lt;/p&gt;
-        ///&lt;p&gt;
-        ///    We don&apos;t really want your personal data, but an email address and password are
-        ///    required to provide a degree of security
-        ///    and a way to reach you for service-related issues. We are not going
-        ///    to sell it, rent it, or otherwise disclose it. %APP_NAME% is hosted in a secure environment
-        ///    and adheres to common security best practices. We do need an [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  &lt;h2&gt;%APP_NAME% Privacy Policy&lt;/h2&gt;
+        ///&lt;p&gt;Last updated: Dec 15 2025&lt;/p&gt;
+        ///&lt;p&gt;&lt;span class=&quot;b&quot;&gt;TL;DR&lt;/span&gt; This Privacy Policy explains how %APP_NAME% handles personal data. We care about your privacy and minimize personal data collection:&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///    &lt;li&gt;We only require an email address, password, and secret question/answer to create an account and use %APP_NAME%&amp;rsquo;s cloud-based logbook services.&lt;/li&gt;
+        ///    &lt;li&gt;%APP_NAME% is hosted in a secure environment and adheres to common security best practices.&lt;/li [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Privacy {
             get {
                 return ResourceManager.GetString("Privacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  &lt;h2&gt;Description of how your data is used on %APP_NAME%&lt;/h2&gt;
+        ///&lt;p&gt;Below is a detailed description of how your data is used on %APP_NAME%.  The purpose here is to answer questions about what happens with your data when you use a particular function of the service; it is NOT intended to be comprehensive&lt;/p&gt;
+        ///&lt;p&gt;
+        ///    By default, your flights are private.  If someone tries to access a flight that is not theirs and which is not explicitly marked as public,
+        ///    they will see a route of the flight but no informati [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string PrivacyDataFeatures {
+            get {
+                return ResourceManager.GetString("PrivacyDataFeatures", resourceCulture);
             }
         }
         
