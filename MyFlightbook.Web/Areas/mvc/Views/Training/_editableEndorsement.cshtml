@@ -51,12 +51,12 @@
         <input type="hidden" name="studentType" value="@studentType" />
         <input type="hidden" name="compiledBody" id="hdnCompiledBody" />
         <input type="hidden" name="endorsementFAR" value="@(source?.FARReference ?? template.FARReference)" />
-        <table style="width: 100%">
+        <table class="w100">
             <tr>
-                <td colspan="2"><input type="text" id="txtTitle" name="endorsementTitle" required style="width: 100%" placeholder="@Resources.SignOff.EndorsementTitleWatermark" value="@(source?.FullTitleAndFar ?? template.Title)" /></td>
+                <td colspan="2"><input type="text" id="txtTitle" name="endorsementTitle" required class="w100" maxlength="90" placeholder="@Resources.SignOff.EndorsementTitleWatermark" value="@(source?.FullTitleAndFar ?? template.Title)" /></td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementFARPrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementFARPrompt</td>
                 <td>@(source?.FARReference ?? template.FARReference)</td>
             </tr>
             <tr>
@@ -76,11 +76,11 @@
                 </td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementDatePrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementDatePrompt</td>
                 <td><input type="date" required name="endorsementDate" value="@DateTime.Now.YMDString()" max="@DateTime.Now.AddDays(1).YMDString()" /></td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementStudentPrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementStudentPrompt</td>
                 <td>
                     @if (studentType == Endorsement.StudentTypes.Member)
                     {
@@ -93,12 +93,12 @@
                     }
                 </td>
             </tr>
-            <tr style="@(mode == EndorsementMode.StudentPullAuthenticated ? string.Empty : "display: none;")">
-                <td style="font-weight: bold">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSourceUser?.UserFullName ?? string.Empty)</td>
+            <tr class="@(mode == EndorsementMode.StudentPullAuthenticated ? string.Empty : "dn")">
+                <td class="b">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSourceUser?.UserFullName ?? string.Empty)</td>
                 <td><input type="password" name="instructorPass" required /></td>
             </tr>
             <tr>
-                <td style="font-weight:bold;">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
@@ -112,7 +112,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="font-weight: bold">@Resources.SignOff.EditEndorsementCFIPrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementCFIPrompt</td>
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
@@ -126,7 +126,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
+                <td class="b">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
@@ -140,13 +140,13 @@
                 </td>
             </tr>
         </table>
-        <div id="rowScribble" style="display: @(mode == EndorsementMode.StudentPullAdHoc ? "block" : "none" )">
-            <div style="font-weight: bold">@Resources.SignOff.SignFlightAffirmation</div>
-            <div id="newScribble" style="display:inline-block;">
+        <div id="rowScribble" class="@(mode == EndorsementMode.StudentPullAdHoc ? string.Empty : "dn" )">
+            <div class="b">@Resources.SignOff.SignFlightAffirmation</div>
+            <div id="newScribble" class="dib">
                 @{ Html.RenderAction("RenderScribble", "Training", new { colorRef = "#0000ff" }); }
             </div>
         </div>
-        <div style="text-align:right;">
+        <div class="ra">
             <button type="button" id="btnAddEndorsement" onclick="javascript: submitEndorsement();">@Resources.SignOff.EditEndorsementAddEndorsement</button>
         </div>
     }
