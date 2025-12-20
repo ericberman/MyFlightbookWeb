@@ -52,6 +52,11 @@ namespace MyFlightbook.Web.Areas.mvc
                 "public/UploadEndorsement.aspx",
                 new { controller = "Image", action = "UploadEndorsement" }
             );
+            context.MapRoute(
+                "oldDefault",
+                "default.aspx",
+                new { controller = "Pub", action = "Index" }
+            );
             // Remaining MVC routes
             context.MapRoute(
                 "mvc_allmakes",
