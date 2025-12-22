@@ -39,10 +39,10 @@
         switch (fp.PropTypeID)
         {
             case (int)CustomPropertyType.KnownProperties.IDPropTachStart:
-                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TachCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getTachFill(currentlySelectedAircraft, '{0}')", "~/mvc/Aircraft".ToAbsolute()));
                 break;
             case (int)CustomPropertyType.KnownProperties.IDPropFlightMeterStart:
-                cfd = new CrossFillDescriptor(Resources.LogbookEntry.FlightMeterXFillTip, String.Format(CultureInfo.InvariantCulture, "getFlightMeterFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.FlightMeterXFillTip, String.Format(CultureInfo.InvariantCulture, "getFlightMeterFill(currentlySelectedAircraft, '{0}')", "~/mvc/Aircraft".ToAbsolute()));
                 break;
             case (int)CustomPropertyType.KnownProperties.IDPropTaxiTime:
                 cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));

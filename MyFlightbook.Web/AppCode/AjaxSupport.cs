@@ -39,123 +39,8 @@ namespace MyFlightbook.Web.Ajax
         }
 
         #region Aircraft Methods
-        /// <summary>
-        /// Return the high-water mark for an aircraft's tach or hobbs
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns></returns>
-        /// <exception cref="MyFlightbookException"></exception>
-        [WebMethod(EnableSession = true)]
-        public string GetHighWaterMarks(int idAircraft)
-        {
-            CheckAuth();
-            if (String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                throw new MyFlightbookException("Unauthenticated call to GetHighWaterMarks");
-
-            if (idAircraft <= 0)
-                return String.Empty;
-
-            decimal hwHobbs = AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
-            decimal hwTach = AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name);
-
-            if (hwTach == 0)
-                return hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs);
-            else if (hwHobbs == 0)
-                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach);
-            else
-                return String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
-        }
-
-        #region user-specific aircraft calls (roles, templates, active/inactive)
-        /// <summary>
-        /// Calls CheckAuth but also verifies that the specified idAircraft is in the user's aircraft list, returning the aircraft itself and the corresponding useraircraft
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <param name="ua"></param>
-        /// <returns></returns>
-        /// <exception cref="MyFlightbookException"></exception>
-        private static Aircraft CheckValidUserAircraft(int idAircraft, out UserAircraft ua)
-        {
-            CheckAuth();
-
-            if (idAircraft <= 0)
-                throw new MyFlightbookException("Invalid aircraft ID");
-
-            ua = new UserAircraft(HttpContext.Current.User.Identity.Name);
-            Aircraft ac = ua[idAircraft];
-            if (ac == null || ac.AircraftID == Aircraft.idAircraftUnknown)
-                throw new MyFlightbookException("This is not your aircraft");
-            return ac;
-        }
-
-        /// <summary>
-        /// Toggles the active state of a given aircraft.
-        /// </summary>
-        /// <param name="idAircraft">The ID of the aircraft to update</param>
-        /// <param name="fIsActive">Active or inactive</param>
-        [WebMethod(EnableSession = true)]
-        public void SetActive(int idAircraft, bool fIsActive)
-        {
-            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
-
-            ac.HideFromSelection = !fIsActive;
-            ua.FAddAircraftForUser(ac);
-        }
-
-        /// <summary>
-        /// Sets the role for flights in the given aircraft
-        /// </summary>
-        /// <param name="idAircraft">The ID of the aircraft to update</param>
-        /// <param name="fAddPICName">True to copy the pic name when autofilling PIC</param>
-        /// <param name="Role">The role to assign</param>
-        [WebMethod(EnableSession = true)]
-        public void SetRole(int idAircraft, string Role, bool fAddPICName)
-        {
-            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
-
-            if (!Enum.TryParse(Role, true, out Aircraft.PilotRole role))
-                throw new MyFlightbookException("Invalid role - " + Role);
-            ac.RoleForPilot = role;
-            ac.CopyPICNameWithCrossfill = role == Aircraft.PilotRole.PIC && fAddPICName;
-            ua.FAddAircraftForUser(ac);
-        }
-
-        /// <summary>
-        /// Sets the role for flights in the given aircraft
-        /// </summary>
-        /// <param name="idAircraft">The ID of the aircraft to update</param>
-        /// <param name="idTemplate">The ID of the template to add or remove.</param>
-        /// <param name="fAdd">True to add the template, false to remove it</param>
-        [WebMethod(EnableSession = true)]
-        public void AddRemoveTemplate(int idAircraft, int idTemplate, bool fAdd)
-        {
-            Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
-
-            if (fAdd)
-                ac.DefaultTemplates.Add(idTemplate);
-            else
-                ac.DefaultTemplates.Remove(idTemplate);
-            ua.FAddAircraftForUser(ac);
-        }
-        #endregion
-        #endregion
 
         #region LogbookNew stuff
-        /// <summary>
-        /// Returns the high-watermark starting hobbs for the specified aircraft.
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public string HighWaterMarkHobbsForAircraft(int idAircraft)
-        {
-            CheckAuth();
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            return AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
-        }
-
         /// <summary>
         /// Returns the distance (airport-to-airport) flown on a route, in nm
         /// </summary>
@@ -169,35 +54,6 @@ namespace MyFlightbook.Web.Ajax
             return String.IsNullOrEmpty(route) ? 0 : (int)new AirportList(route).DistanceForRoute();
         }
 
-        /// <summary>
-        /// Returns the high-watermark starting hobbs for the specified aircraft.
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public string HighWaterMarkTachForAircraft(int idAircraft)
-        {
-            CheckAuth();
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            return AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Returns the high-watermark flight meter for the specified aircraft.
-        /// </summary>
-        /// <param name="idAircraft"></param>
-        /// <returns>0 if unknown.</returns>
-        [WebMethod(EnableSession = true)]
-        public string HighWaterMarkFlightMeter(int idAircraft)
-        {
-            CheckAuth();
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            return AircraftUtility.HighWaterMarkFlightMeter(idAircraft, HttpContext.Current.User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture);
-        }
 
         /// <summary>
         /// Returns the current time formatted in UTC or specified time-zone
@@ -216,6 +72,7 @@ namespace MyFlightbook.Web.Ajax
 
             return DateTime.UtcNow.FormattedNowInUtc(Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone);
         }
+        #endregion
 
         private readonly static char[] trainingPrefixSeparators = new char[] { '-', '[' };
 

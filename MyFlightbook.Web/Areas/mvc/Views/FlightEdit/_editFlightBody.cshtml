@@ -267,7 +267,7 @@
         }
         <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseHobbs || le.HobbsStart + le.HobbsEnd > 0 ? string.Empty : "display: none;")">
             <div><span class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsStartShort</span></div>
-            <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/Member/Ajax.asmx".ToAbsolute())) }); }</div>
+            <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/mvc/Aircraft".ToAbsolute())) }); }</div>
             <div class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsEndShort</div>
             <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsEnd", name = "flightHobbsEnd", value = le.HobbsEnd, cfd = (CrossFillDescriptor)null }); }</div>
         </div>

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -309,6 +309,29 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 InvalidateCache();
             else
                 throw new MyFlightbookException("Error adding aircraft for user " + User + " \r\n" + dbh.LastError);
+        }
+
+        /// <summary>
+        /// Adds a role for a user based on name of the role (string).  Convenience for aircraftcontroller to reduce class coupling.
+        /// </summary>
+        /// <param name="ac">The aircraft</param>
+        /// <param name="RoleName">The name of the role (as a string)</param>
+        /// <param name="fAddPICName">True to add the name of the pilot to the flight as PIC as well</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void SetNamedRoleForUser(Aircraft ac, string RoleName, bool fAddPICName)
+        {
+            if (!Enum.TryParse(RoleName, true, out Aircraft.PilotRole role))
+                throw new ArgumentOutOfRangeException("Invalid role - " + RoleName);
+            SetNamedRoleForUser(ac, role, fAddPICName);
+        }
+
+        public void SetNamedRoleForUser(Aircraft ac, Aircraft.PilotRole Role, bool fAddPICName)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            ac.RoleForPilot = Role;
+            ac.CopyPICNameWithCrossfill = Role == Aircraft.PilotRole.PIC && fAddPICName;
+            FAddAircraftForUser(ac);
         }
 
         /// <summary>

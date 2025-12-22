@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2022-2023 MyFlightbook LLC
+ * Copyright(c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  *
 *******************************************************/
@@ -13,10 +13,10 @@ function toggleFavorite(idAircraft, fIsActive, uri) {
 
     $.ajax(
         {
-            url: uri ?? '/logbook/Member/Ajax.asmx/SetActive',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            url: uri ?? '/logbook/mvc/Aircraft/SetActive',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
             async: true,
-            error: function (xhr) { window.alert(xhr.responseJSON.Message); },
+            error: function (xhr) { window.alert(xhr.responseText); },
             complete: function () { },
             success: function () {
                 var loc = window.location;
@@ -37,10 +37,10 @@ function setRole(idAircraft, role, addPICName, ckAddPIC, uri) {
 
     $.ajax(
         {
-            url: uri ?? '/logbook/Member/Ajax.asmx/SetRole',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            url: uri ?? '/logbook/mvc/Aircraft/SetRole',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
             async: true,
-            error: function (xhr) { window.alert(xhr.responseJSON.Message); },
+            error: function (xhr) { window.alert(xhr.responseText); },
             complete: function () { },
             success: function () { }
         });
@@ -54,10 +54,10 @@ function toggleTemplate(idAircraft, idTemplate, fAdd, uri) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: uri ?? '/logbook/Member/Ajax.asmx/AddRemoveTemplate',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            url: uri ?? '/logbook/mvc/Aircraft/AddRemoveTemplate',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
             async: true,
-            error: function (xhr) { window.alert(xhr.responseJSON.Message); },
+            error: function (xhr) { window.alert(xhr.responseText); },
             complete: function () { },
             success: function () { }
         });

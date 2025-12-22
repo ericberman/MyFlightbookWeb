@@ -21,6 +21,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class AircraftController : AdminControllerBase
     {
         #region WebServices
+        #region Manufacturers and models
         public ActionResult MakeRows(int skip, int limit, ModelQuery.ModelSortMode sortMode, ModelQuery.ModelSortDirection sortDir, string queryJSON)
         {
             return SafeOp(() =>
@@ -129,6 +130,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return Json(m);
             });
         }
+        #endregion
 
         [HttpPost]
         [Authorize]
@@ -274,6 +276,164 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return MaintenanceLogTable(idAircraft, MaintenanceLog.ChangesByAircraftID(idAircraft), start, pageSize);
             });
         }
+
+        #region High water mark stuff
+        /// <summary>
+        /// Return the high-water mark for an aircraft's tach or hobbs
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>A human readable localized string of the result</returns>
+        [HttpPost]
+        [Authorize]
+        public ActionResult HighWatermarksForAircraft(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                if (String.IsNullOrEmpty(User.Identity.Name))
+                    throw new UnauthorizedAccessException();
+
+                if (idAircraft <= 0)
+                    return Content(string.Empty);
+
+                decimal hwHobbs = AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, User.Identity.Name);
+                decimal hwTach = AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, User.Identity.Name);
+
+                string szResult = string.Empty;
+
+                if (hwTach == 0)
+                    szResult = hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs);
+                else szResult = hwHobbs == 0
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach)
+                    : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
+                return Content(szResult);
+            });
+        }
+
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [HttpPost]
+        [Authorize]
+        public ActionResult HighWaterMarkHobbsForAircraft(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                return Content(AircraftUtility.HighWaterMarkHobbsForUserInAircraft(idAircraft, User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture));
+            });
+        }
+
+        /// <summary>
+        /// Returns the high-watermark starting hobbs for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [HttpPost]
+        [Authorize]
+        public ActionResult HighWaterMarkTachForAircraft(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                return Content(AircraftUtility.HighWaterMarkTachForUserInAircraft(idAircraft, User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture));
+            });
+        }
+
+        /// <summary>
+        /// Returns the high-watermark flight meter for the specified aircraft.
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <returns>0 if unknown.</returns>
+        [HttpPost]
+        [Authorize]
+        public ActionResult HighWaterMarkFlightMeter(int idAircraft)
+        {
+            return SafeOp(() =>
+            {
+                return Content(AircraftUtility.HighWaterMarkFlightMeter(idAircraft, User.Identity.Name).ToString("0.0#", CultureInfo.CurrentCulture));
+            });
+        }
+        #endregion
+
+        #region Context menu stuff
+        /// <summary>
+        /// Verifies that the specified idAircraft is in the user's aircraft list, returning the aircraft itself and the corresponding useraircraft
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <param name="ua"></param>
+        /// <returns></returns>
+        private Aircraft CheckValidUserAircraft(int idAircraft, out UserAircraft ua)
+        {
+            if (idAircraft <= 0)
+                throw new ArgumentOutOfRangeException("Invalid aircraft ID");
+
+            ua = new UserAircraft(User.Identity.Name);
+            Aircraft ac = ua[idAircraft];
+            if (ac == null || ac.AircraftID == Aircraft.idAircraftUnknown)
+                throw new UnauthorizedAccessException("This is not your aircraft");
+            return ac;
+        }
+
+        /// <summary>
+        /// Toggles the active state of a given aircraft.
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fIsActive">Active or inactive</param>
+        [HttpPost]
+        [Authorize]
+        public ActionResult SetActive(int idAircraft, bool fIsActive)
+        {
+            return SafeOp(() =>
+            {
+                Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+
+                ac.HideFromSelection = !fIsActive;
+                ua.FAddAircraftForUser(ac);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Sets the role for flights in the given aircraft
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="fAddPICName">True to copy the pic name when autofilling PIC</param>
+        /// <param name="Role">The role to assign</param>
+        [HttpPost]
+        [Authorize]
+        public ActionResult SetRole(int idAircraft, string Role, bool fAddPICName)
+        {
+            return SafeOp(() =>
+            {
+                Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+                ua.SetNamedRoleForUser(ac, Role, fAddPICName);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Sets the template for flights in the given aircraft
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft to update</param>
+        /// <param name="idTemplate">The ID of the template to add or remove.</param>
+        /// <param name="fAdd">True to add the template, false to remove it</param>
+        [HttpPost]
+        [Authorize]
+        public ActionResult AddRemoveTemplate(int idAircraft, int idTemplate, bool fAdd)
+        {
+            return SafeOp(() =>
+            {
+                Aircraft ac = CheckValidUserAircraft(idAircraft, out UserAircraft ua);
+
+                if (fAdd)
+                    ac.DefaultTemplates.Add(idTemplate);
+                else
+                    ac.DefaultTemplates.Remove(idTemplate);
+                ua.FAddAircraftForUser(ac);
+                return new EmptyResult();
+            });
+        }
+        #endregion
         #endregion
 
         #region Child actions

@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -119,7 +119,7 @@ function updateSchedules(idAircraft, targetID) {
         url: "/logbook/mvc/club/SchedulesForAircraft",
         dataType: "html",
         contentType: "application/json",
-        error: function (xhr, status, error) { window.alert(xhr.responseText); },
+        error: function (xhr) { window.alert(xhr.responseText); },
         complete: function (response) { },
         success: function (response) {
             $(targetID).html(response);
@@ -133,13 +133,12 @@ function updateHighWatermarks(idAircraft, targetID) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Member/Ajax.asmx/GetHighWaterMarks',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
+            url: '/logbook/mvc/Aircraft/HighWatermarksForAircraft',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) {
                 window.alert(xhr.responseText);
             },
-            complete: function (response) { },
-            success: function (response) { $(targetID).text(response.d); }
+            success: function (r) { $(targetID).text(r); }
         });
 }
 
