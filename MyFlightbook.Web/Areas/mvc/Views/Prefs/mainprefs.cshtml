@@ -7,7 +7,7 @@
     string requestedPane = Request["pane"] ?? string.Empty;
 }
 <h2>@Resources.Preferences.HeaderFeatures</h2>
-<script src="@("~/Public/Scripts/prefs.js?v=5".ToAbsolute())" type="text/javascript"></script>
+<script src="@("~/Public/Scripts/prefs.js?v=6".ToAbsolute())" type="text/javascript"></script>
 <script src="@("~/Public/Scripts/CopyClipboard.js".ToAbsolute())"></script>
 @{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "prefsAccordion", active = "false" }); }
 <div id="prefsAccordion">
