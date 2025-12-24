@@ -348,41 +348,5 @@ namespace MyFlightbook.Web.Ajax
             return DoSuggestion("SELECT DISTINCT typename AS {0} FROM models WHERE REPLACE(typename, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
         }
         #endregion
-
-        #region Club Scheduling
-        /// <summary>
-        /// Create an event.
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="id"></param>
-        /// <param name="text"></param>
-        /// <param name="resource"></param>
-        /// <param name="clubID"></param>
-        /// <returns>Empty string for success; otherwise, the error message</returns>
-        [WebMethod(EnableSession = true)]
-        public string CreateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID = Club.ClubIDNew)
-        {
-            return ScheduledEvent.CreateEvent(start, end, id, text, resource, clubID);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public ScheduledEvent[] ReadEvents(DateTime dtStart, DateTime dtEnd, int clubID = Club.ClubIDNew, string resourceName = null)
-        {
-            return ScheduledEvent.ReadEvents(dtStart, dtEnd, clubID, resourceName);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string UpdateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID)
-        {
-            return ScheduledEvent.UpdateEvent(start, end, id, text, resource, clubID);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string DeleteEvent(string id)
-        {
-            return ScheduledEvent.DeleteEvent(id);
-        }
-        #endregion
     }
 }
