@@ -374,6 +374,21 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        /// <summary>
+        /// Returns the distance (airport-to-airport) flown on a route, in nm
+        /// </summary>
+        /// <param name="route">The route field</param>
+        /// <returns>An integer in nm for the estimated distance</returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult GetDistanceFlown(string route)
+        {
+            return SafeOp(() =>
+            {
+                return Json(String.IsNullOrEmpty(route) ? 0 : (int)new AirportList(route).DistanceForRoute());
+            });
+        }
+
         private void CheckCanViewData(FlightQuery fq, string skID = null)
         {
             // Can view airport data if:
