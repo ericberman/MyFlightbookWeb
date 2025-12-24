@@ -20,6 +20,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class PrintController : FlightControllerBase
     {
+        #region Web Services
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="szExistingHRef"></param>
+        /// <param name="ps"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult PrintLink(string szExistingHRef, PrintingSections ps)
+        {
+            return SafeOp(() =>
+            {
+                return Json((szExistingHRef == null || ps == null) ? szExistingHRef ?? string.Empty : PrintingOptions.UpdatedPermaLink(szExistingHRef, new PrintingOptions() { Sections = ps }).ToString());
+            });
+        }
+
+        #endregion
+
         #region Child Views
         /// <summary>
         /// Generates the print options subsection for which sections to include

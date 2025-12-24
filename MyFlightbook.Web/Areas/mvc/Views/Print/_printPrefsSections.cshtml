@@ -13,16 +13,16 @@
     function updateLinkToPrintView(sects) {
         var lnk = $("#lnkPrintView")[0];
         var params = new Object();
-        params.szExisting = lnk.href;
+        params.szExistingHRef = lnk.href;
         params.ps = sects;
         $("#imgPrgUpdPrintLink").show();
 
         $.ajax(
             {
-                url: '@("~/Member/Ajax.asmx/PrintLink".ToAbsolute())',
+                url: '@("~/mvc/Print/PrintLink".ToAbsolute())',
                 type: "POST", data: JSON.stringify(params), dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                success: function (response) { lnk.href = response.d },
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (href) { lnk.href = href },
                 complete: function () { $("#imgPrgUpdPrintLink").hide(); }
             });
     }
