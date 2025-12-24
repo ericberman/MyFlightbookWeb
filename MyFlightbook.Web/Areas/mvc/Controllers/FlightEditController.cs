@@ -375,6 +375,42 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        public string TaxiTime(string fsStart, string fsEnd, string szTotal)
+        {
+            return SafeOp(() =>
+            {
+                bool fUseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+
+                DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
+                DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
+                decimal totalTime = szTotal.SafeParseDecimal();
+
+                decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
+
+                decimal taxi = Math.Max(totalTime - elapsedFlight, 0);
+                return taxi.FormatDecimal(fUseHHMM);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public string AirborneTime(string fsStart, string fsEnd)
+        {
+            return SafeOp(() =>
+            {
+                bool fUseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+
+                DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
+                DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
+
+                decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
+
+                return Math.Max(elapsedFlight, 0).FormatDecimal(fUseHHMM);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
         public ActionResult UpdatePropset(string szTargetUser, string propTuples, bool fHHMM, int[] activeTemplateIDs, bool fStripDefault, int idFlight, string dtDefault, int idAircraft = Aircraft.idAircraftUnknown)
         {
             return SafeOp(() =>

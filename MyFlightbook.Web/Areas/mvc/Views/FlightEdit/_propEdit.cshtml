@@ -45,10 +45,10 @@
                 cfd = new CrossFillDescriptor(Resources.LogbookEntry.FlightMeterXFillTip, String.Format(CultureInfo.InvariantCulture, "getFlightMeterFill(currentlySelectedAircraft, '{0}')", "~/mvc/Aircraft".ToAbsolute()));
                 break;
             case (int)CustomPropertyType.KnownProperties.IDPropTaxiTime:
-                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.TaxiCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getTaxiFill('{0}')", "~/mvc/FlightEdit".ToAbsolute()));
                 break;
             case (int)CustomPropertyType.KnownProperties.IDPropAirborneTime:
-                cfd = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/Member/Ajax.asmx".ToAbsolute()));
+                cfd = new CrossFillDescriptor(Resources.LogbookEntry.AirborneCrossFillTip, String.Format(CultureInfo.InvariantCulture, "getAirborneFill('{0}')", "~/mvc/FlightEdit".ToAbsolute()));
                 break;
             case (int)CustomPropertyType.KnownProperties.IDPropDistanceFlown:
                 cfd = new CrossFillDescriptor(Resources.LogbookEntry.CrossFillDistanceTip, String.Format(CultureInfo.InvariantCulture, "getDistanceFill(currentRouteOfFlight, '{0}')", "~/mvc/Airport".ToAbsolute()));

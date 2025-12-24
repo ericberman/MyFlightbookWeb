@@ -38,55 +38,6 @@ namespace MyFlightbook.Web.Ajax
                 throw new UnauthorizedAccessException();
         }
 
-        #region Aircraft Methods
-        [WebMethod(EnableSession = true)]
-        public string PrintLink(string szExisting, PrintingSections ps)
-        {
-            CheckAuth();
-
-            // check for invalid data
-            if (szExisting == null || ps == null)
-                return szExisting;
-
-            return PrintingOptions.UpdatedPermaLink(szExisting, new PrintingOptions() { Sections = ps }).ToString();
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string TaxiTime(string fsStart, string fsEnd, string szTotal)
-        {
-            CheckAuth();
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
-
-            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
-            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
-            decimal totalTime = szTotal.SafeParseDecimal();
-
-            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
-
-            decimal taxi = Math.Max(totalTime - elapsedFlight, 0);
-            return taxi.FormatDecimal(fUseHHMM);
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string AirborneTime(string fsStart, string fsEnd)
-        {
-            CheckAuth();
-            System.Threading.Thread.CurrentThread.CurrentCulture = util.SessionCulture ?? CultureInfo.CurrentCulture;
-
-            bool fUseHHMM = Profile.GetUser(HttpContext.Current.User.Identity.Name).UsesHHMM;
-
-            DateTime dtFStart = fsStart.SafeParseDate(DateTime.MinValue);
-            DateTime dtFEnd = fsEnd.SafeParseDate(DateTime.MinValue);
-
-            decimal elapsedFlight = (dtFEnd.HasValue() && dtFStart.HasValue() && dtFEnd.CompareTo(dtFStart) > 0) ? (decimal)dtFEnd.Subtract(dtFStart).TotalHours : 0;
-
-            return Math.Max(elapsedFlight, 0).FormatDecimal(fUseHHMM);
-        }
-        #endregion
-
         #region Preferences
         /// <summary>
         /// Sets the color for a specified query; null or empty color string to remove it.
