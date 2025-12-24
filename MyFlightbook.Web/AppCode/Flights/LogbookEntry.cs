@@ -2645,6 +2645,39 @@ WHERE f1.username = ?uName ");
             get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
             set { } // to enable serialization
         }
+
+        /// <summary>
+        /// sends the flight via email
+        /// </summary>
+        /// <param name="szMessage">Header message from the sender</param>
+        /// <param name="pfSender">Profile of the sender</param>
+        /// <param name="szTargetEmail">Target email</param>
+        /// <param name="szSendPageTarget">A URI </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void SendFlightViaEmail(string szMessage, Profile pfSender, string szFrom, string szFromDisplay, string szTargetEmail, string szSendPageTarget)
+        {
+            if (pfSender == null)
+                throw new ArgumentNullException(nameof(pfSender));
+
+            string szBody = Resources.LogbookEntry.SendFlightBody.Replace("<% Sender %>", HttpUtility.HtmlEncode(pfSender.UserFullName))
+                    .Replace("<% Message %>", HttpUtility.HtmlEncode(szMessage))
+                    .Replace("<% Date %>", Date.ToShortDateString())
+                    .Replace("<% Aircraft %>", HttpUtility.HtmlEncode(TailNumDisplay))
+                    .Replace("<% Route %>", HttpUtility.HtmlEncode(Route))
+                    .Replace("<% Comments %>", HttpUtility.HtmlEncode(Comment))
+                    .Replace("<% Time %>", TotalFlightTime.FormatDecimal(pfSender.UsesHHMM))
+                    .Replace("<% FlightLink %>", SendFlightUri(Branding.CurrentBrand.HostName, szSendPageTarget).ToString());
+
+            util.SendEmail(szFrom,
+                szFromDisplay,
+                szTargetEmail,
+                null,
+                pfSender.Email,
+                pfSender.UserFullName,
+                String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.SendFlightSubject, pfSender.UserFullName),
+                szBody,
+                true);
+        }
         #endregion
         #endregion IPostable
 
@@ -4824,6 +4857,13 @@ WHERE f1.username = ?uName ");
                 lstOut.Add(ledCurrent);
 
             return lstOut;
+        }
+        #endregion
+
+        #region Misc
+        public string ToJSON()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         #endregion
     }

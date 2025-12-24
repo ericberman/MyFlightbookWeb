@@ -24,7 +24,7 @@
 <div>
     @if (rgac.Any())
     {
-        <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=2")"></script>
+        <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/scripts/aircraftcontext.js?v=3")"></script>
         Html.RenderAction("AircraftListItem", "Aircraft", new { rgac = rgac });
     }
     else

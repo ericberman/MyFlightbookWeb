@@ -864,6 +864,30 @@ namespace MyFlightbook
             msg.IsBodyHtml = true;
             // Don't set an alternate - it will be created and set by util.sendMsg
         }
+
+        static public void SendEmail(string szFrom, string szFromDisplay, string szTo, string szToDisplay, string szReply, string szReplyDisplay, string szSubject, string szBody, bool fIsHtml)
+        {
+            if (String.IsNullOrWhiteSpace(szTo))
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(szTo))
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
+            if (String.IsNullOrWhiteSpace(szFrom))
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(szFrom))
+                throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
+
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.From = new MailAddress(szFrom, szFromDisplay ?? szFrom);
+                msg.To.Add(new MailAddress(szTo, szToDisplay ?? szTo));
+                if (!String.IsNullOrEmpty(szReply))
+                    msg.ReplyToList.Add(new MailAddress(szReply, szReplyDisplay ?? szReply));
+                msg.Subject = szSubject;
+                msg.Body = Branding.ReBrand(szBody);
+                msg.IsBodyHtml = fIsHtml;
+                SendMessage(msg);
+            }
+        }
         #endregion
 
         #region Read nullable MySql fields - should be extension?

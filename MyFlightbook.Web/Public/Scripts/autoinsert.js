@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2020 MyFlightbook LLC
+ * Copyright (c) 2020-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -60,12 +60,11 @@ function autoInsert(inp, uri, triggerChar) {
             {
                 url: uri,
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                 },
-                complete: function (response) { },
-                success: function (response) {
-                    var arr = response.d;
+                complete: function () { },
+                success: function (arr) {
                     if (arr.length === 0)
                         closeAllLists();
 

@@ -54,15 +54,15 @@ function getTachFill(currentlySelectedAircraft, baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/HighWaterMarkTachForAircraft',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
                 success: function (response) {
-                    onResult(response.d);
+                    onResult(response);
                 }
             });
     }
@@ -84,15 +84,15 @@ function getFlightMeterFill(currentlySelectedAircraft, baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/HighWaterMarkFlightMeter',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
                 success: function (response) {
-                    onResult(response.d);
+                    onResult(response);
                 }
             });
     }
@@ -114,15 +114,15 @@ function getHobbsFill(currentlySelectedAircraft, baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/HighWaterMarkHobbsForAircraft',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
                 success: function (response) {
-                    onResult(response.d);
+                    onResult(response);
                 }
             });
     }
@@ -145,14 +145,14 @@ function getDistanceFill(currentRoute, baseUrl) {
             {
                 url: baseUrl + '/GetDistanceFlown',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
-                success: function (response) {
-                    onResult(response.d);
+                success: function (d) {
+                    onResult(d);
                 }
             });
     }
@@ -213,9 +213,8 @@ function setNowUTC(target, url) {
     $.ajax(
         {
             url: url,
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) { window.alert(xhr.responseText); },
-            complete: function (response) { },
-            success: function (response) { $("#" + target).val(response.d); }
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function (t) { $("#" + target).val(t); }
         });
 }

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -309,6 +309,21 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 InvalidateCache();
             else
                 throw new MyFlightbookException("Error adding aircraft for user " + User + " \r\n" + dbh.LastError);
+        }
+
+        /// <summary>
+        /// Adds a role for a user based on name of the role (string).  Convenience for aircraftcontroller to reduce class coupling.
+        /// </summary>
+        /// <param name="ac">The aircraft</param>
+        /// <param name="RoleName">The requested role for the pilot</param>
+        /// <param name="fAddPICName">True to add the name of the pilot to the flight as PIC as well</param>
+        public void SetRoleForUser(Aircraft ac, Aircraft.PilotRole Role, bool fAddPICName)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            ac.RoleForPilot = Role;
+            ac.CopyPICNameWithCrossfill = Role == Aircraft.PilotRole.PIC && fAddPICName;
+            FAddAircraftForUser(ac);
         }
 
         /// <summary>

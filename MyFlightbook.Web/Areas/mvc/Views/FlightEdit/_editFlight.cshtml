@@ -25,8 +25,8 @@
         font-style: italic;
     }
 </style>
-<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=3".ToAbsolute())"></script>
-<script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=6".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=4".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/xfill.js?v=7".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/DropDownFilter.js?v=3".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=11".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/flightedit.js?v=9".ToAbsolute())"></script>
@@ -67,7 +67,7 @@
 
     $(() => {
         defaultButtonForDiv('pnlFlightContainer', 'btnAddFlight');
-        autoInsert($("#txtComments")[0], "@("~/Member/Ajax.asmx/SuggestTraining".ToAbsolute())", '[');
+        autoInsert($("#txtComments")[0], "@("~/mvc/Training/SuggestTraining".ToAbsolute())", '[');
         defaultButtonForDiv('pnlNewVideo', 'btnAddNewVideo');
         $("#hdnTZOffset").val(-(new Date()).getTimezoneOffset());
 

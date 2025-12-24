@@ -15,7 +15,7 @@ using static MyFlightbook.Instruction.Endorsement;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,6 +26,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         #region Webservices
         #region Ratings Progress
+        /// <summary>
+        /// Returns potential training completions for the provided prefix text.  E.g., if it is "[61.1" then it might produce all of the 61.1xxx training items.
+        /// </summary>
+        /// <param name="prefixText">The prefix</param>
+        /// <param name="count">Number of items to return</param>
+        /// <returns>An array of training items (strings) in JSON format</returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult SuggestTraining(string prefixText, int count)
+        {
+            return SafeOp(() =>
+            {
+                return Json(TrainingItems.SuggestTraining(prefixText, count));
+            });
+        }
+
         [HttpPost]
         [Authorize]
         public ActionResult ProgressAgainstRating()

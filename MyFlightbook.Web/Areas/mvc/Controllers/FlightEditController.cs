@@ -358,6 +358,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost]
+        /// <summary>
+        /// Returns the current time formatted in UTC or specified time-zone
+        /// </summary>
+        /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
+        public string NowInUTC()
+        {
+            return SafeOp(() =>
+            {
+                // For now, always return true UTC
+                return DateTime.UtcNow.FormattedNowInUtc(MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone);
+            });
+        }
 
         [Authorize]
         [HttpPost]
