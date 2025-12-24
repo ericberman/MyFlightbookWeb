@@ -1968,6 +1968,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AircraftControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\CheckFlightController.cs" />
     <Compile Include="Areas\mvc\Controllers\FlightControllerBase.cs" />

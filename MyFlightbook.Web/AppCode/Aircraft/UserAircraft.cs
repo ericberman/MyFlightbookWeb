@@ -315,17 +315,9 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
         /// Adds a role for a user based on name of the role (string).  Convenience for aircraftcontroller to reduce class coupling.
         /// </summary>
         /// <param name="ac">The aircraft</param>
-        /// <param name="RoleName">The name of the role (as a string)</param>
+        /// <param name="RoleName">The requested role for the pilot</param>
         /// <param name="fAddPICName">True to add the name of the pilot to the flight as PIC as well</param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SetNamedRoleForUser(Aircraft ac, string RoleName, bool fAddPICName)
-        {
-            if (!Enum.TryParse(RoleName, true, out Aircraft.PilotRole role))
-                throw new ArgumentOutOfRangeException("Invalid role - " + RoleName);
-            SetNamedRoleForUser(ac, role, fAddPICName);
-        }
-
-        public void SetNamedRoleForUser(Aircraft ac, Aircraft.PilotRole Role, bool fAddPICName)
+        public void SetRoleForUser(Aircraft ac, Aircraft.PilotRole Role, bool fAddPICName)
         {
             if (ac == null)
                 throw new ArgumentNullException(nameof(ac));
