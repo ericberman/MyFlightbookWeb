@@ -6,6 +6,18 @@
 *******************************************************/
 
 /* this code is adapted from https://www.w3schools.com/howto/howto_js_autocomplete.asp */
+function replaceRangeInInput(input, start, end, replacement) {
+    const before = input.value.slice(0, start);
+    const after = input.value.slice(end);
+
+    const newValue = before + replacement + after;
+    const newCursorPos = before.length + replacement.length;
+
+    input.value = newValue;
+
+    // Critical for <input>: restore cursor position *after* value update
+    input.setSelectionRange(newCursorPos, newCursorPos);
+}
 
 function autoInsert(inp, uri, triggerChar) {
     /*the autocomplete function takes two arguments,
@@ -81,14 +93,10 @@ function autoInsert(inp, uri, triggerChar) {
                         b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
                         // execute a function when someone clicks on the item value (DIV element):
                         b.addEventListener("click", function (e) {
-                            // insert the value for the autocomplete text field:
                             var val = this.getElementsByTagName("input")[0].value;
-                            inp.value = inp.value.substring(0, startPos) + val + inp.value.substr(endPos);
-                            // close the list of autocompleted values,
-                            // (or any other open lists of autocompleted values:
+                            replaceRangeInInput(inp, startPos, endPos, val);
                             closeAllLists();
                             inp.focus();
-                            inp.selectionStart = inp.selectionEnd = startPos + val.length;
                         });
                         a.appendChild(b);
                         a.style.display = "inline-block";
