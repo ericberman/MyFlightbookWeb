@@ -764,7 +764,6 @@
     <Content Include="images\xlicon_med.png" />
     <Content Include="images\xml.gif" />
     <Content Include="images\zip_med.png" />
-    <Content Include="Member\Ajax.asmx" />
     <Content Include="Public\CSS\day.css" />
     <Content Include="Public\CSS\holdprogress.css" />
     <Content Include="Public\CSS\homepage.css" />
@@ -1680,9 +1679,6 @@
     <Compile Include="AppCode\Aircraft\Makes.cs" />
     <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
-    <Compile Include="AppCode\AjaxSupport.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />

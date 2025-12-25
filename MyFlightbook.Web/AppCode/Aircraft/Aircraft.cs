@@ -3196,6 +3196,24 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             }
             return lst;
         }
+
+        private static IEnumerable<string> DoSuggestion(string szQ, string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
+                return Array.Empty<string>();
+
+            return util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture, szQ, util.keyColumn, count), prefixText);
+        }
+
+        public static IEnumerable<string> ModelsMatchingPrefix(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT DISTINCT model AS {0} FROM models WHERE REPLACE(model, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
+        }
+
+        public static IEnumerable<string> TypeRatingsMatchingPrefix(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT DISTINCT typename AS {0} FROM models WHERE REPLACE(typename, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
+        }
         #endregion
 
     }

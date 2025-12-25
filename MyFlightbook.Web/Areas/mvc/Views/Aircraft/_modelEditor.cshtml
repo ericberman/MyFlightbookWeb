@@ -196,10 +196,10 @@
                 params.count = 20;
                 var d = JSON.stringify(params);
                 $.ajax({
-                    url: "@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/SuggestModels")",
+                    url: "@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/SuggestModelsFlat")",
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
-                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                    success: function (r) { response(r.d); }
+                    error: function (xhr) { window.alert(xhr.responseText); },
+                    success: function (r) { response(r); }
                 });
             },
             minLength: 2,
@@ -213,10 +213,10 @@
                 params.count = 20;
                 var d = JSON.stringify(params);
                 $.ajax({
-                    url: "@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx/SuggestModelTypes")",
+                    url: "@VirtualPathUtility.ToAbsolute("~/mvc/Aircraft/SuggestModelTypes")",
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
-                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                    success: function (r) { response(r.d); }
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                    success: function (r) { response(r); }
                 });
             },
             minLength: 2,

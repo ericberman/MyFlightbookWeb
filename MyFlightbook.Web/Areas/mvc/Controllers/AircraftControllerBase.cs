@@ -236,6 +236,26 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        public ActionResult SuggestModelsFlat(string prefixText, int count)
+        {
+            return SafeOp(() =>
+            {
+                return Json(AircraftUtility.ModelsMatchingPrefix(prefixText, count));
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SuggestModelTypes(string prefixText, int count)
+        {
+            return SafeOp(() =>
+            {
+                return Json(AircraftUtility.TypeRatingsMatchingPrefix(prefixText, count));
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
         public ActionResult ChangeCountryForTail(string prefix, string oldTail)
         {
             return SafeOp(() =>
