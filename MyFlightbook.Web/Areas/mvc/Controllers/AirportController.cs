@@ -632,6 +632,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_metar");
         }
 
+        [HttpPost]
+        [Authorize]
+        public ActionResult METARAutoCompletion(string prefixText, int count)
+        {
+            return SafeOp(() =>
+            {
+                List<string> lst = new List<string>();
+                if ((prefixText ?? string.Empty).Length > 3)
+                {
+                    prefixText = prefixText.Substring(1);   // remove leading slash
+                    IEnumerable<METAR> rg = ADDSService.LatestMETARSForAirports(prefixText, false);
+                    foreach (METAR m in rg)
+                        lst.Add(m.raw_text);
+
+                    if (lst.Count > count)
+                        lst.RemoveRange(count, lst.Count - count);
+                }
+                return Json(lst);
+            });
+        }
+
         private static AirportList AirportsForTerm(string searchTerm)
         {
             AirportList alResults = new AirportList();

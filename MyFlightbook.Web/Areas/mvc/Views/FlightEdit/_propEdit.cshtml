@@ -59,13 +59,12 @@
                     cfd = new CrossFillDescriptor(Resources.LocalizedText.CrossfillPrompt, "getTotalFillFunc('fieldTotal')");
                 }
                 break;
-
         }
     }
 
     string idCptTitle = String.Format(CultureInfo.InvariantCulture, "cptTitleLbl{0}", fp.PropTypeID);
     string idCptTip = String.Format(CultureInfo.InvariantCulture, "cptTitleTip{0}", fp.PropTypeID);
-    }
+}
 <div class="propItemFlow" style="@(ViewBag.hideByDefault ? Html.Raw("display: none;") : string.Empty)">
     <div style="display: none;" id="@idCptTip">
         <p style="font-weight:bold;">@fp.PropertyType.Title</p>
@@ -75,7 +74,7 @@
             <p style="font-weight: bold;">@propTT</p>
         }
     </div>
-    <div style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap; width: 100%"  >
+    <div style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap; width: 100%">
         <span class="itemlabel" style="font-size: smaller;" title="" id="@idCptTitle">@propTitle</span>
     </div>
     <div>
@@ -108,11 +107,21 @@
                     break;
                 case CFPPropertyType.cfpString:
                     {
-                        <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
+                        <div class="dib" style="position:relative;">
+                            <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
+                        </div>
                         if (!fp.PropertyType.IsNoAutocomplete)
                         {
                             <script type="text/javascript">
                     $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
+                            </script>
+                        }
+                        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMetar)
+                        {
+                            <script type="text/javascript">
+                                $(() => {
+                                    autoInsert($("@("#" + propValID)")[0], "@("~/mvc/Airport/METARAutoCompletion".ToAbsolute())", '[');
+                                });
                             </script>
                         }
                     }

@@ -606,6 +606,8 @@
     <Content Include="images\prohibited.png" />
     <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\Hartnack_Co_Copper2.png" />
+    <Content Include="images\SponsoredAds\PG_Banner-MFB.png" />
+    <Content Include="images\SponsoredAds\PG_Banner-MFB_x2.png" />
     <Content Include="images\SponsoredAds\pilotsglobal.svg" />
     <Content Include="images\SponsoredAds\SkyWatch_Logo_New2020.png" />
     <Content Include="images\SponsoredAds\Aculog1800x1200.png" />
