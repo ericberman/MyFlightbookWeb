@@ -999,19 +999,6 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         }
     }
 
-    public class CrossFillDescriptorArgs : EventArgs
-    {
-        public CrossFillDescriptor XFillDescriptor { get; set; } = null;
-
-        public CustomPropertyType PropertyType { get; set; } = null;
-
-        public CrossFillDescriptorArgs(CustomPropertyType cpt, CrossFillDescriptor xfd = null) : base() 
-        {
-            PropertyType = cpt;
-            XFillDescriptor = xfd;
-        }
-    }
-
     /// <summary>
     /// Simple property type for fast/condensed serialization/database lookup
     /// Consists of just 3 things:
