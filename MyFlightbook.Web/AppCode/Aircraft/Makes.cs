@@ -1400,21 +1400,6 @@ FROM models
         }
     }
 
-    public class MakeSelectedEventArgs : EventArgs
-    {
-        public int SelectedModel { get; set; }
-
-        public MakeSelectedEventArgs() : base()
-        {
-            SelectedModel = MakeModel.UnknownModel;
-        }
-
-        public MakeSelectedEventArgs(int idModel) : base()
-        {
-            SelectedModel = idModel;
-        }
-    }
-
     /// <summary>
     /// Admin Utility functions for models.  All static functions.
     /// </summary>

@@ -617,18 +617,4 @@ GROUP BY d.iddeadlines";
         }
         #endregion
     }
-
-    public class DeadlineEventArgs : EventArgs
-    {
-        public DeadlineCurrency OriginalDeadline { get; set; }
-        public DeadlineCurrency NewDeadline { get; set; }
-
-        public DeadlineEventArgs() : base() { }
-
-        public DeadlineEventArgs(DeadlineCurrency dcOriginal, DeadlineCurrency dcNew) : base()
-        {
-            OriginalDeadline = dcOriginal;
-            NewDeadline = dcNew;
-        }
-    }
 }

@@ -4,7 +4,7 @@
     int defMaintWindow = m_pf.GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow);
 }
 <script type="text/javascript">
-    var tcEditor = new prefsFlightEntryEditor("@("~/Member/Ajax.asmx/setLocalPref".ToAbsolute())", {});
+    var tcEditor = new prefsFlightEntryEditor("@("~/mvc/prefs/setLocalPref".ToAbsolute())", {});
 </script>
 <h3>@Resources.Currency.CurrencyTotalsDisplayHeader</h3>
 <div><label><input type="radio" id="rbTotalsModeCatClass" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'CatClass');" @((m_pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.CatClass).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupCatClass</label></div>

@@ -168,16 +168,16 @@ function getTaxiFill(baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/TaxiTime',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
                 success: function (response) {
-                    if (response.d != '')
-                        onResult(response.d);
+                    if (response != '')
+                        onResult(response);
                 }
             });
     }
@@ -192,16 +192,16 @@ function getAirborneFill(baseUrl) {
         $.ajax(
             {
                 url: baseUrl + '/AirborneTime',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                     if (onError !== null)
                         onError();
                 },
                 complete: function () { },
                 success: function (response) {
-                    if (response.d != '')
-                        onResult(response.d);
+                    if (response != '')
+                        onResult(response);
                 }
             });
     }

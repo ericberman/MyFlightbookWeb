@@ -102,14 +102,12 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                 url: base.rootPath + "/ReadEvents",
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
                 async: true,
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
-                success: function (response) {
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (eventRows) {
                     if (typeof base.dpCalendar.events.list !== "undefined") {
                         while (base.dpCalendar.events.list.length > 0)
                             base.dpCalendar.events.remove(base.dpCalendar.events.list[0]);
                     }
-                    var eventRows = response.d;
                     for (var i = 0; i < eventRows.length; i++) {
                         var er = eventRows[i];
                         var e = new DayPilot.Event({
@@ -153,13 +151,12 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                 url: base.rootPath + "/CreateEvent",
                 async: true,
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    error: function (xhr) {
+                        window.alert(xhr.responseText);
                 },
-                complete: function (response) { },
                 success: function (response) {
-                    if (response.d !== "")
-                        window.alert(response.d);
+                    if (response !== "")
+                        window.alert(response);
                     else {
                         base.dpCalendar.events.add(e);
                         base.dpCalendar.update();
@@ -180,11 +177,13 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                 url: base.rootPath + "/UpdateEvent",
                 async: true,
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); onError(); },
-                complete: function (response) { },
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
+                    onError();
+                },
                 success: function (response) {
-                    if (response.d !== "") {
-                        window.alert(response.d);
+                    if (response !== "") {
+                        window.alert(response);
                         onError();
                     }
                     else {
@@ -226,11 +225,10 @@ function mfbCalendar(rootPath, resourceID, clubID, displayMode, divCalContainer,
                     url: base.rootPath + "/DeleteEvent",
                     async: true,
                     type: "POST", data: d, dataType: "json", contentType: "application/json",
-                    error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                    complete: function (response) { },
+                    error: function (xhr) { window.alert(xhr.responseText); },
                     success: function (response) {
-                        if (response.d !== "")
-                            window.alert(response.d);
+                        if (response !== "")
+                            window.alert(response);
                         else {
                             base.removeEvent(e.data.id);
                             base.dpCalendar.update();

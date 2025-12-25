@@ -37,7 +37,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    var cal = new mfbCalendar('@VirtualPathUtility.ToAbsolute("~/Member/Ajax.asmx")', '@resourceID', '@club.ID', '@displayMode', '@divCalID', newAppt, editAppt, getAppointment, @(ViewBag.onEditFunc ?? "null" ));
+    var cal = new mfbCalendar('@VirtualPathUtility.ToAbsolute("~/mvc/Club")', '@resourceID', '@club.ID', '@displayMode', '@divCalID', newAppt, editAppt, getAppointment, @(ViewBag.onEditFunc ?? "null" ));
     @if (String.IsNullOrEmpty(navInitFunc))
     {
     @:cal.initNav('@divCalID').select(new DayPilot.Date('@TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, club.TimeZone).ToString("u", CultureInfo.InvariantCulture)'));

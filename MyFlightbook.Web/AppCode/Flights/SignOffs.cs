@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2024 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1126,17 +1126,6 @@ namespace MyFlightbook.Instruction
                 default:
                     throw new MyFlightbookValidationException("Unknown role requested: " + m_smr.Requestedrole.ToString());
             }
-        }
-    }
-
-    public class EndorsementEventArgs : EventArgs
-    {
-        public Endorsement Endorsement { get; set; }
-
-        public EndorsementEventArgs(Endorsement e = null)
-            : base()
-        {
-            this.Endorsement = e;
         }
     }
 

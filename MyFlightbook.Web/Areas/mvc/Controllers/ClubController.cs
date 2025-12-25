@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -328,6 +328,48 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return club.FDelete() ? VirtualPathUtility.ToAbsolute("~/mvc/club/") : throw new InvalidOperationException(club.LastError);
             });
         }
+        #endregion
+
+        #region Appointment CRUD functions
+        [Authorize]
+        [HttpPost]
+        public ActionResult CreateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID = Club.ClubIDNew)
+        {
+            return SafeOp(() =>
+            {
+                return Json(ScheduledEvent.CreateEvent(start, end, id, text, resource, clubID));
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ReadEvents(DateTime dtStart, DateTime dtEnd, int clubID = Club.ClubIDNew, string resourceName = null)
+        {
+            return SafeOp(() =>
+            {
+                return Json(ScheduledEvent.ReadEvents(dtStart, dtEnd, clubID, resourceName));
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult UpdateEvent(DateTime start, DateTime end, string id, string text, string resource, int clubID)
+        {
+            return SafeOp(() =>
+            {
+                return Json(ScheduledEvent.UpdateEvent(start, end, id, text, resource, clubID));
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteEvent(string id)
+        {
+            return SafeOp(() =>
+            {
+                return Json(ScheduledEvent.DeleteEvent(id));
+            });
+        }        
         #endregion
 
         [HttpPost]

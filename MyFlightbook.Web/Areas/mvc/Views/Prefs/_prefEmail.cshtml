@@ -6,7 +6,7 @@
     bool canHaveCurrency = EarnedGratuity.UserQualifies(User.Identity.Name, Gratuity.GratuityTypes.CurrencyAlerts);
 }
 <script type="text/javascript">
-    var emailEditor = new prefsFlightEntryEditor("@("~/Member/Ajax.asmx/setLocalPref".ToAbsolute())", {});
+    var emailEditor = new prefsFlightEntryEditor("@("~/mvc/Prefs/setLocalPref".ToAbsolute())", {});
 </script>
 <div>
     <label><input type="checkbox" id="ckCurrencyWeekly" @esm.HasSubscription(SubscriptionType.Currency).ToChecked() onclick="javascript: emailEditor.setLocalPrefChecked('emailCurrencyWeekly', this);" />@Resources.Profile.EmailCurrencyName</label>

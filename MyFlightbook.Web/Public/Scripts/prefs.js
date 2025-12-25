@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Contains functions for managing prefs in javascript
@@ -30,9 +30,9 @@ function prefsFlightEntryEditor(localPrefEndPoint, options) {
         var d = JSON.stringify(params);
         $.ajax({
             url: localPrefEndPoint,
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) {
+                window.alert(xhr.responseText);
             },
             complete: function () { },
             success: function () { }
@@ -223,9 +223,9 @@ function prefsFlightColorEditor(baseEndpoint, options) {
         $.ajax(
             {
                 url: baseEndpoint + "/SetColorForQuery",
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { },
                 success: function (response) { }
@@ -241,9 +241,9 @@ function prefsFlightColorEditor(baseEndpoint, options) {
         $.ajax(
             {
                 url: baseEndpoint + "/SetColorForQuery",
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { },
                 success: function (response) {
@@ -261,9 +261,9 @@ function prefsFlightColorEditor(baseEndpoint, options) {
         $.ajax(
             {
                 url: baseEndpoint + "/SetMapColors",
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { },
                 success: function (response) { }
@@ -279,9 +279,9 @@ function prefsFlightColorEditor(baseEndpoint, options) {
         $.ajax(
             {
                 url: baseEndpoint + '/SetMapColors',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) {
-                    window.alert(xhr.responseJSON.Message);
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) {
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { },
                 success: function (response) {

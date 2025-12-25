@@ -149,7 +149,7 @@ namespace MyFlightbook
         #endregion
 
         #region Constructors
-        public AircraftInstance() {  }
+        public AircraftInstance() { }
 
         protected AircraftInstance(MySqlDataReader dr) : this()
         {
@@ -280,17 +280,17 @@ ORDER BY ac.instancetype ASC");
                 else
                 {
                     Profile pf = Profile.GetUser(User);
-                    string szTotalHours = Hours > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHours, pf.UsesHHMM ? 
-                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursHHMM, Hours.ToHHMM()) : 
+                    string szTotalHours = Hours > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHours, pf.UsesHHMM ?
+                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursHHMM, Hours.ToHHMM()) :
                         String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursDecimal, Hours)) : string.Empty;
 
                     return
 
-                        new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown, 
+                        new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown,
                                             UserFlights,
-                                            EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture, 
-                                                    Resources.Aircraft.AircraftStatsDate, 
-                                                    EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) : 
+                                            EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture,
+                                                    Resources.Aircraft.AircraftStatsDate,
+                                                    EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) :
                                             string.Empty) + szTotalHours,
                     String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString()));
                 }
@@ -1076,7 +1076,7 @@ ORDER BY user ASC");
             RegistrationDue = Convert.ToDateTime(util.ReadNullableField(dr, "RegistrationDue", DateTime.MinValue), CultureInfo.InvariantCulture);
             m_fIsTailwheel = Convert.ToBoolean(dr["fTailwheel"], CultureInfo.InvariantCulture);
             IsGlass = Convert.ToBoolean(dr["HasGlassUpgrade"], CultureInfo.InvariantCulture);
-            GlassUpgradeDate = (DateTime?) util.ReadNullableField(dr, "GlassUpgradeDate", null);
+            GlassUpgradeDate = (DateTime?)util.ReadNullableField(dr, "GlassUpgradeDate", null);
             IsTAA = Convert.ToBoolean(dr["HasTAAUpgrade"], CultureInfo.InvariantCulture);
             IsLocked = Convert.ToBoolean(dr["IsLocked"], CultureInfo.InvariantCulture);
 
@@ -1095,7 +1095,7 @@ ORDER BY user ASC");
                 foreach (int i in rgTemplateIDs)
                     DefaultTemplates.Add(i);
 
-            Revision = (int) util.ReadNullableField(dr, "Revision", 0);
+            Revision = (int)util.ReadNullableField(dr, "Revision", 0);
         }
 
         /// <summary>
@@ -1298,7 +1298,7 @@ ORDER BY user ASC");
             util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} cloned", DisplayTailnumber),
                 String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}{9}/{4}?a=1\r\n\r\nOld Model: {5}, (modelID: {6})\r\n\r\nNew Model: {7}, (modelID: {8})",
                 pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName + " " + mmOld.ICAODisplay, mmOld.MakeModelID, mmNew.DisplayName + " " + mmNew.ICAODisplay, mmNew.MakeModelID,
-                VirtualPathUtility.ToAbsolute("~/mvc/aircraft/edit")), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
+                VirtualPathUtility.ToAbsolute("~/mvc/aircraft/edit")), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport);
             return true;
         }
 
@@ -1627,7 +1627,7 @@ ORDER BY user ASC");
 
             // We can redefine the existing aircraft if it has no users
             if (new AircraftStats(String.Empty, acMatch.AircraftID).Users == 0)
-            { 
+            {
                 ModelID = modelIDRequested;
                 AircraftID = acMatch.AircraftID;
                 // Issue #1382 - if we think we're editing a new aircraft, getting revision errors
@@ -1690,7 +1690,7 @@ ORDER BY user ASC");
                 return;
 
             util.NotifyAdminEvent(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName.Replace("_", "__"),
-                String.Format(CultureInfo.InvariantCulture,"https://{0}{1}{2}?a=1", Branding.CurrentBrand.HostName, "~/mvc/aircraft/edit/".ToAbsolute(), AircraftID),
+                String.Format(CultureInfo.InvariantCulture, "https://{0}{1}{2}?a=1", Branding.CurrentBrand.HostName, "~/mvc/aircraft/edit/".ToAbsolute(), AircraftID),
                 String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), false), ProfileRoles.maskCanManageData);
 
             // If we're here, then there are other users - need to notify all of them of the change.
@@ -1786,7 +1786,7 @@ ORDER BY user ASC");
             {
                 Profile pf = Profile.GetUser(sz);
                 string szEmailNotification =
-                    util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture,Branding.ReBrand(Resources.EmailTemplates.AircraftTailSplit),
+                    util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.AircraftTailSplit),
                     pf.UserFullName,
                     acOriginal.TailNumber,
                     mmOriginal.DisplayName,
@@ -1794,7 +1794,7 @@ ORDER BY user ASC");
                     lstUsersToMigrate.Contains(sz) ? mmNew.DisplayName : mmOriginal.DisplayName,
                     szAlternatives), false);
 
-                util.NotifyUser(String.Format(CultureInfo.CurrentCulture,Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
+                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
             }
         }
 
@@ -2076,7 +2076,7 @@ ORDER BY user ASC");
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, "WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 
@@ -2189,7 +2189,7 @@ ORDER BY user ASC");
         /// <returns>A unique and consistent tailnumber</returns>
         public static string AnonymousTailnumberForModel(int idmodel)
         {
-            return String.Format(CultureInfo.InvariantCulture,"{0}{1:D6}", CountryCodePrefix.szAnonPrefix, idmodel);
+            return String.Format(CultureInfo.InvariantCulture, "{0}{1:D6}", CountryCodePrefix.szAnonPrefix, idmodel);
         }
 
         /// <summary>
@@ -2258,9 +2258,9 @@ ORDER BY user ASC");
                 case CountryCodePrefix.RegistrationTemplateMode.NoSearch:
                     return cc.RegistrationLinkTemplate ?? string.Empty;
                 case CountryCodePrefix.RegistrationTemplateMode.SuffixOnly:
-                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber).Substring(cc.NormalizedPrefix.Length));
+                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber).Substring(cc.NormalizedPrefix.Length));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeTail:
-                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber));
+                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeWithDash:
                     return String.Format(CultureInfo.InvariantCulture, cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber, cc));
             }
@@ -2292,12 +2292,12 @@ ORDER BY user ASC");
 
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleFavorite({1}, this.checked)\" />{2}</label></div><hr />", HideFromSelection ? string.Empty : "checked", AircraftID, HttpUtility.HtmlEncode(Resources.Aircraft.optionHideFromMainList));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"font-weight:bold;\">{0}</div>", HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePrompt));
-            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>", 
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
                 rblGroup, RoleForPilot == PilotRole.None ? "checked" : string.Empty, AircraftID, PilotRole.None, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleNone));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
                 rblGroup, RoleForPilot == PilotRole.CFI ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleCFI));
-            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" id=\"{1}\" {2} onclick=\"javascript: setRole({3}, '{4}', $('#{5}')[0].checked, $('#{5}')[0])\" />{6}</label></div>", 
-                rblGroup,  idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePIC));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" id=\"{1}\" {2} onclick=\"javascript: setRole({3}, '{4}', $('#{5}')[0].checked, $('#{5}')[0])\" />{6}</label></div>",
+                rblGroup, idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePIC));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"margin-left: 2em;\"><label><input type=\"checkbox\" {0} id=\"{1}\" onclick=\"javascript: $('#{2}')[0].click();\" />{3}</label></div>", CopyPICNameWithCrossfill ? "checked" : string.Empty, idCKAddName, idRBPIC, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePICName));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
                 rblGroup, RoleForPilot == PilotRole.SIC ? "checked" : string.Empty, AircraftID, PilotRole.SIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleSIC));
@@ -2505,7 +2505,7 @@ OR (aircraft.tailnormal IN ('{5}'))";
         public static IEnumerable<Aircraft> AdminDupeAircraft()
         {
             List<Aircraft> lst = new List<Aircraft>();
-            
+
             DBHelper dbh = new DBHelper(@"SELECT
     ac.*,
     models.*,
@@ -2817,7 +2817,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
                 // Get a list of the flights in this aircraft and add the sim
                 // don't modify signed flights or flights that already have a simulator/device identifier
                 List<int> lst = new List<int>();
-                DBHelper dbh = new DBHelper("SELECT DISTINCT(f.idFlight) FROM flights f LEFT JOIN flightproperties fp ON fp.idPropType=354 AND fp.idflight=f.idflight WHERE f.idAircraft=?id AND f.signatureState=0 AND fp.idprop IS NULL");  
+                DBHelper dbh = new DBHelper("SELECT DISTINCT(f.idFlight) FROM flights f LEFT JOIN flightproperties fp ON fp.idPropType=354 AND fp.idflight=f.idflight WHERE f.idAircraft=?id AND f.signatureState=0 AND fp.idprop IS NULL");
                 dbh.ReadRows(
                     (comm) => { comm.Parameters.AddWithValue("id", acOriginal.AircraftID); },
                     (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
@@ -2904,11 +2904,11 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
                 }
 
                 // now get all of the users with flights in the current aircraft
-                IEnumerable<Dictionary<string, object>>  acs = AircraftStats.AdminAircraftUsersDetails(aircraft.AircraftID);
+                IEnumerable<Dictionary<string, object>> acs = AircraftStats.AdminAircraftUsersDetails(aircraft.AircraftID);
                 foreach (Dictionary<string, object> d in acs)
                 {
                     // Make sure that the target aircraft is in the user's account
-                    string szUser = (string) d["User"];
+                    string szUser = (string)d["User"];
                     hsUsers.Add(szUser);
                     if (String.IsNullOrEmpty(szUser))
                         throw new InvalidOperationException($"No specified user in dictionary of flights for aircraft {aircraft.AircraftID}- how did this happen?");
@@ -3196,6 +3196,24 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             }
             return lst;
         }
+
+        private static IEnumerable<string> DoSuggestion(string szQ, string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
+                return Array.Empty<string>();
+
+            return util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture, szQ, util.keyColumn, count), prefixText);
+        }
+
+        public static IEnumerable<string> ModelsMatchingPrefix(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT DISTINCT model AS {0} FROM models WHERE REPLACE(model, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
+        }
+
+        public static IEnumerable<string> TypeRatingsMatchingPrefix(string prefixText, int count)
+        {
+            return DoSuggestion("SELECT DISTINCT typename AS {0} FROM models WHERE REPLACE(typename, '-', '') LIKE CONCAT(?prefix, '%') ORDER BY model ASC LIMIT {1}", Aircraft.NormalizeTail(prefixText, null), count);
+        }
         #endregion
 
     }
@@ -3272,7 +3290,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                         lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupFlown, MatchingAircraft = lstActive });
                     }
                     if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
-                            lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
                     break;
                 case GroupMode.Activity:
                     if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
@@ -3860,7 +3878,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             if (mr == null)
                 throw new ArgumentNullException(nameof(mr));
             mr.State = ms;
-            mr.BestMatchAircraft.InstanceTypeDescription = mr.BestMatchAircraft.InstanceTypeID == (int) AircraftInstanceTypes.RealAircraft ? String.Empty : m_rgAircraftInstances[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
+            mr.BestMatchAircraft.InstanceTypeDescription = mr.BestMatchAircraft.InstanceTypeID == (int)AircraftInstanceTypes.RealAircraft ? String.Empty : m_rgAircraftInstances[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
             mr.SpecifiedModel = mr.SuggestedModel = MakeModel.GetModel(mr.BestMatchAircraft.ModelID);
         }
 
@@ -4140,18 +4158,5 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                     comm.Parameters.AddWithValue("idNew", NewAircraftID);
                 });
         }
-    }
-
-    public class AircraftEventArgs : EventArgs
-    {
-        public int AircraftID { get; set; }
-
-        public Aircraft Aircraft { get; set; }
-
-        public AircraftEventArgs() { AircraftID = Aircraft.idAircraftUnknown; }
-
-        public AircraftEventArgs(int id) : this() { AircraftID = id; }
-
-        public AircraftEventArgs(Aircraft ac) : this() { Aircraft = ac; AircraftID = (ac == null) ? Aircraft.idAircraftUnknown : ac.AircraftID; }
     }
 }

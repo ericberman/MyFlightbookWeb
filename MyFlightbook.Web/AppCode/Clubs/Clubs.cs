@@ -1612,21 +1612,6 @@ GROUP BY idaircraft");
         #endregion
     }
 
-    public class ClubChangedEventArgs : EventArgs
-    {
-        public Club EventClub { get; set; }
-
-        public ClubChangedEventArgs() : base()
-        {
-            EventClub = null;
-        }
-
-        public ClubChangedEventArgs(Club c) : base()
-        {
-            EventClub = c;
-        }
-    }
-
     public class ClubInsuranceReportItem
     {
         #region Properties

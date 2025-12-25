@@ -1151,19 +1151,4 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             }
         }
     }
-
-    public class CustomCurrencyEventArgs : EventArgs
-    {
-        public CustomCurrency Currency { get; set; }
-
-        public CustomCurrencyEventArgs() : base()
-        {
-            Currency = null;
-        }
-
-        public CustomCurrencyEventArgs(CustomCurrency cc) : base()
-        {
-            Currency = cc;
-        }
-    }
 }
