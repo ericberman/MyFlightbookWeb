@@ -1,0 +1,23 @@
+﻿@using MyFlightbook
+@using System.Globalization
+@{
+    ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.Title = "AWS SNS Listener test bed";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h2>Test SNS notifications</h2>
+    @using (Html.BeginForm("TestAWSSNSNotify", "Image", FormMethod.Post, new { id = "frmAWSNotify", name = "frmAWSNotify" }))
+    {
+        @Html.AntiForgeryToken()
+        <div>Enter the JSON data below to test:</div>
+        <div>
+            <textarea name="txtTestJSONData" style="width: 800px;" rows="25">@(ViewBag.postedJSON ?? string.Empty)</textarea>
+        </div>
+        <div>
+            <input type="submit" name="btnSubmit" value="Subscribe" />
+            <input type="submit" name="btnSubmit" value="Notify" />
+        </div>
+        <div>@(ViewBag.result ?? string.Empty)</div>
+    }
+</div>
