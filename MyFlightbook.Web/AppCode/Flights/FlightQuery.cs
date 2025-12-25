@@ -2237,14 +2237,4 @@ namespace MyFlightbook
             FilterItem = qfi ?? new QueryFilterItem();
         }
     }
-
-    public class FlightQueryEventArgs : EventArgs
-    {
-        public FlightQuery Query { get; set; }
-
-        public FlightQueryEventArgs(FlightQuery fq = null) : base()
-        {
-            Query = fq ?? new FlightQuery();
-        }
-    }
 }

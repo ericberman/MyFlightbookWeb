@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2024 MyFlightbook LLC
+ * Copyright (c) 2019-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -861,24 +861,5 @@ namespace MyFlightbook.Templates
             UserTemplates = new Collection<PropertyTemplate>(lst);
         }
         #endregion
-    }
-
-    public class PropertyTemplateEventArgs : EventArgs
-    {
-        public PropertyTemplate Template { get; set; }
-
-        public int TemplateID { get; set; }
-
-        public PropertyTemplateEventArgs(PropertyTemplate pt) : base()
-        {
-            Template = pt;
-            TemplateID = pt == null ? (int) KnownTemplateIDs.ID_NEW : pt.ID;
-        }
-
-        public PropertyTemplateEventArgs(int id) : base()
-        {
-            Template = null;
-            TemplateID = id;
-        }
     }
 }

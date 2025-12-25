@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -829,18 +829,6 @@ namespace MyFlightbook.Geography
 
             return lst;
         }        
-    }
-
-    public class PositionEventArgs : EventArgs
-    {
-        public LatLong ExpectedPosition { get; set; }
-        public DateTime? TimeStamp { get; set; }
-
-        public PositionEventArgs(LatLong ll, DateTime? dt) : base()
-        {
-            ExpectedPosition = ll;
-            TimeStamp = dt;
-        }
     }
 
     [Serializable]

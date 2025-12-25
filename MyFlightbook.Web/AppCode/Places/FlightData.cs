@@ -543,20 +543,6 @@ namespace MyFlightbook.Telemetry
         }
     }
 
-    public class AutofillEventArgs : EventArgs
-    {
-        public AutoFillOptions Options { get; set; }
-
-        public string Telemetry { get; set; }
-
-        public AutofillEventArgs(AutoFillOptions afo = null, string szTelemetry = null)
-            : base()
-        {
-            Options = afo;
-            Telemetry = szTelemetry;
-        }
-    }
-
     public enum DownloadFormat { Original, CSV, KML, GPX };
 
     public class DataSourceType

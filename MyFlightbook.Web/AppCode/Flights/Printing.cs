@@ -1081,21 +1081,6 @@ namespace MyFlightbook.Printing
         }
     }
 
-    public class PrintingOptionsEventArgs : EventArgs
-    {
-        public PrintingOptions Options { get; set; }
-
-        public PrintingOptionsEventArgs(PrintingOptions options) : base()
-        {
-            Options = options;
-        }
-
-        public PrintingOptionsEventArgs() : base()
-        {
-            Options = new PrintingOptions();
-        }
-    }
-
     /// <summary>
     /// Represents a collection of subtotals
     /// </summary>

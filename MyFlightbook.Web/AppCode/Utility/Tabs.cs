@@ -238,17 +238,6 @@ namespace MyFlightbook
         }
     }
 
-    public class TabClickedEventArgs : EventArgs
-    {
-        public tabID TabID { get; set; }
-
-        public TabClickedEventArgs(tabID tid = tabID.tabHome)
-            : base()
-        {
-            TabID = tid;
-        }
-    }
-
     [Serializable]
     public class TabItem
     {

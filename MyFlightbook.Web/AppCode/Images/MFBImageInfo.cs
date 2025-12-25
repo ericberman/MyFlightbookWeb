@@ -1905,16 +1905,6 @@ namespace MyFlightbook.Image
         #endregion
     }
 
-    public class MFBImageInfoEventArgs : EventArgs
-    {
-        public MFBImageInfo Image { get; set; }
-
-        public MFBImageInfoEventArgs(MFBImageInfo img = null) : base()
-        {
-            Image = img;
-        }
-    }
-
     [Serializable]
     public class MFBImageCollection : List<MFBImageInfo>
     {
