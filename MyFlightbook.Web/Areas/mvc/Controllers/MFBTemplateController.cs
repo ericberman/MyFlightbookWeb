@@ -233,7 +233,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Enum.TryParse(Request.Cookies[MFBConstants.keyCookiePrivacy]?.Value ?? string.Empty, out CookiesAcceptedStatus status))
                     return status;
                 else if (User.Identity.IsAuthenticated)
-                    return MyFlightbook.Profile.GetUser(User.Identity.Name)?.GetPreferenceForKey(MFBConstants.keyCookiePrivacy, CookiesAcceptedStatus.Unknown) ?? CookiesAcceptedStatus.Unknown;
+                    return (CookiesAcceptedStatus) (MyFlightbook.Profile.GetUser(User.Identity.Name)?.GetPreferenceForKey(MFBConstants.keyCookiePrivacy, (int) CookiesAcceptedStatus.Unknown) ?? (int) CookiesAcceptedStatus.Unknown);
                 else
                     return CookiesAcceptedStatus.Unknown;
             }
