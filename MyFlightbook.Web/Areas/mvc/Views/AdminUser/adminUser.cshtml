@@ -56,11 +56,11 @@
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: '/logbook/Admin/AdminService.asmx/SendUserMessage',
+                url: '/logbook/mvc/Admin/SendUserMessage',
                 type: "POST", data: d, dataType: "html", contentType: "application/json",
-                error: function (xhr, status, error) {
+                error: function (xhr) {
                     $("#userTableResult").html("");
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { },
                 success: function (response) {

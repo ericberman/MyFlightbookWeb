@@ -1,14 +1,17 @@
-﻿using MyFlightbook.FlightStatistics;
+﻿using MyFlightbook.Charting;
+using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Payments;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 /******************************************************
  * 
- * Copyright (c) 2023 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -281,6 +284,57 @@ ORDER BY f2.numflights ASC;", creationDate == null ? string.Empty : "WHERE u.cre
                 (dr) => { lstFlightsPerUser.Add(new FlightsPerUserStats() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
 
             return lstFlightsPerUser;
+        }
+
+        /// <summary>
+        /// Returns a google chart for flights per user.
+        /// </summary>
+        /// <param name="dateRange"></param>
+        /// <returns></returns>
+        public async static Task<GoogleChartData> FlightsPerUserChart(string dateRange)
+        {
+            IEnumerable<FlightsPerUserStats> lstFlightsPerUser = null;
+            DateTime? creationDate = null;
+            if (!String.IsNullOrEmpty(dateRange))
+                creationDate = DateTime.Now.AddMonths(-Convert.ToInt32(dateRange, CultureInfo.InvariantCulture));
+
+            await Task.Run(() => { lstFlightsPerUser = FlightsPerUserStats.Refresh(creationDate); });
+
+            NumericBucketmanager bmFlightsPerUser = new NumericBucketmanager() { BucketForZero = true, BucketWidth = 100, BucketSelectorName = "FlightCount" };
+            HistogramManager hmFlightsPerUser = new HistogramManager()
+            {
+                SourceData = lstFlightsPerUser,
+                SupportedBucketManagers = new BucketManager[] { bmFlightsPerUser },
+                Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
+            };
+
+            GoogleChartData flightsPerUserChart = new GoogleChartData
+            {
+                Title = "Flights/user",
+                XDataType = GoogleColumnDataType.@string,
+                YDataType = GoogleColumnDataType.number,
+                XLabel = "Flights/User",
+                YLabel = "Users - All",
+                SlantAngle = 90,
+                Width = 1000,
+                Height = 500,
+                ChartType = GoogleChartType.ColumnChart,
+                ContainerID = "flightsPerUserDiv",
+                TickSpacing = (uint)((lstFlightsPerUser.Count() < 20) ? 1 : (lstFlightsPerUser.Count() < 100 ? 5 : 10))
+            };
+
+            bmFlightsPerUser.ScanData(hmFlightsPerUser);
+
+            using (DataTable dt = bmFlightsPerUser.ToDataTable(hmFlightsPerUser))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    flightsPerUserChart.XVals.Add((string)dr["DisplayName"]);
+                    flightsPerUserChart.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                }
+            }
+
+            return flightsPerUserChart;
         }
     }
 

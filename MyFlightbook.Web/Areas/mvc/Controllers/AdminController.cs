@@ -1,26 +1,23 @@
 ﻿using MyFlightbook.Achievements;
-using MyFlightbook.Charting;
-using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Subscriptions;
 using MyFlightbook.Web.Admin;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using System.Web.Security;
 
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,6 +27,124 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class AdminController : AdminControllerBase
     {
         #region Admin Web Services
+        #region - Users
+        [Authorize]
+        [HttpPost]
+        public ActionResult UnlockUser(string szUser)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                ProfileAdmin.UnlockUser(szUser);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Resets the password for a user AND sends the email.  (no longer a separate button)
+        /// </summary>
+        /// <param name="szPKID"></param>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        [Authorize]
+        [HttpPost]
+        public ActionResult ResetPasswordForUser(string szPKID)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+                                                                        // Need to get the user offline
+                mu = ProfileAdmin.ADMINUserFromName(mu.UserName);
+
+                string szPass = mu.ResetPassword();
+
+                if (String.IsNullOrEmpty(szPass))
+                    throw new InvalidOperationException("Failure resetting password for user " + mu.UserName);
+                MyFlightbook.Profile.UncacheUser(mu.UserName);
+
+                string szEmail = util.ApplyHtmlEmailTemplate(Resources.EmailTemplates.ChangePassEmail.Replace("<% Password %>", HttpUtility.HtmlEncode(szPass)), true);
+                Profile pf = MyFlightbook.Profile.GetUser(mu.UserName);
+                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPasswordEmailSubject, Branding.CurrentBrand.AppName), szEmail, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteFlightsForUser(string szPKID)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+                if (String.Compare(mu.UserName, User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    throw new InvalidOperationException("Don't delete your own flights here, silly!");
+
+                ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.OnlyFlights);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteUserAccount(string szPKID)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+                if (String.Compare(mu.UserName, User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    throw new InvalidOperationException("Don't delete your own account here, silly!");
+
+                ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.EntireUser);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Disable2FA(string szPKID)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+                Profile pf = MyFlightbook.Profile.GetUser(mu.UserName);
+                if (!pf.PreferenceExists(MFBConstants.keyTFASettings))
+                    throw new InvalidOperationException("2fa was not on for user " + mu.UserName);
+
+                pf.SetPreferenceForKey(MFBConstants.keyTFASettings, null, true);
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult EndowClubCreation(string szPKID)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+                DBHelper dbh = new DBHelper();
+                dbh.DoNonQuery("REPLACE INTO earnedgratuities SET idgratuitytype=3, username=?szUser, dateEarned=Now(), dateExpired=Date_Add(Now(), interval 30 day), reminderssent=0, dateLastReminder='0001-01-01 00:00:00'", (comm) => { comm.Parameters.AddWithValue("szUser", mu.UserName); });
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SendUserMessage(string szPKID, string szSubject, string szBody)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                MembershipUser mu = ProfileAdmin.UserFromPKID(szPKID);  // will throw an error if szPKID is empty or null
+
+                Profile pf = MyFlightbook.Profile.GetUser(mu.UserName);
+                util.NotifyUser(szSubject, szBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
         #region Misc - Props
         [HttpPost]
         [Authorize]
@@ -62,7 +177,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult UpdateInvalidSigs()
         {
-            return SafeOp(ProfileRoles.maskCanSupport, () => {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
                 if (Session[szSessKeyInvalidSigProgress] == null)
                     Session[szSessKeyInvalidSigProgress] = new { offset = 0, lstToFix = new List<LogbookEntryBase>(), lstAutoFix = new List<LogbookEntryBase>(), progress = string.Empty, additionalFlights = 0 };
 
@@ -78,7 +194,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     progress = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", state.offset, state.lstToFix.Count, state.lstAutoFix.Count)
                 };
                 Session[szSessKeyInvalidSigProgress] = newState;
-                return (ActionResult) Json(newState);
+                return (ActionResult)Json(newState);
             });
         }
 
@@ -86,13 +202,26 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult InvalidSigsResult()
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () => {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
                 dynamic state = Session[szSessKeyInvalidSigProgress];
                 Session[szSessKeyInvalidSigProgress] = null;
                 ViewBag.lstToFix = state.lstToFix;
                 ViewBag.lstAutoFix = state.lstAutoFix;
                 ViewBag.progress = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", state.offset, state.lstToFix.Count, state.lstAutoFix.Count);
                 return PartialView("_invalidSigs");
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult FixSignature(int idFlight, bool fForceValid)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () => {
+                LogbookEntry le = new LogbookEntry();
+                le.FLoadFromDB(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.None, true);
+                le.AdminSignatureSanityFix(fForceValid);
+                return new EmptyResult();
             });
         }
         #endregion
@@ -105,7 +234,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (dbg != 0 && !String.IsNullOrEmpty(userRestriction))
                 em.UserRestriction = userRestriction;
             if (!String.IsNullOrEmpty(tasksToRun))
-                em.TasksToRun = Enum.TryParse(tasksToRun, out EmailSubscriptionManager.SelectedTasks tasks) ?tasks : EmailSubscriptionManager.SelectedTasks.All;
+                em.TasksToRun = Enum.TryParse(tasksToRun, out EmailSubscriptionManager.SelectedTasks tasks) ? tasks : EmailSubscriptionManager.SelectedTasks.All;
             new Thread(new ThreadStart(em.NightlyRun)).Start();
         }
 
@@ -213,47 +342,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return await SafeOp(ProfileRoles.maskCanReport, async () =>
             {
-                IEnumerable<FlightsPerUserStats> lstFlightsPerUser = null;
-                DateTime? creationDate = null;
-                if (!String.IsNullOrEmpty(dateRange))
-                    creationDate = DateTime.Now.AddMonths(-Convert.ToInt32(dateRange, CultureInfo.InvariantCulture));
-
-                await Task.Run(() => { lstFlightsPerUser = FlightsPerUserStats.Refresh(creationDate); });
-
-                NumericBucketmanager bmFlightsPerUser = new NumericBucketmanager() { BucketForZero = true, BucketWidth = 100, BucketSelectorName = "FlightCount" };
-                HistogramManager hmFlightsPerUser = new HistogramManager()
-                {
-                    SourceData = lstFlightsPerUser,
-                    SupportedBucketManagers = new BucketManager[] { bmFlightsPerUser },
-                    Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
-                };
-
-                GoogleChartData flightsPerUserChart = new GoogleChartData
-                {
-                    Title = "Flights/user",
-                    XDataType = GoogleColumnDataType.@string,
-                    YDataType = GoogleColumnDataType.number,
-                    XLabel = "Flights/User",
-                    YLabel = "Users - All",
-                    SlantAngle = 90,
-                    Width = 1000,
-                    Height = 500,
-                    ChartType = GoogleChartType.ColumnChart,
-                    ContainerID = "flightsPerUserDiv",
-                    TickSpacing = (uint)((lstFlightsPerUser.Count() < 20) ? 1 : (lstFlightsPerUser.Count() < 100 ? 5 : 10))
-                };
-
-                bmFlightsPerUser.ScanData(hmFlightsPerUser);
-
-                using (DataTable dt = bmFlightsPerUser.ToDataTable(hmFlightsPerUser))
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        flightsPerUserChart.XVals.Add((string)dr["DisplayName"]);
-                        flightsPerUserChart.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
-                    }
-                }
-                ViewBag.flightsPerUserChart = flightsPerUserChart;
+                ViewBag.flightsPerUserChart = await FlightsPerUserStats.FlightsPerUserChart(dateRange);
                 return PartialView("_userActivity");
             });
         }
@@ -455,7 +544,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 ViewBag.brokenImages = MFBImageAdmin.BrokenImages();
                 return View("adminImages");
-            } else
+            }
+            else
             {
                 ViewBag.imageClass = result;
                 ViewBag.skip = skip;    // set a starting point for images...
@@ -525,7 +615,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     Answer = Answer,
                     idFAQ = idFaq
                 };
-                    fi.Commit();
+                fi.Commit();
                 return new EmptyResult();
             });
         }

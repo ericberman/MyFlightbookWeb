@@ -89,7 +89,7 @@ function trimLeadingN(sender, idAircraft) {
         {
             url: '/logbook/mvc/AdminAircraft/TrimLeadingN',
             type: "POST", data: d, dataType: "text", contentType: "application/json",
-            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            error: function (xhr) { window.alert(xhr.responseText); },
             success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
         });
 }
@@ -156,13 +156,10 @@ function unlockUser(sender, szUser) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/UnlockUser',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/Admin/UnlockUser',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () {
                 sender.disabled = true;
                 window.alert("User " + szUser + " UNLOCKED");
             }
@@ -176,13 +173,10 @@ function resetPassword(sender, szUserPKID, szUser) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/ResetPasswordForUser',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/Admin/ResetPasswordForUser',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () {
                 sender.disabled = true;
                 window.alert("Password reset and email sent for user " + szUser);
             }
@@ -199,13 +193,10 @@ function deleteUser(sender, szUserPKID, szUser, szEmail) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/DeleteUserAccount',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/Admin/DeleteUserAccount',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () {
                 sender.disabled = true;
                 window.alert("User " + szUser + " (" + szEmail + ") account deleted");
             }
@@ -221,13 +212,12 @@ function deleteFlightsForUser(sender, szUserPKID, szUser, szEmail) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/DeleteFlightsForUser',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
+            url: '/logbook/mvc/Admin/DeleteFlightsForUser',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) {
+                window.alert(xhr.responseText);
             },
-            complete: function (response) { },
-            success: function (response) {
+            success: function () {
                 sender.disabled = true;
                 window.alert("FLIGHTS for user " + szUser + " (" + szEmail + ") successfully deleted");
             }
@@ -241,13 +231,10 @@ function disable2FAForUser(sender, szUserPKID, szUser) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/Disable2FA',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/Admin/Disable2FA',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () {
                 sender.disabled = true;
                 window.alert("2fa turned off for user " + szUser);
             }
@@ -261,13 +248,10 @@ function endowClubCreation(sender, szUserPKID) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/EndowClubCreation',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/Admin/EndowClubCreation',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () {
                 sender.disabled = true;
                 window.alert("Club creation endowment bestowed!")
             }
@@ -282,12 +266,9 @@ function adminFixSignature(idFlight, forceValid) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/FixSignature',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { window.location = window.location; }
+            url: '/logbook/mvc/Admin/FixSignature',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () { window.location = window.location; }
         });
 }
