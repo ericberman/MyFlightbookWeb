@@ -53,6 +53,11 @@ namespace MyFlightbook.Web.Areas.mvc
                 new { controller = "Image", action = "UploadEndorsement" }
             );
             context.MapRoute(
+                "oldPaypalIPN",
+                "public/PaypalIPNListener.aspx",
+                new { controller = "Donate", action = "PaypalNotify" }
+            );
+            context.MapRoute(
                 "oldDefault",
                 "default.aspx",
                 new { controller = "Pub", action = "Index" }

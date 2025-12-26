@@ -1384,7 +1384,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
     <Content Include="Public\Scripts\CopyClipboard.js" />
@@ -1994,13 +1993,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\PaypalIPNListener.aspx.cs">
-      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
-      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Content.en\Email\Web.config" />
