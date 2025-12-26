@@ -6,7 +6,7 @@
     ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     ModelQuery mq = ViewBag.mq;
 }
-<script src='@VirtualPathUtility.ToAbsolute("~/public/Scripts/endless-scroll.js")'></script>
+<script src='@VirtualPathUtility.ToAbsolute("~/Public/Scripts/endless-scroll.js")'></script>
 <script type="text/javascript">
     var limit = @mq.Limit;
     var queryJSON = '@Html.Raw(Json.Encode(mq))';

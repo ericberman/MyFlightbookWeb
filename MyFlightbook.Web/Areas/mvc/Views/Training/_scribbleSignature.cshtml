@@ -4,8 +4,8 @@
     string saveFunc = ViewBag.saveFunc;
     string cancelFunc = ViewBag.cancelFunc;
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/signature.js?v=3")"></script>
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/Scripts/todataurl-png.js")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/signature.js?v=3")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/todataurl-png.js")"></script>
 <script>
     $(() => {
         var signature = new ns.SignatureControl({ imgDataControlId: "hdnSigData", clearControlId: "btnClear", watermarkX: 250, watermarkY: 90, watermarkHREF: "@watermarkRef", strokeColor: "@colorRef" });
