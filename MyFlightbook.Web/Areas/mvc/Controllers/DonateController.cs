@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -95,6 +96,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
 
             return new HttpStatusCodeResult(StripeUtility.ProcessStripeNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, Request["version"] ?? StripeUtility.ORIGINAL_API_VERSION, json));
+        }
+        #endregion
+
+        #region Paypal donations
+        [HttpPost]
+        public ActionResult PaypalNotify()
+        {
+            PayPalIPN.ProcessIPNNotification(Request);
+            return new EmptyResult();
         }
         #endregion
 

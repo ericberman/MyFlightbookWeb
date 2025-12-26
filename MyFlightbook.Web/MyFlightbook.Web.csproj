@@ -1321,7 +1321,6 @@
     <Content Include="Public\AndroidImages\Android5.png" />
     <Content Include="Public\AndroidImages\Android6.png" />
     <Content Include="Public\AndroidImages\Android7.png" />
-    <Content Include="Public\AWS-SNSListener.aspx" />
     <Content Include="Public\ClubsManual_files\image015.png" />
     <Content Include="Public\ClubsManual_files\image016.png" />
     <Content Include="Public\ClubsManual_files\image017.jpg" />
@@ -1642,6 +1641,7 @@
     <Content Include="Public\Fonts\web.config" />
     <Content Include="Areas\mvc\Views\Print\_footerLandingDesc.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\sessionExpired.cshtml" />
+    <Content Include="Areas\mvc\Views\Image\snsListener.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1994,13 +1994,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\AWS-SNSListener.aspx.cs">
-      <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\AWS-SNSListener.aspx.designer.cs">
-      <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Public\PaypalIPNListener.aspx.cs">
       <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

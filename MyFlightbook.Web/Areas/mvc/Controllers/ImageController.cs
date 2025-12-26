@@ -1,9 +1,11 @@
-﻿using ImageMagick;
+﻿using AWSNotifications;
+using ImageMagick;
 using MyFlightbook.Clubs;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
 using OAuthAuthorizationServer.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -349,6 +351,53 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region AWS SNS Notifications
+        [HttpGet]
+        [Authorize]
+        public ActionResult TestAWSSNSNotify()
+        {
+            return View("snsListener");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        [ActionName("TestAWSSNSNotify")]
+        public ActionResult TestAWSSNSNotifyPost()
+        {
+            string szAction = Request["btnSubmit"] ?? string.Empty;
+            string szJSON = Request["txtTestJSONData"] ?? string.Empty;
+            ViewBag.postedJSON = szJSON;
+            ViewBag.result = "No errors found";
+            try
+            {
+                switch (szAction)
+                {
+                    case "Subscribe":
+                        SNSUtility.SendTestPost(szJSON, "SubscriptionConfirmation", "~/mvc/Image/AWSSNSListener".ToAbsoluteURL(Request));
+                        break;
+                    case "Notify":
+                        SNSUtility.SendTestPost(JsonConvert.SerializeObject(new SNSNotification() { Message = szJSON }), "Notification", "~/mvc/Image/AWSSNSListener".ToAbsoluteURL(Request));
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unknown action '{szAction}'");
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                ViewBag.result = ex.Message;
+            }
+            return View("snsListener");
+        }
+
+        [HttpPost]
+        public ActionResult AWSSNSListener()
+        {
+            SNSUtility.ProcessAWSSNSMessage(Request.InputStream, Request.Headers["x-amz-sns-message-type"]);
+            return Content("OK");
+        }
+        #endregion
+
         #region displaying of images
         [ChildActionOnly]
         public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
@@ -443,7 +492,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fKey = (long.TryParse(new Encryptors.SharedDataEncryptor().Decrypt(key ?? string.Empty), out long ticks) && utcNow - ticks > 0 && TimeSpan.FromTicks(utcNow - ticks).TotalMinutes < 5);
 
             Profile pf = MyFlightbook.Profile.GetUser(id);
-            return fKey && pf.HasHeadShot ? (ActionResult) File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
+            return fKey && pf.HasHeadShot ? (ActionResult)File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
 
 
         }

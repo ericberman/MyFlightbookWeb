@@ -1,5 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Image;
+using Newtonsoft.Json;
 using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -7,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -126,6 +130,84 @@ namespace AWSNotifications
             else
             {
                 return false;
+            }
+        }
+
+        public static T ReadJSONObject<T>(Stream stream)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            stream.Seek(0, System.IO.SeekOrigin.Begin);
+            using (var r = new StreamReader(stream))
+            {
+                var inputString = r.ReadToEnd();
+                return (T)JsonConvert.DeserializeObject<T>(inputString);
+            }
+        }
+
+        public static void ProcessAWSSNSMessage(Stream stream, string szMessageType)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            switch ((szMessageType ?? string.Empty).ToUpperInvariant())
+            {
+                case "NOTIFICATION":
+                    SNSNotification snsNotification = ReadJSONObject<SNSNotification>(stream);
+                    if (String.IsNullOrEmpty(snsNotification.Signature) || snsNotification.VerifySignature())
+                    {
+                        // simply creating the object will do all that is necessary.
+                        if (new MFBImageInfo(snsNotification) == null)
+                        { }
+                    }
+                    break;
+                case "SUBSCRIPTIONCONFIRMATION":
+                    {
+                        SNSSubscriptionConfirmation snsSubscription = ReadJSONObject<SNSSubscriptionConfirmation>(stream);
+
+                        // Visit the URL to confirm it.
+                        if (snsSubscription.VerifySignature())
+                        {
+                            using (WebClient wc = new WebClient())
+                            {
+                                byte[] rgdata = wc.DownloadData(snsSubscription.SubscribeLink);
+                                _ = Encoding.UTF8.GetString(rgdata);
+                            }
+                        }
+                    }
+                    break;
+                case "UNSUBSCRIBECONFIRMATION":
+                    // Nothing to do for now.
+                    break;
+                default:
+                    // Test messages/etc. can go here.
+                    break;
+            }
+        }
+
+        public static void SendTestPost(string szContent, string snsMessageType, Uri uri)
+        {
+            var hr = (HttpWebRequest) HttpWebRequest.Create(uri);
+            hr.Method = "POST";
+            hr.Headers.Add(String.Format(CultureInfo.InvariantCulture, "x-amz-sns-message-type: {0}", snsMessageType));
+            hr.Headers.Add("x-amz-sns-message-id: xxx");
+            hr.Headers.Add("x-amz-sns-message-id: yyy");
+            hr.ContentType = "text/plain; charset=UTF-8";
+
+            byte[] rgBytes = Encoding.UTF8.GetBytes(szContent);
+            hr.ContentLength = rgBytes.Length;
+            hr.Timeout = 10000;
+
+            using (Stream RequestStream = hr.GetRequestStream())
+            {
+                {
+                    RequestStream.Write(rgBytes, 0, rgBytes.Length);
+                    using (WebResponse wr = hr.GetResponse())
+                    {
+                        // nothing to do here.
+                    }
+                }
             }
         }
     }
