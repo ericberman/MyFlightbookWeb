@@ -551,7 +551,6 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
-    <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="HTTP403.htm" />
     <Content Include="HTTP404.htm" />
@@ -766,6 +765,7 @@
     <Content Include="images\xlicon_med.png" />
     <Content Include="images\xml.gif" />
     <Content Include="images\zip_med.png" />
+    <Content Include="index.htm" />
     <Content Include="Public\CSS\day.css" />
     <Content Include="Public\CSS\holdprogress.css" />
     <Content Include="Public\CSS\homepage.css" />
@@ -1313,7 +1313,6 @@
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
     <Content Include="NavLinks.xml" />
-    <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="Private\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
@@ -1332,7 +1331,6 @@
     <Content Include="Public\ClubsManual_files\image022.jpg" />
     <Content Include="Public\ClubsManual_files\image023.jpg" />
     <Content Include="Public\ClubsManual_files\updatehours.png" />
-    <Content Include="Public\CrashReport.aspx" />
     <Content Include="Public\CSS\ChecklistBase.css" />
     <Content Include="Public\CSS\jqueryuimods.css" />
     <Content Include="Public\CSS\mfbheader.css" />
@@ -1386,7 +1384,6 @@
     <Content Include="Public\iPhoneImages\iPhone6.png" />
     <Content Include="Public\iPhoneImages\iPhone7.png" />
     <Content Include="Public\iPhoneImages\iPhone8.png" />
-    <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\Scripts\aircraftcontext.js" />
     <Content Include="Public\Scripts\autoinsert.js" />
     <Content Include="Public\Scripts\CopyClipboard.js" />
@@ -1410,10 +1407,6 @@
     <Content Include="Public\tabimages\LogbookTab.png" />
     <Content Include="Public\tabimages\ProfileTab.png" />
     <Content Include="Public\tabimages\TrainingTab.png" />
-    <Content Include="Public\UploadAirplanePicture.aspx" />
-    <Content Include="Public\UploadEndorsement.aspx" />
-    <Content Include="Public\UploadPicture.aspx" />
-    <Content Include="Public\ViewPublicFlight.aspx" />
     <Content Include="Public\WebService.asmx" />
     <Content Include="Areas\mvc\Views\AdminAircraft\_modelsTable.cshtml" />
     <Content Include="Areas\mvc\Views\AdminAircraft\_mergeModelsPreview.cshtml" />
@@ -1996,73 +1989,15 @@
     <Compile Include="Areas\mvc\Controllers\SearchController.cs" />
     <Compile Include="Areas\mvc\Controllers\TrainingController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="OAuth\oAuthToken.aspx.cs">
-      <DependentUpon>oAuthToken.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="OAuth\oAuthToken.aspx.designer.cs">
-      <DependentUpon>oAuthToken.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\CrashReport.aspx.cs">
-      <DependentUpon>CrashReport.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\CrashReport.aspx.designer.cs">
-      <DependentUpon>CrashReport.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\PaypalIPNListener.aspx.cs">
-      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
-      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadAirplanePicture.aspx.cs">
-      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadAirplanePicture.aspx.designer.cs">
-      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadEndorsement.aspx.cs">
-      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadEndorsement.aspx.designer.cs">
-      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\UploadPicture.aspx.cs">
-      <DependentUpon>UploadPicture.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\UploadPicture.aspx.designer.cs">
-      <DependentUpon>UploadPicture.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Public\ViewPublicFlight.aspx.cs">
-      <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Public\ViewPublicFlight.aspx.designer.cs">
-      <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Content.en\Email\Web.config" />
     <Content Include="Logon\Web.config" />
     <Content Include="Member\Web.Config" />
-    <Content Include="OAuth\Web.config" />
     <Content Include="app.config" />
     <Content Include="appsettings.config" />
     <Content Include="App_Data\debug.config" />

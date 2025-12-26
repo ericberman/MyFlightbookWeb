@@ -301,7 +301,7 @@ namespace OAuthAuthorizationServer.Services
         /// <summary>
         /// The request object passed in
         /// </summary>
-        protected HttpRequest OriginalRequest { get; set; }
+        protected HttpRequestWrapper OriginalRequest { get; set; }
 
         /// <summary>
         /// For JSONP support rather than JSON, here's the callback function name.
@@ -330,10 +330,10 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Constructor
-        public OAuthServiceCall(HttpRequest request, string requestedService = null)
+        private void init(HttpRequestBase request, string requestedService = null)
         {
-            OriginalRequest = request ?? throw new ArgumentNullException(nameof(request));
-            ServiceCall = RequestedService(new HttpRequestWrapper(request), requestedService);
+            OriginalRequest = (HttpRequestWrapper)(request ?? throw new ArgumentNullException(nameof(request)));
+            ServiceCall = RequestedService(request, requestedService);
             ResponseCallback = util.GetStringParam(request, "callback");
             ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
@@ -354,6 +354,16 @@ namespace OAuthAuthorizationServer.Services
                     GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
                 }
             }
+        }
+
+        public OAuthServiceCall(HttpRequest request, string requestedService = null)
+        {
+            init(new HttpRequestWrapper(request), requestedService);
+        }
+
+        public OAuthServiceCall(HttpRequestBase request, string requestedService = null)
+        {
+            init(request, requestedService);
         }
         #endregion
 
@@ -557,71 +567,5 @@ namespace OAuthAuthorizationServer.Services
             }
         }
         #endregion
-    }
-
-    public abstract class UploadImagePage : System.Web.UI.Page
-    {
-        /// <summary>
-        /// Method to actually upload the image; this method will decide what to look for.
-        /// Basic validation and authentication has already been performed, but that's it.
-        /// </summary>
-        /// <param name="szUser"></param>
-        /// <param name="pf"></param>
-        /// <returns></returns>
-        protected abstract MFBImageInfo UploadForUser(string szUser, HttpPostedFile pf, string szComment);
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (String.Compare(Request.HttpMethod, "GET", StringComparison.OrdinalIgnoreCase) == 0)
-                return;
-
-            if (!Request.IsSecureConnection)
-                throw new HttpException((int)HttpStatusCode.Forbidden, "Image upload MUST be on a secure channel");
-
-            if (ShuntState.IsShunted)
-                throw new MyFlightbookException(ShuntState.ShuntMessage);
-
-            System.Web.UI.HtmlControls.HtmlInputFile imgPicture = (System.Web.UI.HtmlControls.HtmlInputFile)FindControl("imgPicture") ?? throw new MyFlightbookException("No control named 'imgPicture' found!");
-            string szErr = "OK";
-            string szAuth = Request.Form["txtAuthToken"];
-            try
-            {
-                if (String.IsNullOrEmpty(szAuth))
-                {
-                    // check for an oAuth token
-                    using (OAuthServiceCall service = new OAuthServiceCall(Request))
-                    {
-                        szAuth = service.GeneratedAuthToken;
-
-                        // Verify that you're allowed to modify images.
-                        if (!MFBOauthServer.CheckScope(service.Token.Scope, MFBOAuthScope.images))
-                            throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Requested action requires scope \"{0}\", which is not granted.", MFBOAuthScope.images.ToString()));
-                    }
-                }
-
-                string szUser = MFBWebService.GetEncryptedUser(szAuth);
-
-                if (string.IsNullOrEmpty(szUser))
-                    throw new MyFlightbookException(Resources.WebService.errBadAuth);
-
-                HttpPostedFile pf = imgPicture.PostedFile;
-                if (pf == null || pf.ContentLength == 0)
-                    throw new MyFlightbookException(Resources.WebService.errNoImageProvided);
-
-                // Upload the image, and then perform a pseudo idempotency check on it.
-                MFBImageInfo mfbii = UploadForUser(szUser, pf, Request.Form["txtComment"] ?? string.Empty);
-                mfbii.IdempotencyCheck();
-
-                EventRecorder.LogCall("Image Upload to {page}, user {user},  filename={filename}, contentType={contenttype}, size={size}, status={status}", Request.Path, szUser, imgPicture.PostedFile?.FileName ?? "(no file name)", imgPicture.PostedFile?.ContentType ?? "(no content type)", imgPicture.PostedFile.ContentLength, szErr);
-            }
-            catch (MyFlightbookException ex)
-            {
-                szErr = ex.Message;
-            }
-
-            Response.Clear();
-            Response.ContentType = "text/plain; charset=utf-8";
-            Response.Write(szErr);
-        }
     }
 }

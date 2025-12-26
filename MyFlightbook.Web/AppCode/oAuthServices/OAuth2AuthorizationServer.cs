@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2022 MyFlightbook LLC
+ * Copyright (c) 2016-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -264,7 +264,7 @@ namespace OAuthAuthorizationServer.Code
         {
             if (szCallback == null)
                 throw new ArgumentNullException(nameof(szCallback));
-            return String.Format(CultureInfo.InvariantCulture, "~/member/oAuthAuthorize.aspx?client_id={0}&redirect_uri={1}&scope={2}&response_type=code",
+            return String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/Authorize?client_id={0}&redirect_uri={1}&scope={2}&response_type=code",
                         System.Web.HttpUtility.UrlEncode(ClientIdentifier),
                         System.Web.HttpUtility.UrlEncode(szCallback),
                         System.Web.HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(System.Web.HttpContext.Current.Request);

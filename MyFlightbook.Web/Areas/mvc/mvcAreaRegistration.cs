@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,10 +20,49 @@ namespace MyFlightbook.Web.Areas.mvc
             }
         }
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public override void RegisterArea(AreaRegistrationContext context)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
+            // Old oAuthToken.aspx
+            context.MapRoute(
+                "oAuthToken",
+                "OAuth/oAuthToken.aspx/{id}",
+                new { controller = "OAuth", action = "OAuthResource", id = UrlParameter.Optional }
+            );
+            // Old viewPublicFlight
+            context.MapRoute(
+                "viewPublicFlight",
+                "public/ViewPublicFlight.aspx/{id}",
+                new { controller = "Pub", action = "ViewFlight", id = UrlParameter.Optional }
+            ); 
+            // Old upload Image routes
+            context.MapRoute(
+                "uploadFlightImage",
+                "public/UploadPicture.aspx",
+                new { controller = "Image", action = "UploadFlightImage" }
+            );
+            context.MapRoute(
+                "uploadAircraftImage",
+                "public/UploadAirplanePicture.aspx",
+                new { controller = "Image", action = "UploadAircraftImage" }
+            );
+            context.MapRoute(
+                "uploadEndorsementImage",
+                "public/UploadEndorsement.aspx",
+                new { controller = "Image", action = "UploadEndorsement" }
+            );
+            context.MapRoute(
+                "oldPaypalIPN",
+                "public/PaypalIPNListener.aspx",
+                new { controller = "Donate", action = "PaypalNotify" }
+            );
+            context.MapRoute(
+                "oldDefault",
+                "default.aspx",
+                new { controller = "Pub", action = "Index" }
+            );
+            // Remaining MVC routes
             context.MapRoute(
                 "mvc_allmakes",
                 "mvc/AllMakes/{idman}/{idmodel}",

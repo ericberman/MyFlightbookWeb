@@ -19,7 +19,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -117,7 +117,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return new EmptyResult();
         }
 
-        public ActionResult OAuthResource(string id)
+        public ActionResult OAuthResource(string id = null)
         {
             OAuthServiceCall.ProcessRequest(id);
             return new EmptyResult();
