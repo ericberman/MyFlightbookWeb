@@ -10,13 +10,10 @@ function makeDefault(sender, idAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/MakeDefault',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { sender.disabled = true; }
+            url: '/logbook/mvc/AdminAircraft/MakeDefault',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () { sender.disabled = true; }
         });
 }
 
@@ -26,13 +23,10 @@ function migrateGeneric(sender, idAircraft, onsuccess) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/MigrateGeneric',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { onsuccess(sender); }
+            url: '/logbook/mvc/AdminAircraft/MigrateGeneric',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () { onsuccess(sender); }
         });
 }
 
@@ -42,13 +36,10 @@ function migrateSim(sender, idAircraft, onsuccess) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/MigrateSim',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { onsuccess(sender); }
+            url: '/logbook/mvc/AdminAircraft/MigratePsuedoSim',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () { onsuccess(sender); }
         });
 }
 
@@ -58,13 +49,10 @@ function toggleLock(sender, idAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/ToggleLock',
+            url: '/logbook/mvc/AdminAircraft/ToggleLock',
             type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { window.alert(response.d ? "Aircraft is LOCKED" : "Aircraft is UNLOCKED"); }
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function (b) { window.alert(b ? "Aircraft is LOCKED" : "Aircraft is UNLOCKED"); }
         });
 }
 function mergeMain(sender, idAircraftToMerge, idTargetAircraft) {
@@ -74,13 +62,10 @@ function mergeMain(sender, idAircraftToMerge, idTargetAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/MergeAircraft',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) { location.reload(); }
+            url: '/logbook/mvc/AdminAircraft/MergeAircraft',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function () { location.reload(); }
         });
 }
 
@@ -90,12 +75,9 @@ function convertOandI(sender, idAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/ConvertOandI',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
+            url: '/logbook/mvc/AdminAircraft/ConvertOandI',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
             success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
         });
 }
@@ -105,12 +87,9 @@ function trimLeadingN(sender, idAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/TrimLeadingN',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
+            url: '/logbook/mvc/AdminAircraft/TrimLeadingN',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
         });
 }
@@ -121,12 +100,9 @@ function trimN0(sender, idAircraft) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/TrimN0',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
+            url: '/logbook/mvc/AdminAircraft/TrimN0',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
             success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
         });
 }
@@ -138,10 +114,10 @@ function ReHyphenate(sender, idAircraft, newTail, successTarget) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/ReHyphenate',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-            success: function (r) { successTarget.text(r.d); sender.val(r.d); }
+            url: '/logbook/mvc/AdminAircraft/ReHyphenate',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function (r) { successTarget.text(r); sender.val(r); }
         });
 }
 
@@ -150,13 +126,10 @@ function ignorePseudoGeneric(sender, idaircraft) {
     params.idAircraft = idaircraft;
     var d = JSON.stringify(params);
     $.ajax({
-        url: '/logbook/Admin/AdminService.asmx/IgnorePseudo',
-        type: "POST", data: d, dataType: "json", contentType: "application/json",
-        error: function (xhr, status, error) {
-            window.alert(xhr.responseJSON.Message);
-        },
-        complete: function (response) { },
-        success: function (response) { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
+        url: '/logbook/mvc/AdminAircraft/IgnorePseudo',
+        type: "POST", data: d, dataType: "text", contentType: "application/json",
+        error: function (xhr) { window.alert(xhr.responseText); },
+        success: function () { document.getElementById(sender).parentElement.parentElement.className = 'handled'; }
     });
 }
 function viewFlights(idAircraft, tail) {
@@ -165,15 +138,12 @@ function viewFlights(idAircraft, tail) {
     var d = JSON.stringify(params);
     $.ajax(
         {
-            url: '/logbook/Admin/AdminService.asmx/ViewFlights',
-            type: "POST", data: d, dataType: "json", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
-            },
-            complete: function (response) { },
-            success: function (response) {
+            url: '/logbook/mvc/AdminAircraft/ViewFlights',
+            type: "POST", data: d, dataType: "text", contentType: "application/json",
+            error: function (xhr) { window.alert(xhr.responseText); },
+            success: function (h) {
                 var div = $("#pnlFlightContent");
-                div.html(response.d);
+                div.html(h);
                 div.dialog({ autoOpen: false, closeOnEscape: true, height: 400, width: 350, modal: true, title: "Flights for aircraft " + tail });
                 div.dialog("open");
             }
