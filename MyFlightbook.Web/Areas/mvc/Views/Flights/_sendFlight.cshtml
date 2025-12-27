@@ -27,7 +27,7 @@
 
     function popSendFormForFlight(le) {
         // Bind the relevant fields above
-        $("#sendFlightDate").text(convertFdUpJsonDate(le.Date).toLocaleDateString());
+        $("#sendFlightDate").text(new Date(le.Date).toLocaleDateString());
         $("#sendFlightTail").text(le.TailNumDisplay);
         $("#sendFlightRoute").text(le.Route);
         $("#sendFlightComment").text(le.Comment);
