@@ -444,7 +444,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\AdminService.asmx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
     <Content Include="App_Data\connection.config" />
@@ -1663,9 +1662,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppCode\Admin\AdminWebServices.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
     <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
     <Compile Include="AppCode\Aircraft\Checklist.cs" />
@@ -2011,7 +2007,6 @@
     <Content Include="Public\MyFlightbook backup.xls" />
     <Content Include="Public\Web.config" />
     <Content Include="LICENSE" />
-    <Content Include="Admin\Web.Config" />
     <Content Include="Areas\mvc\Views\web.config" />
     <Content Include="Areas\mvc\Views\_ViewStart.cshtml" />
     <Content Include="Areas\mvc\Views\Shared\_Layout.cshtml" />

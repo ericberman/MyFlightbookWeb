@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -301,6 +301,69 @@ namespace MyFlightbook.Airports
 
                 return lst;
             }
+        }
+
+        public static bool AirportImportRowCommand(airportImportCandidate aic, string source, string szCommand)
+        {
+            if (aic == null)
+                throw new ArgumentNullException(nameof(aic));
+            if (szCommand == null)
+                throw new ArgumentNullException(nameof(szCommand));
+
+            AirportImportRowCommand airc = (AirportImportRowCommand)Enum.Parse(typeof(AirportImportRowCommand), szCommand);
+            AirportImportSource ais = (AirportImportSource)Enum.Parse(typeof(AirportImportSource), source);
+
+            airport ap = null;
+            switch (ais)
+            {
+                case AirportImportSource.FAA:
+                    ap = aic.FAAMatch;
+                    break;
+                case AirportImportSource.ICAO:
+                    ap = aic.ICAOMatch;
+                    break;
+                case AirportImportSource.IATA:
+                    ap = aic.IATAMatch;
+                    break;
+            }
+
+            switch (airc)
+            {
+                case Airports.AirportImportRowCommand.FixLocation:
+                    ap.LatLong = aic.LatLong;
+                    ap.FCommit(true, false);
+                    if (!String.IsNullOrWhiteSpace(aic.Country))
+                        ap.SetLocale(aic.Country, aic.Admin1);
+                    break;
+                case Airports.AirportImportRowCommand.FixType:
+                    ap.FDelete(true);   // delete the existing one before we update - otherwise REPLACE INTO will not succeed (because we are changing the REPLACE INTO primary key, which includes Type)
+                    ap.FacilityTypeCode = aic.FacilityTypeCode;
+                    ap.FCommit(true, true); // force this to be treated as a new airport
+                    break;
+                case Airports.AirportImportRowCommand.Overwrite:
+                case Airports.AirportImportRowCommand.AddAirport:
+                    if (airc == Airports.AirportImportRowCommand.Overwrite)
+                        ap.FDelete(true);   // delete the existing airport
+
+                    switch (ais)
+                    {
+                        case AirportImportSource.FAA:
+                            aic.Code = aic.FAA;
+                            break;
+                        case AirportImportSource.ICAO:
+                            aic.Code = aic.ICAO;
+                            break;
+                        case AirportImportSource.IATA:
+                            aic.Code = aic.IATA;
+                            break;
+                    }
+                    aic.Code = RegexUtility.NonAlphaNumeric.Replace(aic.Code, string.Empty);
+                    aic.FCommit(true, true);
+                    if (!String.IsNullOrWhiteSpace(aic.Country))
+                        aic.SetLocale(aic.Country, aic.Admin1);
+                    break;
+            }
+            return true;
         }
     }
 }

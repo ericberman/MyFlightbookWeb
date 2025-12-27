@@ -1445,6 +1445,40 @@ limit ?start, ?count", szLimit, String.IsNullOrWhiteSpace(dupeSeed) ? "having nu
             szAudit = AuditString.ToString();
             szCommands = UpdateString.ToString();
         }
+
+        /// <summary>
+        /// Given a prefix, suggests country names up to the specified limit
+        /// </summary>
+        /// <param name="prefixText">Prefix</param>
+        /// <param name="count">Max # to return</param>
+        /// <returns>Country name</returns>
+        public static IEnumerable<string> SuggestCountries(string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT distinct Country from Airports where Country like ?prefix ORDER BY Country ASC LIMIT ?count");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
+                (dr) => { lst.Add((string)dr["Country"]); });
+            return lst;
+        }
+
+        /// <summary>
+        /// Given a prefix, suggests administrative regions ("admin1" - a state or province level) up to the specified limit
+        /// </summary>
+        /// <param name="prefixText">Prefix</param>
+        /// <param name="count">Max # to return</param>
+        /// <returns>Admin1  name</returns>
+        public static IEnumerable<string> SuggestAdmin1(string prefixText, int count)
+        {
+            if (String.IsNullOrEmpty(prefixText))
+                return Array.Empty<string>();
+            List<string> lst = new List<string>();
+            DBHelper dbh = new DBHelper("SELECT distinct Admin1 from Airports where Admin1 like ?prefix ORDER BY Admin1 ASC LIMIT ?count");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", "%" + prefixText + "%"); comm.Parameters.AddWithValue("count", count); },
+                (dr) => { lst.Add((string)dr["Admin1"]); });
+            return lst;
+        }
         #endregion
     }
 

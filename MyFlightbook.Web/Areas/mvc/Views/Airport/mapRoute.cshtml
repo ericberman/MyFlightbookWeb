@@ -64,16 +64,14 @@
             var d = JSON.stringify(params);
             $.ajax(
                 {
-                    url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/VisitedRoutesForRoute")',
-                    type: "POST", data: d, dataType: "html", contentType: "application/json",
-                    error: function (xhr, status, error) {
-                        window.alert(xhr.responseJSON.Message);
-                    },
+                    url: '@VirtualPathUtility.ToAbsolute("~/mvc/Airport/VisitedRoutesForRoute")',
+                    type: "POST", data: d, dataType: "json", contentType: "application/json",
+                    error: function (xhr) { window.alert(xhr.responseText); },
                     complete: function (response) {
                         $('#imgProgress').toggle();
                     },
-                    success: function (response) {
-                        activeRoute = JSON.parse(response).d;
+                    success: function (ar) {
+                        activeRoute = ar;
                         RenderVisitedRoutes();
                     }
                 });

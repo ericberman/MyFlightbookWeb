@@ -159,9 +159,75 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.allowBlast = util.GetIntParam(Request, "blast", 0) != 0;
             return View("addEditAirport");
         }
+
+        #region Admin airport management
+        [Authorize]
+        [HttpPost]
+        public ActionResult UseGuess(string szCode, string szTypeCode, string szCountry, string szAdmin)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                if (String.IsNullOrEmpty(szCode))
+                    throw new ArgumentNullException(nameof(szCode));
+                List<airport> lst = new List<airport>();
+                lst.AddRange(airport.AirportsMatchingCodes(new string[] { szCode }));
+                lst.RemoveAll(ap1 => ap1.FacilityTypeCode.CompareOrdinalIgnoreCase(szTypeCode) != 0);
+                if (lst.Count == 1)
+                    lst[0].SetLocale(szCountry, szAdmin);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Finds potentially duplicate airports for review that can be reviewed to coalesce or mark one as preferred
+        /// </summary>
+        /// <param name="start">Starting point</param>
+        /// <param name="count">Number to return</param>
+        /// <param name="dupeSeed">If provided, limits to dupes near this "seed" airport.</param>
+        /// <returns>Array of airport clusters, where each cluster is a list of airports that looke like aliases of one another</returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult GetDupeAirports(int start, int count, string dupeSeed)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return Json(AdminAirport.GetDupeAirports(start, count, dupeSeed));
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult AirportImportCommand(airportImportCandidate aic, string source, string szCommand)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return Json(airportImportCandidate.AirportImportRowCommand(aic, source, szCommand));
+            });
+        }
+        #endregion
         #endregion
 
         #region Admin - Airport Geocoder
+        [Authorize]
+        [HttpPost]
+        public ActionResult SuggestCountries(string prefixText, int count)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return Json(AdminAirport.SuggestCountries(prefixText, count));
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SuggestAdmin(string prefixText, int count)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                return Json(AdminAirport.SuggestAdmin1(prefixText, count));
+            });
+        }
+
         [Authorize]
         [HttpPost]
         public ActionResult GeotTagFromGPX()
@@ -264,6 +330,69 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
+        #region Duplicate Management
+        /// <summary>
+        /// Deletes a user airport that matches a built-in airport
+        /// </summary>
+        /// <returns>0 if unknown.</returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                AdminAirport.DeleteUserAirport(idDelete, idMap, szUser, szType);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Sets the preferred flag for an airport
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public ActionResult SetPreferred(string szCode, string szType, bool fPreferred)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+                ap.SetPreferred(fPreferred);
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Makes a user-defined airport native (i.e., eliminates the source username; accepted as a "true" airport)
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public ActionResult MakeNative(string szCode, string szType)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+                ap.MakeNative();
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Copies the latitude/longitude from the source airport to the target airport.
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public ActionResult MergeWith(string szCodeTarget, string szTypeTarget, string szCodeSource)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
+                AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
+                apTarget.MergeFrom(apSource);
+                return new EmptyResult();
+            });
+        }
+        #endregion
+
         #region AirportQuiz
         [ChildActionOnly]
         public ActionResult QuizStatusForAnswer(AirportQuiz q, AirportQuizQuestion question, int answerIndex)
@@ -289,7 +418,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             AirportQuiz q = (AirportQuiz)Session[quizRef];
             if (q == null)
             {
-                Response.StatusCode = (int) HttpStatusCode.ExpectationFailed;
+                Response.StatusCode = (int)HttpStatusCode.ExpectationFailed;
                 Response.TrySkipIisCustomErrors = true;
                 return Content(Resources.LocalizedText.AirportGameNotFound);
             }
@@ -352,7 +481,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.questionCount = Math.Min(Math.Max(questionCount, 1), 30);
             ViewBag.skipIntro = SkipIntro;
             ViewBag.anon = anon;
-            
+
             return View("game");
         }
         #endregion
@@ -444,7 +573,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fShowRoute = util.GetIntParam(Request, "path", 0) != 0;
             GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
             {
-                Airports = AirportList.PathsForQuery(fq, alMatches,fShowRoute)
+                Airports = AirportList.PathsForQuery(fq, alMatches, fShowRoute)
             };
             map.Options.fShowRoute = fShowRoute;
             ViewBag.Map = map;
@@ -506,7 +635,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
         {
             IEnumerable<airport> result = Request.IsLocal || (Request.UrlReferrer?.Host ?? string.Empty).EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase) ?
-                airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports) : 
+                airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports) :
                 Array.Empty<airport>();
 
             return Json(result);
@@ -561,10 +690,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetVisitedRoutesDownload() 
+        public ActionResult GetVisitedRoutesDownload()
         {
-            VisitedRoute vr = (VisitedRoute) Session[sessKeyXMLDownload];
-            return (vr == null) ? (ActionResult) Content("No visited routes to download") : File(vr.SerializeXML().UTF8Bytes(), "text/xml", "visitedroutes.xml");
+            VisitedRoute vr = (VisitedRoute)Session[sessKeyXMLDownload];
+            return (vr == null) ? (ActionResult)Content("No visited routes to download") : File(vr.SerializeXML().UTF8Bytes(), "text/xml", "visitedroutes.xml");
         }
 
         [HttpPost]
@@ -582,6 +711,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             VisitedRoute vr = sz.DeserializeFromXML<VisitedRoute>();
             return Content(JsonConvert.SerializeObject(vr));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult VisitedRoutesForRoute(string szRoute, int maxSegments = 10)
+        {
+            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            {
+                VisitedRoute vr = new VisitedRoute(szRoute);
+                vr.Refresh(maxSegments);
+                return Json(vr);
+            });
         }
         #endregion
 
@@ -689,7 +830,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.SearchTerm = searchText ?? "";
 
             return View("findAirports");
-        } 
+        }
 
         [ChildActionOnly]
         public ActionResult MapDiv(GoogleMap map)

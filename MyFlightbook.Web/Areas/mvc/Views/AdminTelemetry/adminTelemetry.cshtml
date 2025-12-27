@@ -17,12 +17,12 @@
         $('#prgBulkMigrate').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateDBToFiles")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { $('#prgBulkMigrate').toggle(); },
-                success: function (response) {
-                    $("#" + idStatus)[0].innerText = response.d;
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateDBToFiles")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                complete: function () { $('#prgBulkMigrate').toggle(); },
+                success: function (r) {
+                    $("#" + idStatus)[0].innerText = r;
                 }
             });
         return false;
@@ -36,12 +36,12 @@
         $('#prgBulkMigrate').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFilesToDB")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { $('#prgBulkMigrate').toggle(); },
-                success: function (response) {
-                    $("#" + idStatus)[0].innerText = response.d;
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateFilesToDB")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                complete: function () { $('#prgBulkMigrate').toggle(); },
+                success: function (r) {
+                    $("#" + idStatus)[0].innerText = r;
                 }
             });
         return false;
@@ -53,12 +53,12 @@
         $('#prgFindExceptions').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindDupeTelemetry")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { $('#prgFindExceptions').toggle(); },
-                success: function (response) {
-                    $("#" + idStatus)[0].innerHTML = response.d;
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindDupeTelemetry")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                complete: function () { $('#prgFindExceptions').toggle(); },
+                success: function (r) {
+                    $("#" + idStatus)[0].innerHTML = r;
                 }
             });
         return false;
@@ -70,12 +70,12 @@
         $('#prgFindExceptions').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindOrphanReferences")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { $('#prgFindExceptions').toggle(); },
-                success: function (response) {
-                    $("#" + idStatus)[0].innerHTML = response.d;
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindOrphanReferences")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                complete: function () { $('#prgFindExceptions').toggle(); },
+                success: function (r) {
+                    $("#" + idStatus)[0].innerHTML = r;
                 }
             });
         return false;
@@ -87,12 +87,12 @@
         $('#prgFindExceptions').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/FindOrphanedFiles")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { $('#prgFindExceptions').toggle(); },
-                success: function (response) {
-                    $("#" + idStatus)[0].innerHTML = response.d;
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindOrphanedFiles")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                complete: function () { $('#prgFindExceptions').toggle(); },
+                success: function (r) {
+                    $("#" + idStatus)[0].innerHTML = r;
                 }
             });
         return false;
@@ -104,12 +104,11 @@
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFlightToDisk")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
-                success: function (response) {
-                    window.alert(response.d);
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateFlightToDisk")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    window.alert(r);
                 }
             });
         return false;
@@ -121,12 +120,11 @@
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/MigrateFlightFromDisk")',
-                type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
-                success: function (response) {
-                    window.alert(response.d);
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateFlightFromDisk")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    window.alert(r);
                 }
             });
         return false;
@@ -152,13 +150,12 @@
         var d = JSON.stringify(params);
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/PathsForFlight")',
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/PathsForFlight")',
                 type: "POST", data: d, dataType: "json", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
+                error: function (xhr) { window.alert(xhr.responseText); },
                 success: function (response) {
-                    setPathForMap(mfbMapForContainerID("divMapRaw"), response.d.straight, response.d.boundingBox);
-                    setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.d.reconstituded, response.d.boundingBox);
+                    setPathForMap(mfbMapForContainerID("divMapRaw"), response.straight, response.boundingBox);
+                    setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.reconstituded, response.boundingBox);
                 }
             });
         return false;
@@ -174,23 +171,21 @@
         // The 2nd ajax then gets the data for the antipodes
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/UploadAntipodes")',
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/UploadAntipodes")',
                 type: "POST", data: formData, dataType: "text", contentType: false, processData: false,
-                error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                complete: function (response) { },
-                success: function (response) {
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function () {
                     // Now do the ajax call to actually get the data
                     var params = new Object();
                     params.fileName = fName;
                     var d = JSON.stringify(params);
                     $.ajax({
-                        url: '@VirtualPathUtility.ToAbsolute("~/Admin/AdminService.asmx/Antipodes")',
+                        url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/Antipodes")',
                         type: "POST", data: d, dataType: "json", contentType: "application/json",
-                        error: function (xhr, status, error) { window.alert(xhr.responseJSON.Message); },
-                        complete: function (response) { },
+                        error: function (xhr) { window.alert(xhr.responseText); },
                         success: function (response) {
-                            setPathForMap(mfbMapForContainerID("divMapRaw"), response.d.original, response.d.boundingBoxOriginal);
-                            setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.d.antipodes, response.d.boundingBoxAntipodes);
+                            setPathForMap(mfbMapForContainerID("divMapRaw"), response.original, response.boundingBoxOriginal);
+                            setPathForMap(mfbMapForContainerID("divMapReconstituted"), response.antipodes, response.boundingBoxAntipodes);
                         }
                     })
                 }
@@ -206,8 +201,8 @@
         $.ajax({
             url: '@Url.Action("TelemetryForUser", "AdminTelemetry")',
             type: "POST", data: d, dataType: "html", contentType: "application/json",
-            error: function (xhr, status, error) {
-                window.alert(xhr.responseJSON.Message);
+            error: function (xhr) {
+                window.alert(xhr.responseText);
             },
             complete: function (response) {
                 $("#prgGetTelemetry").toggle();

@@ -76,6 +76,11 @@ namespace MyFlightbook
         {
             return String.Format(CultureInfo.InvariantCulture, isNight ? "~/public/css/night.css?v=fdn{0}" : "~/public/css/day.css?v=fdn{0}", StyleSheetVer).ToAbsolute();
         }
+
+        public static string AdminAjaxScriptLink
+        {
+            get { return "~/Public/Scripts/adminajax.js?v=6".ToAbsolute(); }
+        }
     }
 
     public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
