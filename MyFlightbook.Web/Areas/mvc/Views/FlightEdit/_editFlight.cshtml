@@ -12,7 +12,7 @@
     string prevFlightHref = ViewBag.prevFlightHref;
     bool fAdminMode = ViewBag.fAdminMode;
     IEnumerable<MyFlightbook.Lint.FlightIssue> flightIssues = ViewBag.flightIssues;
-    List<Aircraft> rgAircraft = ViewBag.rgAircraft;
+    IEnumerable<Aircraft> rgAircraft = ViewBag.rgAircraft;
 
     List<dynamic> allAircraft = new List<dynamic>();
     foreach (Aircraft ac in rgAircraft)

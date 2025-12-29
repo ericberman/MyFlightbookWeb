@@ -600,6 +600,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_videoRefs");
         }
 
+        private IEnumerable<Aircraft> GetAircraftForFlightEditor(string targetUser, string viewer)
+        {
+            HashSet<Aircraft> aircraft = new HashSet<Aircraft>(new UserAircraft(targetUser).GetAircraftForUser());
+            // issue #1374: instructor adding to student should be able to add using instructor's aircraft, not just student's.
+            if (CheckCanViewFlights(targetUser, viewer)?.CanAddLogbook ?? false)
+            {
+                IEnumerable<Aircraft> instructorAircraft = new UserAircraft(viewer).GetAircraftForUser();
+                foreach (Aircraft ac in instructorAircraft)
+                    aircraft.Add(ac);
+            }
+            return aircraft;
+        }
+
         /// <summary>
         /// Renders the "meat" of the flight editor - JUST the fields of the flight.  This allows updating of the main fields (e.g., for autofill) without doing a full-page postback
         /// </summary>
@@ -622,16 +635,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pf = pf;
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = pfViewer;
-            HashSet<Aircraft> aircraft = new HashSet<Aircraft>(new UserAircraft(pfTarget.UserName).GetAircraftForUser());
-
-            // issue #1374: instructor adding to student should be able to add using instructor's aircraft, not just student's.
-            if (fAddStudent)
-            {
-                IEnumerable<Aircraft> instructorAircraft = new UserAircraft(pfViewer.UserName).GetAircraftForUser();
-                foreach (Aircraft ac in instructorAircraft)
-                    aircraft.Add(ac);
-            }
-            ViewBag.rgAircraft = aircraft;
+            ViewBag.rgAircraft = GetAircraftForFlightEditor(pfTarget.UserName, pfViewer.UserName);
             return PartialView("_editFlightBody");
         }
 
@@ -662,7 +666,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // If no aircraft ID provided, try using the last tail, if present, otherwise take the first one from their aircraft list that isn't hidden.
             le.AircraftID = BestLastTail(le.AircraftID, ua);
 
-            ViewBag.rgAircraft = new List<Aircraft>(ua.GetAircraftForUser());
+            ViewBag.rgAircraft = GetAircraftForFlightEditor(targetUser, User.Identity.Name);
             ViewBag.pf = pf;
             ViewBag.le = le;
             ViewBag.pfTarget = MyFlightbook.Profile.GetUser(targetUser);
