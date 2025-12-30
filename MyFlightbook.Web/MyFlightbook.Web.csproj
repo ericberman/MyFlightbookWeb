@@ -1800,7 +1800,6 @@
     <Compile Include="AppCode\Utility\Encryptor.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
     <Compile Include="AppCode\Utility\Histogram.cs" />
-    <Compile Include="AppCode\Utility\LocalConfig.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
     <Compile Include="AppCode\Utility\RegexUtility.cs" />
