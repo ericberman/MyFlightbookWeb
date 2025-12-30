@@ -699,7 +699,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string EscapeHTML(this string s)
+        private static string EscapeHTML(this string s)
         {
             return HttpUtility.HtmlEncode(s).Replace("&#39;", "'").Replace("&#9;", string.Empty);
         }
@@ -1157,11 +1157,6 @@ namespace MyFlightbook
               s.Contains("PORTABLE"));
         }
 
-        public static bool IsMobileDevice(this HttpRequest r)
-        {
-            return IsMobileDevice(new HttpRequestWrapper(r));
-        }
-
         /// <summary>
         /// Determines if this is a mobile session.  Pays attention to cookies and session state
         /// </summary>
@@ -1177,12 +1172,6 @@ namespace MyFlightbook
                    (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
         }
 
-        public static bool IsMobileSession(this HttpRequest r)
-        {
-            return IsMobileSession(new HttpRequestWrapper(r));
-        }
-
-
         /// <summary>
         /// IsMobileDevice OR iPad OR Android
         /// </summary>
@@ -1194,11 +1183,6 @@ namespace MyFlightbook
                 return false;
 
             return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
-        }
-
-        public static bool IsMobileDeviceOrTablet(this HttpRequest r)
-        {
-            return IsMobileDeviceOrTablet(new HttpRequestWrapper(r));
         }
         #endregion
 
@@ -1223,37 +1207,6 @@ namespace MyFlightbook
         /// <param name="kct"></param>
         /// <returns></returns>
         public static bool CanGraph(this Telemetry.KnownColumnTypes kct) { return kct != Telemetry.KnownColumnTypes.ctLatLong && kct != Telemetry.KnownColumnTypes.ctString; }
-        #endregion
-
-        #region HttpResponse extensions
-        public static void DownloadToFile(this HttpResponse response, string szContent, string szMime, string szFileName, string szFileExt)
-        {
-            if (response == null)
-                throw new ArgumentNullException(nameof(response));
-            response.Clear();
-            if (!String.IsNullOrEmpty(szMime))
-                response.ContentType = szMime;
-            // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", RegexUtility.UnSafeFileChars.Replace(szFileName, string.Empty), szFileExt);
-            response.AddHeader("Content-Disposition", szDisposition);
-            response.Write(szContent);
-            response.End();
-        }
-
-        public static void DownloadToFile(this HttpResponse response, byte[] rgb, string szMime, string szFileName, string szFileExt)
-        {
-            if (response == null)
-                throw new ArgumentNullException(nameof(response));
-            response.Clear();
-            if (!String.IsNullOrEmpty(szMime))
-                response.ContentType = szMime;
-            // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.{1}", RegexUtility.UnSafeFileChars.Replace(szFileName, string.Empty), szFileExt);
-            response.AddHeader("Content-Disposition", szDisposition);
-            response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
-            response.Write(System.Text.Encoding.UTF8.GetString(rgb));
-            response.End();
-        }
         #endregion
 
         #region Exception Extensions

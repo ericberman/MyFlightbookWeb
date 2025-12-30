@@ -217,18 +217,16 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szUser"></param>
         /// <returns></returns>
-        public IReadOnlyDictionary<FooterLinkKey, BrandLink> FooterLinks()
+        public IReadOnlyDictionary<FooterLinkKey, BrandLink> FooterLinks(bool fIsMobile, bool fIsSecure)
         {
             // only one brand link in mobile layout
-            if (HttpContext.Current != null && HttpContext.Current.Request.IsMobileSession())
+            if (fIsMobile)
                 return DefaultFooterLinksMobile;
 
             IDictionary<FooterLinkKey, BrandLink> d = DefaultFooterLinks;
 
-            string szUser = HttpContext.Current?.User?.Identity?.Name;
-
             // only offer RSS feed on a secure, authenticated connection.
-            if (!String.IsNullOrWhiteSpace(szUser) && (HttpContext.Current?.Request?.IsAuthenticated ?? false) && HttpContext.Current.Request.IsSecureConnection)
+            if (fIsSecure)
             {
                 d[FooterLinkKey.RSS] = new BrandLink()
                 {
