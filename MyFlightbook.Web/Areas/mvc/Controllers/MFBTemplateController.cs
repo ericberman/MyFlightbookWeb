@@ -275,7 +275,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return Content(string.Empty);
 
             IReadOnlyDictionary<Brand.FooterLinkKey, BrandLink> d;
-            ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks();
+            ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks(Request.IsMobileSession(), Request.IsAuthenticated && Request.IsSecureConnection);
 
             // Fix up any relative links
             foreach (BrandLink bl in d.Values)
@@ -283,8 +283,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 bl.LinkRef = FixLink(bl.LinkRef);
                 bl.ImageRef = FixLink(bl.ImageRef);
             }
-            // Be sure to use the correct httpcontext.current request - otherwise you get an httprequestbase, which doesn't work.
-            return PartialView(System.Web.HttpContext.Current.Request.IsMobileSession() ? "_footermobile" : "_footer");
+            return PartialView(Request.IsMobileSession() ? "_footermobile" : "_footer");
         }
 
         [ChildActionOnly]
@@ -379,14 +378,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");
 
             // We're going to set IsNight explicitly if it's in the url, but otherwise use the session object.
-            string nightRequest = util.GetStringParam(System.Web.HttpContext.Current.Request, "night");
+            string nightRequest = util.GetStringParam(Request, "night");
             if (nightRequest.CompareCurrentCultureIgnoreCase("yes") == 0)
                 IsNight = true;
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                 IsNight = false;
             ViewBag.IsNight = IsNight;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
-            ViewBag.MobileCSS = System.Web.HttpContext.Current.Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
+            ViewBag.MobileCSS = Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
             ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();
