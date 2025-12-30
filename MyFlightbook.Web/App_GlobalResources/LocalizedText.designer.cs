@@ -2223,15 +2223,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This file appears to be in Excel native format, not CSV.
-        /// </summary>
-        internal static string errImportXLSNotCSV {
-            get {
-                return ResourceManager.GetString("errImportXLSNotCSV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No flights were found..
         /// </summary>
         internal static string errNoMatchingFlightsFound {
@@ -4806,11 +4797,11 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to  &lt;h2&gt;%APP_NAME% Privacy Policy&lt;/h2&gt;
-        ///&lt;p&gt;Last updated: Dec 15 2025&lt;/p&gt;
+        ///&lt;p class=&quot;i&quot;&gt;Last updated: Dec 24 2025&lt;/p&gt;
         ///&lt;p&gt;&lt;span class=&quot;b&quot;&gt;TL;DR&lt;/span&gt; This Privacy Policy explains how %APP_NAME% handles personal data. We care about your privacy and minimize personal data collection:&lt;/p&gt;
         ///&lt;ul&gt;
         ///    &lt;li&gt;We only require an email address, password, and secret question/answer to create an account and use %APP_NAME%&amp;rsquo;s cloud-based logbook services.&lt;/li&gt;
-        ///    &lt;li&gt;%APP_NAME% is hosted in a secure environment and adheres to common security best practices.&lt;/li [rest of string was truncated]&quot;;.
+        ///    &lt;li&gt;%APP_NAME% is hosted in a secure environment and adheres to common security best prac [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Privacy {
             get {
@@ -4820,10 +4811,13 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to  &lt;h2&gt;Description of how your data is used on %APP_NAME%&lt;/h2&gt;
-        ///&lt;p&gt;Below is a detailed description of how your data is used on %APP_NAME%.  The purpose here is to answer questions about what happens with your data when you use a particular function of the service; it is NOT intended to be comprehensive&lt;/p&gt;
+        ///&lt;p&gt;Below is a detailed description of how your data is used on %APP_NAME%.  
+        ///    The purpose here is to answer questions about what happens with your data when you use a particular function of the service; it is NOT intended to be comprehensive.
+        ///&lt;/p&gt;
+        ///&lt;p&gt;The policy framework that guides this can be found &lt;a href=&quot;Privacy&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+        ///&lt;h2&gt;General&lt;/h2&gt;
         ///&lt;p&gt;
-        ///    By default, your flights are private.  If someone tries to access a flight that is not theirs and which is not explicitly marked as public,
-        ///    they will see a route of the flight but no informati [rest of string was truncated]&quot;;.
+        ///    By default, your flights are private.  If someone tries to access a flight that is  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PrivacyDataFeatures {
             get {

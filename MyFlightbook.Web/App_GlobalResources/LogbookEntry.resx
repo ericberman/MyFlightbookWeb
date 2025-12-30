@@ -817,39 +817,6 @@
   <data name="ApproachDescTemplate" xml:space="preserve">
     <value>{0} to runway {1} at {2}</value>
   </data>
-  <data name="csvAuditAppendedRowTooLong" xml:space="preserve">
-    <value>Row {0} has too many columns {1} to append to the prior row(s) (had {2} columns so far); will put that on a new row.</value>
-  </data>
-  <data name="csvauditColumnsFound" xml:space="preserve">
-    <value>Found {0} columns</value>
-  </data>
-  <data name="csvAuditEmptyRow" xml:space="preserve">
-    <value>Skipping empty row {0}, since it has no data</value>
-  </data>
-  <data name="csvAuditErrorFound" xml:space="preserve">
-    <value>Error parsing CSV: {0}</value>
-  </data>
-  <data name="csvAuditRowIncomplete" xml:space="preserve">
-    <value>Row {0} appears incomplete - has {1} columns, needs {2}; will append next row</value>
-  </data>
-  <data name="csvAuditRowMergedWithPrior" xml:space="preserve">
-    <value>Row {0} is being merged with prior row; has {1} columns; row is now complete!</value>
-  </data>
-  <data name="csvAuditSuccess" xml:space="preserve">
-    <value>All rows had the right number of columns; file looks fine</value>
-  </data>
-  <data name="csvAuditTotalRows" xml:space="preserve">
-    <value>{0} rows found in total</value>
-  </data>
-  <data name="errImportNoData" xml:space="preserve">
-    <value>Header row was found, but no rows of data were found.</value>
-  </data>
-  <data name="errImportNoHeaders" xml:space="preserve">
-    <value>First row must contain column headers.</value>
-  </data>
-  <data name="errImportTooManyColumns" xml:space="preserve">
-    <value>Row {0} has {1} columns; expected {2}; we will lose data.</value>
-  </data>
   <data name="importAuditHeader" xml:space="preserve">
     <value>Notes about file being imported</value>
   </data>

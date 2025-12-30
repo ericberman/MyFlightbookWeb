@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.CSV.Properties;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -72,7 +73,7 @@ namespace MyFlightbook.CSV
                     string[] rgszHeader = reader.GetCSVLine(true);
                     int cColumns = rgszHeader.Length;
                     if (cColumns == 0)
-                        throw new MyFlightbookValidationException(Resources.LogbookEntry.errImportNoHeaders);
+                        throw new CSVReaderInvalidCSVException(CSVResources.errImportNoHeaders);
 
                     // look for empty or duplicate columns
                     Dictionary<string, string> dictHeaders = new Dictionary<string, string>();
@@ -82,14 +83,14 @@ namespace MyFlightbook.CSV
                         string szH = sz.Trim();
                         iCol++;
                         if (String.IsNullOrWhiteSpace(szH))
-                            throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportEmptyColumn, iCol));
+                            throw new CSVReaderInvalidCSVException(String.Format(CultureInfo.CurrentCulture,  CSVResources.errImportEmptyColumn, iCol));
                         if (dictHeaders.ContainsKey(szH))
-                            throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportDuplicateColumn, sz));
+                            throw new CSVReaderInvalidCSVException(String.Format(CultureInfo.CurrentCulture, CSVResources.errImportDuplicateColumn, sz));
                         dictHeaders[szH] = szH;
                         Data.Columns.Add(new DataColumn(szH, typeof(string)));
                     }
 
-                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvauditColumnsFound, cColumns);
+                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvauditColumnsFound, cColumns);
                     sbAudit.AppendLine();
 
                     int iRow = 0;
@@ -102,7 +103,7 @@ namespace MyFlightbook.CSV
                         int cColsThisRow = rgszRow.Length;  // number of columns in this row
                         if (cColsThisRow == 0)
                         {
-                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditEmptyRow, iRow);
+                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditEmptyRow, iRow);
                             sbAudit.AppendLine();
                             continue;
                         }
@@ -111,13 +112,13 @@ namespace MyFlightbook.CSV
                         cColsSoFar += (cColsSoFar == 0 ? 0 : -1) + cColsThisRow; // if we've already got some columns in progress, subtract one to merge the first column of this row with the last column of the prior row.
                         if (cColsSoFar > cColumns)
                         {
-                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditAppendedRowTooLong, iRow, cColsThisRow, cColsSoFar);
+                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditAppendedRowTooLong, iRow, cColsThisRow, cColsSoFar);
                             sbAudit.AppendLine();
                             cColsSoFar = cColsStarting = 0;
                         }
 
                         if (rgszRow.Length > cColumns)
-                            throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportTooManyColumns, iRow, rgszRow.Length, cColumns));
+                            throw new CSVReaderInvalidCSVException(String.Format(CultureInfo.CurrentCulture, CSVResources.errImportTooManyColumns, iRow, rgszRow.Length, cColumns));
 
                         if (cColsStarting == 0)
                             Data.Rows.Add(Data.NewRow());
@@ -128,7 +129,7 @@ namespace MyFlightbook.CSV
                             if (cColsStarting == 0)
                                 dr[cColsStarting + i] = rgszRow[i];
                             else if (i == 0)
-                                dr[cColsStarting - 1] = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, dr[cColsStarting - 1], rgszRow[0]);
+                                dr[cColsStarting - 1] = dr[cColsStarting - 1] = String.Format(CultureInfo.CurrentCulture, CSVResources.localizedJoinWithSpace, dr[cColsStarting - 1], rgszRow[0]);
                             else
                                 dr[cColsStarting - 1 + i] = rgszRow[i];
                         }
@@ -137,7 +138,7 @@ namespace MyFlightbook.CSV
                         {
                             if (cColsStarting > 0)
                             {
-                                sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditRowMergedWithPrior, iRow, rgszRow.Length);
+                                sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditRowMergedWithPrior, iRow, rgszRow.Length);
                                 sbAudit.AppendLine();
                             }
                             cColsSoFar = 0;
@@ -145,20 +146,20 @@ namespace MyFlightbook.CSV
                         else if (rgszRow.Length < cColumns)
                         {
                             fShortRowsFound = true;
-                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditRowIncomplete, iRow, rgszRow.Length, cColumns);
+                            sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditRowIncomplete, iRow, rgszRow.Length, cColumns);
                             sbAudit.AppendLine();
                         }
                     }
 
                     if (Data.Rows.Count == 0) // no data rows found
-                        throw new MyFlightbookValidationException(Resources.LogbookEntry.errImportNoData);
+                        throw new CSVReaderInvalidCSVException(CSVResources.errImportNoData);
 
-                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditTotalRows, Data.Rows.Count);
+                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditTotalRows, Data.Rows.Count);
                     sbAudit.AppendLine();
 
                     if (!fShortRowsFound)
                     {
-                        sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditSuccess);
+                        sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditSuccess);
                         sbAudit.AppendLine();
                         return Status = CSVStatus.OK;
                     }
@@ -169,12 +170,7 @@ namespace MyFlightbook.CSV
                 }
                 catch (CSVReaderInvalidCSVException ex)
                 {
-                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditErrorFound, ex.Message);
-                    sbAudit.AppendLine();
-                }
-                catch (MyFlightbookValidationException ex)
-                {
-                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, Resources.LogbookEntry.csvAuditErrorFound, ex.Message);
+                    sbAudit.AppendFormat(CultureInfo.CurrentCulture, CSVResources.csvAuditErrorFound, ex.Message);
                     sbAudit.AppendLine();
                 }
             }

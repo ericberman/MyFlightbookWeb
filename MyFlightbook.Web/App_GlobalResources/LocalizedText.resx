@@ -959,9 +959,6 @@
   <data name="DownloadYourData" xml:space="preserve">
     <value>It's YOUR data, so we make sure that you can download it in whatever way works best for you.</value>
   </data>
-  <data name="errImportXLSNotCSV" xml:space="preserve">
-    <value>This file appears to be in Excel native format, not CSV</value>
-  </data>
   <data name="AnswerWhyCantEditLockedAircraft" xml:space="preserve">
     <value>This aircraft has been the subject of frequent back-and-forth edits among pilots, so it has been locked down by the site administrator.  Please check if an alternative version of the aircraft is already listed (below), or else use the "Contact Us" link and we can make things right.</value>
   </data>

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +20,7 @@ namespace MyFlightbook.CSV
     {
         public static string WriteToString(DataTable table, bool header, bool quoteall)
         {
-            using (StringWriter writer = new StringWriter(System.Globalization.CultureInfo.CurrentCulture))
+            using (StringWriter writer = new StringWriter(CultureInfo.CurrentCulture))
             {
                 WriteToStream(writer, table, header, quoteall);
                 return writer.ToString();

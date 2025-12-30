@@ -1,3 +1,4 @@
+using MyFlightbook.CSV.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -101,7 +102,7 @@ namespace MyFlightbook.CSV
             if (fInferSeparator && data.Length > 4 &&
                 ((data[0] == 'P' && data[1] == 'K' && data[2] == 3 && data[3] == 4) ||
                  (data[0] == 0xFFFD && data[1] == 0xFFFD)))
-                throw new CSVReaderInvalidCSVException(Resources.LocalizedText.errImportXLSNotCSV);
+                throw new CSVReaderInvalidCSVException(CSVResources.errImportXLSNotCSV);
             if (data.Length == 0) return Array.Empty<string>();
 
             if (fInferSeparator)

@@ -1673,9 +1673,6 @@
     <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
-    <Compile Include="AppCode\CSV\CSVAnalyzer.cs" />
-    <Compile Include="AppCode\CSV\CSVReader.cs" />
-    <Compile Include="AppCode\CSV\CSVWriter.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
     <Compile Include="AppCode\Flights\ApproachDescription.cs" />
     <Compile Include="AppCode\Flights\Backup.cs" />
@@ -2252,6 +2249,10 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
+      <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
+      <Name>MyFlightbook.CSV</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFlightbookData\MyFlightbookData.csproj">
       <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>
       <Name>MyFlightbookData</Name>
