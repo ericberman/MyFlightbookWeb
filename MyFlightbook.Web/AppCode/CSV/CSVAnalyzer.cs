@@ -1,6 +1,4 @@
-﻿using JouniHeikniemi.Tools.Text;
-using MyFlightbook.CSV;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -9,12 +7,12 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook
+namespace MyFlightbook.CSV
 {
     /// <summary>
     /// Parses a CSV file into a datatable, checking for (and in some cases fixing) common issues like multi-line data not in quotes or duplicated/missing column headers.
