@@ -4,14 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
 
 /******************************************************
  * 
@@ -1139,38 +1135,6 @@ namespace MyFlightbook
 
         #region HttpRequest and HttpClient Extensions
         /// <summary>
-        /// Returns a querystring (including theleading "?") foor the original URL, minus the specified parameters.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="paramsToRemove"></param>
-        /// <returns></returns>
-        public static string QueryStringWithoutParams(this HttpRequest request, IEnumerable<string> paramsToRemove)
-        {
-            if (paramsToRemove == null)
-                throw new ArgumentNullException(nameof(paramsToRemove));
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-            Dictionary<string, string> dictParams = new Dictionary<string, string>();
-            foreach (string szKey in request.QueryString.Keys)
-                dictParams[szKey] = request.QueryString[szKey];
-
-            foreach (string sz in paramsToRemove)
-            {
-                dictParams.Remove(sz);
-            }
-
-            if (dictParams.Count == 0)
-                return string.Empty;
-
-            List<string> urlparams = new List<string>();
-            foreach (string szkey in dictParams.Keys)
-                urlparams.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szkey, HttpUtility.UrlEncode(dictParams[szkey])));
-
-            return urlparams.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, "?{0}", String.Join("&", urlparams));
-        }
-
-        /// <summary>
         /// Determines if this is a known mobile device.  Tablets are NOT considered mobile; use IsMobileDeviceOrTablet
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
@@ -1236,25 +1200,6 @@ namespace MyFlightbook
         {
             return IsMobileDeviceOrTablet(new HttpRequestWrapper(r));
         }
-
-        /// <summary>
-        /// Enables an async PATCH method.
-        /// Adapted from http://stackoverflow.com/questions/26218764/patch-async-requests-with-windows-web-http-httpclient-class
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="requestUri"></param>
-        /// <param name="iContent"></param>
-        /// <returns></returns>
-        public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri requestUri, HttpContent iContent, bool fConfigureAwait = true)
-        {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
-            var method = new HttpMethod("PATCH");
-            using (var request = new HttpRequestMessage(method, requestUri) { Content = iContent }) 
-            {
-                return await client.SendAsync(request).ConfigureAwait(fConfigureAwait);
-            }
-        }
         #endregion
 
         #region Enum Extensions
@@ -1309,74 +1254,6 @@ namespace MyFlightbook
             response.Write(System.Text.Encoding.UTF8.GetString(rgb));
             response.End();
         }
-        #endregion
-
-        #region Control Extensions
-        /// <summary>
-        /// Re-arranges the children of type T of the specified root control, per the permuations in perms.
-        /// </summary>
-        /// <param name="root">Root (parent) control</param>
-        /// <param name="perms">0-based permuatations.  E.g., "3,0,2,1" means to re-order {A B C D} to be {D A C B}</param>
-        /// <returns>An enumerable of unused controls.  An empty permutation list treats everything as used</returns>
-        public static IEnumerable<Control> PermuteChildren<T>(this Control root, IEnumerable<int> perms)
-        {
-            List<Control> lstRemainder = new List<Control>();
-
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
-            if (perms == null || !perms.Any())
-                return lstRemainder;
-
-            List<Control> lstChildren = new List<Control>();
-            foreach (Control c in root.Controls)
-            {
-                if (c is T)
-                    lstChildren.Add(c);
-            }
-            // Remove these from the root, leaving none in the parent
-            foreach (Control c in lstChildren)
-                root.Controls.Remove(c);
-
-            // Now add them back, in the specified order.  There may be leftovers.
-            foreach (int i in perms)
-                root.Controls.Add(lstChildren[i]);
-
-            // And return any unused remainders.
-            foreach (Control c in lstChildren)
-                if (!root.Controls.Contains(c))
-                    lstRemainder.Add(c);
-
-            return lstRemainder;
-        }
-
-        #region Textbox input extensions
-        /// <summary>
-        /// Sets the watermark for the textbox
-        /// </summary>
-        /// <param name="textBox"></param>
-        /// <param name="text"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static void SetPlaceholder(this System.Web.UI.WebControls.TextBox textBox, string text)
-        {
-            if (textBox == null)
-                throw new ArgumentNullException(nameof(textBox));
-            textBox.Attributes["placeholder"] = text;
-        }
-
-        /// <summary>
-        /// Retrieves the watermark for the textbox
-        /// </summary>
-        /// <param name="textBox"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static string GetPlaceholder(this System.Web.UI.WebControls.TextBox textBox)
-        {
-            if (textBox == null)
-                throw new ArgumentNullException(nameof(textBox));
-            return textBox.Attributes["placeholder"];
-        }
-        #endregion
         #endregion
 
         #region Exception Extensions
