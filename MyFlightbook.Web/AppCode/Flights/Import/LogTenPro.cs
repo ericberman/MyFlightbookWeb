@@ -1,5 +1,4 @@
-﻿using JouniHeikniemi.Tools.Text;
-using MyFlightbook.CSV;
+﻿using MyFlightbook.CSV;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2024 MyFlightbook LLC
+ * Copyright (c) 2017-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

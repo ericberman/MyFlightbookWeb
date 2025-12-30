@@ -1,5 +1,4 @@
-﻿using JouniHeikniemi.Tools.Text;
-using MyFlightbook.CSV;
+﻿using MyFlightbook.CSV;
 using System;
 using System.Collections.Generic;
 using System.Data;

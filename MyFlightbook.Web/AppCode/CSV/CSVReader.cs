@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace JouniHeikniemi.Tools.Text
+namespace MyFlightbook.CSV
 {
     /// <summary>
     /// A data-reader style interface for reading CSV files.

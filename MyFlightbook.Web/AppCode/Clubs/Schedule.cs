@@ -2,9 +2,8 @@
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
-using JouniHeikniemi.Tools.Text;
-using MyFlightbook.Clubs;
 using MyFlightbook.CSV;
+using MyFlightbook.Clubs;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;

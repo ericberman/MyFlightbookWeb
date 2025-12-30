@@ -1,5 +1,4 @@
-﻿using JouniHeikniemi.Tools.Text;
-using MyFlightbook.CSV;
+﻿using MyFlightbook.CSV;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
