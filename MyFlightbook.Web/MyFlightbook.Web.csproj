@@ -1800,9 +1800,7 @@
     <Compile Include="AppCode\UserAccounts\Subscriptions.cs" />
     <Compile Include="AppCode\Admin\AdminStats.cs" />
     <Compile Include="AppCode\Utility\Branding.cs" />
-    <Compile Include="AppCode\Utility\DBHelper.cs" />
     <Compile Include="AppCode\Utility\Encryptor.cs" />
-    <Compile Include="AppCode\Utility\Exceptions.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
     <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\LocalConfig.cs" />
@@ -2252,6 +2250,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyFlightbookData\MyFlightbookData.csproj">
+      <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>
+      <Name>MyFlightbookData</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

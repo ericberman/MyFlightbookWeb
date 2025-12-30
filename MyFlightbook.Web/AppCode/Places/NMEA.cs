@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2020 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -147,20 +147,15 @@ namespace MyFlightbook.Telemetry
                             ParsedData.Rows.Add(dr);
                         }
                     }
-                    catch (System.FormatException ex)
+                    catch (FormatException ex)
                     {
                         sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iSentence, ex.Message);
                         fResult = false;
                     }
-                    catch (System.IndexOutOfRangeException ex)
+                    catch (IndexOutOfRangeException ex)
                     {
                         sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iSentence, ex.Message);
                         fResult = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        MyFlightbookException.NotifyAdminException(ex);
-                        throw;
                     }
 
                     iSentence++;
@@ -168,7 +163,7 @@ namespace MyFlightbook.Telemetry
             }
             catch (Exception ex)
             {
-                MyFlightbookException.NotifyAdminException(ex);
+                util.NotifyAdminException("Error in NMEAParse.parse", ex);
                 throw;
             }
 

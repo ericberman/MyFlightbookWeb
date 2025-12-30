@@ -699,7 +699,7 @@ namespace MyFlightbook.Image
             }
             catch (IOException ex)
             {
-                MyFlightbookException.NotifyAdminException(ex);
+                util.NotifyAdminException("Exception in InitFromFile", ex);
             }
             finally
             {
@@ -743,7 +743,7 @@ namespace MyFlightbook.Image
             }
             catch (IOException ex)
             {
-                MyFlightbookException.NotifyAdminException(ex);
+                util.NotifyAdminException("Exception in UpdateImageFile", ex);
                 throw;
             }
             catch (Exception ex)

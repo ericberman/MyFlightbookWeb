@@ -1025,7 +1025,7 @@ namespace MyFlightbook
                     break;
                 case FlightDistance.LocalOnly:
                     // MySQL 8 doesn't support the CONCAT expression in the RLIKE, but MySql 5.7 doesn't support the backreference.  Backreference is better, of course...
-                    if (DBHelper.GetDbVer().StartsWith("5"))
+                    if (DBHelper.DBVersion.StartsWith("5"))
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))) ", MyFlightbook.Airports.airport.maxCodeLength));
                     else
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));
@@ -1033,7 +1033,7 @@ namespace MyFlightbook
                     break;
                 case FlightDistance.NonLocalOnly:
                     // MySQL 8 doesn't support the CONCAT expression in the RLIKE, but MySql 5.7 doesn't support the backreference.  Backreference is better, of course...
-                    if (DBHelper.GetDbVer().StartsWith("5"))
+                    if (DBHelper.DBVersion.StartsWith("5"))
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " LENGTH(Route) > {0}  AND NOT (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))", Airports.airport.maxCodeLength));
                     else
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (LENGTH(Route) > {0}  AND NOT (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));

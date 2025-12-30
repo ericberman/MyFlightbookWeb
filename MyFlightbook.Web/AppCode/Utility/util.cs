@@ -10,6 +10,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -968,6 +969,38 @@ namespace MyFlightbook
             }
             GC.Collect();
             return items;
+        }
+    }
+
+    /// <summary>
+    /// Data validation exception.
+    /// </summary>
+    [Serializable]
+    public class MyFlightbookValidationException : Exception
+    {
+        public string ParameterName { get; set; }
+
+        public MyFlightbookValidationException()
+            : base()
+        { }
+
+        public MyFlightbookValidationException(string message)
+            : base(message)
+        { }
+
+        public MyFlightbookValidationException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
+
+        protected MyFlightbookValidationException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
         }
     }
 }

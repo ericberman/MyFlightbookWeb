@@ -1,15 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2023 MyFlightbook LLC
+ * Copyright (c) 2008-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,17 +23,17 @@ namespace MyFlightbook
         /// <summary>
         /// Parameters for the query
         /// </summary>
-        public Collection<MySqlParameter> Parameters { get; private set; }
+        public IList<MySqlParameter> Parameters { get; private set; } = new List<MySqlParameter>();
 
         /// <summary>
         /// The query string itself
         /// </summary>
-        public string QueryString { get; set; }
+        public string QueryString { get; set; } = string.Empty;
 
         /// <summary>
         /// Timeout to use; 0 for the default.
         /// </summary>
-        public int Timeout { get; set; }
+        public int Timeout { get; set; } = 0;
         #endregion
 
         #region Helper methods
@@ -60,12 +58,7 @@ namespace MyFlightbook
         #endregion
 
         #region Constructors
-        public DBHelperCommandArgs()
-        {
-            Parameters = new Collection<MySqlParameter>();
-            QueryString = string.Empty;
-            Timeout = 0;
-        }
+        public DBHelperCommandArgs() { }
 
         public DBHelperCommandArgs(string szQ) : this()
         {
@@ -142,7 +135,28 @@ namespace MyFlightbook
         public enum ReadRowMode { AllRows, SingleRow };
 
         #region Command initialization
-        public static string ConnectionString { get { return ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString; } }
+
+        public static void Init(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException(nameof(connectionString));
+            ConnectionString = connectionString;
+
+            // Validate the connection and get the DB version
+            DBHelper dbh = new DBHelper("SHOW VARIABLES LIKE 'version'");
+            dbh.ReadRow((comm) => { }, (dr) => { DBVersion = dr["Value"].ToString(); });
+        }
+
+        /// <summary>
+        /// The currently-in-use connection string; set by Init()
+        /// </summary>
+        public static string ConnectionString { get; private set; }
+
+        /// <summary>
+        /// The version of the currently-connected database.
+        /// </summary>
+        public static string DBVersion { get; private set; }
+
         /// <summary>
         /// Returns a command object for the query string, to which parameters can be attached.
         /// THE CONNECTION IS NOT INITIALIZED - IT IS UP TO THE CALLER TO using(MySqlConnection = new ....) { } IT!!!
@@ -246,9 +260,7 @@ namespace MyFlightbook
                     }
                     catch (Exception ex)
                     {
-                        MyFlightbookException exNew = new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Uncaught exception in ReadRows:\r\n:{0}", comm.CommandText), ex);
-                        MyFlightbookException.NotifyAdminException(exNew);
-                        throw exNew;
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Uncaught exception in ReadRows:\r\n:{0}", comm.CommandText), ex);
                     }
                 }
             }
@@ -351,21 +363,5 @@ namespace MyFlightbook
             return DoNonQuery(CommandArgs, initCommand);
         }
         #endregion
-
-        private static string dbVer = null;
-
-        /// <summary>
-        /// Return the database version as a string; do with it what you will...
-        /// </summary>
-        /// <returns></returns>
-        public static string GetDbVer()
-        {
-            if (dbVer == null)
-            {
-                DBHelper dbh = new DBHelper("SHOW VARIABLES LIKE 'version'");
-                dbh.ReadRow((comm) => { }, (dr) => { dbVer = dr["Value"].ToString(); });
-            }
-            return dbVer;
-        }
     }
 }

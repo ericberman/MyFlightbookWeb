@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -6,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2024 MyFlightbook LLC
+    * Copyright (c) 2015-2025 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -28,9 +29,8 @@ namespace MyFlightbook.Web
             // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
             CoordinateSharp.GlobalSettings.Default_EagerLoad = new CoordinateSharp.EagerLoad(false);
 
-            // Do a quick MySQL request to prime the connection cache
-            DBHelper dBHelper = new DBHelper("SELECT Version();");
-            bool _ = dBHelper.ReadRow((comm) => { }, (dr) => { });
+            // Initialize the DB Helper.
+            DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
         }
 
         protected void Application_End(object sender, EventArgs e)

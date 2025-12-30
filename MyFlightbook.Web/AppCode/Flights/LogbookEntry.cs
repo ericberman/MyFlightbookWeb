@@ -4096,6 +4096,8 @@ WHERE f1.username = ?uName ");
         /// <returns>List of LogbookEntry objects</returns>
         public static IList<LogbookEntryDisplay> GetFlightsForQuery(DBHelperCommandArgs args, string szUser, string szSortExpr, SortDirection sd, bool fUseHHMM, bool fUseUTCDate)
         {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
             DBHelper dbh = new DBHelper(args);
             args.Timeout = 120; // give it up to 120 seconds.
             List<LogbookEntryDisplay> lst = new List<LogbookEntryDisplay>();
