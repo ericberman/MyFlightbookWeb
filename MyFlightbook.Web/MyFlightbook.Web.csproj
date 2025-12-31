@@ -1797,7 +1797,6 @@
     <Compile Include="AppCode\UserAccounts\Subscriptions.cs" />
     <Compile Include="AppCode\Admin\AdminStats.cs" />
     <Compile Include="AppCode\Utility\Branding.cs" />
-    <Compile Include="AppCode\Utility\Encryptor.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
     <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
