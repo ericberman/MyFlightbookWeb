@@ -1,4 +1,8 @@
-﻿using MyFlightbook.Instruction;
+﻿using MyFlightbook.Charting;
+using MyFlightbook.Histogram;
+using MyFlightbook.Image;
+using MyFlightbook.Instruction;
+using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
@@ -7,7 +11,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI.WebControls;
-using static MyFlightbook.UserAircraft;
 
 /******************************************************
  * 
@@ -231,12 +234,261 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (ua == null)
                 throw new ArgumentNullException(nameof(ua));
-            List<Aircraft> lst = new List<Aircraft>(ua.GetAircraftForUser(AircraftRestriction.UserAircraft));
+            List<Aircraft> lst = new List<Aircraft>(ua.GetAircraftForUser(UserAircraft.AircraftRestriction.UserAircraft));
             int lastTail = LastTailID;
             return ua[currID]?.AircraftID ??
                 ua[lastTail]?.AircraftID ??
                 lst.FirstOrDefault(ac => !ac.HideFromSelection)?.AircraftID ??
                 (lst.Count > 0 ? lst[0].AircraftID : Aircraft.idAircraftUnknown);
+        }
+        #endregion
+
+        #region Editing utilities
+        protected const string keyLastEndingHobbs = "LastHobbs";
+        protected const string keyLastEndingTach = "LastTach";
+        protected const string keyLastEndingMeter = "LastMeter";
+        protected const string keyLastEndingFuel = "LastFuel";
+        protected const string keyLastEntryDate = "LastEntryDate";
+        protected const string keySessionInProgress = "InProgressFlight";
+
+        /// <summary>
+        /// Initializes a logbookentry from the form, checking that the viewer has SAVE permissions on the flight.
+        /// All other errors/exceptions (besides authorization) are in the errorstring!
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedAccessException">If the viewing user is not authorized to EDIT the flight, they are unauthorized</exception>
+        protected LogbookEntry LogbookEntryFromForm()
+        {
+            string pendingID = Request["idPending"];
+            LogbookEntry le = String.IsNullOrEmpty(pendingID) ? new LogbookEntry() : new PendingFlight(pendingID);
+            le.FlightID = util.GetIntParam(Request, "idFlight", LogbookEntryCore.idFlightNew);
+            le.User = Request["szTargetUser"] ?? User.Identity.Name;
+            le.ErrorString = string.Empty;  // clear this out.
+
+            // Check that you can save - and if it's an instructor/student, further check that it's a new flight.
+            CheckCanSaveFlight(le.User, le);
+
+            try
+            {
+                // Core fields
+                le.Date = DateTime.Parse(Request["flightDate"], CultureInfo.CurrentCulture).Date;
+
+                le.AircraftID = util.GetIntParam(Request, "flightAircraft", 0);
+                le.CatClassOverride = util.GetIntParam(Request, "flightCatClassOverride", 0);
+
+                le.Route = Request["flightRoute"];
+                le.Comment = Request["flightComments"];
+
+                le.Approaches = util.GetIntParam(Request, "flightApproaches", 0);
+                le.fHoldingProcedures = Request["flightHold"] != null;
+                le.Landings = util.GetIntParam(Request, "flightLandings", 0);
+                le.FullStopLandings = util.GetIntParam(Request, "flightFSDayLandings", 0);
+                le.NightLandings = util.GetIntParam(Request, "flightFSNightLandings", 0);
+
+                le.CrossCountry = (Request["flightXC"] ?? string.Empty).SafeParseDecimal();
+                le.Nighttime = (Request["flightNight"] ?? string.Empty).SafeParseDecimal();
+                le.SimulatedIFR = (Request["flightSimIMC"] ?? string.Empty).SafeParseDecimal();
+                le.IMC = (Request["flightIMC"] ?? string.Empty).SafeParseDecimal();
+                le.GroundSim = (Request["flightGroundSim"] ?? string.Empty).SafeParseDecimal();
+                le.Dual = (Request["flightDual"] ?? string.Empty).SafeParseDecimal();
+                le.CFI = (Request["flightCFI"] ?? string.Empty).SafeParseDecimal();
+                le.SIC = (Request["flightSIC"] ?? string.Empty).SafeParseDecimal();
+                le.PIC = (Request["flightPIC"] ?? string.Empty).SafeParseDecimal();
+                le.TotalFlightTime = (Request["flightTotal"] ?? string.Empty).SafeParseDecimal();
+
+                le.HobbsStart = Request["flightHobbsStart"].SafeParseDecimal();
+                le.HobbsEnd = Request["flightHobbsEnd"].SafeParseDecimal();
+
+                // Datetimes have been entered in the user's preferred timezone
+                TimeZoneInfo tz = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
+
+                le.EngineStart = Request["flightEngineStart"].ParseUTCDateTime(le.Date, tz);
+                le.EngineEnd = Request["flightEngineEnd"].ParseUTCDateTime(le.Date, tz);
+                le.FlightStart = Request["flightFlightStart"].ParseUTCDateTime(le.Date, tz);
+                le.FlightEnd = Request["flightFlightEnd"].ParseUTCDateTime(le.Date, tz);
+
+                le.CustomProperties = new CustomPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples(Request["flightPropTuples"], le.FlightID, le.Date, CultureInfo.CurrentCulture), true);
+
+                // Each of the custom properties that is a date-time has been expressed in user's preferred timezone; need to convert to UTC
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
+                {
+                    if (cfp.PropertyType.Type == CFPPropertyType.cfpDateTime && cfp.DateValue.HasValue())
+                        cfp.DateValue = DateTime.SpecifyKind(cfp.DateValue, DateTimeKind.Local).ConvertFromTimezone(tz);
+                }
+
+                // If this is from a pending flight, its saved telemetry might be in the flightPendingTelemetry hidden field.
+                string cachedFlightData = (Request["flightPendingTelemetry"] ?? string.Empty);
+                if (!String.IsNullOrEmpty(cachedFlightData))
+                    le.FlightData = Convert.FromBase64String(cachedFlightData).Uncompress();
+
+                IEnumerable<VideoRef> videoRefs = VideoRef.FromJSON(Request["flightVideosJSON"]);
+                le.Videos.Clear();
+                foreach (VideoRef vr in videoRefs)
+                    le.Videos.Add(vr);
+
+                le.PopulateImages();
+
+                le.fIsPublic = Request["flightPublic"] != null;
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            {
+                le.ErrorString = ex.Message;
+            }
+            return le;
+        }
+
+        protected bool CommitFlight(LogbookEntry le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            // ensure that the aircraft is in their profile
+            UserAircraft ua = new UserAircraft(le.User);
+            if (ua[le.AircraftID] == null)
+            {
+                Aircraft ac = new Aircraft(le.AircraftID);
+                if (!ac.IsNew)
+                    ua.FAddAircraftForUser(ac);
+            }
+
+            if (le.IsValid())
+            {
+                // if a new flight and hobbs > 0, save it for the next flight
+                bool fIsNew = le.IsNewFlight;
+                if (fIsNew)
+                {
+                    Session[keyLastEndingHobbs] = le.HobbsEnd;
+                    Session[keyLastEndingTach] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropTachEnd);
+                    Session[keyLastEndingMeter] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightMeterEnd);
+                    Session[keyLastEndingFuel] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtLanding);
+                    Session[keyLastEntryDate] = le.Date; // new flight - save the date
+                }
+
+                try
+                {
+                    if (le.FCommit(le.HasFlightData))
+                    {
+                        if (le.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                            LastTailID = le.AircraftID;
+
+                        if (fIsNew)
+                        {
+                            // this should now have a flight ID - save this so that we can scroll to it.
+                            Session[MFBConstants.keySessLastNewFlight] = le.FlightID;
+
+                            // process pending images, if this was a new flight
+                            foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
+                            {
+                                pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                                pendingImage.DeleteImage();     // clean it up!
+                            }
+                        }
+
+                        // Badge computation may be wrong
+                        MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
+                    }
+                }
+                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                {
+                    le.ErrorString = !String.IsNullOrEmpty(le.ErrorString) ? le.ErrorString : ex?.InnerException.Message ?? ex.Message;
+                }
+            }
+
+            return String.IsNullOrEmpty(le.ErrorString);
+        }
+
+        protected void AddApproachesFromRequest(LogbookEntry le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            int appchCount = util.GetIntParam(Request, "appchHelpCount", 0);
+
+            if (Request["appchHelpAdd"] != null)
+                le.Approaches += appchCount;
+
+            CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
+            cfp.TextValue = (cfp.TextValue + Resources.LocalizedText.LocalizedSpace + new ApproachDescription(appchCount, Request["appchHelpType"] + Request["appchHelpTypeSfx"], Request["appchHelpRwy"] + Request["appchHelpRwySfx"], Request["appchHelpApt"]).ToCanonicalString()).Trim();
+            le.CustomProperties.Add(cfp);
+        }
+        #endregion
+
+        #region Display utilities
+        protected void SetUpTelemetryChartForFlight(LogbookEntry le, string xData, string yData, string y2Data, double y1Scale, double y2Scale)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            using (FlightData fd = new FlightData())
+            {
+                if (!fd.ParseFlightData(le))
+                {
+                    throw new InvalidOperationException(fd.ErrorString);
+                }
+                GoogleChartData gcd = new GoogleChartData()
+                {
+                    SlantAngle = 0,
+                    Height = 500,
+                    Width = 800,
+                    Title = string.Empty,
+                    LegendType = GoogleLegendType.bottom,
+                    XDataType = GoogleColumnDataType.date,
+                    YDataType = GoogleColumnDataType.number,
+                    Y2DataType = GoogleColumnDataType.number,
+                    ContainerID = "chartAnalysis"
+                };
+                fd.Data.PopulateGoogleChart(gcd, xData, yData, y2Data, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
+                ViewBag.ChartData = gcd;
+                ViewBag.maxY = max > double.MinValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.YLabel, max) : string.Empty;
+                ViewBag.minY = min < double.MaxValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.YLabel, min) : string.Empty;
+                ViewBag.maxY2 = max2 > double.MinValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.Y2Label, max2) : string.Empty;
+                ViewBag.minY2 = min2 < double.MaxValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.Y2Label, min2) : string.Empty;
+            }
+        }
+
+        protected void SetUpHistogramView(HistogramManager hm, string selectedBucket, string fieldToGraph, bool fUseHHMM, bool fIncludeAverage, bool fLinkItems)
+        {
+            if (hm == null)
+                throw new ArgumentNullException(nameof(hm));
+
+            GoogleChartData gcd = new GoogleChartData()
+            {
+                ChartType = GoogleChartType.ColumnChart,
+                Chart2Type = GoogleSeriesType.line,
+                SlantAngle = 90,
+                Height = 340,
+                Title = string.Empty,
+                LegendType = GoogleLegendType.bottom,
+                XDataType = GoogleColumnDataType.date,
+                YDataType = GoogleColumnDataType.number,
+                Y2DataType = GoogleColumnDataType.number,
+                ShowAverage = fIncludeAverage,
+                AverageFormatString = Resources.LocalizedText.AnalysisAverageFormatString,
+                Width = 800,
+                ContainerID = "chartAnalysis"
+            };
+
+            BucketManager bm = hm.PopulateChart(gcd, selectedBucket, fieldToGraph, fUseHHMM, fIncludeAverage);
+
+            if (!fLinkItems)
+                gcd.ClickHandlerJS = string.Empty;
+
+            ViewBag.ChartData = gcd;
+            ViewBag.yearlySummary = (bm is YearMonthBucketManager ybm && ybm.Buckets.Any()) ? ybm.ToYearlySummary() : Array.Empty<MonthsOfYearData>();
+            ViewBag.bm = bm;
+            ViewBag.hm = hm;
+            ViewBag.hv = hm.Values.FirstOrDefault(h => h.DataField.CompareOrdinal(fieldToGraph) == 0);
+            ViewBag.rawData = bm.RenderHTML(hm, fLinkItems);
+        }
+
+        protected static byte[] RenderFlyingStats(FlightQuery fq, string selectedBucket)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (String.IsNullOrEmpty(selectedBucket))
+                throw new ArgumentNullException(nameof(selectedBucket));
+            HistogramManager hm = LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName);
+            BucketManager bm = hm.SupportedBucketManagers.FirstOrDefault(b => b.DisplayName.CompareOrdinal(selectedBucket) == 0);
+            bm.ScanData(hm);
+            return bm.RenderCSV(hm).UTF8Bytes();
         }
         #endregion
     }

@@ -1975,6 +1975,21 @@ namespace MyFlightbook
             }
         }
 
+        public void AddVideoRef(string flightNewVideoRef, string flightNewVideoComment)
+        {
+            VideoRef vr = new VideoRef(FlightID, flightNewVideoRef, flightNewVideoComment);
+            if (!vr.IsValid)
+                throw new InvalidOperationException(vr.ErrorString);
+            Videos.Add(vr);
+        }
+
+        public void DeleteVideoRef(int idVideo)
+        {
+            VideoRef v = Videos.FirstOrDefault(vr => vr.ID == idVideo) ?? throw new InvalidOperationException("Video not found!");
+            Videos.Remove(v);
+            v.Delete();
+        }
+
         /// <summary>
         /// Commits this entry to the database.  This overwrites the existing entry if it was initially loaded from the DB, otherwise it is a new entry
         /// </summary>
