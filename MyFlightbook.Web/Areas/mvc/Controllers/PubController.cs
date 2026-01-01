@@ -6,6 +6,7 @@ using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -362,9 +363,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("contact");
             }
 
-            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files, score);
+            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files, score, (ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0);
             ViewBag.success = true;
             ViewBag.showReturn = (noCap == 0);
+
             return View("contact");
         }
 

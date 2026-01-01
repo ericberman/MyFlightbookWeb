@@ -3,7 +3,6 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -87,33 +86,30 @@ namespace MyFlightbook
 
     public static class ShuntState
     {
-        private const string keyIsShunted = "IsShunted";
-        private const string keyShuntMsg = "ShuntMessage";
-        private const string keyShuntState = "ShuntState";
+        public const string keyShuntMsg = "ShuntMessage";
+        public const string keyShuntState = "ShuntState";
 
         /// <summary>
         /// True if site is shunted
         /// </summary>
-        public static bool IsShunted
-        {
-            get { return (bool)HttpContext.Current.Application[keyIsShunted]; }
-            set { HttpContext.Current.Application[keyIsShunted] = value; }
-        }
+        public static bool IsShunted { get; private set; }
+
+        private static string _rawShuntMessage;
 
         /// <summary>
-        /// Caches the current shunt state; should only be called on appliction start.
+        /// The branded message to display when shunted (the underlying shunt message is NOT branded)
         /// </summary>
-        public static void Init()
-        {
-            IsShunted = (ConfigurationManager.AppSettings[keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0);
-        }
+        public static string ShuntMessage { get { return Branding.ReBrand(_rawShuntMessage); } }
 
         /// <summary>
-        /// The branded message to display when shunted
+        /// Caches the current shunt state; should only be called on application start.
+        /// <paramref name="fShunted">true if the site is shunted</paramref>
+        /// <paramref name="rawShuntMessage">The message to display when shunted.  It will be rebranded, so you can use "%APP_NAME%" and such.</paramref>
         /// </summary>
-        public static string ShuntMessage
+        public static void Init(bool fShunted, string rawShuntMessage)
         {
-            get { return Branding.ReBrand(ConfigurationManager.AppSettings[keyShuntMsg], Branding.CurrentBrand); }
+            IsShunted = fShunted;
+            _rawShuntMessage = rawShuntMessage;
         }
     }
 
@@ -280,6 +276,11 @@ namespace MyFlightbook
                 }
             }
         }
+    }
+
+    public interface IEmailSender
+    {
+        void SendEmail(MailMessage msg);    // sends the specified email message
     }
 
     /// <summary>
@@ -606,9 +607,10 @@ namespace MyFlightbook
         /// <param name="subject">The subject of the message</param>
         /// <param name="postedFile">If provided, any posted files</param>
         /// <param name="captchaScore">The captcha score</param>
+        /// <param name="fRespondOOF">True to respond with an out-of-office message</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore)
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore, bool fRespondOOF)
         {
             if (String.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
@@ -650,8 +652,15 @@ namespace MyFlightbook
                 SendMessage(msg);
             }
 
-            if ((ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0)
+            if (fRespondOOF)
                 NotifyUser(szSubject, ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
+        }
+
+        private static IEmailSender emailSender { get; set; }
+
+        public static void InitEmail(IEmailSender sender)
+        {
+            emailSender = sender;
         }
 
         /// <summary>
@@ -662,42 +671,37 @@ namespace MyFlightbook
         {
             if (msg == null)
                 throw new ArgumentNullException(nameof(msg));
+            if (emailSender == null)
+                throw new InvalidOperationException("Email sender not initialized.");
 
-            using (SmtpClient smtpClient = new SmtpClient())
+            if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
             {
-                if (!smtpClient.Host.Contains("local"))
-                    smtpClient.EnableSsl = true;
-                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
-
-                if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
+                string szHTML = msg.Body;
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(msg.Body);
+                // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
+                if (doc.DocumentNode.SelectNodes("//table") == null)
                 {
-                    string szHTML = msg.Body;
-                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.LoadHtml(msg.Body);
-                    // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
-                    if (doc.DocumentNode.SelectNodes("//table") == null)
+                    StringBuilder sb = new StringBuilder();
+                    foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
                     {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
-                        {
-                            string szLine = node.InnerText.Trim();
-                            if (!String.IsNullOrEmpty(szLine))
-                                sb.AppendLine(node.InnerText.Trim());
+                        string szLine = node.InnerText.Trim();
+                        if (!String.IsNullOrEmpty(szLine))
+                            sb.AppendLine(node.InnerText.Trim());
 
-                            if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
-                                sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
+                        if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
+                            sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
 
-                            sb.Append(' ');
-                        }
-
-                        msg.Body = sb.ToString();
-                        msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
-                        msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
+                        sb.Append(' ');
                     }
-                }
 
-                smtpClient.Send(msg);
+                    msg.Body = sb.ToString();
+                    msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
+                    msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
+                }
             }
+
+            emailSender?.SendEmail(msg);
         }
 
         /// <summary>
