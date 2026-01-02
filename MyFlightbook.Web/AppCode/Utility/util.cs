@@ -1,19 +1,14 @@
-using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -331,15 +326,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Return the culture that is squirreled away in the session.  Generally unnecessary as CultureInfo.CurrentCulture works, but in Ajax calls, that doesn't get passed up.
-        /// CAN RETURN NULL - in which case go ahead and use CultureInfo.CurrentCulture
-        /// </summary>
-        public static CultureInfo SessionCulture
-        {
-            get { return HttpContext.Current != null && HttpContext.Current.Session != null ? (CultureInfo)HttpContext.Current.Session[sessCultureKey] : null; }
-        }
-
-        /// <summary>
         /// Switches to/from mobile state (overriding default detection) by setting the appropriate session variables.
         /// </summary>
         /// <param name="fMobile">True for the mobile state</param>
@@ -413,38 +399,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Recursively set the validation group for a control
-        /// </summary>
-        /// <param name="ctlRoot">The root control</param>
-        /// <param name="szGroup">The desired group</param>
-        static public void SetValidationGroup(Control ctlRoot, string szGroup)
-        {
-            if (ctlRoot == null)
-                throw new ArgumentNullException(nameof(ctlRoot));
-            foreach (Control ctl in ctlRoot.Controls)
-            {
-                if (ctl.GetType().BaseType == typeof(BaseValidator))
-                    ((BaseValidator)ctl).ValidationGroup = szGroup;
-                if (ctl.HasControls())
-                    SetValidationGroup(ctl, szGroup);
-            }
-        }
-
-        /// <summary>
-        /// Returns a string parameter, even if none was passed
-        /// </summary>
-        /// <param name="req">The httprequest object</param>
-        /// <param name="szKey">The desired parameter</param>
-        /// <returns>The string parameter, or ""</returns>
-        static public string GetStringParam(HttpRequest req, string szKey)
-        {
-            if (req == null || req[szKey] == null)
-                return string.Empty;
-            else
-                return req[szKey];
-        }
-
-        /// <summary>
         /// HttpRequestBase variant of GetStringParam
         /// </summary>
         /// <param name="req"></param>
@@ -456,26 +410,6 @@ namespace MyFlightbook
                 return string.Empty;
             else
                 return req[szKey];
-        }
-
-        /// <summary>
-        /// Returns an integer parameter, even if none was passed
-        /// </summary>
-        /// <param name="req">The httprequest object</param>
-        /// <param name="szKey">The desired paramter</param>
-        /// <param name="defaultValue">The default value if the parameter is null</param>
-        /// <returns>The value that was passed or else the default value</returns>
-        static public int GetIntParam(HttpRequest req, string szKey, int defaultValue)
-        {
-            if (req == null || req[szKey] == null)
-                return defaultValue;
-            else
-            {
-                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
-                    return i;
-
-                return defaultValue;
-            }
         }
 
         /// <summary>
@@ -494,72 +428,6 @@ namespace MyFlightbook
                     return i;
 
                 return defaultValue;
-            }
-        }
-
-        /// <summary>
-        /// Creates a CSV string from the contents of a gridveiw
-        /// </summary>
-        /// <param name="gv">The databound gridview</param>
-        /// <returns>A CSV string representing the data</returns>
-        public static void ToCSV(this GridView gv, Stream s)
-        {
-            if (gv == null)
-                throw new ArgumentNullException(nameof(gv));
-            if (s == null)
-                throw new ArgumentNullException(nameof(s));
-
-            using (DataTable dt = new DataTable())
-            {
-                dt.Locale = CultureInfo.CurrentCulture;
-                if (gv.Rows.Count == 0 || gv.HeaderRow == null || gv.HeaderRow.Cells == null || gv.HeaderRow.Cells.Count == 0)
-                    return;
-
-                // add the header columns from the gridview
-                foreach (TableCell tc in gv.HeaderRow.Cells)
-                    dt.Columns.Add(new DataColumn(tc.Text));
-
-                foreach (GridViewRow gvr in gv.Rows)
-                {
-                    DataRow dr = dt.NewRow();
-
-                    for (int j = 0; j < gvr.Cells.Count; j++)
-                    {
-                        string szCell = gvr.Cells[j].Text;
-                        if (szCell.Length == 0 && gvr.Cells[j].Controls.Count > 0)
-                        {
-                            Control c;
-                            // Look for a label or a hyperlink
-                            if (gvr.Cells[j].Controls.Count > 1)
-                            {
-                                c = gvr.Cells[j].Controls[1];
-                                if (c is Label l)
-                                    szCell = l.Text;
-                            }
-                            else
-                            {
-                                c = gvr.Cells[j].Controls[0];
-                                if (c is HyperLink h)
-                                    szCell = h.Text;
-                                else if (c is Label l)
-                                    szCell = l.Text;
-                            }
-                        }
-                        szCell = HttpUtility.HtmlDecode(szCell).Trim().Replace('\uFFFD', ' ');
-
-                        dr[j] = szCell;
-                    }
-
-                    dt.Rows.Add(dr);
-                }
-
-                if (dt != null)
-                {
-                    using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8, 1024, true /* leave the stream open */))
-                    {
-                        CsvWriter.WriteToStream(sw, dt, true, true);
-                    }
-                }
             }
         }
 

@@ -119,13 +119,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult OAuthResource(string id = null)
         {
-            OAuthServiceCall.ProcessRequest(id);
+            OAuthServiceCall.ProcessRequest(Request, Response, id);
             return new EmptyResult();
         }
 
         public ActionResult OAuthToken(string id)
         {
-            OAuthServiceCall.ProcessRequest(id);
+            OAuthServiceCall.ProcessRequest(Request, Response, id);
             return new EmptyResult();
         }
         #endregion
@@ -223,7 +223,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult GooglePhotoRedir()
         {
-            string szErr = util.GetStringParam(Request, "error");
+            string szErr = GetStringParam("error");
             if (String.IsNullOrEmpty(szErr))
             {
                 IAuthorizationState token = new GooglePhoto().ConvertToken(Request);
@@ -304,7 +304,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult DropboxRedir()
         {
-            string szErr = util.GetStringParam(Request, "error");
+            string szErr = GetStringParam("error");
             var nvc = HttpUtility.ParseQueryString(string.Empty);
             if (String.IsNullOrEmpty(szErr))
             {
@@ -339,7 +339,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult BoxRedir()
         {
-            string szErr = util.GetStringParam(Request, "error");
+            string szErr = GetStringParam("error");
             var nvc = HttpUtility.ParseQueryString(string.Empty);
             if (String.IsNullOrEmpty(szErr))
             {
@@ -374,12 +374,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult GDriveRedir()
         {
-            string szErr = util.GetStringParam(Request, "error");
+            string szErr = GetStringParam("error");
             var nvc = HttpUtility.ParseQueryString(string.Empty);
             if (String.IsNullOrEmpty(szErr))
             {
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                if (String.IsNullOrEmpty(util.GetStringParam(Request, "error")))
+                if (String.IsNullOrEmpty(GetStringParam("error")))
                 {
                     pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
                     pf.FCommit();
@@ -414,7 +414,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult OneDriveRedir()
         {
-            string szErr = util.GetStringParam(Request, "error");
+            string szErr = GetStringParam("error");
             var nvc = HttpUtility.ParseQueryString(string.Empty);
             if (String.IsNullOrEmpty(szErr))
             {

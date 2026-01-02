@@ -714,32 +714,6 @@ namespace MyFlightbook
             return VirtualPathUtility.ToAbsolute(s);
         }
 
-        /// <summary>
-        /// Returns the string as a fully resolved absolute url, including scheme and host
-        /// </summary>
-        /// <param name="s">The relative URL</param>
-        /// <param name="Request">The request</param>
-        /// <returns>A fully resolved absolute URL</returns>
-        public static Uri ToAbsoluteURL(this string s, HttpRequest Request)
-        {
-            if (Request == null)
-                throw new ArgumentNullException(nameof(Request));
-            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
-        }
-
-        /// <summary>
-        /// Returns the string as a fully resolved absolute url, including scheme and host
-        /// </summary>
-        /// <param name="s">The relative URL</param>
-        /// <param name="Request">The request</param>
-        /// <returns>A fully resolved absolute URL</returns>
-        public static Uri ToAbsoluteURL(this string s, HttpRequestBase Request)
-        {
-            if (Request == null)
-                throw new ArgumentNullException(nameof(Request));
-            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
-        }
-
         public static Uri ToAbsoluteURL(this string s, string scheme, string host, int port = 80)
         {
             if (scheme == null)
@@ -1133,82 +1107,6 @@ namespace MyFlightbook
         #endregion
         #endregion
 
-        #region HttpRequest and HttpClient Extensions
-        /// <summary>
-        /// Determines if this is a known mobile device.  Tablets are NOT considered mobile; use IsMobileDeviceOrTablet
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if it's known</returns>
-        public static bool IsMobileDevice(this HttpRequestBase r)
-        {
-            if (r == null || r.UserAgent == null)
-                return false;
-
-            string s = r.UserAgent.ToUpperInvariant();
-
-            return !s.Contains("IPAD") && // iPad is NOT mobile, as far as I'm concerned.
-            (r.Browser.IsMobileDevice || s.Contains("IPHONE") ||
-              s.Contains("PPC") ||
-              s.Contains("WINDOWS CE") ||
-              s.Contains("BLACKBERRY") ||
-              s.Contains("OPERA MINI") ||
-              s.Contains("MOBILE") ||
-              s.Contains("PARLM") ||
-              s.Contains("PORTABLE"));
-        }
-
-        /// <summary>
-        /// Determines if this is a mobile session.  Pays attention to cookies and session state
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if we should be treating this as a mobile session</returns>
-        public static bool IsMobileSession(this HttpRequestBase r)
-        {
-            if (r == null) 
-                return false;
-
-            var sess = HttpContext.Current?.Session;
-            return (r.IsMobileDevice() && (r.Cookies[MFBConstants.keyClassic] == null || r.Cookies[MFBConstants.keyClassic].Value != "yes")) ||
-                   (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
-        }
-
-        /// <summary>
-        /// IsMobileDevice OR iPad OR Android
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if it's a mobile device or a tablet</returns>
-        public static bool IsMobileDeviceOrTablet(this HttpRequestBase r)
-        {
-            if (r == null || String.IsNullOrEmpty(r.UserAgent))
-                return false;
-
-            return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
-        }
-        #endregion
-
-        #region Enum Extensions
-        /// <summary>
-        /// Determines if the specified turbinelevel is turbine (vs. piston or electric)
-        /// </summary>
-        /// <param name="tl"></param>
-        /// <returns></returns>
-        public static bool IsTurbine(this MakeModel.TurbineLevel tl) { return tl == MakeModel.TurbineLevel.Jet || tl == MakeModel.TurbineLevel.UnspecifiedTurbine || tl == MakeModel.TurbineLevel.TurboProp; }
-
-        /// <summary>
-        /// Determines if the currency state is any of the current states.
-        /// </summary>
-        /// <param name="cs"></param>
-        /// <returns></returns>
-        public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
-
-        /// <summary>
-        /// Indicates whether a particular column type can be graphed.
-        /// </summary>
-        /// <param name="kct"></param>
-        /// <returns></returns>
-        public static bool CanGraph(this Telemetry.KnownColumnTypes kct) { return kct != Telemetry.KnownColumnTypes.ctLatLong && kct != Telemetry.KnownColumnTypes.ctString; }
-        #endregion
-
         #region Exception Extensions
         /// <summary>
         /// Converts an exception into a detailed string, including any optional information and any inner exceptions.
@@ -1288,5 +1186,100 @@ namespace MyFlightbook
         {
             throw new NotImplementedException();
         }
+    }
+
+    public static class MFBEnumExtensions
+    {
+        #region Enum Extensions
+        /// <summary>
+        /// Determines if the specified turbinelevel is turbine (vs. piston or electric)
+        /// </summary>
+        /// <param name="tl"></param>
+        /// <returns></returns>
+        public static bool IsTurbine(this MakeModel.TurbineLevel tl) { return tl == MakeModel.TurbineLevel.Jet || tl == MakeModel.TurbineLevel.UnspecifiedTurbine || tl == MakeModel.TurbineLevel.TurboProp; }
+
+        /// <summary>
+        /// Determines if the currency state is any of the current states.
+        /// </summary>
+        /// <param name="cs"></param>
+        /// <returns></returns>
+        public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
+
+        /// <summary>
+        /// Indicates whether a particular column type can be graphed.
+        /// </summary>
+        /// <param name="kct"></param>
+        /// <returns></returns>
+        public static bool CanGraph(this Telemetry.KnownColumnTypes kct) { return kct != Telemetry.KnownColumnTypes.ctLatLong && kct != Telemetry.KnownColumnTypes.ctString; }
+        #endregion
+    }
+
+    public static class HttpRequestExtensions
+    {
+        #region HttpRequest Extensions
+        /// <summary>
+        /// Returns the string as a fully resolved absolute url, including scheme and host
+        /// </summary>
+        /// <param name="s">The relative URL</param>
+        /// <param name="Request">The request</param>
+        /// <returns>A fully resolved absolute URL</returns>
+        public static Uri ToAbsoluteURL(this string s, HttpRequestBase Request)
+        {
+            if (Request == null)
+                throw new ArgumentNullException(nameof(Request));
+            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+        }
+
+        /// <summary>
+        /// Determines if this is a known mobile device.  Tablets are NOT considered mobile; use IsMobileDeviceOrTablet
+        /// </summary>
+        /// <param name="r">The HTTPRequest object</param>
+        /// <returns>True if it's known</returns>
+        public static bool IsMobileDevice(this HttpRequestBase r)
+        {
+            if (r == null || r.UserAgent == null)
+                return false;
+
+            string s = r.UserAgent.ToUpperInvariant();
+
+            return !s.Contains("IPAD") && // iPad is NOT mobile, as far as I'm concerned.
+            (r.Browser.IsMobileDevice || s.Contains("IPHONE") ||
+              s.Contains("PPC") ||
+              s.Contains("WINDOWS CE") ||
+              s.Contains("BLACKBERRY") ||
+              s.Contains("OPERA MINI") ||
+              s.Contains("MOBILE") ||
+              s.Contains("PARLM") ||
+              s.Contains("PORTABLE"));
+        }
+
+        /// <summary>
+        /// Determines if this is a mobile session.  Pays attention to cookies and session state
+        /// </summary>
+        /// <param name="r">The HTTPRequest object</param>
+        /// <returns>True if we should be treating this as a mobile session</returns>
+        public static bool IsMobileSession(this HttpRequestBase r)
+        {
+            if (r == null)
+                return false;
+
+            var sess = HttpContext.Current?.Session;
+            return (r.IsMobileDevice() && (r.Cookies[MFBConstants.keyClassic] == null || r.Cookies[MFBConstants.keyClassic].Value != "yes")) ||
+                   (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
+        }
+
+        /// <summary>
+        /// IsMobileDevice OR iPad OR Android
+        /// </summary>
+        /// <param name="r">The HTTPRequest object</param>
+        /// <returns>True if it's a mobile device or a tablet</returns>
+        public static bool IsMobileDeviceOrTablet(this HttpRequestBase r)
+        {
+            if (r == null || String.IsNullOrEmpty(r.UserAgent))
+                return false;
+
+            return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
+        }
+        #endregion
     }
 }

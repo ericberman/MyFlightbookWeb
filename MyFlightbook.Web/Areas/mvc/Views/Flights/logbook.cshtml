@@ -12,7 +12,7 @@
     ViewBag.defaultTab = tabID.tabLogbook;
     LogbookEntryDisplay le = ViewBag.le;
 
-    FlightsTab ft = (Enum.TryParse(util.GetStringParam(Request, "ft") ?? string.Empty, out FlightsTab f)) ? f : FlightsTab.None;
+    FlightsTab ft = (Enum.TryParse(Request["ft"] ?? string.Empty, out FlightsTab f)) ? f : FlightsTab.None;
     string defPane = string.Empty;
     switch (ft)
     {

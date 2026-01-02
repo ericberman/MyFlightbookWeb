@@ -428,8 +428,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            string s = util.GetStringParam(Request, "m");
-            if (s.Length > 0)
+            string s = Request["m"] ?? string.Empty;
+            if (!String.IsNullOrEmpty(s))
                 util.SetMobile(s.CompareCurrentCultureIgnoreCase("no") != 0);
 
             // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.

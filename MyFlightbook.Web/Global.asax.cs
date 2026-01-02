@@ -19,16 +19,18 @@ namespace MyFlightbook.Web
        protected void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
-            ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
             AreaRegistration.RegisterAllAreas();
 
             // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
             CoordinateSharp.GlobalSettings.Default_EagerLoad = new CoordinateSharp.EagerLoad(false);
 
+            // Dependency Injection
+
             // Do a quick MySQL request to prime the connection cache
             DBHelper dBHelper = new DBHelper("SELECT Version();");
             bool _ = dBHelper.ReadRow((comm) => { }, (dr) => { });
 
+            ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
             util.InitEmail(new SmtpSupport());
         }
 

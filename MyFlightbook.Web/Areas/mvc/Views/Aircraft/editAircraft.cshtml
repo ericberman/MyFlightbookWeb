@@ -125,7 +125,7 @@ else
     if (fAdminMode)
     {
         IEnumerable<Dictionary<string, object>> lstUsers = AircraftStats.AdminAircraftUsersDetails(ac.AircraftID);
-        bool fCanMigrate = !String.IsNullOrEmpty(util.GetStringParam(Request, "genCandidate"));
+        bool fCanMigrate = !String.IsNullOrEmpty(Request["genCandidate"]);
 
         <p>Clone an aircraft if the tailnumber can represent more than just this aircraft.  E.g., if N12345 used to be a piper cub and was re-assigned to a C-172, clone it to assign to the new aircraft.</p>
         <p>When cloning an aircraft:</p>

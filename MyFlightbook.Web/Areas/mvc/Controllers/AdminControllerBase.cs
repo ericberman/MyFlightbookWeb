@@ -1,5 +1,6 @@
 ﻿using Google.Authenticator;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2024 MyFlightbook LLC
+ * Copyright (c) 2023-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -261,6 +262,35 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 throw new InvalidOperationException(Resources.Profile.TFACodeFailed);
 
             pf.SetPreferenceForKey(MFBConstants.keyTFASettings, seed);
+        }
+        #endregion
+
+        #region Utilities for parameters
+        /// <summary>
+        /// HttpRequestBase variant of GetStringParam
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        protected string GetStringParam(string szKey)
+        {
+            if (String.IsNullOrEmpty(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+            return Request[szKey] ?? string.Empty;
+        }
+
+        /// <summary>
+        /// HttpRequestBase variant of GetIntParam
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        protected int GetIntParam(string szKey, int defaultValue)
+        {
+            if (String.IsNullOrEmpty(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            return int.TryParse(Request[szKey] ?? string.Empty, NumberStyles.Integer, CultureInfo.InvariantCulture, out int i) ? i : defaultValue;
         }
         #endregion
     }

@@ -151,7 +151,7 @@
 </div>
 <div style="margin-top: 36pt; margin-bottom: 60pt;">
     @Html.Raw(Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify())
-    <a href="@("~/mvc/pub/contact?subj=Donations".ToAbsoluteURL(HttpContext.Current.Request))">@Resources.Preferences.DonateCryptoContact</a>
+    <a href="@("~/mvc/pub/contact?subj=Donations".ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host))">@Resources.Preferences.DonateCryptoContact</a>
 </div>
 <h2>@Resources.Preferences.DonationHistoryHeader</h2>
 

@@ -310,9 +310,9 @@ namespace MyFlightbook.RatingsProgress
                 foreach (ExaminerFlightRow cfr in lstRows)
                     sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "[{0:d}]({1}) - [*{2}*]({3}{4})",
                         cfr.dtFlight,
-                        String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", cfr.flightID).ToAbsoluteURL(HttpContext.Current.Request),
+                        String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", cfr.flightID).ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host),
                         cfr.Route,
-                        "~/mvc/Airport/MapRoute?Airports=".ToAbsoluteURL(HttpContext.Current.Request),
+                        "~/mvc/Airport/MapRoute?Airports=".ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host),
                         HttpUtility.UrlEncode(cfr.Route)));
                 return sb.ToString();
             }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web;
 
 /******************************************************
  * 
@@ -265,9 +266,9 @@ namespace OAuthAuthorizationServer.Code
             if (szCallback == null)
                 throw new ArgumentNullException(nameof(szCallback));
             return String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/Authorize?client_id={0}&redirect_uri={1}&scope={2}&response_type=code",
-                        System.Web.HttpUtility.UrlEncode(ClientIdentifier),
-                        System.Web.HttpUtility.UrlEncode(szCallback),
-                        System.Web.HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(System.Web.HttpContext.Current.Request);
+                        HttpUtility.UrlEncode(ClientIdentifier),
+                        HttpUtility.UrlEncode(szCallback),
+                        HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host);
         }
 
         public IDictionary<string, Uri> AuthLinks

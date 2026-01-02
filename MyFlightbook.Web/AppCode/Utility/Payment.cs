@@ -1218,6 +1218,13 @@ ORDER BY dateEarned ASC ";
             return strResponse;
         }
 
+        public static string SafeRequestParam(HttpRequestBase Request, string paramName)
+        {
+            if (Request == null)
+                throw new ArgumentNullException(nameof(Request));
+            return Request[paramName] ?? string.Empty;
+        }
+
         public static void ProcessIPNNotification(HttpRequestBase Request)
         {
             if (Request == null)
@@ -1225,18 +1232,18 @@ ORDER BY dateEarned ASC ";
             byte[] param = Request.BinaryRead(Request.ContentLength);
             string strRequest = Encoding.ASCII.GetString(param);
 
-            bool fSandbox = util.GetStringParam(Request, "sandbox").Length > 0;
+            bool fSandbox = !String.IsNullOrEmpty(Request["sandbox"]);
             string strResponse = PayPalIPN.VerifyResponse(fSandbox, strRequest);
 
-            string szUser = util.GetStringParam(Request, "custom");
-            string szProductID = util.GetStringParam(Request, "os1");
-            string szAmount = util.GetStringParam(Request, "mc_gross");
-            string szTransactionID = util.GetStringParam(Request, "txn_id");
-            string szTransactionType = util.GetStringParam(Request, "txn_type");
-            string szCurrency = util.GetStringParam(Request, "mc_currency");
-            string szReasonCode = util.GetStringParam(Request, "reason_code");
-            string szParentTxnID = util.GetStringParam(Request, "parent_txn_id");
-            string szFee = util.GetStringParam(Request, "mc_fee");
+            string szUser = SafeRequestParam(Request, "custom");
+            string szProductID = Request["os1"] ?? string.Empty;
+            string szAmount = SafeRequestParam(Request, "mc_gross"); 
+            string szTransactionID = SafeRequestParam(Request, "txn_id"); 
+            string szTransactionType = SafeRequestParam(Request, "txn_type"); 
+            string szCurrency = SafeRequestParam(Request, "mc_currency"); 
+            string szReasonCode = SafeRequestParam(Request, "reason_code"); 
+            string szParentTxnID = SafeRequestParam(Request, "parent_txn_id"); 
+            string szFee = SafeRequestParam(Request, "mc_fee");
 
             if (strResponse == "VERIFIED")
             {

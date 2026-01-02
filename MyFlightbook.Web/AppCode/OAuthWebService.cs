@@ -301,7 +301,7 @@ namespace OAuthAuthorizationServer.Services
         /// <summary>
         /// The request object passed in
         /// </summary>
-        protected HttpRequestWrapper OriginalRequest { get; set; }
+        protected HttpRequestBase OriginalRequest { get; set; }
 
         /// <summary>
         /// For JSONP support rather than JSON, here's the callback function name.
@@ -332,10 +332,10 @@ namespace OAuthAuthorizationServer.Services
         #region Constructor
         private void init(HttpRequestBase request, string requestedService = null)
         {
-            OriginalRequest = (HttpRequestWrapper)(request ?? throw new ArgumentNullException(nameof(request)));
+            OriginalRequest = (request ?? throw new ArgumentNullException(nameof(request)));
             ServiceCall = RequestedService(request, requestedService);
-            ResponseCallback = util.GetStringParam(request, "callback");
-            ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
+            ResponseCallback = request["callback"] ?? string.Empty;
+            ResultFormat = (int.TryParse(request["json"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fJson) && fJson != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
             using (RSACryptoServiceProvider rsaSigning = new RSACryptoServiceProvider())
             {
@@ -354,11 +354,6 @@ namespace OAuthAuthorizationServer.Services
                     GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
                 }
             }
-        }
-
-        public OAuthServiceCall(HttpRequest request, string requestedService = null)
-        {
-            init(new HttpRequestWrapper(request), requestedService);
         }
 
         public OAuthServiceCall(HttpRequestBase request, string requestedService = null)
@@ -518,17 +513,18 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Request Handling
-        public static void ProcessRequest(string requestedService = null)
+        public static void ProcessRequest(HttpRequestBase Request, HttpResponseBase Response, string requestedService = null)
         {
-            HttpRequest Request = HttpContext.Current.Request;
-            HttpResponse Response = HttpContext.Current.Response;
+            if (Request == null)
+                throw new ArgumentNullException(nameof(Request));
+            if (Response == null)
+                throw new ArgumentNullException(nameof(Response));
             try
             {
-
                 if (!Request.IsSecureConnection)
                     throw new HttpException((int)HttpStatusCode.Forbidden, "Authorization requests MUST be on a secure channel");
 
-                OAuthServiceID? serviceID = RequestedService(new HttpRequestWrapper(Request), requestedService);
+                OAuthServiceID? serviceID = RequestedService(Request, requestedService);
                 if (serviceID == null)
                 {
                     AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
@@ -536,9 +532,8 @@ namespace OAuthAuthorizationServer.Services
                     Response.Clear();
                     Response.ContentType = "application/json; charset=utf-8";
                     Response.Write(wr.Body);
-                    HttpContext.Current.Response.Flush(); // Sends all currently buffered output to the client.
-                    HttpContext.Current.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                    Response.Flush(); // Sends all currently buffered output to the client.
+                    Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
                 }
                 else
                 {
@@ -547,9 +542,8 @@ namespace OAuthAuthorizationServer.Services
                         Response.Clear();
                         Response.ContentType = service.ContentType;
                         service.Execute(Response.OutputStream);
-                        HttpContext.Current.Response.Flush(); // Sends all currently buffered output to the client.
-                        HttpContext.Current.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                        Response.Flush(); // Sends all currently buffered output to the client.
+                        Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
                     }
                 }
             }

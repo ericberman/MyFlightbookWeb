@@ -16,7 +16,7 @@ using System.Web.Security;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class MFBTemplateController : Controller
+    public class MFBTemplateController : AdminControllerBase
     {
         protected bool IsNight
         {
@@ -351,7 +351,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return null;
             }
             // if "m=no" is passed in, override mobile detection and force classic view
-            if (util.GetStringParam(Request, "m") == "no")
+            if (GetStringParam("m") == "no")
                 util.SetMobile(false);
 
             if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
@@ -378,7 +378,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");
 
             // We're going to set IsNight explicitly if it's in the url, but otherwise use the session object.
-            string nightRequest = util.GetStringParam(Request, "night");
+            string nightRequest = GetStringParam("night");
             if (nightRequest.CompareCurrentCultureIgnoreCase("yes") == 0)
                 IsNight = true;
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)

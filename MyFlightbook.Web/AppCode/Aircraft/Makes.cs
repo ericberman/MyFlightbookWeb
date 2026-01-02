@@ -776,7 +776,7 @@ WHERE {1}";
                 HttpRuntime.Cache.Insert(CacheKey(MakeModelID), this, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), CacheItemPriority.Normal, null);
 
             // use fIsNew because Model.IsNew may have been true and not now.
-            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(HttpContext.Current.Request), MakeModelID);
+            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host), MakeModelID);
             string szNewDesc = this.ToString();
             if (fWasNew)
                 util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(szChangingUser).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);

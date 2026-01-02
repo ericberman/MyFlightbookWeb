@@ -1013,7 +1013,7 @@ namespace MyFlightbook.Instruction
                         throw new MyFlightbookException("Invalid role");
                 }
 
-                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"{0}?req={1}", "~/mvc/Training/AddRelationship".ToAbsoluteURL(HttpContext.Current.Request), HttpContext.Current.Server.UrlEncode(EncryptRequest()));
+                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"{0}?req={1}", "~/mvc/Training/AddRelationship".ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host), HttpContext.Current.Server.UrlEncode(EncryptRequest()));
 
                 string szRequestor = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", pf.UserFullName, pf.Email);
 
