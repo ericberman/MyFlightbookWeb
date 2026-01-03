@@ -26,7 +26,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1975,6 +1975,21 @@ namespace MyFlightbook
             }
         }
 
+        public void AddVideoRef(string flightNewVideoRef, string flightNewVideoComment)
+        {
+            VideoRef vr = new VideoRef(FlightID, flightNewVideoRef, flightNewVideoComment);
+            if (!vr.IsValid)
+                throw new InvalidOperationException(vr.ErrorString);
+            Videos.Add(vr);
+        }
+
+        public void DeleteVideoRef(int idVideo)
+        {
+            VideoRef v = Videos.FirstOrDefault(vr => vr.ID == idVideo) ?? throw new InvalidOperationException("Video not found!");
+            Videos.Remove(v);
+            v.Delete();
+        }
+
         /// <summary>
         /// Commits this entry to the database.  This overwrites the existing entry if it was initially loaded from the DB, otherwise it is a new entry
         /// </summary>
@@ -2624,7 +2639,7 @@ WHERE f1.username = ?uName ");
             {
                 if (_roundingUnit <= 0)
                 {
-                    object o = HttpContext.Current?.Session?[MFBConstants.keyMathRoundingUnits];
+                    object o = util.RequestContext?.GetSessionValue(MFBConstants.keyMathRoundingUnits);
                     _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int)o;
                 }
                 return _roundingUnit;

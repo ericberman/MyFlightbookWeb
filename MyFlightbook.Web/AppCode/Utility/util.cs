@@ -1,25 +1,20 @@
-using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -28,8 +23,6 @@ namespace MyFlightbook
 {
     public static class MFBConstants
     {
-        public const string keyLite = "Lite";   // Show a lightweight version of the site?
-        public const string keyClassic = "Classic"; // persistant cookie - show a full version of the site even on mobile devices?
         public const string keyIsImpersonating = "IsImpersonating";
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
@@ -86,35 +79,66 @@ namespace MyFlightbook
 
     public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
 
+    /// <summary>
+    /// Encapsulates the context of the current request, including session, cache, request, etc.
+    /// </summary>
+    public interface IRequestContext
+    {
+        object GetSessionValue(string key);
+
+        void SetSessionValue(string key, object value);
+
+        IEnumerable<string> SessionKeys { get; }
+
+        bool IsAuthenticated { get; }
+
+        bool IsSecure { get; }
+
+        bool IsLocal { get; }
+
+        string CurrentUserName { get; }
+
+        Uri CurrentRequestUrl { get; }
+
+        string CurrentRequestHostAddress { get; }
+
+        string CurrentRequestUserAgent { get; }
+
+        IEnumerable<string> CurrentRequestLanguages { get; }
+
+        string GetCookie(string name);
+
+        void SetCookie(string name, string value, DateTime? expires = null);
+
+        void RemoveCookie(string name);
+    }
+
     public static class ShuntState
     {
-        private const string keyIsShunted = "IsShunted";
-        private const string keyShuntMsg = "ShuntMessage";
-        private const string keyShuntState = "ShuntState";
+        public const string keyShuntMsg = "ShuntMessage";
+        public const string keyShuntState = "ShuntState";
 
         /// <summary>
         /// True if site is shunted
         /// </summary>
-        public static bool IsShunted
-        {
-            get { return (bool)HttpContext.Current.Application[keyIsShunted]; }
-            set { HttpContext.Current.Application[keyIsShunted] = value; }
-        }
+        public static bool IsShunted { get; private set; }
+
+        private static string _rawShuntMessage;
 
         /// <summary>
-        /// Caches the current shunt state; should only be called on appliction start.
+        /// The branded message to display when shunted (the underlying shunt message is NOT branded)
         /// </summary>
-        public static void Init()
-        {
-            IsShunted = (ConfigurationManager.AppSettings[keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0);
-        }
+        public static string ShuntMessage { get { return Branding.ReBrand(_rawShuntMessage); } }
 
         /// <summary>
-        /// The branded message to display when shunted
+        /// Caches the current shunt state; should only be called on application start.
+        /// <paramref name="fShunted">true if the site is shunted</paramref>
+        /// <paramref name="rawShuntMessage">The message to display when shunted.  It will be rebranded, so you can use "%APP_NAME%" and such.</paramref>
         /// </summary>
-        public static string ShuntMessage
+        public static void Init(bool fShunted, string rawShuntMessage)
         {
-            get { return Branding.ReBrand(ConfigurationManager.AppSettings[keyShuntMsg], Branding.CurrentBrand); }
+            IsShunted = fShunted;
+            _rawShuntMessage = rawShuntMessage;
         }
     }
 
@@ -283,6 +307,11 @@ namespace MyFlightbook
         }
     }
 
+    public interface IEmailSender
+    {
+        void SendEmail(MailMessage msg);    // sends the specified email message
+    }
+
     /// <summary>
     /// Utility Class - contains a few commonly used/needed functions
     /// </summary>
@@ -290,6 +319,24 @@ namespace MyFlightbook
     {
         private const string sessCultureKey = "currCulture";
         private static readonly char[] isoLanguageRegionSeparator = new char[] { '-' };
+
+        #region Dependency Injection
+        private static IRequestContext _requestContext;
+
+        public static IRequestContext RequestContext { get { return _requestContext; } }
+
+        public static void InitRequestContext(IRequestContext context)
+        {
+            _requestContext = context;
+        }
+
+        private static IEmailSender emailSender { get; set; }
+
+        public static void InitEmail(IEmailSender sender)
+        {
+            emailSender = sender;
+        }
+        #endregion
 
         /// <summary>
         /// Set the culture for the duration of the request.
@@ -325,37 +372,7 @@ namespace MyFlightbook
                 }
 
                 // Culture isn't passed up to Ajax calls, so store it in the session in case any ajax call needs it
-                if (HttpContext.Current != null && HttpContext.Current.Session != null)
-                    HttpContext.Current.Session[sessCultureKey] = System.Threading.Thread.CurrentThread.CurrentCulture;
-            }
-        }
-
-        /// <summary>
-        /// Return the culture that is squirreled away in the session.  Generally unnecessary as CultureInfo.CurrentCulture works, but in Ajax calls, that doesn't get passed up.
-        /// CAN RETURN NULL - in which case go ahead and use CultureInfo.CurrentCulture
-        /// </summary>
-        public static CultureInfo SessionCulture
-        {
-            get { return HttpContext.Current != null && HttpContext.Current.Session != null ? (CultureInfo)HttpContext.Current.Session[sessCultureKey] : null; }
-        }
-
-        /// <summary>
-        /// Switches to/from mobile state (overriding default detection) by setting the appropriate session variables.
-        /// </summary>
-        /// <param name="fMobile">True for the mobile state</param>
-        public static void SetMobile(Boolean fMobile)
-        {
-            if (fMobile)
-            {
-                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = null; // let autodetect do its thing next time...
-                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = null;
-                HttpContext.Current.Session[MFBConstants.keyLite] = Boolean.TrueString; // ...but keep it lite for the session
-            }
-            else
-            {
-                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = "yes"; // override autodetect
-                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = "yes";
-                HttpContext.Current.Session[MFBConstants.keyLite] = null; // and hence there should be no need for a session variable.
+                RequestContext?.SetSessionValue(sessCultureKey, System.Threading.Thread.CurrentThread.CurrentCulture);
             }
         }
 
@@ -413,157 +430,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Recursively set the validation group for a control
-        /// </summary>
-        /// <param name="ctlRoot">The root control</param>
-        /// <param name="szGroup">The desired group</param>
-        static public void SetValidationGroup(Control ctlRoot, string szGroup)
-        {
-            if (ctlRoot == null)
-                throw new ArgumentNullException(nameof(ctlRoot));
-            foreach (Control ctl in ctlRoot.Controls)
-            {
-                if (ctl.GetType().BaseType == typeof(BaseValidator))
-                    ((BaseValidator)ctl).ValidationGroup = szGroup;
-                if (ctl.HasControls())
-                    SetValidationGroup(ctl, szGroup);
-            }
-        }
-
-        /// <summary>
-        /// Returns a string parameter, even if none was passed
-        /// </summary>
-        /// <param name="req">The httprequest object</param>
-        /// <param name="szKey">The desired parameter</param>
-        /// <returns>The string parameter, or ""</returns>
-        static public string GetStringParam(HttpRequest req, string szKey)
-        {
-            if (req == null || req[szKey] == null)
-                return string.Empty;
-            else
-                return req[szKey];
-        }
-
-        /// <summary>
-        /// HttpRequestBase variant of GetStringParam
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="szKey"></param>
-        /// <returns></returns>
-        static public string GetStringParam(HttpRequestBase req, string szKey)
-        {
-            if (req == null || req[szKey] == null)
-                return string.Empty;
-            else
-                return req[szKey];
-        }
-
-        /// <summary>
-        /// Returns an integer parameter, even if none was passed
-        /// </summary>
-        /// <param name="req">The httprequest object</param>
-        /// <param name="szKey">The desired paramter</param>
-        /// <param name="defaultValue">The default value if the parameter is null</param>
-        /// <returns>The value that was passed or else the default value</returns>
-        static public int GetIntParam(HttpRequest req, string szKey, int defaultValue)
-        {
-            if (req == null || req[szKey] == null)
-                return defaultValue;
-            else
-            {
-                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
-                    return i;
-
-                return defaultValue;
-            }
-        }
-
-        /// <summary>
-        /// HttpRequestBase variant of GetIntParam
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="szKey"></param>
-        /// <returns></returns>
-        static public int GetIntParam(HttpRequestBase req, string szKey, int defaultValue)
-        {
-            if (req == null || req[szKey] == null)
-                return defaultValue;
-            else
-            {
-                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
-                    return i;
-
-                return defaultValue;
-            }
-        }
-
-        /// <summary>
-        /// Creates a CSV string from the contents of a gridveiw
-        /// </summary>
-        /// <param name="gv">The databound gridview</param>
-        /// <returns>A CSV string representing the data</returns>
-        public static void ToCSV(this GridView gv, Stream s)
-        {
-            if (gv == null)
-                throw new ArgumentNullException(nameof(gv));
-            if (s == null)
-                throw new ArgumentNullException(nameof(s));
-
-            using (DataTable dt = new DataTable())
-            {
-                dt.Locale = CultureInfo.CurrentCulture;
-                if (gv.Rows.Count == 0 || gv.HeaderRow == null || gv.HeaderRow.Cells == null || gv.HeaderRow.Cells.Count == 0)
-                    return;
-
-                // add the header columns from the gridview
-                foreach (TableCell tc in gv.HeaderRow.Cells)
-                    dt.Columns.Add(new DataColumn(tc.Text));
-
-                foreach (GridViewRow gvr in gv.Rows)
-                {
-                    DataRow dr = dt.NewRow();
-
-                    for (int j = 0; j < gvr.Cells.Count; j++)
-                    {
-                        string szCell = gvr.Cells[j].Text;
-                        if (szCell.Length == 0 && gvr.Cells[j].Controls.Count > 0)
-                        {
-                            Control c;
-                            // Look for a label or a hyperlink
-                            if (gvr.Cells[j].Controls.Count > 1)
-                            {
-                                c = gvr.Cells[j].Controls[1];
-                                if (c is Label l)
-                                    szCell = l.Text;
-                            }
-                            else
-                            {
-                                c = gvr.Cells[j].Controls[0];
-                                if (c is HyperLink h)
-                                    szCell = h.Text;
-                                else if (c is Label l)
-                                    szCell = l.Text;
-                            }
-                        }
-                        szCell = HttpUtility.HtmlDecode(szCell).Trim().Replace('\uFFFD', ' ');
-
-                        dr[j] = szCell;
-                    }
-
-                    dt.Rows.Add(dr);
-                }
-
-                if (dt != null)
-                {
-                    using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8, 1024, true /* leave the stream open */))
-                    {
-                        CsvWriter.WriteToStream(sw, dt, true, true);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Given a set of objects, slices them up into smaller lists grouping by the values in the specified property name.
         /// </summary>
         /// <param name="lst">The set of objects to slice</param>
@@ -607,9 +473,10 @@ namespace MyFlightbook
         /// <param name="subject">The subject of the message</param>
         /// <param name="postedFile">If provided, any posted files</param>
         /// <param name="captchaScore">The captcha score</param>
+        /// <param name="fRespondOOF">True to respond with an out-of-office message</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore)
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore, bool fRespondOOF)
         {
             if (String.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
@@ -651,7 +518,7 @@ namespace MyFlightbook
                 SendMessage(msg);
             }
 
-            if ((ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0)
+            if (fRespondOOF)
                 NotifyUser(szSubject, ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
         }
 
@@ -663,42 +530,37 @@ namespace MyFlightbook
         {
             if (msg == null)
                 throw new ArgumentNullException(nameof(msg));
+            if (emailSender == null)
+                throw new InvalidOperationException("Email sender not initialized.");
 
-            using (SmtpClient smtpClient = new SmtpClient())
+            if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
             {
-                if (!smtpClient.Host.Contains("local"))
-                    smtpClient.EnableSsl = true;
-                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
-
-                if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
+                string szHTML = msg.Body;
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(msg.Body);
+                // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
+                if (doc.DocumentNode.SelectNodes("//table") == null)
                 {
-                    string szHTML = msg.Body;
-                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.LoadHtml(msg.Body);
-                    // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
-                    if (doc.DocumentNode.SelectNodes("//table") == null)
+                    StringBuilder sb = new StringBuilder();
+                    foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
                     {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
-                        {
-                            string szLine = node.InnerText.Trim();
-                            if (!String.IsNullOrEmpty(szLine))
-                                sb.AppendLine(node.InnerText.Trim());
+                        string szLine = node.InnerText.Trim();
+                        if (!String.IsNullOrEmpty(szLine))
+                            sb.AppendLine(node.InnerText.Trim());
 
-                            if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
-                                sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
+                        if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
+                            sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
 
-                            sb.Append(' ');
-                        }
-
-                        msg.Body = sb.ToString();
-                        msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
-                        msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
+                        sb.Append(' ');
                     }
-                }
 
-                smtpClient.Send(msg);
+                    msg.Body = sb.ToString();
+                    msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
+                    msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
+                }
             }
+
+            emailSender?.SendEmail(msg);
         }
 
         /// <summary>
@@ -959,17 +821,22 @@ namespace MyFlightbook
             return Array.Empty<string>();
         }
 
+        #region CacheManagement
+        public static MemoryCache GlobalCache { get; } = new MemoryCache("GlobalCache");
+
         public static int FlushCache()
         {
             int items = 0;
-            foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            foreach (var item in GlobalCache)
             {
-                HttpRuntime.Cache.Remove((string)entry.Key);
+                GlobalCache.Remove(item.Key);
                 items++;
             }
+
             GC.Collect();
             return items;
         }
+        #endregion
     }
 
     /// <summary>

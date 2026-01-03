@@ -26,6 +26,11 @@
     {
         <input type="hidden" name="tfaCode" id="hdnTFACode" />
         <input type="hidden" name="pane" value="@requestedPane" />
+        foreach (string param in Request.QueryString.Keys)
+        {
+            // Issue #1486: Preserve any query string parameters
+            <input type="hidden" name="@param" value="@Request.QueryString[param]" />
+        }
         @Html.AntiForgeryToken();
     }
 }

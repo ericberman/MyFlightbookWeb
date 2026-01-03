@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -19,7 +18,7 @@ using System.Web.Mvc;
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class DonateController : Controller
+    public class DonateController : AdminControllerBase
     {
         #region Stripe donations
         /// <summary>
@@ -116,8 +115,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             lstKnownGratuities.Sort((g1, g2) => { return g1.Threshold.CompareTo(g2.Threshold); });
 
             ViewBag.Gratuities = lstKnownGratuities;
-            ViewBag.Cancelled = util.GetStringParam(Request, "pp").CompareCurrentCultureIgnoreCase("canceled") == 0;
-            ViewBag.Success = util.GetStringParam(Request, "pp").CompareCurrentCultureIgnoreCase("success") == 0;
+            ViewBag.Cancelled = GetStringParam("pp").CompareCurrentCultureIgnoreCase("canceled") == 0;
+            ViewBag.Success = GetStringParam("pp").CompareCurrentCultureIgnoreCase("success") == 0;
             ViewBag.PaymentHistory = Payment.RecordsForUser(User.Identity.Name);
             ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileHeader, HttpUtility.HtmlEncode(MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName));
 

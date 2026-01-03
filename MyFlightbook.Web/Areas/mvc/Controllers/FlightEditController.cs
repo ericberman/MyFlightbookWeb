@@ -162,9 +162,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
-                VideoRef v = le.Videos.FirstOrDefault(vr => vr.ID == flightVideoToDelete) ?? throw new InvalidOperationException("Video not found!");
-                le.Videos.Remove(v);
-                v.Delete();
+                le.DeleteVideoRef(flightVideoToDelete);
                 return EmbeddedVideos(le, true);
             });
         }
@@ -177,11 +175,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
-
-                VideoRef vr = new VideoRef(le.FlightID, flightNewVideoRef, flightNewVideoComment);
-                if (!vr.IsValid)
-                    throw new InvalidOperationException(vr.ErrorString);
-                le.Videos.Add(vr);
+                le.AddVideoRef(flightNewVideoRef, flightNewVideoComment);
                 return EmbeddedVideos(le, Payments.EarnedGratuity.UserQualifies(User.Identity.Name, Payments.Gratuity.GratuityTypes.Videos));
             });
         }
@@ -341,15 +335,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
-
-                int appchCount = util.GetIntParam(Request, "appchHelpCount", 0);
-
-                if (Request["appchHelpAdd"] != null)
-                    le.Approaches += appchCount;
-
-                CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
-                cfp.TextValue = (cfp.TextValue + Resources.LocalizedText.LocalizedSpace + new ApproachDescription(appchCount, Request["appchHelpType"] + Request["appchHelpTypeSfx"], Request["appchHelpRwy"] + Request["appchHelpRwySfx"], Request["appchHelpApt"]).ToCanonicalString()).Trim();
-                le.CustomProperties.Add(cfp);
+                AddApproachesFromRequest(le);
 
                 Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);
                 Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -430,158 +416,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
         #endregion
-        #endregion
-
-        #region utilities
-        const string keyLastEndingHobbs = "LastHobbs";
-        const string keyLastEndingTach = "LastTach";
-        const string keyLastEndingMeter = "LastMeter";
-        const string keyLastEndingFuel = "LastFuel";
-        const string keyLastEntryDate = "LastEntryDate";
-        const string keySessionInProgress = "InProgressFlight";
-
-        /// <summary>
-        /// Initializes a logbookentry from the form, checking that the viewer has SAVE permissions on the flight.
-        /// All other errors/exceptions (besides authorization) are in the errorstring!
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="UnauthorizedAccessException">If the viewing user is not authorized to EDIT the flight, they are unauthorized</exception>
-        private LogbookEntry LogbookEntryFromForm()
-        {
-            string pendingID = Request["idPending"];
-            LogbookEntry le = String.IsNullOrEmpty(pendingID) ? new LogbookEntry() : new PendingFlight(pendingID);
-            le.FlightID = util.GetIntParam(Request, "idFlight", LogbookEntryCore.idFlightNew);
-            le.User = Request["szTargetUser"] ?? User.Identity.Name;
-            le.ErrorString = string.Empty;  // clear this out.
-
-            // Check that you can save - and if it's an instructor/student, further check that it's a new flight.
-            CheckCanSaveFlight(le.User, le);
-
-            try
-            {
-                // Core fields
-                le.Date = DateTime.Parse(Request["flightDate"], CultureInfo.CurrentCulture).Date;
-
-                le.AircraftID = util.GetIntParam(Request, "flightAircraft", 0);
-                le.CatClassOverride = util.GetIntParam(Request, "flightCatClassOverride", 0);
-
-                le.Route = Request["flightRoute"];
-                le.Comment = Request["flightComments"];
-
-                le.Approaches = util.GetIntParam(Request, "flightApproaches", 0);
-                le.fHoldingProcedures = Request["flightHold"] != null;
-                le.Landings = util.GetIntParam(Request, "flightLandings", 0);
-                le.FullStopLandings = util.GetIntParam(Request, "flightFSDayLandings", 0);
-                le.NightLandings = util.GetIntParam(Request, "flightFSNightLandings", 0);
-
-                le.CrossCountry = (Request["flightXC"] ?? string.Empty).SafeParseDecimal();
-                le.Nighttime = (Request["flightNight"] ?? string.Empty).SafeParseDecimal();
-                le.SimulatedIFR = (Request["flightSimIMC"] ?? string.Empty).SafeParseDecimal();
-                le.IMC = (Request["flightIMC"] ?? string.Empty).SafeParseDecimal();
-                le.GroundSim = (Request["flightGroundSim"] ?? string.Empty).SafeParseDecimal();
-                le.Dual = (Request["flightDual"] ?? string.Empty).SafeParseDecimal();
-                le.CFI = (Request["flightCFI"] ?? string.Empty).SafeParseDecimal();
-                le.SIC = (Request["flightSIC"] ?? string.Empty).SafeParseDecimal();
-                le.PIC = (Request["flightPIC"] ?? string.Empty).SafeParseDecimal();
-                le.TotalFlightTime = (Request["flightTotal"] ?? string.Empty).SafeParseDecimal();
-
-                le.HobbsStart = Request["flightHobbsStart"].SafeParseDecimal();
-                le.HobbsEnd = Request["flightHobbsEnd"].SafeParseDecimal();
-
-                // Datetimes have been entered in the user's preferred timezone
-                TimeZoneInfo tz = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
-
-                le.EngineStart = Request["flightEngineStart"].ParseUTCDateTime(le.Date, tz);
-                le.EngineEnd = Request["flightEngineEnd"].ParseUTCDateTime(le.Date, tz);
-                le.FlightStart = Request["flightFlightStart"].ParseUTCDateTime(le.Date, tz);
-                le.FlightEnd = Request["flightFlightEnd"].ParseUTCDateTime(le.Date, tz);
-
-                le.CustomProperties = new CustomPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples(Request["flightPropTuples"], le.FlightID, le.Date, CultureInfo.CurrentCulture), true);
-
-                // Each of the custom properties that is a date-time has been expressed in user's preferred timezone; need to convert to UTC
-                foreach (CustomFlightProperty cfp in le.CustomProperties)
-                {
-                    if (cfp.PropertyType.Type == CFPPropertyType.cfpDateTime && cfp.DateValue.HasValue())
-                        cfp.DateValue = DateTime.SpecifyKind(cfp.DateValue, DateTimeKind.Local).ConvertFromTimezone(tz);
-                }
-
-                // If this is from a pending flight, its saved telemetry might be in the flightPendingTelemetry hidden field.
-                string cachedFlightData = (Request["flightPendingTelemetry"] ?? string.Empty);
-                if (!String.IsNullOrEmpty(cachedFlightData))
-                    le.FlightData = Convert.FromBase64String(cachedFlightData).Uncompress();
-
-                IEnumerable<VideoRef> videoRefs = VideoRef.FromJSON(Request["flightVideosJSON"]);
-                le.Videos.Clear();
-                foreach (VideoRef vr in videoRefs)
-                    le.Videos.Add(vr);
-
-                le.PopulateImages();
-
-                le.fIsPublic = Request["flightPublic"] != null;
-            }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
-            {
-                le.ErrorString = ex.Message;
-            }
-            return le;
-        }
-
-        private bool CommitFlight(LogbookEntry le)
-        {
-            // ensure that the aircraft is in their profile
-            UserAircraft ua = new UserAircraft(le.User);
-            if (ua[le.AircraftID] == null)
-            {
-                Aircraft ac = new Aircraft(le.AircraftID);
-                if (!ac.IsNew)
-                    ua.FAddAircraftForUser(ac);
-            }
-
-            if (le.IsValid())
-            {
-                // if a new flight and hobbs > 0, save it for the next flight
-                bool fIsNew = le.IsNewFlight;
-                if (fIsNew)
-                {
-                    Session[keyLastEndingHobbs] = le.HobbsEnd;
-                    Session[keyLastEndingTach] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropTachEnd);
-                    Session[keyLastEndingMeter] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightMeterEnd);
-                    Session[keyLastEndingFuel] = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtLanding);
-                    Session[keyLastEntryDate] = le.Date; // new flight - save the date
-                }
-
-                try
-                {
-                    if (le.FCommit(le.HasFlightData))
-                    {
-                        if (le.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
-                            LastTailID = le.AircraftID;
-
-                        if (fIsNew)
-                        {
-                            // this should now have a flight ID - save this so that we can scroll to it.
-                            Session[MFBConstants.keySessLastNewFlight] = le.FlightID;
-
-                            // process pending images, if this was a new flight
-                            foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
-                            {
-                                pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
-                                pendingImage.DeleteImage();     // clean it up!
-                            }
-                        }
-
-                        // Badge computation may be wrong
-                        MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
-                    }
-                }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
-                {
-                    le.ErrorString = !String.IsNullOrEmpty(le.ErrorString) ? le.ErrorString : ex?.InnerException.Message ?? ex.Message;
-                }
-            }
-
-            return String.IsNullOrEmpty(le.ErrorString);
-        }
         #endregion
 
         #region Child Views

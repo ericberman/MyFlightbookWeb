@@ -3,7 +3,7 @@
     Profile m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
     string szPreferredGreeting = m_pf.PreferredGreeting.Trim();
     IEnumerable<string> lstAlternateEmails = m_pf.AlternateEmailsForUser();
-    string szEmailVerify = util.GetStringParam(Request, "ve");
+    string szEmailVerify = Request["ve"];
     string szVerifyError = string.Empty;
     string verifiedEmail = string.Empty;
     bool emailVerified;

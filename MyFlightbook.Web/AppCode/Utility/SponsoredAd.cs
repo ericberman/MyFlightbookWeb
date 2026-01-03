@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Copyright (c) 2016-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,13 +91,13 @@ namespace MyFlightbook.SponsoredAds
         /// <returns></returns>
         public static IEnumerable<SponsoredAd> Campaigns()
         {
-            List<SponsoredAd> lst = (List<SponsoredAd>)HttpRuntime.Cache[cacheKeySponsoredAds];
+            List<SponsoredAd> lst = (List<SponsoredAd>)util.GlobalCache.Get(cacheKeySponsoredAds);
             if (lst == null)
             {
                 lst = new List<SponsoredAd>();
                 DBHelper dbh = new DBHelper("SELECT * FROM sponsoredads ");
                 dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new SponsoredAd(dr)); });
-                HttpRuntime.Cache.Add(cacheKeySponsoredAds, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(cacheKeySponsoredAds, lst, DateTimeOffset.UtcNow.AddHours(2));
             }
             return lst;
         }

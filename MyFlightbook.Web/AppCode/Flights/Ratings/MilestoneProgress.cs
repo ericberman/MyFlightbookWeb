@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2024 MyFlightbook LLC
+ * Copyright (c) 2013-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -310,9 +310,9 @@ namespace MyFlightbook.RatingsProgress
                 foreach (ExaminerFlightRow cfr in lstRows)
                     sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "[{0:d}]({1}) - [*{2}*]({3}{4})",
                         cfr.dtFlight,
-                        String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", cfr.flightID).ToAbsoluteURL(HttpContext.Current.Request),
+                        String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}", cfr.flightID).ToAbsoluteURL(util.RequestContext.CurrentRequestUrl),
                         cfr.Route,
-                        "~/mvc/Airport/MapRoute?Airports=".ToAbsoluteURL(HttpContext.Current.Request),
+                        "~/mvc/Airport/MapRoute?Airports=".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl),
                         HttpUtility.UrlEncode(cfr.Route)));
                 return sb.ToString();
             }

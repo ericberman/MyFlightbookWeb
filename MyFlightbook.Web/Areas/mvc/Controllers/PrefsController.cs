@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -89,13 +89,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 pf.UsesHHMM = true;
                 pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, null, true);
-                System.Web.HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = null;
+                util.RequestContext.SetSessionValue(MFBConstants.keyDecimalSettings, null);
             }
             else if (Enum.TryParse<DecimalFormat>(prefValue, true, out DecimalFormat df))
             {
                 pf.UsesHHMM = false;
                 pf.SetPreferenceForKey(MFBConstants.keyDecimalSettings, df, df == DecimalFormat.Adaptive);
-                System.Web.HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
+                util.RequestContext.SetSessionValue(MFBConstants.keyDecimalSettings, df);
             }
             else
                 throw new ArgumentException("Unknown decimal value preference: " + prefValue);
@@ -106,7 +106,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (int.TryParse(prefValue, out int n) && n >= 0)
             {
                 pf.SetPreferenceForKey(MFBConstants.keyMathRoundingUnits, n, n == 60);
-                System.Web.HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = n;
+                util.RequestContext.SetSessionValue(MFBConstants.keyMathRoundingUnits, n);
             }
             else
                 throw new ArgumentException("invalid math rounding value " + prefValue);

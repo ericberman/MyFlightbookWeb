@@ -3,20 +3,21 @@ using MyFlightbook.SponsoredAds;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
 /******************************************************
     * 
-    * Copyright (c) 2022-2025 MyFlightbook LLC
+    * Copyright (c) 2022-2026 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
-    public class MFBTemplateController : Controller
+    public class MFBTemplateController : AdminControllerBase
     {
         protected bool IsNight
         {
@@ -275,7 +276,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return Content(string.Empty);
 
             IReadOnlyDictionary<Brand.FooterLinkKey, BrandLink> d;
-            ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks(Request.IsMobileSession(), Request.IsAuthenticated && Request.IsSecureConnection);
+            ViewBag.FooterLinks = d = Branding.CurrentBrand.FooterLinks(IsMobileSession(), Request.IsAuthenticated && Request.IsSecureConnection);
 
             // Fix up any relative links
             foreach (BrandLink bl in d.Values)
@@ -283,14 +284,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 bl.LinkRef = FixLink(bl.LinkRef);
                 bl.ImageRef = FixLink(bl.ImageRef);
             }
-            return PartialView(Request.IsMobileSession() ? "_footermobile" : "_footer");
+            return PartialView(IsMobileSession() ? "_footermobile" : "_footer");
         }
 
         [ChildActionOnly]
         public ActionResult RenderImpersonation()
         {
-            ViewBag.ImpersonatingUser = ProfileRoles.OriginalAdmin;
-            ViewBag.IsImpersonating = ProfileRoles.IsImpersonating(User.Identity.Name);
+            ViewBag.ImpersonatingUser = OriginalAdmin;
+            ViewBag.IsImpersonating = IsImpersonating(User.Identity.Name);
             return PartialView("_impersonation");
         }
 
@@ -298,9 +299,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult StopImpersonation()
         {
-            ProfileRoles.StopImpersonating();
+            StopImpersonating();
             return Redirect("~/mvc/AdminUser");
         }
+
+        private const string webinarKey = "upcomingWebinar";
 
         [ChildActionOnly]
         public ActionResult RenderHeader(tabID selectedTab = tabID.tabHome)
@@ -317,13 +320,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // see if we need to show an upcoming event; we repurpose a known GUID for this.  
             // If it's in the database AND in the future, we show it.
             // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
-            ScheduledEvent se = (ScheduledEvent)System.Web.HttpContext.Current.Cache["upcomingWebinar"];
+            ScheduledEvent se = (ScheduledEvent) util.GlobalCache.Get(webinarKey);
             if (se == null)
             {
                 se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
                 if (se == null)
                     se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
-                System.Web.HttpContext.Current.Cache.Add("upcomingWebinar", se, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                util.GlobalCache.Set(webinarKey, se, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(15) });
             }
             if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
             {
@@ -339,7 +342,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderHead(string Title, bool UseCharting = false, bool UseMaps = false, bool AddBaseRef = false, bool NoIndex = false, IEnumerable<string> AdditionalCSS = null)
         {
-            int idBrand = util.GetIntParam(Request, "bid", -1);
+            int idBrand = GetIntParam("bid", -1);
             if (idBrand >= 0 && idBrand < Enum.GetNames(typeof(BrandID)).Length)
                 Branding.CurrentBrandID = (BrandID)idBrand;
 
@@ -351,8 +354,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return null;
             }
             // if "m=no" is passed in, override mobile detection and force classic view
-            if (util.GetStringParam(Request, "m") == "no")
-                util.SetMobile(false);
+            if (GetStringParam("m") == "no")
+                SetMobile(false);
 
             if (Request.Url.GetLeftPart(UriPartial.Path).Contains("/wp-includes"))
                 throw new HttpException(404, "Why are you probing me for wordpress, you jerks?");
@@ -360,9 +363,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (User.Identity.IsAuthenticated)
                 Session[User.Identity.Name + "-LastPage"] = String.Format(CultureInfo.InvariantCulture, "{0}:{1}{2}", Request.IsSecureConnection ? "https" : "http", Request.Url.Host, Request.Url.PathAndQuery);
             else
-                ProfileRoles.StopImpersonating();
+                StopImpersonating();
 
-            int naked = util.GetIntParam(Request, "naked", 0);
+            int naked = GetIntParam("naked", 0);
             if (naked == -1) // kill naked
                 Session["IsNaked"] = IsNaked = false;
             else
@@ -378,14 +381,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.IsIOSOrAndroid = szUserAgent.Contains("IPHONE") || szUserAgent.Contains("IPAD") || szUserAgent.Contains("ANDROID");
 
             // We're going to set IsNight explicitly if it's in the url, but otherwise use the session object.
-            string nightRequest = util.GetStringParam(Request, "night");
+            string nightRequest = GetStringParam("night");
             if (nightRequest.CompareCurrentCultureIgnoreCase("yes") == 0)
                 IsNight = true;
             else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
                 IsNight = false;
             ViewBag.IsNight = IsNight;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
-            ViewBag.MobileCSS = Request.IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
+            ViewBag.MobileCSS = IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
             ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();

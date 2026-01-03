@@ -15,13 +15,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.Caching;
 using System.Text;
 using System.Web;
-using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2025 MyFlightbook LLC
+ * Copyright (c) 2014-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -653,7 +653,7 @@ namespace MyFlightbook.Clubs
             string szKey = CacheKeyForID(id);
             if (!fNoCache)
             {
-                c = (Club)HttpRuntime.Cache[szKey];
+                c = (Club)util.GlobalCache.Get(szKey);
                 if (c != null)
                     return c;
             }
@@ -675,9 +675,9 @@ namespace MyFlightbook.Clubs
         private static void CacheClub(Club c, int idClub)
         {
             string szKey = CacheKeyForID(idClub);
-            HttpRuntime.Cache.Remove(szKey);
+            util.GlobalCache.Remove(szKey);
             if (c != null)
-                HttpRuntime.Cache.Add(c.CacheKey, c, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
+                util.GlobalCache.Set(c.CacheKey, c, DateTimeOffset.UtcNow.AddMinutes(30));
         }
 
         /// <summary>
@@ -1369,9 +1369,9 @@ namespace MyFlightbook.Clubs
 
             string szCacheKey = "clubPeersFor" + szUser1;
 
-            HashSet<string> hsPeers = (HashSet<String>)HttpContext.Current.Cache[szCacheKey];
+            MemoryCache cache = util.GlobalCache;
 
-            if (hsPeers == null)
+            if (!(cache.Get(szCacheKey) is HashSet<string> hsPeers))
             {
                 hsPeers = new HashSet<string>();
                 DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT DISTINCT
@@ -1390,7 +1390,7 @@ namespace MyFlightbook.Clubs
                     (dr) => { hsPeers.Add(dr["username"].ToString()); });
 
                 // We are likely to get a few requests all at once, and then none for a while, so cache this for 15 minutes.
-                HttpContext.Current.Cache.Add(szCacheKey, hsPeers, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 15, 0), CacheItemPriority.Normal, null);
+                cache.Set(szCacheKey, hsPeers, new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(15) });
             }
             return hsPeers.Contains(szUser2);
         }

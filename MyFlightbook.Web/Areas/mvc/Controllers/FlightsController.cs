@@ -1,5 +1,4 @@
 ﻿using MyFlightbook.Airports;
-using MyFlightbook.Charting;
 using MyFlightbook.Currency;
 using MyFlightbook.Histogram;
 using MyFlightbook.Mapping;
@@ -15,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,33 +68,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 // Anyone can *say* they're admin, so treat the flag above as a request.  Trust but verify
                 LogbookEntry le = GetFlightToView(idFlight, fAsAdmin);
-
-                using (FlightData fd = new FlightData())
-                {
-                    if (!fd.ParseFlightData(le))
-                    {
-                        throw new InvalidOperationException(fd.ErrorString);
-                    }
-                    GoogleChartData gcd = new GoogleChartData()
-                    {
-                        SlantAngle = 0,
-                        Height = 500,
-                        Width = 800,
-                        Title = string.Empty,
-                        LegendType = GoogleLegendType.bottom,
-                        XDataType = GoogleColumnDataType.date,
-                        YDataType = GoogleColumnDataType.number,
-                        Y2DataType = GoogleColumnDataType.number,
-                        ContainerID = "chartAnalysis"
-                    };
-                    fd.Data.PopulateGoogleChart(gcd, xData, yData, y2Data, y1Scale, y2Scale, out double max, out double min, out double max2, out double min2);
-                    ViewBag.ChartData = gcd;
-                    ViewBag.maxY = max > double.MinValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.YLabel, max) : string.Empty;
-                    ViewBag.minY = min < double.MaxValue && !String.IsNullOrEmpty(gcd.YLabel) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.YLabel, min) : string.Empty;
-                    ViewBag.maxY2 = max2 > double.MinValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMaxX, gcd.Y2Label, max2) : string.Empty;
-                    ViewBag.minY2 = min2 < double.MaxValue && !String.IsNullOrEmpty(gcd.Y2Label) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartMinX, gcd.Y2Label, min2) : string.Empty;
-                    return PartialView("_telemetryAnalysisResult");
-                }
+                SetUpTelemetryChartForFlight(le, xData, yData, y2Data, y1Scale, y2Scale);
+                return PartialView("_telemetryAnalysisResult");
             });
         }
 
@@ -474,36 +448,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (hm == null)
                 throw new ArgumentNullException(nameof(hm));
 
-            GoogleChartData gcd = new GoogleChartData()
-            {
-                ChartType = GoogleChartType.ColumnChart,
-                Chart2Type = GoogleSeriesType.line,
-                SlantAngle = 90,
-                Height = 340,
-                Title = string.Empty,
-                LegendType = GoogleLegendType.bottom,
-                XDataType = GoogleColumnDataType.date,
-                YDataType = GoogleColumnDataType.number,
-                Y2DataType = GoogleColumnDataType.number,
-                ShowAverage = fIncludeAverage,
-                AverageFormatString = Resources.LocalizedText.AnalysisAverageFormatString,
-                Width = 800,
-                ContainerID = "chartAnalysis"
-            };
-
-            BucketManager bm = hm.PopulateChart(gcd, selectedBucket, fieldToGraph, fUseHHMM, fIncludeAverage);
-
-            if (!fLinkItems)
-                gcd.ClickHandlerJS = string.Empty;
-
-            ViewBag.ChartData = gcd;
-            ViewBag.yearlySummary = (bm is YearMonthBucketManager ybm && ybm.Buckets.Any()) ? ybm.ToYearlySummary() : Array.Empty<MonthsOfYearData>();
+            SetUpHistogramView(hm, selectedBucket, fieldToGraph, fUseHHMM, fIncludeAverage, fLinkItems);
             ViewBag.fUseHHMM = fUseHHMM;
             ViewBag.linkItems = fLinkItems;
-            ViewBag.bm = bm;
-            ViewBag.hm = hm;
-            ViewBag.hv = hm.Values.FirstOrDefault(h => h.DataField.CompareOrdinal(fieldToGraph) == 0);
-            ViewBag.rawData = bm.RenderHTML(hm, fLinkItems);
             return PartialView("_analysisResult");
         }
         #endregion
@@ -615,7 +562,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : pfTarget;
 
-            if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
+            if (GetIntParam("dupesOnly", 0) != 0)
             {
                 fq = new FlightQuery(targetUser) {
                     EnumeratedFlights = new HashSet<int>(LogbookEntryBase.DupeCandidatesForUser(targetUser)) };
@@ -662,11 +609,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             FlightQuery fq = FlightQuery.FromJSON(fqJSON);
             CheckCanViewFlights(fq.UserName, User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty, ShareKey.ShareKeyWithID(skID));
-            HistogramManager hm = LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName);
-            BucketManager bm = hm.SupportedBucketManagers.FirstOrDefault(b => b.DisplayName.CompareOrdinal(selectedBucket) == 0);
-            bm.ScanData(hm);
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, MyFlightbook.Profile.GetUser(fq.UserName).UserFullName, DateTime.Now.YMDString().Replace(" ", "-"));
-            return File(bm.RenderCSV(hm).UTF8Bytes(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+            return File(RenderFlyingStats(fq, selectedBucket), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
 
         private ViewResult SharedLogbookForQuery(string g, FlightQuery fq = null, bool fPropDeleteClicked = false, string propToDelete = null)
@@ -942,7 +886,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniRecents()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             ViewBag.fq = fq;
@@ -953,7 +897,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniTotals()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             ViewBag.fq = fq;
@@ -968,7 +912,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniLogbook()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             return View("miniLogbook");
         }
         #endregion
@@ -1061,7 +1005,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             // update based on any passed parameters
-            q.InitPassedQueryItems(Request["s"], Request["ap"], util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
+            q.InitPassedQueryItems(Request["s"], Request["ap"], GetIntParam("y", -1), GetIntParam("m", -1), GetIntParam("w", -1), GetIntParam("d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
             return MainLogbookInternal(q);
         }
         #endregion

@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -103,7 +103,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
-                List<airportImportCandidate> lst = new List<airportImportCandidate>(airportImportCandidate.Candidates(Request.Files[0].InputStream, util.GetIntParam(Request, "khack", 0) == 0));
+                List<airportImportCandidate> lst = new List<airportImportCandidate>(airportImportCandidate.Candidates(Request.Files[0].InputStream, GetIntParam("khack", 0) == 0));
 
                 ViewBag.importCandidates = lst;
                 ViewBag.allowBlast = fAllowBlast;
@@ -149,14 +149,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpGet]
         public ActionResult Edit()
         {
-            ViewBag.isAdminMode = (util.GetIntParam(Request, "a", 0) != 0) && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            ViewBag.isAdminMode = (GetIntParam("a", 0) != 0) && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             GoogleMap googleMap = new GoogleMap("divAirport", GMap_Mode.Dynamic)
             {
                 ClickHandler = "function (point) {clickForAirport(point.latLng);}"
             };
             googleMap.SetAirportList(new AirportList(String.Empty));
             ViewBag.Map = googleMap;
-            ViewBag.allowBlast = util.GetIntParam(Request, "blast", 0) != 0;
+            ViewBag.allowBlast = GetIntParam("blast", 0) != 0;
             return View("addEditAirport");
         }
 
@@ -570,7 +570,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(fq);
             ViewBag.visitedAirports = rgva;
             AirportList alMatches = new AirportList(rgva);
-            bool fShowRoute = util.GetIntParam(Request, "path", 0) != 0;
+            bool fShowRoute = GetIntParam("path", 0) != 0;
             GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
             {
                 Airports = AirportList.PathsForQuery(fq, alMatches, fShowRoute)
@@ -605,7 +605,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             FlightQuery _fq = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             if (_fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
                 throw new UnauthorizedAccessException();
-            ViewBag.df = util.GetIntParam(Request, "df", 0) != 0;
+            ViewBag.df = GetIntParam("df", 0) != 0;
             return VisitedAirportViewForQuery(_fq);
         }
         #endregion

@@ -9,7 +9,7 @@
     DateTime dtClub = ScheduledEvent.FromUTC(DateTime.UtcNow, club.TimeZone);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabAircraft;
-    ScheduleDisplayMode defaultMode = SchedulePreferences.DefaultScheduleMode;
+    ScheduleDisplayMode defaultMode = ViewBag.defaultViewMode;
     string defaultScheduleMode = defaultMode.ToString();
 }
 <script src='@VirtualPathUtility.ToAbsolute("~/Public/Scripts/daypilot-all.min.js?v=20210821")'></script>
@@ -143,6 +143,12 @@
         o.days = (mode == "Week") ? 7 : 1;
         o.start = o.day;
         refreshAllCalendars(o);
+        var params = new Object();
+        params.mode = mode;
+        $.ajax({
+            url: '@Url.Action("SetDefaultAvailabilityView", "Club")',
+            type: "POST", data: JSON.stringify(params), dataType: "text", contentType: "application/json"
+        });
     }
 
     function setSummaryScope() {
@@ -335,8 +341,8 @@
                 </div>
                 <p></p>
                 <p>
-                    <input type="radio" name="scheduleMode" id="rbScheduleModeDay" @(defaultScheduleMode.CompareCurrentCulture("Day") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="days" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
-                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" @(defaultScheduleMode.CompareCurrentCulture("Week") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="Week" /><label for="rbScheduleModeWeek">@Resources.Schedule.Week</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeDay" @(defaultScheduleMode.CompareCurrentCulture("Day") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="@ScheduleDisplayMode.Day" /><label for="rbScheduleModeDay">@Resources.Schedule.Day</label>
+                    <input type="radio" name="scheduleMode" id="rbScheduleModeWeek" @(defaultScheduleMode.CompareCurrentCulture("Week") == 0 ? "checked" : string.Empty) onchange="javascript: setCalendarMode();" value="@ScheduleDisplayMode.Week" /><label for="rbScheduleModeWeek">@Resources.Schedule.Week</label>
                 </p>
                 <p></p>
                 <p><span style="font-weight:bold">@Resources.Club.LabelUpcomingSchedule</span></p>

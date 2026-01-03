@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Web;
 using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -262,10 +261,9 @@ namespace MyFlightbook
         {
             const string szCacheKey = "CatClassArrayKey";
 
-            CategoryClass[] rgCatClass = null;
+            IEnumerable<CategoryClass> rgCatClass = null;
 
-            if (HttpRuntime.Cache != null)
-                rgCatClass = (CategoryClass[])HttpRuntime.Cache[szCacheKey];
+            rgCatClass = (IEnumerable<CategoryClass>)util.GlobalCache.Get(szCacheKey);
 
             if (rgCatClass != null)
                 return rgCatClass;
@@ -278,10 +276,8 @@ namespace MyFlightbook
                 (dr) => { ar.Add(new CategoryClass(dr)); }))
                 throw new MyFlightbookException("Error getting catclasses:\r\n" + dbh.LastError);
 
-            rgCatClass = ar.ToArray();
-
-            HttpRuntime.Cache?.Add(szCacheKey, rgCatClass, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
-            return rgCatClass;
+            util.GlobalCache.Set(szCacheKey, ar, DateTimeOffset.UtcNow.AddHours(1));
+            return ar;
         }
 
         private static readonly Dictionary<int, CategoryClass> _dIndexed = new Dictionary<int, CategoryClass>();

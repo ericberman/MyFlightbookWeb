@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         protected string DefaultTail => CountryCodePrefix.DefaultCountryCodeForLocale(DefaultLocale).HyphenatedPrefix;
 
-        protected bool IsAdminMode => util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
+        protected bool IsAdminMode => GetIntParam("a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
 
         protected DateTime ReadRequestDate(string key)
         {
@@ -53,14 +53,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             Aircraft ac = new Aircraft()
             {
-                AircraftID = util.GetIntParam(Request, "aircraftID", Aircraft.idAircraftUnknown),
-                Revision = util.GetIntParam(Request, "aircraftRev", -1),
+                AircraftID = GetIntParam("aircraftID", Aircraft.idAircraftUnknown),
+                Revision = GetIntParam("aircraftRev", -1),
                 ModelID = modelID,
                 InstanceType = instanceType,
                 TailNumber = (instanceType == AircraftInstanceTypes.RealAircraft) ? (type.CompareCurrentCultureIgnoreCase("Anonymous") == 0 ? CountryCodePrefix.szAnonPrefix : Request["aircraftTail"] ?? DefaultTail) : CountryCodePrefix.szSimPrefix, // will be fixed up below
                 GlassUpgradeDate = avionicsTechnology == MakeModel.AvionicsTechnologyType.None ? null : ReadRequestDate("aircraftUpgradeDate").AsNulluble(),
                 AvionicsTechnologyUpgrade = avionicsTechnology,
-                Version = util.GetIntParam(Request, "aircraftVersion", 0)
+                Version = GetIntParam("aircraftVersion", 0)
             };
 
             // fix up any obviously invalid things:

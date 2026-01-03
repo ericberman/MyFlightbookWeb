@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -452,6 +452,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return PartialView("_availMap");
             });
         }
+
+        private const string szKeyCookieDisplayMode = "kcSchedDisplay";
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SetDefaultAvailabilityView(ScheduleDisplayMode mode)
+        {
+            return SafeOp(() =>
+            {
+                // Day is the default so clear the cookie if it's default.  Just saves a bit of space
+                if (mode == ScheduleDisplayMode.Day)
+                    util.RequestContext.RemoveCookie(szKeyCookieDisplayMode);
+                else
+                    util.RequestContext.SetCookie(szKeyCookieDisplayMode, ((int)mode).ToString(CultureInfo.InvariantCulture));
+                return new EmptyResult();
+            });
+        }
         #endregion
 
         #region Partials/child actions
@@ -647,6 +664,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.club = club;
             ViewBag.fIsAdmin = fIsAdmin;
             ViewBag.cm = cm;
+            ViewBag.defaultViewMode = (ScheduleDisplayMode)(util.RequestContext.GetCookie(szKeyCookieDisplayMode) ?? string.Empty).SafeParseInt((int)ScheduleDisplayMode.Day);
 
             return View("clubDetails");
         }
@@ -698,7 +716,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ClubClickHandler = "displayClubDetails"
             };
 
-            bool fAdmin = User.Identity.IsAuthenticated && util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            bool fAdmin = User.Identity.IsAuthenticated && GetIntParam("a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             IEnumerable<Club> rgClubs = Array.Empty<Club>();
             if (String.IsNullOrEmpty(szAirport))
                 rgClubs = Club.AllClubs(fAdmin);

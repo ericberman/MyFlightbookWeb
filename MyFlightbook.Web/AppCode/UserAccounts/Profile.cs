@@ -11,7 +11,6 @@ using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -22,12 +21,11 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Caching;
 using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,82 +106,6 @@ namespace MyFlightbook
                 (dr) => { lst.Add(new Profile(dr)); });
             return lst;
         }
-
-        #region Impersonation
-        /// <summary>
-        /// Returns the username of the user who might be doing any impersonation.
-        /// </summary>
-        public static string OriginalAdmin
-        {
-            get { return (HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID] != null) ? HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value : string.Empty; }
-        }
-
-        /// <summary>
-        /// Returns true if the current user is being impersonated
-        /// </summary>
-        /// <param name="szCurrentUser">The username of the current user</param>
-        /// <returns>True if the current user is being emulated by an admin</returns>
-        public static bool IsImpersonating(string szCurrentUser)
-        {
-            bool fIsImpersonatingCookie = false;
-            HttpCookie cookie = HttpContext.Current.Request.Cookies[MFBConstants.keyIsImpersonating];
-            if (cookie != null)
-            {
-                if (!Boolean.TryParse(cookie.Value, out fIsImpersonatingCookie))
-                    HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
-            }
-
-            // to be impersonating, must be both an admin and have the impersonating cookie set and be impersonating someone other than yourself.
-            string szOriginalAdmin = OriginalAdmin;
-            return fIsImpersonatingCookie && String.Compare(szOriginalAdmin, szCurrentUser, StringComparison.Ordinal) != 0 && Profile.GetUser(szOriginalAdmin).CanSupport;
-        }
-
-        /// <summary>
-        /// If currently impersonating, stops the impersonation
-        /// </summary>
-        public static void StopImpersonating()
-        {
-            if (HttpContext.Current.Request.Cookies[MFBConstants.keyIsImpersonating] != null)
-                HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
-            if (HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID] != null)
-            {
-                string szUser = HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value;
-                MembershipUser mu = (szUser == null) ? null : Membership.GetUser(szUser);
-                if (!String.IsNullOrEmpty(mu?.UserName))
-                {
-                    FormsAuthentication.SetAuthCookie(HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value, true);
-                    Profile pf = Profile.GetUser(mu.UserName);
-                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
-                        ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
-                        : (object)null;
-                    HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
-                }
-                else
-                    FormsAuthentication.SignOut();
-                HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(-1);
-            }
-        }
-
-        /// <summary>
-        /// Starts impersonating the specified person
-        /// </summary>
-        /// <param name="szAdminName">The admin name to impersonate</param>
-        /// <param name="szTargetName">The impersonation target</param>
-        public static void ImpersonateUser(string szAdminName, string szTargetName)
-        {
-            HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Value = szAdminName;
-            HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(30);
-            FormsAuthentication.SetAuthCookie(szTargetName, true);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
-
-            Profile pf = Profile.GetUser(szTargetName);
-            HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
-                ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
-                : (object)null;
-            HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
-        }
-        #endregion
     }
 
     /// <summary>
@@ -1260,9 +1182,9 @@ namespace MyFlightbook
             lock (cachelock) {
                 string szKey = GetCacheKey(pf.UserName);
                 // Issue #1084 - Remove the object, if it exists.
-                HttpRuntime.Cache.Remove(szKey);
+                util.GlobalCache.Remove(szKey);
                 // Cache this for 30 minutes
-                HttpRuntime.Cache.Add(szKey, pf, null, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szKey, pf, DateTimeOffset.UtcNow.AddMinutes(30));
             }
         }
 
@@ -1399,7 +1321,7 @@ namespace MyFlightbook
         /// <returns>null if not current in cache, else Profile</returns>
         private static Profile CachedProfileForUser(string name)
         {
-            return HttpRuntime.Cache == null ? null : (Profile)HttpRuntime.Cache[GetCacheKey(name)];
+            return (Profile)util.GlobalCache.Get(GetCacheKey(name));
         }
 
         /// <summary>
@@ -1432,7 +1354,7 @@ namespace MyFlightbook
             if (szUserName == null)
                 return;
 
-            HttpRuntime.Cache.Remove(GetCacheKey(szUserName));
+            util.GlobalCache.Remove(GetCacheKey(szUserName));
         }
         #endregion
 
@@ -1591,19 +1513,13 @@ namespace MyFlightbook
             dbh.DoNonQuery();
 
             // update all of the cached profile objects
-            if (HttpRuntime.Cache != null)
+            foreach (var item in util.GlobalCache)
             {
-                Cache c = HttpRuntime.Cache;
-                IDictionaryEnumerator en = c.GetEnumerator();
-                while (en.MoveNext())
-                {
-                    object o = c[en.Key.ToString()];
-                    if (o.GetType() == typeof(Profile))
-                        ((Profile)o).AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
-                }
-
-                AirportListBadge.FlushCache();
+                if (item.Value is Profile pf)
+                    pf.AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
             }
+
+            AirportListBadge.FlushCache();
         }
         #endregion
 
@@ -1645,7 +1561,7 @@ namespace MyFlightbook
         public Uri PublicFlightsURL(string szHost)
         {
             SharedDataEncryptor enc = new SharedDataEncryptor(keyEncryptMyFlights);
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, "~/mvc/flights/myflights".ToAbsolute(), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
         }
 
         public static string EncryptedUserName(string uid)

@@ -1,9 +1,9 @@
-﻿using System;
+using MyFlightbook.Utility.Email;
+using System;
 using System.Configuration;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
 
 /******************************************************
     * 
@@ -19,18 +19,16 @@ namespace MyFlightbook.Web
        protected void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
-            ShuntState.Init();
-            System.Web.Mvc.AreaRegistration.RegisterAllAreas();
-            ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-3.7.1.min.js") });
-            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryui", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Scripts/jquery-ui-1.14.1.min.js") });
-            ScriptManager.ScriptResourceMapping.AddDefinition("jqueryUtils", new ScriptResourceDefinition { Path = VirtualPathUtility.ToAbsolute("~/Public/Scripts/jqueryutil.js?v=11") });
-            ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
+            AreaRegistration.RegisterAllAreas();
 
             // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
             CoordinateSharp.GlobalSettings.Default_EagerLoad = new CoordinateSharp.EagerLoad(false);
 
-            // Initialize the DB Helper.
+            // Dependency Injection
             DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
+            ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
+            util.InitEmail(new SmtpSupport());
+            util.InitRequestContext(new MVCRequestContext());
         }
 
         protected void Application_End(object sender, EventArgs e)

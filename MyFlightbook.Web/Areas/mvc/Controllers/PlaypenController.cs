@@ -401,7 +401,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult OAuthResource(string id)
         {
-            OAuthServiceCall.ProcessRequest(id);
+            OAuthServiceCall.ProcessRequest(Request, Response, id);
             return null;
         }
 

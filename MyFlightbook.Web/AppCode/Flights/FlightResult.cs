@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
-using System.Web.Caching;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,14 +35,14 @@ namespace MyFlightbook
             string szKey = fq.ToJSONString();
             FlightResult fr = null;
             if (dictResultReferences.TryGetValue(szKey, out string cacheKey))
-                fr = (FlightResult) HttpRuntime.Cache[cacheKey];
+                fr = (FlightResult) util.GlobalCache.Get(cacheKey);
 
             if (fr == null)
             {
                 fr = new FlightResult(Profile.GetUser(fq.UserName), fq);
                 string szCacheKey = String.IsNullOrEmpty(cacheKey) ? Guid.NewGuid().ToString() : cacheKey;
                 dictResultReferences[szKey] = szCacheKey;   // keep a reference to the cache itself
-                HttpRuntime.Cache.Insert(szCacheKey, fr, null, DateTime.UtcNow.AddMinutes(10), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szCacheKey, fr, DateTimeOffset.UtcNow.AddMinutes(10));
             }
             return fr;
         }
@@ -83,7 +81,7 @@ namespace MyFlightbook
         {
             // remove any potentially dangling references
             foreach (string key in dictResultReferences.Keys)
-                HttpRuntime.Cache.Remove(dictResultReferences[key]);
+                util.GlobalCache.Remove(dictResultReferences[key]);
 
             dictResultReferences.Clear();
         }

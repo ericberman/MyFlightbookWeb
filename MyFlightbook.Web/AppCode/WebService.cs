@@ -18,7 +18,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -116,9 +116,9 @@ namespace MyFlightbook
 
         public static void LogCall(string sz, params object[] list)
         {
-            if (HttpContext.Current != null && HttpContext.Current.Request != null)
+            if (util.RequestContext.CurrentRequestUrl != null)
             {
-                List<object> lstNewArgs = new List<object>() { HttpContext.Current.Request.UserHostAddress, HttpContext.Current.Request.UserAgent };
+                List<object> lstNewArgs = new List<object>() { util.RequestContext.CurrentRequestHostAddress, util.RequestContext.CurrentRequestUserAgent };
                 lstNewArgs.AddRange(list);
                 wslogger.Information("({ip}, {ua}) " + sz, lstNewArgs.ToArray());
             } 
@@ -539,8 +539,9 @@ namespace MyFlightbook
         /// </summary>
         private static void SetCultureForRequest()
         {
-            if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
-                util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
+            IEnumerable<string> languages = util.RequestContext?.CurrentRequestLanguages;
+            if (languages?.Any() ?? false)
+                util.SetCulture(languages.First());
         }
 
         /// <summary>
@@ -1202,11 +1203,9 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The request</param>
         /// <returns>True if we are secure OR exempt from security</returns>
-        public static bool CheckSecurity(HttpRequest r)
+        public static bool CheckSecurity()
         {
-            if (r == null)
-                throw new ArgumentNullException(nameof(r));
-            return (r.IsSecureConnection || r.Url.Host.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) || r.Url.Host.StartsWith("10.", StringComparison.OrdinalIgnoreCase) || r.IsLocal);
+            return (util.RequestContext.IsSecure || util.RequestContext.CurrentRequestUrl.Host.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) || util.RequestContext.CurrentRequestUrl.Host.StartsWith("10.", StringComparison.OrdinalIgnoreCase) || util.RequestContext.IsLocal);
         }
 
         private static string AuthTokenForValidatedUser(string szUser)
@@ -1266,7 +1265,7 @@ namespace MyFlightbook
             if (szUser.Length == 0)
                 return null;
 
-            if (!CheckSecurity(HttpContext.Current.Request))
+            if (!CheckSecurity())
                 throw new MyFlightbookException(Resources.WebService.errNotSecureConnection);
 
             // In case the password has an html entity in it, may need to compare using that as well.  Most of the time, though, shouldn't need to.
@@ -1294,7 +1293,7 @@ namespace MyFlightbook
                     else
                         throw new UnauthorizedAccessException();
                 }
-                EventRecorder.WriteEvent(EventRecorder.MFBEventID.AuthUser, szUser, String.Format(CultureInfo.InvariantCulture, "Auth User - {0} from {1}.", HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
+                EventRecorder.WriteEvent(EventRecorder.MFBEventID.AuthUser, szUser, String.Format(CultureInfo.InvariantCulture, "Auth User - {0} from {1}.", util.RequestContext.IsSecure ? "Secure" : "NOT SECURE", szAppToken));
 
                 return AuthTokenForValidatedUser(szUser);
             }
@@ -1357,7 +1356,7 @@ namespace MyFlightbook
                 throw new MyFlightbookException("Unauthorized!");
 
             // do a few simple validations
-            if (!CheckSecurity(HttpContext.Current.Request))
+            if (!CheckSecurity())
                 throw new MyFlightbookException(Resources.WebService.errNotSecureConnection);
 
             // create a username from the email address
@@ -1404,7 +1403,7 @@ namespace MyFlightbook
                     {
                         // set the first/last name for the user
                         ProfileAdmin.FinalizeUser(szUser, szFirst, szLast);
-                        EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, String.Format(CultureInfo.InvariantCulture, "User '{0}' was created at {1}, connection {2} - {3}", szUser, DateTime.Now.ToShortDateString(), HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
+                        EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, String.Format(CultureInfo.InvariantCulture, "User '{0}' was created at {1}, connection {2} - {3}", szUser, DateTime.Now.ToShortDateString(), util.RequestContext.IsSecure ? "Secure" : "NOT SECURE", szAppToken));
                     }
                     catch (Exception ex)
                     {

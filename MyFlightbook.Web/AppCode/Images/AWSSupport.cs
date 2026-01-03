@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,8 +44,8 @@ namespace MyFlightbook.Image
         {
             get
             {
-                if (HttpContext.Current?.Request?.Url?.Host != null && Branding.CurrentBrand?.HostName != null)
-                    return !Branding.CurrentBrand.MatchesHost(HttpContext.Current.Request.Url.Host);
+                if (Branding.CurrentBrand?.HostName != null)
+                    return !Branding.CurrentBrand.MatchesHost(util.RequestContext?.CurrentRequestUrl?.Host ?? string.Empty);
                 else
                     return false;
             }

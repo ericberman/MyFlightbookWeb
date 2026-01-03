@@ -8,11 +8,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2025 MyFlightbook LLC
+ * Copyright (c) 2014-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1936,7 +1935,7 @@ namespace MyFlightbook.Achievements
 
         public static void FlushCache()
         {
-            HttpRuntime.Cache.Remove(szCacheDataKey);
+            util.GlobalCache.Remove(szCacheDataKey);
         }
 
         public static List<AirportListBadgeData> BadgeData
@@ -1945,7 +1944,7 @@ namespace MyFlightbook.Achievements
             {
                 List<AirportListBadgeData> lst = null;
 
-                lst = (List<AirportListBadgeData>)HttpRuntime.Cache[szCacheDataKey];
+                lst = (List<AirportListBadgeData>)util.GlobalCache.Get(szCacheDataKey);
 
                 if (lst == null)
                 {
@@ -1953,7 +1952,7 @@ namespace MyFlightbook.Achievements
                     DBHelper dbh = new DBHelper("SELECT * FROM airportlistachievement");
                     dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AirportListBadgeData(dr)); });
 
-                    HttpRuntime.Cache.Add(szCacheDataKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                    util.GlobalCache.Set(szCacheDataKey, lst, DateTimeOffset.UtcNow.AddMinutes(30));
                 }
 
                 return lst;

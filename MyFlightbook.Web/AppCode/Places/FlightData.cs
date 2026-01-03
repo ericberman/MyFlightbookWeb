@@ -19,13 +19,12 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -260,14 +259,14 @@ namespace MyFlightbook.Telemetry
         public static KnownColumn GetKnownColumn(string sz)
         {
             const string szKnownColumnsCacheKey = "KnownColumnsCache";
-            Dictionary<string, KnownColumn> dict = (Dictionary<string, KnownColumn>)HttpRuntime.Cache[szKnownColumnsCacheKey];
+            Dictionary<string, KnownColumn> dict = (Dictionary<string, KnownColumn>)util.GlobalCache.Get(szKnownColumnsCacheKey);
             if (dict == null)
             {
                 dict = new Dictionary<string, KnownColumn>();
                 IEnumerable<KnownColumn> lst = KnownColumn.GetKnownColumns();
                 foreach (KnownColumn kc in lst)
                     dict[kc.Column] = kc;
-                HttpRuntime.Cache.Add(szKnownColumnsCacheKey, dict, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szKnownColumnsCacheKey, dict, DateTimeOffset.UtcNow.AddHours(1));
             }
 
             string szKey = sz == null ? string.Empty : sz.ToUpper(CultureInfo.CurrentCulture);
@@ -303,13 +302,6 @@ namespace MyFlightbook.Telemetry
         private const int LandingSpeedDifferentialLow = 10;
         private const int LandingSpeedDifferentialHigh = 15;
 
-        private const string keyCookieSpeed = "autoFillDefaultSpeed";
-        private const string keyCookieHeliport = "autoFillDefaultHeliport";
-        private const string keyCookieEstimateNight = "autoFillEstimateNight";
-        private const string keyCookieNightDef = "autoFillNightDefinition";
-        private const string keyCookieNightLandingDef = "autoFillNightLandingDef";
-        private const string keyCookieRoundToTenth = "autoFillRound10th";
-
         #region Constructors
         public AutoFillOptions()
         {
@@ -325,42 +317,6 @@ namespace MyFlightbook.Telemetry
                 util.CopyObject(afoSrc, this);
         }
 
-        /// <summary>
-        /// Obsolete - fall back for using cookies when user preferences aren't available
-        /// </summary>
-        /// <param name="cookies"></param>
-        private AutoFillOptions(HttpCookieCollection cookies) : this()
-        {
-            // TODO: Mark this method with [Obsolete].
-            if (cookies != null)
-            {
-                if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out int defaultSpeed))
-                    defaultSpeed = AutoFillOptions.DefaultTakeoffSpeed;
-                TakeOffSpeed = defaultSpeed;
-                LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed((int) TakeOffSpeed);
-
-                if (cookies[keyCookieHeliport] == null || !bool.TryParse(cookies[keyCookieHeliport].Value, out bool includeHeliports))
-                    includeHeliports = false;
-                IncludeHeliports = includeHeliports;
-
-                if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out bool estimateNight))
-                    estimateNight = true;
-                AutoSynthesizePath = estimateNight;
-
-                if (cookies[keyCookieRoundToTenth] == null || !bool.TryParse(cookies[keyCookieRoundToTenth].Value, out bool roundTo10th))
-                    roundTo10th = false;
-                RoundToTenth = roundTo10th;
-
-                if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out NightCritera nightCritera))
-                    nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
-                Night = nightCritera;
-
-                if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out NightLandingCriteria nightLandingCriteria))
-                    nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
-                NightLanding = nightLandingCriteria;
-            }
-        }
-
         private const string szKeyPersistedPrefAutoFill = "DefaultAutofillOptions";
 
         public static AutoFillOptions DefaultOptionsForUser(string szUserName)
@@ -368,7 +324,7 @@ namespace MyFlightbook.Telemetry
             if (String.IsNullOrEmpty(szUserName))
                 return new AutoFillOptions();
 
-            return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? (HttpContext.Current?.Request?.Cookies == null ? new AutoFillOptions() : new AutoFillOptions(HttpContext.Current?.Request?.Cookies));
+            return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? new AutoFillOptions();
         }
 
         public void SaveForUser(string szUserName)
@@ -2411,7 +2367,7 @@ namespace MyFlightbook.Telemetry
         {
             get
             {
-                return System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir + FileName));
+                return System.Web.Hosting.HostingEnvironment.MapPath((FileDir + FileName).ToAbsolute());
             }
         }
 
@@ -2533,7 +2489,7 @@ namespace MyFlightbook.Telemetry
         public static IEnumerable<int> FindOrphanedRefs()
         {
             List<int> lst = new  List<int>();
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
             {
@@ -2550,7 +2506,7 @@ namespace MyFlightbook.Telemetry
         /// <returns></returns>
         public static IEnumerable<string> FindOrphanedFiles()
         {
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             HashSet<string> References = new HashSet<string>();
             dbh.ReadRows(
