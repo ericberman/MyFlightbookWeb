@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,17 +51,19 @@ namespace MyFlightbook
         {
             get
             {
-                if (HttpRuntime.Cache == null)
-                    return AllFAQItems;
-                if (HttpRuntime.Cache[szFAQCacheKey] == null)
-                    HttpRuntime.Cache.Add(szFAQCacheKey, AllFAQItems, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
-                return (IEnumerable<FAQItem>)HttpRuntime.Cache[szFAQCacheKey];
+                IEnumerable<FAQItem> rg = (IEnumerable<FAQItem>) util.GlobalCache.Get(szFAQCacheKey);
+                if (rg == null)
+                {
+                    rg = AllFAQItems;
+                    util.GlobalCache.Set(szFAQCacheKey, rg, DateTimeOffset.UtcNow.AddMinutes(30));
+                }
+                return rg;
             }
         }
 
         public static void FlushFAQCache()
         {
-            HttpRuntime.Cache?.Remove(szFAQCacheKey);
+            util.GlobalCache.Remove(szFAQCacheKey);
         }
 
         #region constructors

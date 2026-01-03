@@ -826,12 +826,6 @@ namespace MyFlightbook
         public static int FlushCache()
         {
             int items = 0;
-            foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
-            {
-                HttpRuntime.Cache.Remove((string)entry.Key);
-                items++;
-            }
-
             foreach (var item in GlobalCache)
             {
                 GlobalCache.Remove(item.Key);

@@ -22,7 +22,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -776,7 +776,7 @@ namespace MyFlightbook.Image
 
         public void UnCache()
         {
-            HttpRuntime.Cache?.Remove(CacheKey);
+            util.GlobalCache.Remove(CacheKey);
         }
 
         /// <summary>
@@ -1350,12 +1350,13 @@ namespace MyFlightbook.Image
         public static MFBImageInfo LoadMFBImageInfo(ImageClass ic, string szKey, string szThumbnail)
         {
             MFBImageInfo mfbii = new MFBImageInfo(ic, szKey, szThumbnail);
-            if (HttpRuntime.Cache != null && HttpRuntime.Cache[mfbii.CacheKey] != null)
-                return (MFBImageInfo)HttpRuntime.Cache[mfbii.CacheKey];
+            MFBImageInfo cachedItem = (MFBImageInfo)util.GlobalCache.Get(mfbii.CacheKey);
+            if (cachedItem != null)
+                return cachedItem;
             else
             {
                 mfbii.InitFromFile();
-                HttpRuntime.Cache?.Add(mfbii.CacheKey, mfbii, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Low, null);
+                util.GlobalCache.Set(mfbii.CacheKey, mfbii, DateTimeOffset.UtcNow.AddMinutes(20));
                 return mfbii;
             }
         }
@@ -1688,7 +1689,7 @@ namespace MyFlightbook.Image
                         }
 
                         // if we got here, everything is hunky-dory.  Cache it!
-                        HttpRuntime.Cache?.Add(CacheKey, this, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(20), System.Web.Caching.CacheItemPriority.Normal, null);
+                        util.GlobalCache.Set(CacheKey, this, DateTimeOffset.UtcNow.AddMinutes(20));
 
                         // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
                         // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.

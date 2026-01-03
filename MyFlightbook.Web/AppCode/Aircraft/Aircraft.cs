@@ -169,13 +169,13 @@ namespace MyFlightbook
         /// <summary>
         /// Get an array of known instance types in the system; this is cached, so it is safe to call frequently.
         /// </summary>
-        static public AircraftInstance[] GetInstanceTypes()
+        static public IEnumerable<AircraftInstance> GetInstanceTypes()
         {
             const string szCacheKey = "aiCacheKey";
 
-            if (HttpRuntime.Cache != null &&
-                HttpRuntime.Cache[szCacheKey] != null)
-                return (AircraftInstance[])HttpRuntime.Cache[szCacheKey];
+            IEnumerable<AircraftInstance> rg = (IEnumerable<AircraftInstance>) util.GlobalCache.Get(szCacheKey);
+            if (rg != null)
+                return rg;
 
             List<AircraftInstance> al = new List<AircraftInstance>();
 
@@ -183,10 +183,9 @@ namespace MyFlightbook
             if (!dbh.ReadRows((comm) => { }, (dr) => { al.Add(new AircraftInstance(dr)); }))
                 throw new MyFlightbookException("Error getting instance types:\r\n" + dbh.LastError);
 
-            AircraftInstance[] result = al.ToArray();
-            HttpRuntime.Cache?.Add(szCacheKey, result, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            util.GlobalCache.Set(szCacheKey, al, DateTimeOffset.UtcNow.AddHours(1));
 
-            return result;
+            return al;
         }
 
         public class AircraftInstanceTypeStat
@@ -3074,7 +3073,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             Aircraft ac = new Aircraft() { TailNumber = spec.TailNum, ModelID = spec.ModelID, InstanceTypeID = spec.InstanceType };
 
             // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
-            AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == spec.InstanceType);
+            AircraftInstance aic = AircraftInstance.GetInstanceTypes().FirstOrDefault(it => it.InstanceTypeInt == spec.InstanceType);
             string szSpecifiedTail = spec.TailNum;
             bool fIsNamedSim = !aic.IsRealAircraft && !spec.TailNum.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase);
             if (fIsNamedSim)
@@ -3143,7 +3142,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                 throw new ArgumentException("Empty tail in ValidateAircraft");
 
             // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
-            AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
+            AircraftInstance aic = AircraftInstance.GetInstanceTypes().FirstOrDefault(it => it.InstanceTypeInt == instanceType);
             if (!aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase))
                 szTail = CountryCodePrefix.SimCountry.Prefix;
 
@@ -3671,7 +3670,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
         }
         #endregion
 
-        private readonly AircraftInstance[] m_rgAircraftInstances;
+        private readonly List<AircraftInstance> m_rgAircraftInstances;
         #endregion
 
         #region Initialization/constructors
@@ -3836,7 +3835,7 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
         public AircraftImportParseContext()
         {
             RowsFound = false;
-            m_rgAircraftInstances = AircraftInstance.GetInstanceTypes();
+            m_rgAircraftInstances = new List<AircraftInstance>(AircraftInstance.GetInstanceTypes());
         }
 
         /// <summary>

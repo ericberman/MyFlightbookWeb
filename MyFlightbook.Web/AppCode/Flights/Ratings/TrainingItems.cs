@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,13 +24,13 @@ namespace MyFlightbook.RatingsProgress
         {
             get 
             {
-                List<string> lst = (List<string>)HttpRuntime.Cache?[szCacheKey];
+                List<string> lst = (List<string>)util.GlobalCache.Get(szCacheKey);
                 if (lst == null)
                 {
                     lst = new List<string>();
                     DBHelper dbh = new DBHelper("SELECT * FROM trainingitems");
                     dbh.ReadRows((comm) => { }, (dr) => { lst.Add(String.Format(CultureInfo.CurrentCulture, "[{0}]", dr["task"])); });
-                    HttpRuntime.Cache.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
+                    util.GlobalCache.Set(szCacheKey, lst, DateTimeOffset.UtcNow.AddHours(1));
                 }
 
                 return lst;
@@ -46,8 +45,7 @@ namespace MyFlightbook.RatingsProgress
         /// <returns>An array of training items (strings)</returns>
         public static IEnumerable<string> SuggestTraining(string prefixText, int count)
         {
-            // Don't do anything if the cache is null - bad things afoot!
-            if (String.IsNullOrWhiteSpace(prefixText) || HttpRuntime.Cache == null)
+            if (String.IsNullOrWhiteSpace(prefixText))
                 return Array.Empty<string>();
 
             // If no search terms in the prefix, return nothing.

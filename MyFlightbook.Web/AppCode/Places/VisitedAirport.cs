@@ -11,11 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2024 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -991,11 +990,11 @@ namespace MyFlightbook.Airports
             get
             {
                 const string cacheKey = "isoMapCacheKey";
-                ISOMap map = (ISOMap)HttpRuntime.Cache[cacheKey];
+                ISOMap map = (ISOMap)util.GlobalCache.Get(cacheKey);
                 if (map == null)
                 {
                     map = new ISOMap();
-                    HttpRuntime.Cache[cacheKey] = map;
+                    util.GlobalCache.Set(cacheKey, map, DateTimeOffset.UtcNow.AddHours(1));
                 }
                 return map;
             }

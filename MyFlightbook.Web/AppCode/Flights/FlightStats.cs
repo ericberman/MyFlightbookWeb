@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -138,9 +137,9 @@ namespace MyFlightbook.FlightStatistics
                 };
 
                 if (HasSlowInformation)
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAirports, NumUsers, NumFlights, m_lstAirports.Count, CountriesVisited), VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights")));
+                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAirports, NumUsers, NumFlights, m_lstAirports.Count, CountriesVisited), "~/mvc/flights/myflights".ToAbsolute()));
                 else
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers, NumFlights), VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights")));
+                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers, NumFlights), "~/mvc/flights/myflights".ToAbsolute()));
                 return lstStats;
             }
         }
@@ -191,7 +190,7 @@ namespace MyFlightbook.FlightStatistics
 
         private static FlightStats CachedStats()
         {
-            return (HttpRuntime.Cache == null) ? null : (FlightStats)HttpRuntime.Cache[szCacheKeyRecentStats];
+            return (FlightStats) util.GlobalCache.Get(szCacheKeyRecentStats);
         }
 
         /// <summary>
@@ -430,7 +429,7 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                 if (fs == null)
                 {
                     fs = new FlightStats();
-                    HttpRuntime.Cache?.Add(szCacheKeyRecentStats, fs, null, DateTime.Now.AddMinutes(60), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    util.GlobalCache.Set(szCacheKeyRecentStats, fs, DateTimeOffset.UtcNow.AddHours(1));
                     fs.RefreshSlowData();   // will happen asynchronously, so should return very quickly
                 }
                 // FS cannot be null here, nor can cachedstats, so next call should not kcik off a refreshslow data if one is already in progress.

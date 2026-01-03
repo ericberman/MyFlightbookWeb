@@ -160,18 +160,20 @@ namespace MyFlightbook
         /// <returns></returns>
         public static IEnumerable<Manufacturer> CachedManufacturers()
         {
-            if (HttpRuntime.Cache != null && HttpRuntime.Cache[szCacheKey] != null)
-                return (IEnumerable<Manufacturer>)HttpRuntime.Cache[szCacheKey];
+            IEnumerable<Manufacturer> rg = (IEnumerable<Manufacturer>) util.GlobalCache.Get(szCacheKey);
+            if (rg != null)
+                return rg;
+
             DBHelper dbh = new DBHelper("SELECT * FROM Manufacturers ORDER BY manufacturer ASC");
             List<Manufacturer> lst = new List<Manufacturer>();
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Manufacturer(dr)); });
-            HttpRuntime.Cache?.Add(szCacheKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Low, null);
+            util.GlobalCache.Set(szCacheKey, lst, DateTimeOffset.UtcNow.AddHours(1));
             return lst;
         }
 
         public static void FlushCache()
         {
-            HttpRuntime.Cache?.Remove(szCacheKey);
+            util.GlobalCache.Remove(szCacheKey);
         }
 
         public Boolean FIsValid()

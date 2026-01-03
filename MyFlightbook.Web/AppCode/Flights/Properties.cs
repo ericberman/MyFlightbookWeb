@@ -9,13 +9,11 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Caching;
 using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -757,15 +755,6 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             pf.AssociatedData.Remove(szAppCacheKey);
         }
 
-        public static void FlushGlobalCache()
-        {
-            if (HttpRuntime.Cache != null)
-            {
-                HttpRuntime.Cache.Remove(szAppCacheKey);
-                HttpRuntime.Cache.Remove(szAppCacheDictKey);
-            }
-        }
-
         /// <summary>
         /// Helper routine for customproperty types that aren't being shown to the user.  Cuts down on serialization size.
         /// </summary>
@@ -779,11 +768,11 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         {
             get
             {
-                Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)HttpRuntime.Cache[szAppCacheDictKey];
+                Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)util.GlobalCache.Get(szAppCacheDictKey);
                 if (d == null || d.Count == 0)  // Issue #464
                 {
                     d = new Dictionary<int, CustomPropertyType>();
-                    HttpRuntime.Cache.Add(szAppCacheDictKey, d, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(20), CacheItemPriority.Normal, null);
+                    util.GlobalCache.Set(szAppCacheDictKey, d, DateTimeOffset.UtcNow.AddMinutes(20));
                     var rgProps = GetCustomPropertyTypes();
                     foreach (CustomPropertyType cpt in rgProps)
                         d[cpt.PropTypeID] = cpt;
@@ -877,7 +866,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             // So first we check if is cached and return it if so.
             if (String.IsNullOrEmpty(szUser))
             {
-                CustomPropertyType[] rgProps = (CustomPropertyType[])HttpRuntime.Cache[szAppCacheKey];
+                CustomPropertyType[] rgProps = (CustomPropertyType[])util.GlobalCache.Get(szAppCacheKey);
                 if (rgProps != null)
                     return rgProps;
             }
@@ -927,7 +916,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
 
             // cache it.
             if (String.IsNullOrEmpty(szUser))
-                HttpRuntime.Cache.Add(szAppCacheKey, rgcpt, null, Cache.NoAbsoluteExpiration, new TimeSpan(2, 0, 0), CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szAppCacheKey, rgcpt, DateTimeOffset.UtcNow.AddHours(2));
             else
                 Profile.GetUser(szUser).AssociatedData[szAppCacheKey] = rgcpt;
 

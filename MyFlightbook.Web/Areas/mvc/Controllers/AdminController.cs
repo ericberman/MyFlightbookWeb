@@ -10,14 +10,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Security;
 
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -351,7 +350,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Images
         private static void CacheProgress(string key, StringBuilder sb)
         {
-            HttpRuntime.Cache.Add(key, sb, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), CacheItemPriority.Normal, null);
+            util.GlobalCache.Set(key, sb, DateTimeOffset.UtcNow.AddMinutes(30));
         }
 
         /// <summary>
@@ -365,7 +364,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                StringBuilder sb = (StringBuilder)HttpRuntime.Cache[key];
+                StringBuilder sb = (StringBuilder)util.GlobalCache.Get(key);
                 return sb?.ToString() ?? string.Empty;
             });
         }
@@ -393,7 +392,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Aircraft));
                     sb.Append("Deleting orphaned BasicMed images:\r\n");
                     sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.BasicMed));
-                    HttpRuntime.Cache.Remove(key); // clear it out to indicate success
+                    util.GlobalCache.Remove(key); // clear it out to indicate success
                 })).Start();
                 return key;
             });
@@ -414,7 +413,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     sb.AppendLine("Starting to clean S3 debug images...");
                     AWSImageManagerAdmin.ADMINCleanUpDebug();
-                    HttpRuntime.Cache.Remove(key);
+                    util.GlobalCache.Remove(key);
                 })).Start();
                 return key;
             });
@@ -437,7 +436,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to sync image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
                     IEnumerable<DirKey> lstDk = DirKey.DirKeyForClass(ic, out string linkTemplate);
                     imageAdmin.SyncImages(lstDk, fPreviewOnly);
-                    HttpRuntime.Cache.Remove(key);
+                    util.GlobalCache.Remove(key);
                 })).Start();
                 return key;
             });
@@ -460,7 +459,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     {
                         imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to delete S3 orphans for image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
                         imageAdmin.DeleteS3Orphans(fPreviewOnly, fIsLiveSite: Branding.CurrentBrand.MatchesHost(Request.Url.Host));
-                        HttpRuntime.Cache.Remove(key);
+                        util.GlobalCache.Remove(key);
                     })).Start();
                     return key;
                 });
@@ -726,14 +725,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             CheckAuth(ProfileRoles.maskCanManageData);
 
             Dictionary<string, int> d = new Dictionary<string, int>();
-            foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            int cItems = 0;
+            foreach (var item in util.GlobalCache)
             {
-                string szClass = entry.Value.GetType().ToString();
+                cItems++;
+                string szClass = item.Value.GetType().ToString();
                 d[szClass] = d.TryGetValue(szClass, out int value) ? ++value : 1;
             }
 
             ViewBag.cacheSummary = d;
-            ViewBag.memStats = String.Format(CultureInfo.CurrentCulture, "Cache has {0:#,##0} items", HttpRuntime.Cache.Count);
+            ViewBag.memStats = String.Format(CultureInfo.CurrentCulture, "Cache has {0:#,##0} items", cItems);
             return View("adminMisc");
         }
 

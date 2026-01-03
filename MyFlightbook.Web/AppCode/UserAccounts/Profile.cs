@@ -11,7 +11,6 @@ using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -22,7 +21,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Caching;
 using System.Web.Security;
 
 /******************************************************
@@ -1184,9 +1182,9 @@ namespace MyFlightbook
             lock (cachelock) {
                 string szKey = GetCacheKey(pf.UserName);
                 // Issue #1084 - Remove the object, if it exists.
-                HttpRuntime.Cache.Remove(szKey);
+                util.GlobalCache.Remove(szKey);
                 // Cache this for 30 minutes
-                HttpRuntime.Cache.Add(szKey, pf, null, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szKey, pf, DateTimeOffset.UtcNow.AddMinutes(30));
             }
         }
 
@@ -1323,7 +1321,7 @@ namespace MyFlightbook
         /// <returns>null if not current in cache, else Profile</returns>
         private static Profile CachedProfileForUser(string name)
         {
-            return HttpRuntime.Cache == null ? null : (Profile)HttpRuntime.Cache[GetCacheKey(name)];
+            return (Profile)util.GlobalCache.Get(GetCacheKey(name));
         }
 
         /// <summary>
@@ -1356,7 +1354,7 @@ namespace MyFlightbook
             if (szUserName == null)
                 return;
 
-            HttpRuntime.Cache.Remove(GetCacheKey(szUserName));
+            util.GlobalCache.Remove(GetCacheKey(szUserName));
         }
         #endregion
 
@@ -1515,19 +1513,13 @@ namespace MyFlightbook
             dbh.DoNonQuery();
 
             // update all of the cached profile objects
-            if (HttpRuntime.Cache != null)
+            foreach (var item in util.GlobalCache)
             {
-                Cache c = HttpRuntime.Cache;
-                IDictionaryEnumerator en = c.GetEnumerator();
-                while (en.MoveNext())
-                {
-                    object o = c[en.Key.ToString()];
-                    if (o.GetType() == typeof(Profile))
-                        ((Profile)o).AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
-                }
-
-                AirportListBadge.FlushCache();
+                if (item.Value is Profile pf)
+                    pf.AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
             }
+
+            AirportListBadge.FlushCache();
         }
         #endregion
 
@@ -1569,7 +1561,7 @@ namespace MyFlightbook
         public Uri PublicFlightsURL(string szHost)
         {
             SharedDataEncryptor enc = new SharedDataEncryptor(keyEncryptMyFlights);
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/mvc/flights/myflights"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, "~/mvc/flights/myflights".ToAbsolute(), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
         }
 
         public static string EncryptedUserName(string uid)

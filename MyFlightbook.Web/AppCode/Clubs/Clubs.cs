@@ -653,7 +653,7 @@ namespace MyFlightbook.Clubs
             string szKey = CacheKeyForID(id);
             if (!fNoCache)
             {
-                c = (Club)HttpRuntime.Cache[szKey];
+                c = (Club)util.GlobalCache.Get(szKey);
                 if (c != null)
                     return c;
             }
@@ -675,9 +675,9 @@ namespace MyFlightbook.Clubs
         private static void CacheClub(Club c, int idClub)
         {
             string szKey = CacheKeyForID(idClub);
-            HttpRuntime.Cache.Remove(szKey);
+            util.GlobalCache.Remove(szKey);
             if (c != null)
-                HttpRuntime.Cache.Add(c.CacheKey, c, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
+                util.GlobalCache.Set(c.CacheKey, c, DateTimeOffset.UtcNow.AddMinutes(30));
         }
 
         /// <summary>

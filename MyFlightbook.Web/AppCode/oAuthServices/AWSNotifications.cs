@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook;
+using MyFlightbook.Image;
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
@@ -7,11 +8,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2025 MyFlightbook LLC
+ * Copyright (c) 2015-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -101,7 +101,7 @@ namespace AWSNotifications
                 byte[] SignatureBytes = Convert.FromBase64String(szSignature);
 
                 //Check the cache for the Amazon signing cert.
-                byte[] PEMFileBytes = (byte[])HttpRuntime.Cache[szCertPath];
+                byte[] PEMFileBytes = (byte[])util.GlobalCache.Get(szCertPath);
 
                 if (PEMFileBytes == null)
                 {
@@ -109,7 +109,7 @@ namespace AWSNotifications
                     using (System.Net.WebClient MyWebClient = new System.Net.WebClient())
                         PEMFileBytes = MyWebClient.DownloadData(szCertPath);
 
-                    HttpRuntime.Cache.Add(szCertPath, PEMFileBytes, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                    util.GlobalCache.Set(szCertPath, PEMFileBytes, DateTimeOffset.UtcNow.AddDays(1));
                 }
 
                 using (X509Certificate2 MyX509Certificate2 = new X509Certificate2(PEMFileBytes))

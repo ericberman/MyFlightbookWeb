@@ -19,7 +19,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Xml;
 
@@ -260,14 +259,14 @@ namespace MyFlightbook.Telemetry
         public static KnownColumn GetKnownColumn(string sz)
         {
             const string szKnownColumnsCacheKey = "KnownColumnsCache";
-            Dictionary<string, KnownColumn> dict = (Dictionary<string, KnownColumn>)HttpRuntime.Cache[szKnownColumnsCacheKey];
+            Dictionary<string, KnownColumn> dict = (Dictionary<string, KnownColumn>)util.GlobalCache.Get(szKnownColumnsCacheKey);
             if (dict == null)
             {
                 dict = new Dictionary<string, KnownColumn>();
                 IEnumerable<KnownColumn> lst = KnownColumn.GetKnownColumns();
                 foreach (KnownColumn kc in lst)
                     dict[kc.Column] = kc;
-                HttpRuntime.Cache.Add(szKnownColumnsCacheKey, dict, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(1, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szKnownColumnsCacheKey, dict, DateTimeOffset.UtcNow.AddHours(1));
             }
 
             string szKey = sz == null ? string.Empty : sz.ToUpper(CultureInfo.CurrentCulture);
@@ -2368,7 +2367,7 @@ namespace MyFlightbook.Telemetry
         {
             get
             {
-                return System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir + FileName));
+                return System.Web.Hosting.HostingEnvironment.MapPath((FileDir + FileName).ToAbsolute());
             }
         }
 
@@ -2490,7 +2489,7 @@ namespace MyFlightbook.Telemetry
         public static IEnumerable<int> FindOrphanedRefs()
         {
             List<int> lst = new  List<int>();
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
             {
@@ -2507,7 +2506,7 @@ namespace MyFlightbook.Telemetry
         /// <returns></returns>
         public static IEnumerable<string> FindOrphanedFiles()
         {
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(VirtualPathUtility.ToAbsolute(FileDir)), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             HashSet<string> References = new HashSet<string>();
             dbh.ReadRows(

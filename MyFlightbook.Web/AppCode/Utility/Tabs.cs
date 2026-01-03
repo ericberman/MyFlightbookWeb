@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -323,11 +322,11 @@ namespace MyFlightbook
 
             string szCacheKey = "cachedTabList" + szFileName;
 
-            TabList t = (TabList)HttpRuntime.Cache[szCacheKey];
+            TabList t = (TabList)util.GlobalCache.Get(szCacheKey);
             if (t == null)
             {
                 t = new TabList(szFileName);
-                HttpRuntime.Cache.Add(szCacheKey, t, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(2, 0, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(szCacheKey, t, DateTimeOffset.UtcNow.AddHours(3));
             }
             return t;
         }
@@ -445,7 +444,7 @@ namespace MyFlightbook
 
                 if (fAndroidHack)
                     tw.AddAttribute(HtmlTextWriterAttribute.Onclick, "return false;");
-                tw.AddAttribute(HtmlTextWriterAttribute.Href, fAndroidHack ? "#" : VirtualPathUtility.ToAbsolute(ti.Link));
+                tw.AddAttribute(HtmlTextWriterAttribute.Href, fAndroidHack ? "#" : ti.Link.ToAbsolute());
                 tw.AddAttribute(HtmlTextWriterAttribute.Id, "tabID" + ti.ID.ToString());
                 tw.AddAttribute(HtmlTextWriterAttribute.Class, "topTab");
                 tw.RenderBeginTag(HtmlTextWriterTag.A);

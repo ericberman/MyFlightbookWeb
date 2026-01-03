@@ -10,7 +10,6 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-using System.Web.Caching;
 
 /******************************************************
  * 
@@ -773,7 +772,7 @@ WHERE {1}";
                 CategoryClassDisplay = CategoryClass.CategoryClassFromID(CategoryClassID).CatClass;
 
             if (MakeModelID != -1)
-                HttpRuntime.Cache.Insert(CacheKey(MakeModelID), this, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), CacheItemPriority.Normal, null);
+                util.GlobalCache.Set(CacheKey(MakeModelID), this, DateTimeOffset.UtcNow.AddHours(1));
 
             // use fIsNew because Model.IsNew may have been true and not now.
             string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl), MakeModelID);
@@ -821,7 +820,7 @@ WHERE {1}";
             IsMultiEngineHelicopter = Convert.ToBoolean(dr["fMultiHelicopter"], CultureInfo.InvariantCulture);
             IsCertifiedSinglePilot = Convert.ToBoolean(dr["fCertifiedSinglePilot"], CultureInfo.InvariantCulture);
 
-            HttpRuntime.Cache.Insert(CacheKey(this.MakeModelID), this, null, DateTime.Now.AddHours(2), Cache.NoSlidingExpiration, CacheItemPriority.Low, null);
+            util.GlobalCache.Set(CacheKey(this.MakeModelID), this, DateTimeOffset.UtcNow.AddHours(2));
         }
 
         #region Find/enumerate Models
@@ -842,13 +841,13 @@ WHERE {1}";
         public static int ModelCount()
         {
             const string szCacheKeyModelCount = "modelCountKey";
-            object o = HttpRuntime.Cache[szCacheKeyModelCount];
+            object o = util.GlobalCache.Get(szCacheKeyModelCount);
             int cModels = (o == null) ? 0 : (int) o;
             if (cModels == 0)
             {
                 DBHelper dbh = new DBHelper("SELECT count(*) AS numModels FROM models");
                 dbh.ReadRow((comm) => { }, (dr) => { cModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture); });
-                HttpRuntime.Cache[szCacheKeyModelCount] = cModels;
+                util.GlobalCache.Set(szCacheKeyModelCount, cModels, DateTimeOffset.UtcNow.AddHours(2));
             }
             return cModels;
         }
@@ -857,7 +856,7 @@ WHERE {1}";
 
         public static IDictionary<int, List<MakeModel>> ModelsByManufacturer(bool fIncludeGeneric = false)
         {
-            Dictionary<int, List<MakeModel>> d = (Dictionary<int, List<MakeModel>>)HttpRuntime.Cache[szCacheKeyModels];
+            Dictionary<int, List<MakeModel>> d = (Dictionary<int, List<MakeModel>>)util.GlobalCache.Get(szCacheKeyModels);
             if (d == null)
             {
                 d = new Dictionary<int, List<MakeModel>>();
@@ -874,7 +873,7 @@ WHERE {1}";
                     d[m.ManufacturerID].Add(m);
                 }
 
-                HttpRuntime.Cache.Add(szCacheKeyModels, d, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), CacheItemPriority.BelowNormal, null);
+                util.GlobalCache.Set(szCacheKeyModels, d, DateTimeOffset.UtcNow.AddMinutes(30));
             }
             return d;
         }
@@ -1004,7 +1003,7 @@ WHERE {1}";
 
         private static MakeModel CachedModel(int id)
         {
-            return (MakeModel)HttpRuntime.Cache[CacheKey(id)];
+            return (MakeModel)util.GlobalCache.Get(CacheKey(id));
         }
 
         /// <summary>
