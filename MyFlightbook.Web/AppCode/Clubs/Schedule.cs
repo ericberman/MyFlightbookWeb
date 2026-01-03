@@ -26,27 +26,6 @@ namespace MyFlightbook.Schedule
 {
     public enum ScheduleDisplayMode { Day, Week, Month };
 
-    public static class SchedulePreferences
-    {
-        private const string szKeyCookieDisplayMode = "kcSchedDisplay";
-
-        /// <summary>
-        /// Persists/retrieves the current mode in a cookie
-        /// </summary>
-        public static ScheduleDisplayMode DefaultScheduleMode
-        {
-            get { return (ScheduleDisplayMode) (util.RequestContext.GetCookie(szKeyCookieDisplayMode) ?? string.Empty).SafeParseInt((int)ScheduleDisplayMode.Day); }
-            set
-            {
-                // Day is the default so clear the cookie if it's default.  Just saves a bit of space
-                if (value == ScheduleDisplayMode.Day)
-                    util.RequestContext.RemoveCookie(szKeyCookieDisplayMode);
-                else
-                    util.RequestContext.SetCookie(szKeyCookieDisplayMode, ((int)value).ToString(CultureInfo.InvariantCulture));
-            }
-        }
-    }
-
     [Serializable]
     public class ScheduledEvent
     {
