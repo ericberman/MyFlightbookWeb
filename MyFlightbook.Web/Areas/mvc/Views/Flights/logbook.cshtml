@@ -270,7 +270,7 @@
     <div>
         @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = false, targetUser = pf.UserName, sk = (string)null, fq = fq, currentRange = (FlightResultRange)null }); }
     </div>
-    @if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || util.GetIntParam(Request, "sw", 0) != 0 && Request.HttpMethod.CompareCurrentCultureIgnoreCase("GET") == 0)
+    @if (Request.Cookies[MFBConstants.keyNewUser] != null && !String.IsNullOrEmpty(Request.Cookies[MFBConstants.keyNewUser].Value) || (Request["sw"] ?? string.Empty).SafeParseInt() != 0 && Request.HttpMethod.CompareCurrentCultureIgnoreCase("GET") == 0)
     {
         Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
         <script type="text/javascript">

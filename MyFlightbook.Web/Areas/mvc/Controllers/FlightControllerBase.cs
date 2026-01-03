@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,7 +63,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 // b) Admin acting as such
                 Profile pfviewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                if (pfviewer.CanSupport && util.GetIntParam(Request, "a", 0) == 1)
+                if (pfviewer.CanSupport && GetIntParam("a", 0) == 1)
                     return null;
 
                 // c) Authenticated, viewing user is an instructor of target user and user has given permission to view logbook
@@ -102,7 +102,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     return null; // all good!
 
                 Profile pfviewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                if (pfviewer.CanSupport && util.GetIntParam(Request, "a", 0) == 1)
+                if (pfviewer.CanSupport && GetIntParam("a", 0) == 1)
                     return null;
 
                 // Instructor's can only:
@@ -261,7 +261,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             string pendingID = Request["idPending"];
             LogbookEntry le = String.IsNullOrEmpty(pendingID) ? new LogbookEntry() : new PendingFlight(pendingID);
-            le.FlightID = util.GetIntParam(Request, "idFlight", LogbookEntryCore.idFlightNew);
+            le.FlightID = GetIntParam("idFlight", LogbookEntryCore.idFlightNew);
             le.User = Request["szTargetUser"] ?? User.Identity.Name;
             le.ErrorString = string.Empty;  // clear this out.
 
@@ -273,17 +273,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // Core fields
                 le.Date = DateTime.Parse(Request["flightDate"], CultureInfo.CurrentCulture).Date;
 
-                le.AircraftID = util.GetIntParam(Request, "flightAircraft", 0);
-                le.CatClassOverride = util.GetIntParam(Request, "flightCatClassOverride", 0);
+                le.AircraftID = GetIntParam("flightAircraft", 0);
+                le.CatClassOverride = GetIntParam("flightCatClassOverride", 0);
 
                 le.Route = Request["flightRoute"];
                 le.Comment = Request["flightComments"];
 
-                le.Approaches = util.GetIntParam(Request, "flightApproaches", 0);
+                le.Approaches = GetIntParam("flightApproaches", 0);
                 le.fHoldingProcedures = Request["flightHold"] != null;
-                le.Landings = util.GetIntParam(Request, "flightLandings", 0);
-                le.FullStopLandings = util.GetIntParam(Request, "flightFSDayLandings", 0);
-                le.NightLandings = util.GetIntParam(Request, "flightFSNightLandings", 0);
+                le.Landings = GetIntParam("flightLandings", 0);
+                le.FullStopLandings = GetIntParam("flightFSDayLandings", 0);
+                le.NightLandings = GetIntParam("flightFSNightLandings", 0);
 
                 le.CrossCountry = (Request["flightXC"] ?? string.Empty).SafeParseDecimal();
                 le.Nighttime = (Request["flightNight"] ?? string.Empty).SafeParseDecimal();
@@ -401,7 +401,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
-            int appchCount = util.GetIntParam(Request, "appchHelpCount", 0);
+            int appchCount = GetIntParam("appchHelpCount", 0);
 
             if (Request["appchHelpAdd"] != null)
                 le.Approaches += appchCount;

@@ -343,6 +343,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -1807,6 +1808,7 @@
     <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\LocalConfig.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
+    <Compile Include="AppCode\Utility\MVCRequestContext.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
     <Compile Include="AppCode\Utility\RegexUtility.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />

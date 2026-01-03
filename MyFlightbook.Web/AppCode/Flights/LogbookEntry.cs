@@ -26,7 +26,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -2639,7 +2639,7 @@ WHERE f1.username = ?uName ");
             {
                 if (_roundingUnit <= 0)
                 {
-                    object o = HttpContext.Current?.Session?[MFBConstants.keyMathRoundingUnits];
+                    object o = util.RequestContext?.GetSessionValue(MFBConstants.keyMathRoundingUnits);
                     _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int)o;
                 }
                 return _roundingUnit;

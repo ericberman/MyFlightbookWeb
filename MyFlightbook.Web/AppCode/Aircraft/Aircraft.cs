@@ -16,7 +16,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -2341,31 +2341,14 @@ ORDER BY user ASC");
 
         static public int LastTail
         {
-            get
-            {
-                try
-                {
-                    if (HttpContext.Current.Request.Cookies[keyLastTail] != null && HttpContext.Current.Request.Cookies[keyLastTail].Value != null)
-                        return Convert.ToInt32(HttpContext.Current.Request.Cookies[keyLastTail].Value, CultureInfo.InvariantCulture);
-                }
-                catch (Exception ex) when (ex is FormatException)
-                {
-                }
-                return Aircraft.idAircraftUnknown;
-            }
+            get { return util.RequestContext.GetCookie(keyLastTail).SafeParseInt(Aircraft.idAircraftUnknown); }
 
             set
             {
-                if (HttpContext.Current != null && HttpContext.Current.Response != null && HttpContext.Current.Response.Cookies != null)
-                {
-                    if (value <= 0)
-                        HttpContext.Current.Response.Cookies.Remove(keyLastTail);
-                    else
-                    {
-                        HttpContext.Current.Response.Cookies[keyLastTail].Value = value.ToString(CultureInfo.InvariantCulture);
-                        HttpContext.Current.Response.Cookies[keyLastTail].Expires = DateTime.Now.AddYears(5);
-                    }
-                }
+                if (value <= 0)
+                    util.RequestContext.RemoveCookie(keyLastTail);
+                else
+                    util.RequestContext.SetCookie(keyLastTail, value.ToString(CultureInfo.InvariantCulture), DateTime.Now.AddYears(5));
             }
         }
 

@@ -4,7 +4,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2025 MyFlightbook LLC
+ * Copyright (c) 2012-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -251,20 +251,13 @@ namespace MyFlightbook
         {
             get
             {
-                if (HttpContext.Current == null)
-                    return BrandID.brandMyFlightbook;
-
                 // use a session object, if available, else key off of the hostname
-                if (HttpContext.Current.Session != null)
-                {
-                    object o = HttpContext.Current.Session[brandStateKey];
-                    if (o != null)
-                        return (BrandID)o;
-                }
+                if (util.RequestContext?.GetSessionValue(brandStateKey) is BrandID bSess)
+                    return bSess;
 
                 BrandID result = BrandID.brandMyFlightbook;
 
-                string szHost = HttpContext.Current.Request.Url.Host;
+                string szHost = util.RequestContext?.CurrentRequestUrl?.Host ?? string.Empty;
                 foreach (Brand b in Brand.KnownBrands)
                     if (String.Compare(szHost, b.HostName, StringComparison.OrdinalIgnoreCase) == 0)
                     {
@@ -272,15 +265,13 @@ namespace MyFlightbook
                         break;
                     }
 
-                if (HttpContext.Current.Session != null)
-                    HttpContext.Current.Session[brandStateKey] = result;
+                util.RequestContext?.SetSessionValue(brandStateKey, result);
 
                 return result;
             }
             set
             {
-                if (HttpContext.Current != null && HttpContext.Current.Session != null)
-                    HttpContext.Current.Session[brandStateKey] = value;
+                util.RequestContext?.SetSessionValue(brandStateKey, value);
             }
         }
 

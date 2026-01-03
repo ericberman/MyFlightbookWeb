@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1013,7 +1013,7 @@ namespace MyFlightbook.Instruction
                         throw new MyFlightbookException("Invalid role");
                 }
 
-                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"{0}?req={1}", "~/mvc/Training/AddRelationship".ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host), HttpContext.Current.Server.UrlEncode(EncryptRequest()));
+                string szCallBackUrl = String.Format(CultureInfo.InvariantCulture,"{0}?req={1}", "~/mvc/Training/AddRelationship".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl), HttpUtility.UrlEncode(EncryptRequest()));
 
                 string szRequestor = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", pf.UserFullName, pf.Email);
 

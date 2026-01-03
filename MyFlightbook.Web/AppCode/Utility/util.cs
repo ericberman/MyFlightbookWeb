@@ -6,13 +6,14 @@ using System.Globalization;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,8 +22,6 @@ namespace MyFlightbook
 {
     public static class MFBConstants
     {
-        public const string keyLite = "Lite";   // Show a lightweight version of the site?
-        public const string keyClassic = "Classic"; // persistant cookie - show a full version of the site even on mobile devices?
         public const string keyIsImpersonating = "IsImpersonating";
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
@@ -78,6 +77,40 @@ namespace MyFlightbook
     }
 
     public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
+
+    /// <summary>
+    /// Encapsulates the context of the current request, including session, cache, request, etc.
+    /// </summary>
+    public interface IRequestContext
+    {
+        object GetSessionValue(string key);
+
+        void SetSessionValue(string key, object value);
+
+        IEnumerable<string> SessionKeys { get; }
+
+        bool IsAuthenticated { get; }
+
+        bool IsSecure { get; }
+
+        bool IsLocal { get; }
+
+        string CurrentUserName { get; }
+
+        Uri CurrentRequestUrl { get; }
+
+        string CurrentRequestHostAddress { get; }
+
+        string CurrentRequestUserAgent { get; }
+
+        IEnumerable<string> CurrentRequestLanguages { get; }
+
+        string GetCookie(string name);
+
+        void SetCookie(string name, string value, DateTime? expires = null);
+
+        void RemoveCookie(string name);
+    }
 
     public static class ShuntState
     {
@@ -286,6 +319,24 @@ namespace MyFlightbook
         private const string sessCultureKey = "currCulture";
         private static readonly char[] isoLanguageRegionSeparator = new char[] { '-' };
 
+        #region Dependency Injection
+        private static IRequestContext _requestContext;
+
+        public static IRequestContext RequestContext { get { return _requestContext; } }
+
+        public static void InitRequestContext(IRequestContext context)
+        {
+            _requestContext = context;
+        }
+
+        private static IEmailSender emailSender { get; set; }
+
+        public static void InitEmail(IEmailSender sender)
+        {
+            emailSender = sender;
+        }
+        #endregion
+
         /// <summary>
         /// Set the culture for the duration of the request.
         /// </summary>
@@ -320,28 +371,7 @@ namespace MyFlightbook
                 }
 
                 // Culture isn't passed up to Ajax calls, so store it in the session in case any ajax call needs it
-                if (HttpContext.Current != null && HttpContext.Current.Session != null)
-                    HttpContext.Current.Session[sessCultureKey] = System.Threading.Thread.CurrentThread.CurrentCulture;
-            }
-        }
-
-        /// <summary>
-        /// Switches to/from mobile state (overriding default detection) by setting the appropriate session variables.
-        /// </summary>
-        /// <param name="fMobile">True for the mobile state</param>
-        public static void SetMobile(Boolean fMobile)
-        {
-            if (fMobile)
-            {
-                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = null; // let autodetect do its thing next time...
-                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = null;
-                HttpContext.Current.Session[MFBConstants.keyLite] = Boolean.TrueString; // ...but keep it lite for the session
-            }
-            else
-            {
-                HttpContext.Current.Response.Cookies[MFBConstants.keyClassic].Value = "yes"; // override autodetect
-                HttpContext.Current.Request.Cookies[MFBConstants.keyClassic].Value = "yes";
-                HttpContext.Current.Session[MFBConstants.keyLite] = null; // and hence there should be no need for a session variable.
+                RequestContext?.SetSessionValue(sessCultureKey, System.Threading.Thread.CurrentThread.CurrentCulture);
             }
         }
 
@@ -395,39 +425,6 @@ namespace MyFlightbook
                     if (propVal != null)
                         p.SetValue(o, ((string)propVal).UnescapeHTML(), null);
                 }
-            }
-        }
-
-        /// <summary>
-        /// HttpRequestBase variant of GetStringParam
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="szKey"></param>
-        /// <returns></returns>
-        static public string GetStringParam(HttpRequestBase req, string szKey)
-        {
-            if (req == null || req[szKey] == null)
-                return string.Empty;
-            else
-                return req[szKey];
-        }
-
-        /// <summary>
-        /// HttpRequestBase variant of GetIntParam
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="szKey"></param>
-        /// <returns></returns>
-        static public int GetIntParam(HttpRequestBase req, string szKey, int defaultValue)
-        {
-            if (req == null || req[szKey] == null)
-                return defaultValue;
-            else
-            {
-                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
-                    return i;
-
-                return defaultValue;
             }
         }
 
@@ -522,13 +519,6 @@ namespace MyFlightbook
 
             if (fRespondOOF)
                 NotifyUser(szSubject, ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
-        }
-
-        private static IEmailSender emailSender { get; set; }
-
-        public static void InitEmail(IEmailSender sender)
-        {
-            emailSender = sender;
         }
 
         /// <summary>
@@ -830,6 +820,9 @@ namespace MyFlightbook
             return Array.Empty<string>();
         }
 
+        #region CacheManagement
+        public static MemoryCache GlobalCache { get; } = new MemoryCache("GlobalCache");
+
         public static int FlushCache()
         {
             int items = 0;
@@ -838,8 +831,16 @@ namespace MyFlightbook
                 HttpRuntime.Cache.Remove((string)entry.Key);
                 items++;
             }
+
+            foreach (var item in GlobalCache)
+            {
+                GlobalCache.Remove(item.Key);
+                items++;
+            }
+
             GC.Collect();
             return items;
         }
+        #endregion
     }
 }

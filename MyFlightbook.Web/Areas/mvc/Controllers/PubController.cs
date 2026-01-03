@@ -17,7 +17,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,7 +27,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     /// <summary>
     /// Controller for simple public pages that are nothing but HTML content; renders the localized html content into a layout page.  Examples include Privacy or Terms and Conditions
     /// </summary>
-    public class PubController : Controller
+    public class PubController : AdminControllerBase
     {
         #region club viewing
         public ActionResult AllClubs(int a = 0)
@@ -430,13 +430,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             string s = Request["m"] ?? string.Empty;
             if (!String.IsNullOrEmpty(s))
-                util.SetMobile(s.CompareCurrentCultureIgnoreCase("no") != 0);
+                SetMobile(s.CompareCurrentCultureIgnoreCase("no") != 0);
 
             // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.
-            bool fShouldBeMobile = Request.IsMobileSession() && (Request.Cookies[MFBConstants.keyClassic]?.Value ?? "yes").CompareCurrentCultureIgnoreCase("yes") != 0;
+            bool fShouldBeMobile = IsMobileSession() && (Request.Cookies[keyClassic]?.Value ?? "yes").CompareCurrentCultureIgnoreCase("yes") != 0;
             if (fShouldBeMobile)
             {
-                util.SetMobile(true);
+                SetMobile(true);
                 return View("homemini");
             }
 

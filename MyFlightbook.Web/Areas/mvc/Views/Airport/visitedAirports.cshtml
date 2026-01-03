@@ -73,7 +73,7 @@
         <input type="hidden" value="" name="fqJSON" id="hdnQueryForVA" />
         <input type="hidden" value="" name="fPropDeleteClicked" id="hdnQFEClicked" />
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
-        <input type="hidden" value="@util.GetIntParam(Request, "path", 0)" name="path" id="hdnShowPath" />
+        <input type="hidden" value="@((Request["path"] ?? string.Empty).SafeParseInt())" name="path" id="hdnShowPath" />
     }
 </div>
 <p>
@@ -160,7 +160,7 @@
     {
         <p>
             <a href="javascript:mfbMapForContainerID('@ViewBag.map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomAllAirports</a>
-            <input type="checkbox" id="ckConnectDots" @(util.GetIntParam(Request, "path", 0) == 0 ? string.Empty : "checked") onclick="javascript:togglePath(this);" /><label for="ckConnectDots">@Resources.Airports.MapConnectDots</label>
+            <input type="checkbox" id="ckConnectDots" @((Request["path"] ?? string.Empty).SafeParseInt() == 0 ? string.Empty : "checked") onclick="javascript:togglePath(this);" /><label for="ckConnectDots">@Resources.Airports.MapConnectDots</label>
         </p>
         <div id="divMapContainer" style="height: 400px; width:100%">
             @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.map }); }

@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -255,12 +255,12 @@ namespace MyFlightbook
         /// <param name="sz">The string to parse</param>
         /// <param name="defVal">The default value</param>
         /// <returns>The parsed result or defVal</returns>
-        static public Int32 SafeParseInt(this string sz, Int32 defVal = 0)
+        static public int SafeParseInt(this string sz, Int32 defVal = 0)
         {
             if (String.IsNullOrEmpty(sz))
                 return defVal;
 
-            if (Int32.TryParse(sz, NumberStyles.Integer, CultureInfo.CurrentCulture, out int i))
+            if (int.TryParse(sz, NumberStyles.Integer, CultureInfo.CurrentCulture, out int i))
                 return i;
             return defVal;
         }
@@ -725,6 +725,13 @@ namespace MyFlightbook
             return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), VirtualPathUtility.ToAbsolute(s)));
         }
 
+        public static Uri ToAbsoluteURL(this string s, Uri originalUri)
+        {
+            if (originalUri == null)
+                throw new ArgumentNullException(nameof(originalUri));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", originalUri.Scheme, originalUri.Host, (originalUri.Port == 80 || originalUri.Port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", originalUri.Port), VirtualPathUtility.ToAbsolute(s)));
+        }
+
         /// <summary>
         /// Replaces instances of "UTC" with "Custom Time Zone" if you have a non-UTC time specified.
         /// </summary>
@@ -981,8 +988,7 @@ namespace MyFlightbook
             // See if this user has a decimal preference
             // This is stored in the current session.  It's a bit of a hack because hhmm vs. decimal is deeply embedded throughout the system, and in many cases there's no way to pass down the context if it's an explicit property.
             DecimalFormat df = DecimalFormat.Adaptive;  // default
-            if (HttpContext.Current?.Session?[MFBConstants.keyDecimalSettings] != null)
-                df = (DecimalFormat) HttpContext.Current.Session[MFBConstants.keyDecimalSettings];
+            df = (DecimalFormat) (util.RequestContext?.GetSessionValue(MFBConstants.keyDecimalSettings) ?? df);
 
             return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(df == DecimalFormat.Adaptive ? "#,##0.0#" : (df == DecimalFormat.OneDecimal ? "#,##0.0" : "#,##0.00"), CultureInfo.CurrentCulture));
         }
@@ -1251,21 +1257,6 @@ namespace MyFlightbook
               s.Contains("MOBILE") ||
               s.Contains("PARLM") ||
               s.Contains("PORTABLE"));
-        }
-
-        /// <summary>
-        /// Determines if this is a mobile session.  Pays attention to cookies and session state
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if we should be treating this as a mobile session</returns>
-        public static bool IsMobileSession(this HttpRequestBase r)
-        {
-            if (r == null)
-                return false;
-
-            var sess = HttpContext.Current?.Session;
-            return (r.IsMobileDevice() && (r.Cookies[MFBConstants.keyClassic] == null || r.Cookies[MFBConstants.keyClassic].Value != "yes")) ||
-                   (sess != null && sess[MFBConstants.keyLite] != null && sess[MFBConstants.keyLite].ToString() == bool.TrueString);
         }
 
         /// <summary>

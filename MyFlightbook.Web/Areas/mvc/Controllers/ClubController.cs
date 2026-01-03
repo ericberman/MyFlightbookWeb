@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -698,7 +698,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ClubClickHandler = "displayClubDetails"
             };
 
-            bool fAdmin = User.Identity.IsAuthenticated && util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            bool fAdmin = User.Identity.IsAuthenticated && GetIntParam("a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             IEnumerable<Club> rgClubs = Array.Empty<Club>();
             if (String.IsNullOrEmpty(szAirport))
                 rgClubs = Club.AllClubs(fAdmin);

@@ -18,7 +18,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2025 MyFlightbook LLC
+ * Copyright (c) 2015-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,34 +35,14 @@ namespace MyFlightbook.Schedule
         /// </summary>
         public static ScheduleDisplayMode DefaultScheduleMode
         {
-            get
-            {
-                ScheduleDisplayMode sdm = ScheduleDisplayMode.Day;  // default
-                if (HttpContext.Current != null && HttpContext.Current.Response != null && HttpContext.Current.Response.Cookies != null)
-                {
-                    HttpCookie cookie = HttpContext.Current.Request.Cookies[szKeyCookieDisplayMode];
-                    if (cookie != null)
-                    {
-                        if (int.TryParse(cookie.Value, out int i))
-                            sdm = (ScheduleDisplayMode)i;
-                    }
-                }
-
-                return sdm;
-            }
+            get { return (ScheduleDisplayMode) (util.RequestContext.GetCookie(szKeyCookieDisplayMode) ?? string.Empty).SafeParseInt((int)ScheduleDisplayMode.Day); }
             set
             {
-                if (HttpContext.Current != null && HttpContext.Current.Response != null && HttpContext.Current.Response.Cookies != null)
-                {
-                    // Day is the default so clear the cookie if it's default.  Just saves a bit of space
-                    if (value == ScheduleDisplayMode.Day)
-                    {
-                        HttpContext.Current.Response.Cookies[szKeyCookieDisplayMode].Value = string.Empty;
-                        HttpContext.Current.Response.Cookies[szKeyCookieDisplayMode].Expires = DateTime.Now.AddDays(-5);
-                    }
-                    else
-                        HttpContext.Current.Response.Cookies[szKeyCookieDisplayMode].Value = ((int)value).ToString(CultureInfo.InvariantCulture);
-                }
+                // Day is the default so clear the cookie if it's default.  Just saves a bit of space
+                if (value == ScheduleDisplayMode.Day)
+                    util.RequestContext.RemoveCookie(szKeyCookieDisplayMode);
+                else
+                    util.RequestContext.SetCookie(szKeyCookieDisplayMode, ((int)value).ToString(CultureInfo.InvariantCulture));
             }
         }
     }
@@ -680,7 +660,8 @@ namespace MyFlightbook.Schedule
         protected static bool IsValidCaller(int idClub, PrivilegeLevel level = PrivilegeLevel.ReadWrite)
         {
             // Check that you are authenticated - prevent cross-site scripting
-            if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            string szCurrentUser = util.RequestContext.CurrentUserName;
+            if (!util.RequestContext.IsAuthenticated || String.IsNullOrEmpty(szCurrentUser))
                 throw new MyFlightbookException("You must be authenticated to make this call");
 
             if (idClub == Club.ClubIDNew)
@@ -689,7 +670,7 @@ namespace MyFlightbook.Schedule
             Club c = Club.ClubWithID(idClub) ?? throw new MyFlightbookException("Invalid club specification - no such club.");
 
             // Check that the user is a member of the specified club
-            if (!c.HasMember(HttpContext.Current.User.Identity.Name))
+            if (!c.HasMember(szCurrentUser))
                 throw new MyFlightbookException("You must be a member of the club to make this call");
 
             if (level == PrivilegeLevel.ReadWrite && !c.CanWrite)
@@ -719,7 +700,7 @@ namespace MyFlightbook.Schedule
 
                     Club c = Club.ClubWithID(clubID);
 
-                    string szUser = HttpContext.Current.User.Identity.Name;
+                    string szUser = util.RequestContext.CurrentUserName;
 
                     if ((c.EditingPolicy == Club.EditPolicy.AdminsOnly && !c.HasAdmin(szUser)) || c.GetMember(szUser).IsInactive)
                         throw new MyFlightbookException(Resources.Schedule.ErrUnauthorizedEdit);
@@ -753,7 +734,7 @@ namespace MyFlightbook.Schedule
             lst.ForEach((se) =>
             {
                 se.OwnerProfile = c.PrependsScheduleWithOwnerName ? c.Members.FirstOrDefault(cm => cm.UserName.CompareOrdinalIgnoreCase(se.OwningUser) == 0) : null;
-                se.ReadOnly = !se.CanEdit(HttpContext.Current.User.Identity.Name, c);
+                se.ReadOnly = !se.CanEdit(util.RequestContext.CurrentUserName, c);
                 se.Body = HttpUtility.HtmlEncode(se.Body);
             });
             return lst.ToArray();
@@ -770,7 +751,7 @@ namespace MyFlightbook.Schedule
                     ScheduledEvent scheduledevent = ScheduledEvent.AppointmentByID(id, tzi);
                     ScheduledEvent scheduledeventOrig = new ScheduledEvent();
 
-                    if (!scheduledevent.CanEdit(HttpContext.Current.User.Identity.Name))
+                    if (!scheduledevent.CanEdit(util.RequestContext.CurrentUserName))
                         throw new MyFlightbookException(Resources.Schedule.ErrUnauthorizedEdit);
 
                     if (scheduledevent != null)
@@ -786,7 +767,7 @@ namespace MyFlightbook.Schedule
                         if (!scheduledevent.FCommit())
                             throw new MyFlightbookException(scheduledevent.LastError);
 
-                        Club.ClubWithID(scheduledevent.ClubID).NotifyOfChange(scheduledeventOrig, scheduledevent, HttpContext.Current.User.Identity.Name);
+                        Club.ClubWithID(scheduledevent.ClubID).NotifyOfChange(scheduledeventOrig, scheduledevent, util.RequestContext.CurrentUserName);
                     }
                 }
             }
@@ -806,7 +787,7 @@ namespace MyFlightbook.Schedule
                 if (scheduledevent == null)
                     return Resources.Schedule.errItemNotFound;
 
-                string szUser = HttpContext.Current.User.Identity.Name;
+                string szUser = util.RequestContext.CurrentUserName;
 
                 if (!scheduledevent.CanEdit(szUser))
                     throw new MyFlightbookException(Resources.Schedule.ErrUnauthorizedEdit);

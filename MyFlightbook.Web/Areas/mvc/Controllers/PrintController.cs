@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -265,10 +265,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", MyFlightbook.Profile.GetUser(szUser).UserFullName));
                         Response.WriteFile(szOutputPDF);
                         Response.Flush();
-
-                        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                        Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                        System.Web.HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
                     }
                     catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
                     catch (HttpException) { }

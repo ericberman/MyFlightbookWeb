@@ -16,7 +16,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -740,7 +740,7 @@ namespace MyFlightbook.Airports
             }
 
             // if current user is admin and this is user-created, we can do anything.  Preserve the username, though.
-            if (Profile.GetUser(HttpContext.Current.User.Identity.Name).CanManageData)
+            if (Profile.GetUser(util.RequestContext.CurrentUserName).CanManageData)
             {
                 if (!isNew && apMatch != null)
                     this.UserName = apMatch.UserName;

@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -470,8 +470,7 @@ namespace MyFlightbook
 
         private static void PrepCSVDataTable(DataTable dt, bool fShowAltCatClass, IEnumerable<CustomPropertyType> lst)
         {
-            if (HttpContext.Current?.Session != null)
-                HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = DecimalFormat.Adaptive;
+            util.RequestContext?.SetSessionValue(MFBConstants.keyDecimalSettings, DecimalFormat.Adaptive);
 
             // add the header columns 
             dt.Columns.Add(new DataColumn("Date", typeof(string)));
@@ -646,8 +645,7 @@ namespace MyFlightbook
                     dt.Rows.Add(dr);
                 }
 
-                if (HttpContext.Current?.Session != null)
-                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = df;
+                util.RequestContext?.SetSessionValue(MFBConstants.keyDecimalSettings, df);
 
                 action(dt);
             }

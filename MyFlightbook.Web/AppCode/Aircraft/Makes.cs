@@ -14,7 +14,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -776,7 +776,7 @@ WHERE {1}";
                 HttpRuntime.Cache.Insert(CacheKey(MakeModelID), this, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(60), CacheItemPriority.Normal, null);
 
             // use fIsNew because Model.IsNew may have been true and not now.
-            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host), MakeModelID);
+            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl), MakeModelID);
             string szNewDesc = this.ToString();
             if (fWasNew)
                 util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(szChangingUser).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);

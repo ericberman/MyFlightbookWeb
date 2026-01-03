@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,7 +53,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (String.Compare(szUser, User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
                 throw new InvalidOperationException("Can't emulate yourself, silly!");
 
-            ProfileRoles.ImpersonateUser(User.Identity.Name, szUser);
+            ImpersonateUser(User.Identity.Name, szUser);
             return Redirect("~/mvc/flights");
         }
 

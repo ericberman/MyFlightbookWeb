@@ -1,11 +1,11 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = Resources.LocalizedText.ContactUsTitle;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabHome;
     bool fSuccess = ViewBag.success ?? false;
     bool fShowReturn = ViewBag.showReturn ?? false;
-    int noCap = util.GetIntParam(Request, "noCap", ViewBag.noCap ?? 0);
+    int passedNoCap = ViewBag.noCap ?? 0;
+    int noCap = (Request["noCap"] ?? string.Empty).SafeParseInt(passedNoCap);
     Profile pf = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : null;
     string szEmail = pf?.Email ?? Request["email"] ?? string.Empty;
     if (pf == null && !String.IsNullOrEmpty(szEmail))

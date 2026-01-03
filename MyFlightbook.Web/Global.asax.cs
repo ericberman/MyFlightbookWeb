@@ -32,6 +32,7 @@ namespace MyFlightbook.Web
 
             ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
             util.InitEmail(new SmtpSupport());
+            util.InitRequestContext(new MVCRequestContext());
         }
 
         protected void Application_End(object sender, EventArgs e)

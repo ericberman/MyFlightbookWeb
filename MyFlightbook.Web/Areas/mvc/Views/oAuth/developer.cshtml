@@ -6,7 +6,7 @@
     ViewBag.defaultTab = tabID.tabHome;
     ViewBag.Title = "Developers";
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
-    bool AdminMode = User.Identity.IsAuthenticated && (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport);
+    bool AdminMode = User.Identity.IsAuthenticated && (Request["a"] ?? string.Empty).SafeParseInt() != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport;
     IEnumerable<MFBOauth2Client> ownedClients = AdminMode ? MFBOauth2Client.GetAvailableClients() : MFBOauth2Client.GetClientsForUser(User.Identity.Name);
     MFBOauth2Client newClient = ViewBag.client;
 }

@@ -27,7 +27,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,82 +108,6 @@ namespace MyFlightbook
                 (dr) => { lst.Add(new Profile(dr)); });
             return lst;
         }
-
-        #region Impersonation
-        /// <summary>
-        /// Returns the username of the user who might be doing any impersonation.
-        /// </summary>
-        public static string OriginalAdmin
-        {
-            get { return (HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID] != null) ? HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value : string.Empty; }
-        }
-
-        /// <summary>
-        /// Returns true if the current user is being impersonated
-        /// </summary>
-        /// <param name="szCurrentUser">The username of the current user</param>
-        /// <returns>True if the current user is being emulated by an admin</returns>
-        public static bool IsImpersonating(string szCurrentUser)
-        {
-            bool fIsImpersonatingCookie = false;
-            HttpCookie cookie = HttpContext.Current.Request.Cookies[MFBConstants.keyIsImpersonating];
-            if (cookie != null)
-            {
-                if (!Boolean.TryParse(cookie.Value, out fIsImpersonatingCookie))
-                    HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
-            }
-
-            // to be impersonating, must be both an admin and have the impersonating cookie set and be impersonating someone other than yourself.
-            string szOriginalAdmin = OriginalAdmin;
-            return fIsImpersonatingCookie && String.Compare(szOriginalAdmin, szCurrentUser, StringComparison.Ordinal) != 0 && Profile.GetUser(szOriginalAdmin).CanSupport;
-        }
-
-        /// <summary>
-        /// If currently impersonating, stops the impersonation
-        /// </summary>
-        public static void StopImpersonating()
-        {
-            if (HttpContext.Current.Request.Cookies[MFBConstants.keyIsImpersonating] != null)
-                HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
-            if (HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID] != null)
-            {
-                string szUser = HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value;
-                MembershipUser mu = (szUser == null) ? null : Membership.GetUser(szUser);
-                if (!String.IsNullOrEmpty(mu?.UserName))
-                {
-                    FormsAuthentication.SetAuthCookie(HttpContext.Current.Request.Cookies[MFBConstants.keyOriginalID].Value, true);
-                    Profile pf = Profile.GetUser(mu.UserName);
-                    HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
-                        ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
-                        : (object)null;
-                    HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
-                }
-                else
-                    FormsAuthentication.SignOut();
-                HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(-1);
-            }
-        }
-
-        /// <summary>
-        /// Starts impersonating the specified person
-        /// </summary>
-        /// <param name="szAdminName">The admin name to impersonate</param>
-        /// <param name="szTargetName">The impersonation target</param>
-        public static void ImpersonateUser(string szAdminName, string szTargetName)
-        {
-            HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Value = szAdminName;
-            HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(30);
-            FormsAuthentication.SetAuthCookie(szTargetName, true);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
-
-            Profile pf = Profile.GetUser(szTargetName);
-            HttpContext.Current.Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
-                ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
-                : (object)null;
-            HttpContext.Current.Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
-        }
-        #endregion
     }
 
     /// <summary>

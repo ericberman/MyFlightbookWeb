@@ -25,7 +25,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -303,13 +303,6 @@ namespace MyFlightbook.Telemetry
         private const int LandingSpeedDifferentialLow = 10;
         private const int LandingSpeedDifferentialHigh = 15;
 
-        private const string keyCookieSpeed = "autoFillDefaultSpeed";
-        private const string keyCookieHeliport = "autoFillDefaultHeliport";
-        private const string keyCookieEstimateNight = "autoFillEstimateNight";
-        private const string keyCookieNightDef = "autoFillNightDefinition";
-        private const string keyCookieNightLandingDef = "autoFillNightLandingDef";
-        private const string keyCookieRoundToTenth = "autoFillRound10th";
-
         #region Constructors
         public AutoFillOptions()
         {
@@ -325,42 +318,6 @@ namespace MyFlightbook.Telemetry
                 util.CopyObject(afoSrc, this);
         }
 
-        /// <summary>
-        /// Obsolete - fall back for using cookies when user preferences aren't available
-        /// </summary>
-        /// <param name="cookies"></param>
-        private AutoFillOptions(HttpCookieCollection cookies) : this()
-        {
-            // TODO: Mark this method with [Obsolete].
-            if (cookies != null)
-            {
-                if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out int defaultSpeed))
-                    defaultSpeed = AutoFillOptions.DefaultTakeoffSpeed;
-                TakeOffSpeed = defaultSpeed;
-                LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed((int) TakeOffSpeed);
-
-                if (cookies[keyCookieHeliport] == null || !bool.TryParse(cookies[keyCookieHeliport].Value, out bool includeHeliports))
-                    includeHeliports = false;
-                IncludeHeliports = includeHeliports;
-
-                if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out bool estimateNight))
-                    estimateNight = true;
-                AutoSynthesizePath = estimateNight;
-
-                if (cookies[keyCookieRoundToTenth] == null || !bool.TryParse(cookies[keyCookieRoundToTenth].Value, out bool roundTo10th))
-                    roundTo10th = false;
-                RoundToTenth = roundTo10th;
-
-                if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out NightCritera nightCritera))
-                    nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
-                Night = nightCritera;
-
-                if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out NightLandingCriteria nightLandingCriteria))
-                    nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
-                NightLanding = nightLandingCriteria;
-            }
-        }
-
         private const string szKeyPersistedPrefAutoFill = "DefaultAutofillOptions";
 
         public static AutoFillOptions DefaultOptionsForUser(string szUserName)
@@ -368,7 +325,7 @@ namespace MyFlightbook.Telemetry
             if (String.IsNullOrEmpty(szUserName))
                 return new AutoFillOptions();
 
-            return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? (HttpContext.Current?.Request?.Cookies == null ? new AutoFillOptions() : new AutoFillOptions(HttpContext.Current?.Request?.Cookies));
+            return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? new AutoFillOptions();
         }
 
         public void SaveForUser(string szUserName)

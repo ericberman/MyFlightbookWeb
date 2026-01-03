@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,6 +18,7 @@ namespace MyFlightbook.Image
 {
     /// <summary>
     /// MFBImageInfo that has NOT YET been persisted
+    /// TODO: These are currently tied to HttpSessionStateBase, which is passed in (good) but not the right model - should instead have a collection in the session and pass the collection in/out, and interact with that.
     /// </summary>
     [Serializable]
     public class MFBPendingImage : MFBImageInfo

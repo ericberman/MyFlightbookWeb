@@ -131,7 +131,7 @@
                 </div>
                 <div>
                     <h3>@Resources.Aircraft.editAircraftStats</h3>
-                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = stats.StatsForUserInAircraft(util.GetIntParam(Request, "listUsers", 0) != 0) }); }
+                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = stats.StatsForUserInAircraft(fAdminMode && (Request["listUsers"] ?? string.Empty).SafeParseInt() != 0) }); }
                 </div>
             </div>
             <h3>@Resources.Aircraft.editAircraftTailNumberPrompt</h3>

@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -127,7 +127,7 @@ namespace MyFlightbook
             if (fIsNew)
             {
                 ManufacturerID = dbh.LastInsertedRowId;
-                util.NotifyAdminEvent("New manufacturer added", String.Format(CultureInfo.CurrentCulture, "New manufacturer '{0}' added by user {1}.", ManufacturerName, Profile.GetUser(HttpContext.Current.User.Identity.Name).DetailedName), ProfileRoles.maskCanManageData);
+                util.NotifyAdminEvent("New manufacturer added", String.Format(CultureInfo.CurrentCulture, "New manufacturer '{0}' added by user {1}.", ManufacturerName, Profile.GetUser(util.RequestContext.CurrentUserName).DetailedName), ProfileRoles.maskCanManageData);
             }
 
             return true;

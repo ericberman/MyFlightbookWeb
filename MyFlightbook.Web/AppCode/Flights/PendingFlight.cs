@@ -2,11 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Caching;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2025 MyFlightbook LLC
+ * Copyright (c) 2019-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -142,16 +143,16 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(szUser));
 
             if (flights == null)
-                HttpContext.Current?.Cache?.Remove(CacheKeyForUser(szUser));
+                util.GlobalCache.Remove(CacheKeyForUser(szUser));
             else
-                HttpContext.Current?.Cache?.Insert(CacheKeyForUser(szUser), flights, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                util.GlobalCache.Set(CacheKeyForUser(szUser), flights, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(15) });
         }
 
         static private IEnumerable<PendingFlight> CachedFlightsForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser)) 
                 throw new ArgumentNullException(nameof(szUser));
-            return (IEnumerable<PendingFlight>)HttpContext.Current?.Cache[CacheKeyForUser(szUser)];
+            return (IEnumerable<PendingFlight>) util.GlobalCache.Get(CacheKeyForUser(szUser));
         }
         #endregion
 

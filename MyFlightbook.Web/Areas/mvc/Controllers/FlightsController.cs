@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -562,7 +562,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.pfTarget = pfTarget;
             ViewBag.pfViewer = User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(User.Identity.Name) : pfTarget;
 
-            if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
+            if (GetIntParam("dupesOnly", 0) != 0)
             {
                 fq = new FlightQuery(targetUser) {
                     EnumeratedFlights = new HashSet<int>(LogbookEntryBase.DupeCandidatesForUser(targetUser)) };
@@ -886,7 +886,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniRecents()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             ViewBag.fq = fq;
@@ -897,7 +897,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniTotals()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             ViewBag.pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             ViewBag.fq = fq;
@@ -912,7 +912,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult MiniLogbook()
         {
-            util.SetMobile(true);
+            SetMobile(true);
             return View("miniLogbook");
         }
         #endregion
@@ -1005,7 +1005,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
             // update based on any passed parameters
-            q.InitPassedQueryItems(Request["s"], Request["ap"], util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
+            q.InitPassedQueryItems(Request["s"], Request["ap"], GetIntParam("y", -1), GetIntParam("m", -1), GetIntParam("w", -1), GetIntParam("d", -1), Request["tn"], Request["mn"], Request["icao"], Request["cc"]);
             return MainLogbookInternal(q);
         }
         #endregion
