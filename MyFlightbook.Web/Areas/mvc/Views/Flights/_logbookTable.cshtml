@@ -169,8 +169,8 @@
     function headerClicked(sortField) {
         var hdnSort = $("#hdnSortExpr");
         var hdnSortDir = $("#hdnSortDir");
-        const ascDir = "@SortDirection.Ascending";
-        const descDir = "@SortDirection.Descending";
+        const ascDir = "@MyFlightbook.SortDirection.Ascending";
+        const descDir = "@MyFlightbook.SortDirection.Descending";
 
         hdnSortDir.val(sortField == hdnSort.val() && hdnSortDir.val() == ascDir ? descDir : ascDir);
         hdnSort.val(sortField);

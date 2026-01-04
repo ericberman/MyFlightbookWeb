@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -995,11 +995,9 @@ namespace MyFlightbook.Currency
             return (DateTime.Compare(DateTime.Now.Date, dtExp.Date) <= 0);
         }
 
-        public enum CurrencyQueryDirection { Ascending, Descending };
-
-        public static string CurrencyQuery(CurrencyQueryDirection dir)
+        public static string CurrencyQuery(SortDirection dir)
         {
-            return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["FlightsCurrencyQuery"], dir == CurrencyQueryDirection.Ascending ? "ASC" : "DESC");
+            return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["FlightsCurrencyQuery"], dir.ToMySQLSort());
         }
         #endregion
 
@@ -1351,7 +1349,7 @@ namespace MyFlightbook.Currency
 
             ComputeCurrencyContext ccc = new ComputeCurrencyContext(szUser);
 
-            DBHelper dbh = new DBHelper(CurrencyQuery(CurrencyQueryDirection.Descending));
+            DBHelper dbh = new DBHelper(CurrencyQuery(SortDirection.Descending));
             dbh.ReadRows(
                 (comm) =>
                 {

@@ -6,7 +6,7 @@ using System.Threading;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -431,7 +431,7 @@ namespace MyFlightbook.Currency
         public static IEnumerable<EffectiveDutyPeriod> DutyPeriodsForPastDays(string szUser, int numDays, out string cutoffDate, out string totalFD, out string totalDuty, out string totalRest)
         {
             DutyPeriodExaminer dpe = new DutyPeriodExaminer(Profile.GetUser(szUser).UsesFAR117DutyTimeAllFlights);
-            DBHelper dbh = new DBHelper(FlightCurrency.CurrencyQuery(FlightCurrency.CurrencyQueryDirection.Descending));
+            DBHelper dbh = new DBHelper(FlightCurrency.CurrencyQuery(SortDirection.Descending));
             dbh.ReadRows(
                 (comm) =>
                 {

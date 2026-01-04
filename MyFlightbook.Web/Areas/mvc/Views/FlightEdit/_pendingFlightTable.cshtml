@@ -9,8 +9,8 @@
     int curPage = ViewBag.curPage;
     int numPages = ViewBag.numPages;
     string sortField = ViewBag.sortField;
-    System.Web.UI.WebControls.SortDirection sortDir = ViewBag.sortDir;
-    System.Func<string, string> sortCss = (h) => { return h.CompareCurrentCulture(sortField) == 0 ? (sortDir == System.Web.UI.WebControls.SortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty; };
+    MyFlightbook.SortDirection sortDir = ViewBag.sortDir;
+    System.Func<string, string> sortCss = (h) => { return h.CompareCurrentCulture(sortField) == 0 ? (sortDir == MyFlightbook.SortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty; };
     HashSet<int> hsPropExclusion = new HashSet<int>()
     {
         (int) CustomPropertyType.KnownProperties.IDPropFlightNumber
