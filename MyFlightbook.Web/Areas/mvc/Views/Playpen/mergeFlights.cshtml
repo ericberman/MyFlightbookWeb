@@ -3,7 +3,7 @@
     ViewBag.UseMaps = true;
     ViewBag.Title = "Merge Flights";
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
-    IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", System.Web.UI.WebControls.SortDirection.Descending, false, false);
+    IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", MyFlightbook.SortDirection.Descending, false, false);
 }
 <script type="text/javascript">
     var wiz = null;
@@ -91,7 +91,7 @@
     <input type="hidden" name="targetUser" value="@User.Identity.Name" />
     <input type="hidden" name="viewingUser" value="@User.Identity.Name" />
     <input type="hidden" name="sortExpr" value="Date" />
-    <input type="hidden" name="sortDir" value="@System.Web.UI.WebControls.SortDirection.Descending.ToString()" />
+    <input type="hidden" name="sortDir" value="@MyFlightbook.SortDirection.Descending.ToString()" />
     <input type="hidden" name="pageRequest" value="" />
     <input type="hidden" name="pageSize" value="25" />
     <input type="hidden" name="readOnly" value="@Json.Encode(true)" />
@@ -112,6 +112,7 @@
                 <table class="stickyHeaderTable stickyHeaderAlternate">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Date</th>
                             <th>Aircraft</th>
                             <th>Route</th>

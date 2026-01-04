@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -205,7 +205,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             } :
                 new ModelQuery() { FullText = Request["searchText"] };
 
-            if (Enum.TryParse(Request["sortDir"], true, out ModelQuery.ModelSortDirection sortDirection))
+            if (Enum.TryParse(Request["sortDir"], true, out SortDirection sortDirection))
                 mq.SortDir = sortDirection;
             if (Enum.TryParse(Request["sortKey"], true, out ModelQuery.ModelSortMode sortMode))
                 mq.SortMode = sortMode;
@@ -220,7 +220,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult Makes(string q = null)
         {
             if (q == null)
-                return modelBrowser(new ModelQuery() { SortDir = ModelQuery.ModelSortDirection.Ascending, SortMode = ModelQuery.ModelSortMode.ModelName }, false, false);
+                return modelBrowser(new ModelQuery() { SortDir = SortDirection.Ascending, SortMode = ModelQuery.ModelSortMode.ModelName }, false, false);
 
             ModelQuery mq = JsonConvert.DeserializeObject<ModelQuery>(q.FromSafeParameter(), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate });
 

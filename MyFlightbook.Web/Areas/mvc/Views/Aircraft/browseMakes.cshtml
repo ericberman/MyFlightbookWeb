@@ -64,7 +64,7 @@
     function setSearchHeaders(mode, dir) {
         $("#trHeaderRow").find("th").removeClass("headerSortAsc").removeClass("headerSortDesc");
 
-        var newClass = (dir == "@ModelQuery.ModelSortDirection.Descending.ToString()") ? "headerSortDesc" : "headerSortAsc";
+        var newClass = (dir == "@MyFlightbook.SortDirection.Descending.ToString()") ? "headerSortDesc" : "headerSortAsc";
 
         if (mode == "@ModelQuery.ModelSortMode.Manufacturer.ToString()")
             $("#thManufacturer").addClass(newClass);
@@ -77,9 +77,9 @@
     function sortModels(key) {
         var curSortKey = $("#hdnSortKey").val();
         if (curSortKey == key) {
-            $("#hdnSortDir").val($("#hdnSortDir").val() == "@ModelQuery.ModelSortDirection.Descending.ToString()" ? "@ModelQuery.ModelSortDirection.Ascending.ToString()" : "@ModelQuery.ModelSortDirection.Descending.ToString()");
+            $("#hdnSortDir").val($("#hdnSortDir").val() == "@MyFlightbook.SortDirection.Descending.ToString()" ? "@MyFlightbook.SortDirection.Ascending.ToString()" : "@MyFlightbook.SortDirection.Descending.ToString()");
         } else {
-            $("#hdnSortDir").val("@ModelQuery.ModelSortDirection.Ascending.ToString()");
+            $("#hdnSortDir").val("@MyFlightbook.SortDirection.Ascending.ToString()");
             $("#hdnSortKey").val(key)
         }
         $("#resultsBody").html("");

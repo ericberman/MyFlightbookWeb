@@ -15,7 +15,7 @@ using static MyFlightbook.Instruction.Endorsement;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -685,7 +685,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DownloadEndorsements(string userName = null)
         {
-            IEnumerable<Endorsement> endorsements = EndorsementsForUser(userName, User.Identity.Name, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date, true);
+            IEnumerable<Endorsement> endorsements = EndorsementsForUser(userName, User.Identity.Name, SortDirection.Descending, EndorsementSortKey.Date, true);
             using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
             {
                 EndorsementsToDataTable(endorsements, dt);
@@ -732,7 +732,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.student = User.Identity.Name;
             ViewBag.instructor = string.Empty;
 
-            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, EndorsementSortKey.Date);
+            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, SortDirection.Descending, EndorsementSortKey.Date);
             return View("endorsements");
         }
         #endregion

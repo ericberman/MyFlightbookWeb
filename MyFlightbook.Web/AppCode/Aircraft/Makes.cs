@@ -955,7 +955,7 @@ WHERE {1}";
         /// <returns>A list of MakeModel objects</returns>
         public static Collection<MakeModel> MatchingMakes(int idManufacturer)
         {
-            ModelQuery mq = new ModelQuery() { ManufacturerID = idManufacturer, SortMode = ModelQuery.ModelSortMode.ModelName, SortDir = ModelQuery.ModelSortDirection.Ascending };
+            ModelQuery mq = new ModelQuery() { ManufacturerID = idManufacturer, SortMode = ModelQuery.ModelSortMode.ModelName, SortDir = SortDirection.Ascending };
             return new Collection<MakeModel>(MatchingMakes(mq));
         }
 
@@ -1173,9 +1173,6 @@ WHERE {1}";
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ModelSortMode { ModelName, CatClass, Manufacturer };
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum ModelSortDirection { Ascending, Descending };
-
         static readonly LazyRegex rNormalizeModel = new LazyRegex("[- ]+");
 
         /// <summary>
@@ -1250,8 +1247,8 @@ WHERE {1}";
         /// <summary>
         /// Should the sort be ascending or descending?
         /// </summary>
-        [System.ComponentModel.DefaultValue(ModelSortDirection.Ascending)]
-        public ModelSortDirection SortDir { get; set; }
+        [System.ComponentModel.DefaultValue(SortDirection.Ascending)]
+        public SortDirection SortDir { get; set; }
 
         /// <summary>
         /// Should we give a boost to models where the model itself matches?
@@ -1365,10 +1362,10 @@ FROM models
             lstParams.Add(new MySqlParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", szQ.EscapeMySQLWildcards().ConvertToMySQLWildcards())));
         }
 
-        private static string SortOrderFromSortModeAndDirection(ModelSortMode sortmode, ModelSortDirection sortDirection)
+        private static string SortOrderFromSortModeAndDirection(ModelSortMode sortmode, SortDirection sortDirection)
         {
             string szOrderString;
-            string szDirString = (sortDirection == ModelSortDirection.Ascending) ? "ASC" : "DESC";
+            string szDirString = sortDirection.ToMySQLSort();
 
             switch (sortmode)
             {
@@ -1394,7 +1391,7 @@ FROM models
             Skip = -1;
             ManufacturerID = Manufacturer.UnsavedID;
             SortMode = ModelSortMode.Manufacturer;
-            SortDir = ModelSortDirection.Ascending;
+            SortDir = SortDirection.Ascending;
             IncludeSampleImages = false;
         }
     }

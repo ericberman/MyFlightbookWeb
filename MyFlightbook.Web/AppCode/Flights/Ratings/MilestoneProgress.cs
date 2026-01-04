@@ -775,7 +775,7 @@ namespace MyFlightbook.RatingsProgress
             List<ExaminerFlightRow> lstRows = new List<ExaminerFlightRow>();
             StringBuilder sbRoutes = new StringBuilder();
 
-            DBHelper dbh = new DBHelper(CurrencyExaminer.CurrencyQuery(CurrencyExaminer.CurrencyQueryDirection.Descending));
+            DBHelper dbh = new DBHelper(CurrencyExaminer.CurrencyQuery(SortDirection.Descending));
             dbh.ReadRows(
                 (comm) =>
                 {

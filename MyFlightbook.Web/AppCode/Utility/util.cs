@@ -79,6 +79,8 @@ namespace MyFlightbook
 
     public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
 
+    public enum SortDirection { Ascending, Descending }
+
     /// <summary>
     /// Encapsulates the context of the current request, including session, cache, request, etc.
     /// </summary>

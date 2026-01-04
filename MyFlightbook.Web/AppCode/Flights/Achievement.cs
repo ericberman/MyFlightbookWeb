@@ -110,7 +110,7 @@ namespace MyFlightbook.Achievements
                 lstTotal.ForEach((b) => { b.PreFlight(BadgeContext); });
 
                 // 2nd pass: examine each flight IN CHRONOLOGICAL ORDER
-                DBHelper dbh = new DBHelper(CurrencyExaminer.CurrencyQuery(CurrencyExaminer.CurrencyQueryDirection.Ascending));
+                DBHelper dbh = new DBHelper(CurrencyExaminer.CurrencyQuery(SortDirection.Ascending));
                 dbh.ReadRows(
                     (comm) =>
                     {

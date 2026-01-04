@@ -218,7 +218,7 @@ namespace MyFlightbook
             }
 
             // Sort by date, desc
-            lst.Sort((l1, l2) => { return CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
+            lst.Sort((l1, l2) => { return CompareFlights(l1, l2, "Date", SortDirection.Descending); });
             CacheForUser(szUser, lst);
             return lst;
         }

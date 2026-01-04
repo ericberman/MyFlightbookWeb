@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1149,7 +1149,7 @@ namespace MyFlightbook.ImportFlights
 
                         if (hsModifiedFlightIDs.Count > 0)
                         {
-                            IEnumerable<LogbookEntryDisplay> lstFlightsToModify = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(szUser)), szUser, "FlightID", System.Web.UI.WebControls.SortDirection.Ascending, false, false);
+                            IEnumerable<LogbookEntryDisplay> lstFlightsToModify = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(szUser)), szUser, "FlightID", SortDirection.Ascending, false, false);
                             foreach (LogbookEntry le in lstFlightsToModify)
                                 if (hsModifiedFlightIDs.Contains(le.FlightID))
                                     OriginalFlightsToModify.Add(le.FlightID, le);

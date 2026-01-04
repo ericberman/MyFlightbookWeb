@@ -97,7 +97,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region WebServices
         #region Manufacturers and models
-        public ActionResult MakeRows(int skip, int limit, ModelQuery.ModelSortMode sortMode, ModelQuery.ModelSortDirection sortDir, string queryJSON)
+        public ActionResult MakeRows(int skip, int limit, ModelQuery.ModelSortMode sortMode, SortDirection sortDir, string queryJSON)
         {
             return SafeOp(() =>
             {

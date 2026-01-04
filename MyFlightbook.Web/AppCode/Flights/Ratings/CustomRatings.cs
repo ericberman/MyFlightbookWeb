@@ -12,7 +12,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -318,7 +318,7 @@ namespace MyFlightbook.RatingsProgress
             StringBuilder sbRoutes = new StringBuilder();
             Profile pf = Profile.GetUser(Username);
 
-            IList<LogbookEntryDisplay> lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(Username)), Username, string.Empty, System.Web.UI.WebControls.SortDirection.Descending, pf.UsesHHMM, pf.UsesUTCDateOfFlight);
+            IList<LogbookEntryDisplay> lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryBase.QueryCommand(new FlightQuery(Username)), Username, string.Empty, SortDirection.Descending, pf.UsesHHMM, pf.UsesUTCDateOfFlight);
 
             // Set up the airport list once for DB efficiency
             foreach (LogbookEntryDisplay led in lst)

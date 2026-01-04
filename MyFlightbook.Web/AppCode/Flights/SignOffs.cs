@@ -13,7 +13,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -356,7 +355,7 @@ namespace MyFlightbook.Instruction
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0} ORDER BY {1} {2}",
                 szRestrict,
                 sortKey == EndorsementSortKey.Date ? "Date" : "Title",
-                sortDirection == SortDirection.Descending ? "DESC" : "ASC"
+                sortDirection.ToMySQLSort()
                 ));
 
             if (!dbh.ReadRows(
