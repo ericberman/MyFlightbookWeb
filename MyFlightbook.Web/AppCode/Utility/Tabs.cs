@@ -341,7 +341,7 @@ namespace MyFlightbook
         {
             if (!String.IsNullOrEmpty(szFile))
             {
-                XDocument doc = XDocument.Load(System.Web.Hosting.HostingEnvironment.MapPath(szFile));
+                XDocument doc = XDocument.Load(szFile.MapAbsoluteFilePath());
                 Tabs = ReadTabs(doc.Elements("Items").Elements("Item"));
             }
         }

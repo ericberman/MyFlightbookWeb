@@ -1294,10 +1294,8 @@ ORDER BY user ASC");
             // If we are here, this is not a minor change - go ahead and clone and notify the admin.
             Clone(idProposedModel, new string[] { szUser });
             Profile pf = Profile.GetUser(szUser);
-            util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} cloned", DisplayTailnumber),
-                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}{9}/{4}?a=1\r\n\r\nOld Model: {5}, (modelID: {6})\r\n\r\nNew Model: {7}, (modelID: {8})",
-                pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName + " " + mmOld.ICAODisplay, mmOld.MakeModelID, mmNew.DisplayName + " " + mmNew.ICAODisplay, mmNew.MakeModelID,
-                VirtualPathUtility.ToAbsolute("~/mvc/aircraft/edit")), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport);
+            util.NotifyAdminEvent($"Aircraft {DisplayTailnumber} cloned",
+                $"User: {pf.UserName} ({pf.UserFullName} <{pf.Email}>)\r\n\r\n{$"~/mvc/aircraft/edit/{AircraftID}?a=1".ToAbsoluteBrandedUri()}\r\n\r\nOld Model: {mmOld.DisplayName + " " + mmOld.ICAODisplay}, (modelID: {mmOld.MakeModelID})\r\n\r\nNew Model: {mmNew.DisplayName + " " + mmNew.ICAODisplay}, (modelID: {mmNew.MakeModelID})", ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport);
             return true;
         }
 
@@ -2948,7 +2946,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
                 mfbii.DeleteImage();
 
             ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
-            DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+            DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
             if (di.Exists)
                 di.Delete(true);
 

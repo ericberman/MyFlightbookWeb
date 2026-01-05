@@ -16,7 +16,7 @@ using System.Net.Http;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -676,7 +676,7 @@ namespace MyFlightbook.Subscriptions
                     response.EnsureSuccessStatusCode();
                     if (szResult.Contains("-- SuccessToken --"))
                     {
-                        util.NotifyUser(szSubject, szResult, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/unsubscribe"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
+                        util.NotifyUser(szSubject, szResult, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?u={2}", Branding.CurrentBrand.HostName, "~/mvc/pub/unsubscribe".ToAbsolute(), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(pf.UserName))));
                         EventRecorder.LogCall($"SendMailForUser - sent for {pf.UserName}");
                         return true;
                     }

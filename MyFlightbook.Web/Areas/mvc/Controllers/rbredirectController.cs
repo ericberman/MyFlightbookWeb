@@ -4,8 +4,14 @@ using QRCoder;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
+
+/******************************************************
+ * 
+ * Copyright (c) 2018-2026 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
@@ -25,8 +31,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult DeAuth()
         {
             MyFlightbook.Profile.GetUser(User.Identity.Name).SetPreferenceForKey(RosterBusterClient.TokenPrefKey, null, true);
-            Response.Redirect(VirtualPathUtility.ToAbsolute("~/mvc/rbredirect"));
-            return null;
+            return Redirect("~/mvc/rbredirect");
         }
 
         [Authorize]

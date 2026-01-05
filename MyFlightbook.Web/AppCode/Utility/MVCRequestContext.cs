@@ -1,7 +1,7 @@
-﻿using MyFlightbook.Weather.ADDS;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.Hosting;
 
 /******************************************************
  * 
@@ -65,6 +65,16 @@ namespace MyFlightbook
         {
             HttpContext.Current.Response.Cookies[name].Expires = DateTime.Now.AddDays(-1);  // force the browser to remove it.
             HttpContext.Current.Request.Cookies.Remove(name);   // prevent new reading of the cookie on this end.
+        }
+
+        public string RelativeToAbsolute(string relativePath)
+        {
+            return VirtualPathUtility.ToAbsolute(relativePath);
+        }
+
+        public string RelativeToAbsoluteFilePath(string relativePath)
+        {
+            return HostingEnvironment.MapPath(relativePath);
         }
 
         public IEnumerable<string> SessionKeys

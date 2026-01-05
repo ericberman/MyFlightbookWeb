@@ -2571,7 +2571,7 @@ HAVING numaccounts > 1");
                     msg.To.Add(new MailAddress(pfCFI.Email, pfCFI.UserFullName));
                     msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignRequestSubject, pf.UserFullName, Branding.CurrentBrand.AppName);
 
-                    string szURL = "~/mvc/training/students".ToAbsoluteURL("https", Branding.CurrentBrand.HostName).ToString();
+                    string szURL = "~/mvc/training/students".ToAbsoluteBrandedUri().ToString();
 
                     util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.SignInvitationExisting.Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName));
                     util.SendMessage(msg);

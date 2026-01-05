@@ -113,6 +113,10 @@ namespace MyFlightbook
         void SetCookie(string name, string value, DateTime? expires = null);
 
         void RemoveCookie(string name);
+
+        string RelativeToAbsolute(string relativePath);
+
+        string RelativeToAbsoluteFilePath(string relativePath);
     }
 
     public static class ShuntState
