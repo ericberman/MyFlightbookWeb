@@ -5,7 +5,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -104,7 +104,7 @@ namespace MyFlightbook.Image
         /// <returns>Array of MFBImageInfo objects</returns>
         public void Refresh(bool fIncludeDocs = false, string szDefault = null, bool fIncludeVids = true)
         {
-            DirectoryInfo dir = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(VirtPath));
+            DirectoryInfo dir = new DirectoryInfo(VirtPath.MapAbsoluteFilePath());
             List<MFBImageInfo> lstMfbii = new List<MFBImageInfo>();
 
             if (dir != null && dir.Exists)

@@ -482,7 +482,7 @@ namespace MyFlightbook.Instruction
                 tw.AddAttribute("title", Resources.SignOff.EndorsementValid);
                 tw.AddAttribute("alt", Resources.SignOff.EndorsementValid);
                 tw.RenderBeginTag(HtmlTextWriterTag.Div);
-                tw.AddAttribute("src", String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/images/sigok.png")));
+                tw.AddAttribute("src", "~/images/sigok.png".ToAbsoluteBrandedUri().ToString());
                 tw.RenderBeginTag(HtmlTextWriterTag.Img);
                 tw.RenderEndTag();  // img
                 tw.RenderEndTag();  // div

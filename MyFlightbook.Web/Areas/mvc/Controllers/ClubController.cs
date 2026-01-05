@@ -325,7 +325,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (club.GetMember(User.Identity.Name).RoleInClub != ClubMember.ClubMemberRole.Owner)
                     throw new UnauthorizedAccessException(Resources.Club.errNotAuthorizedToManage);
 
-                return club.FDelete() ? VirtualPathUtility.ToAbsolute("~/mvc/club/") : throw new InvalidOperationException(club.LastError);
+                return club.FDelete() ? "~/mvc/club/".ToAbsolute() : throw new InvalidOperationException(club.LastError);
             });
         }
         #endregion

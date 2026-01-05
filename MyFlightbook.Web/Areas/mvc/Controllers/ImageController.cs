@@ -17,7 +17,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -478,7 +478,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         return File(pf.HeadShot.ToArray(), "image/jpeg");
                 }
             }
-            return File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
+            return File("~/Public/tabimages/ProfileTab.png".MapAbsoluteFilePath(), "image/png");
         }
 
         public ActionResult ViewUserWithKey(string id, string key)
@@ -492,9 +492,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fKey = (long.TryParse(new Encryptors.SharedDataEncryptor().Decrypt(key ?? string.Empty), out long ticks) && utcNow - ticks > 0 && TimeSpan.FromTicks(utcNow - ticks).TotalMinutes < 5);
 
             Profile pf = MyFlightbook.Profile.GetUser(id);
-            return fKey && pf.HasHeadShot ? (ActionResult)File(pf.HeadShot.ToArray(), "image/jpeg") : File(Server.MapPath("~/Public/tabimages/ProfileTab.png"), "image/png");
-
-
+            return fKey && pf.HasHeadShot ? (ActionResult)File(pf.HeadShot.ToArray(), "image/jpeg") : File("~/Public/tabimages/ProfileTab.png".MapAbsoluteFilePath(), "image/png");
         }
 
         public ActionResult ViewPic(string r, string k, string t)

@@ -2367,7 +2367,7 @@ namespace MyFlightbook.Telemetry
         {
             get
             {
-                return System.Web.Hosting.HostingEnvironment.MapPath((FileDir + FileName).ToAbsolute());
+                return (FileDir + FileName).MapAbsoluteFilePath();
             }
         }
 
@@ -2489,7 +2489,7 @@ namespace MyFlightbook.Telemetry
         public static IEnumerable<int> FindOrphanedRefs()
         {
             List<int> lst = new  List<int>();
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(FileDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
             {
@@ -2506,7 +2506,7 @@ namespace MyFlightbook.Telemetry
         /// <returns></returns>
         public static IEnumerable<string> FindOrphanedFiles()
         {
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(System.Web.Hosting.HostingEnvironment.MapPath(FileDir.ToAbsolute()), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
+            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(FileDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             HashSet<string> References = new HashSet<string>();
             dbh.ReadRows(

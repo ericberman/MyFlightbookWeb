@@ -1,12 +1,11 @@
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
-using Newtonsoft.Json;
 using System.Xml.Serialization;
 
 /******************************************************
@@ -156,25 +155,25 @@ namespace MyFlightbook.Currency
                     default:
                     case CurrencyGroups.None:
                     case CurrencyGroups.FlightExperience:
-                        return Query == null ? null : VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Query.ToBase64CompressedJSONString()));
+                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Query.ToBase64CompressedJSONString()).ToAbsolute();
                     case CurrencyGroups.FlightReview:
-                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=flightreviews");
+                        szResult = "~/mvc/prefs/pilotinfo?pane=flightreviews".ToAbsolute();
                         break;
                     case CurrencyGroups.Aircraft:
                     case CurrencyGroups.AircraftDeadline:
                         szResult = AircraftUtility.EditLink(AssociatedResourceID);
                         break;
                     case CurrencyGroups.Certificates:
-                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=certs");
+                        szResult = "~/mvc/prefs/pilotinfo?pane=certs".ToAbsolute();
                         break;
                     case CurrencyGroups.Medical:
-                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs/pilotinfo?pane=medical");
+                        szResult = "~/mvc/prefs/pilotinfo?pane=medical".ToAbsolute();
                         break;
                     case CurrencyGroups.Deadline:
-                        szResult = VirtualPathUtility.ToAbsolute("~/mvc/prefs?pane=deadlines");
+                        szResult = "~/mvc/prefs?pane=deadlines".ToAbsolute();
                         break;
                     case CurrencyGroups.CustomCurrency:
-                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/mvc/prefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString()));
+                        szResult = (Query == null ? "~/mvc/prefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString())).ToAbsolute();
                         break;
                 }
 

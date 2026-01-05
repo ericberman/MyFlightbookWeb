@@ -36,7 +36,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         protected static string FixLink(string s)
         {
-            return (s == null || !s.StartsWith("~")) ? s : VirtualPathUtility.ToAbsolute(s);
+            return (s == null || !s.StartsWith("~")) ? s : s.ToAbsolute();
         }
 
         [ValidateAntiForgeryToken]
@@ -52,8 +52,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (User.Identity.IsAuthenticated)
                 FormsAuthentication.SignOut();
-            Response.Redirect(VirtualPathUtility.ToAbsolute("~/mvc/auth"));
-            return null;
+            return Redirect("~/mvc/auth");
         }
 
         [HttpPost]
@@ -84,7 +83,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private void AddProfileToViewBag(Profile pf)
         {
-            ViewBag.HeadShot = VirtualPathUtility.ToAbsolute(pf.HeadShotHRef);
+            ViewBag.HeadShot = pf.HeadShotHRef.ToAbsolute();
             ViewBag.Greeting = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
             ViewBag.MemberDate = pf.CreationDate.HasValue() ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate) : string.Empty;
             ViewBag.LastLogin = (pf.LastLogon.HasValue()) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon) : string.Empty;
@@ -349,7 +348,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Handle parameters here.
             if (ShuntState.IsShunted && String.IsNullOrEmpty(Request["noshunt"]))
             {
-                Response.Redirect(VirtualPathUtility.ToAbsolute("~/mvc/pub/shunt"));
+                Response.Redirect("~/mvc/pub/shunt");
                 Response.End();
                 return null;
             }
@@ -388,7 +387,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsNight = false;
             ViewBag.IsNight = IsNight;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
-            ViewBag.MobileCSS = IsMobileSession() ? VirtualPathUtility.ToAbsolute("~/Public/CSS/MobileSheet.css?v=8") : string.Empty;
+            ViewBag.MobileCSS = IsMobileSession() ? "~/Public/CSS/MobileSheet.css?v=8".ToAbsolute() : string.Empty;
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
             ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();

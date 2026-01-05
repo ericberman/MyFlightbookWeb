@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 /******************************************************
  * 
@@ -691,7 +691,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static string UnescapeHTML(this string s)
         {
-            return HttpUtility.HtmlDecode(s).Replace("&apos;", "'");
+            return WebUtility.HtmlDecode(s).Replace("&apos;", "'");
         }
 
         /// <summary>
@@ -701,7 +701,7 @@ namespace MyFlightbook
         /// <returns></returns>
         private static string EscapeHTML(this string s)
         {
-            return HttpUtility.HtmlEncode(s).Replace("&#39;", "'").Replace("&#9;", string.Empty);
+            return WebUtility.HtmlEncode(s).Replace("&#39;", "'").Replace("&#9;", string.Empty);
         }
 
         /// <summary>
@@ -711,7 +711,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static string ToAbsolute(this string s)
         {
-            return VirtualPathUtility.ToAbsolute(s);
+            return util.RequestContext.RelativeToAbsolute(s);
         }
 
         public static Uri ToAbsoluteURL(this string s, string scheme, string host, int port = 80)
@@ -722,14 +722,24 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(host));
             if (String.IsNullOrEmpty(s))
                 return null;
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), VirtualPathUtility.ToAbsolute(s)));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), util.RequestContext.RelativeToAbsolute(s)));
+        }
+
+        public static Uri ToAbsoluteBrandedUri(this string s, Brand brand = null, int port = 80)
+        {
+            return s.ToAbsoluteURL("https", (brand ?? Branding.CurrentBrand).HostName, port);
         }
 
         public static Uri ToAbsoluteURL(this string s, Uri originalUri)
         {
             if (originalUri == null)
                 throw new ArgumentNullException(nameof(originalUri));
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", originalUri.Scheme, originalUri.Host, (originalUri.Port == 80 || originalUri.Port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", originalUri.Port), VirtualPathUtility.ToAbsolute(s)));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", originalUri.Scheme, originalUri.Host, (originalUri.Port == 80 || originalUri.Port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", originalUri.Port), util.RequestContext.RelativeToAbsolute(s)));
+        }
+
+        public static string MapAbsoluteFilePath(this string s)
+        {
+            return util.RequestContext.RelativeToAbsoluteFilePath(s);
         }
 
         /// <summary>
@@ -1231,7 +1241,7 @@ namespace MyFlightbook
         /// <param name="s">The relative URL</param>
         /// <param name="Request">The request</param>
         /// <returns>A fully resolved absolute URL</returns>
-        public static Uri ToAbsoluteURL(this string s, HttpRequestBase Request)
+        public static Uri ToAbsoluteURL(this string s, System.Web.HttpRequestBase Request)
         {
             if (Request == null)
                 throw new ArgumentNullException(nameof(Request));
@@ -1243,7 +1253,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's known</returns>
-        public static bool IsMobileDevice(this HttpRequestBase r)
+        public static bool IsMobileDevice(this System.Web.HttpRequestBase r)
         {
             if (r == null || r.UserAgent == null)
                 return false;
@@ -1266,7 +1276,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's a mobile device or a tablet</returns>
-        public static bool IsMobileDeviceOrTablet(this HttpRequestBase r)
+        public static bool IsMobileDeviceOrTablet(this System.Web.HttpRequestBase r)
         {
             if (r == null || String.IsNullOrEmpty(r.UserAgent))
                 return false;

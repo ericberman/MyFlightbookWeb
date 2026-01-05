@@ -5,7 +5,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,7 +24,7 @@ namespace MyFlightbook.SocialMedia
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
-            return String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}?v={1}", le.FlightID, (new Random()).Next(10000)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+            return String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}?v={1}", le.FlightID, (new Random()).Next(10000)).ToAbsoluteBrandedUri();
         }
 
         /// <summary>

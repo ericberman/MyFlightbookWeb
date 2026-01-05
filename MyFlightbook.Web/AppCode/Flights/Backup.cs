@@ -212,7 +212,7 @@ namespace MyFlightbook
             if (szFolder is null)
                 throw new ArgumentNullException(nameof(szFolder));
 
-            string imgPath = System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail);
+            string imgPath = mfbii.PathThumbnail.MapAbsoluteFilePath();
             if (!File.Exists(imgPath))
             {
                 mfbii.DeleteFromDB();   // clean up an orphan

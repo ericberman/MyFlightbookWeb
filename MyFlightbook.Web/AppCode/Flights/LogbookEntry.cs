@@ -1831,7 +1831,7 @@ namespace MyFlightbook
                     foreach (MFBImageInfo mfbii in il.ImageArray)
                         mfbii.DeleteImage();
 
-                    DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+                    DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
                     di.Delete(true);
                 }
                 catch (Exception ex) when (!(ex is OutOfMemoryException))

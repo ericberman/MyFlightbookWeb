@@ -241,7 +241,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.S3PDF:
                     case ImageFileType.PDF:
                         // Icon used per text of http://www.adobe.com/misc/linking.html
-                        return VirtualPathUtility.ToAbsolute("~/Images/pdficon_large.png");
+                        return "~/Images/pdficon_large.png".ToAbsolute();
                 }
             }
             set { }
@@ -309,7 +309,7 @@ namespace MyFlightbook.Image
         /// </summary>
         internal string PhysicalPathThumbnail
         {
-            get { return HostingEnvironment.MapPath(PathThumbnail); }
+            get { return PathThumbnail.MapAbsoluteFilePath(); }
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace MyFlightbook.Image
         /// </summary>
         internal string PhysicalPathFull
         {
-            get { return HostingEnvironment.MapPath(PathFullImage); }
+            get { return PathFullImage.MapAbsoluteFilePath(); }
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace MyFlightbook.Image
         /// </summary>
         protected string PhysicalPath
         {
-            get { return HostingEnvironment.MapPath(VirtualPath); }
+            get { return VirtualPath.MapAbsoluteFilePath(); }
         }
 
         /// <summary>
@@ -841,8 +841,8 @@ namespace MyFlightbook.Image
 
             Key = szKeyNew;
 
-            string szDirSrc = HostingEnvironment.MapPath(szVirtPathOld);
-            string szDirDest = HostingEnvironment.MapPath(VirtualPath);
+            string szDirSrc = szVirtPathOld.MapAbsoluteFilePath();
+            string szDirDest = VirtualPath.MapAbsoluteFilePath();
 
             DirectoryInfo diSrc = new DirectoryInfo(szDirSrc);
             DirectoryInfo diDest = new DirectoryInfo(szDirDest);
@@ -1725,7 +1725,7 @@ namespace MyFlightbook.Image
             {
                 szNew = szBase + (i == 0 ? string.Empty : i.ToString(CultureInfo.InvariantCulture));
                 i++;
-            } while (Directory.GetFiles(HostingEnvironment.MapPath(VirtualPath), szNew + "*.*").Length != 0);
+            } while (Directory.GetFiles(VirtualPath.MapAbsoluteFilePath(), szNew + "*.*").Length != 0);
             szBase = szNew;
 
             if (String.IsNullOrWhiteSpace(szBase))
@@ -1744,7 +1744,7 @@ namespace MyFlightbook.Image
 
             ThumbnailFile = szFilename;
             WidthThumbnail = HeightThumbnail = 100;
-            string szFullPhysicalPath = HostingEnvironment.MapPath(VirtualPath + szFilename);
+            string szFullPhysicalPath = (VirtualPath + szFilename).MapAbsoluteFilePath();
 
             using (FileStream fsDst = File.OpenWrite(szFullPhysicalPath))
             {
@@ -1823,7 +1823,7 @@ namespace MyFlightbook.Image
             tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveFullImage());
             tw.RenderBeginTag(HtmlTextWriterTag.A);
 
-            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == ImageFileType.PDF || ImageType == ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/images/pdficon_large.png")) : szThumbFolder + ThumbnailFile);
+            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == ImageFileType.PDF || ImageType == ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, "~/images/pdficon_large.png".ToAbsolute()) : szThumbFolder + ThumbnailFile);
             tw.RenderBeginTag(HtmlTextWriterTag.Img);
             tw.RenderEndTag();  // img
             tw.RenderEndTag();  // a
@@ -1885,13 +1885,13 @@ namespace MyFlightbook.Image
                 (dr) =>
                 {
                     string szIDOrphan = dr["idPic"].ToString();
-                    DirectoryInfo dirOrphan = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", szPixDir, szIDOrphan)));
+                    DirectoryInfo dirOrphan = new DirectoryInfo(String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", szPixDir, szIDOrphan).MapAbsoluteFilePath());
 
                     ImageList il = new ImageList(ic, szIDOrphan);
                     il.Refresh();
                     foreach (MFBImageInfo mfbii in il.ImageArray)
                     {
-                        sbLog.AppendFormat(CultureInfo.CurrentCulture, "Deleting: {0} and {1}\r\n<br />", System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), mfbii.IsLocal ? System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathFullImage) : mfbii.PathFullImageS3);
+                        sbLog.AppendFormat(CultureInfo.CurrentCulture, "Deleting: {0} and {1}\r\n<br />", mfbii.PathThumbnail.MapAbsoluteFilePath(), mfbii.IsLocal ? mfbii.PathFullImage.MapAbsoluteFilePath() : mfbii.PathFullImageS3);
                         mfbii.DeleteImage();
                     }
 
@@ -2126,7 +2126,7 @@ namespace MyFlightbook.Image
 
             if (!String.IsNullOrEmpty(szBase))
             {
-                DirectoryInfo dir = new DirectoryInfo(HostingEnvironment.MapPath(szBase));
+                DirectoryInfo dir = new DirectoryInfo(szBase.MapAbsoluteFilePath());
                 DirectoryInfo[] rgSubDir = dir.GetDirectories();
                 int i = 0;
                 foreach (DirectoryInfo di in rgSubDir)

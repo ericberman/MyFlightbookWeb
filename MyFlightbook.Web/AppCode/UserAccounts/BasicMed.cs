@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -332,7 +332,7 @@ namespace MyFlightbook.BasicmedTools
                 foreach (MFBImageInfo mfbii in il.ImageArray)
                     mfbii.DeleteImage();
 
-                DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
+                DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
                 di.Delete(true);
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException || ex is IOException) { }

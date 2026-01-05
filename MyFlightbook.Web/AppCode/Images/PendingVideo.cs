@@ -9,11 +9,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Web.Hosting;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -245,7 +244,7 @@ namespace MyFlightbook.Image
                 catch (AmazonS3Exception)
                 {
                     // Thumbnail was not found - audio file perhaps?  Use the generic audio file.
-                    System.IO.File.Copy(HostingEnvironment.MapPath("~/images/audio.png"), szPhysicalPath);
+                    System.IO.File.Copy("~/images/audio.png".MapAbsoluteFilePath(), szPhysicalPath);
                 }
             }
         }

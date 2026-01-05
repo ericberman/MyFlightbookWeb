@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2025 MyFlightbook LLC
+ * Copyright (c) 2018-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -744,7 +744,7 @@ namespace MyFlightbook.RatingsProgress
             DateTime dtMonthStart = new DateTime(StartDate.Year, StartDate.Month, 1);
             DateTime dtMonthEnd = new DateTime(EndDate.Year, EndDate.Month, 1);
             FlightQuery fq = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom };
-            string szBaseURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/flights?fq="));
+            string szBaseURL = "~/mvc/flights?fq=".ToAbsoluteBrandedUri().ToString();
 
             using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
             {
