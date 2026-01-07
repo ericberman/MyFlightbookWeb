@@ -1,7 +1,7 @@
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Mail;
@@ -771,7 +771,7 @@ namespace MyFlightbook
         /// <param name="key"></param>
         /// <param name="defObj"></param>
         /// <returns></returns>
-        static public object ReadNullableField(MySqlDataReader dr, string key, object defObj)
+        static public object ReadNullableField(IDataReader dr, string key, object defObj)
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
@@ -791,7 +791,7 @@ namespace MyFlightbook
             }
         }
 
-        static public string ReadNullableString(MySqlDataReader dr, string key)
+        static public string ReadNullableString(IDataReader dr, string key)
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));

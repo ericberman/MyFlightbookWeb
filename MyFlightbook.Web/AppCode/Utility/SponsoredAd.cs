@@ -1,6 +1,6 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 
@@ -63,14 +63,14 @@ namespace MyFlightbook.SponsoredAds
             Name = TargetLink = ImageName = string.Empty;
         }
 
-        public SponsoredAd(MySqlDataReader dr) : this()
+        public SponsoredAd(IDataReader dr) : this()
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
             InitFromDataReader(dr);
         }
 
-        private void InitFromDataReader(MySqlDataReader dr)
+        private void InitFromDataReader(IDataReader dr)
         {
             ID = Convert.ToInt32(dr["idSponsoredAds"], CultureInfo.InvariantCulture);
             Name = (string)dr["Name"];
