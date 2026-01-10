@@ -2252,9 +2252,9 @@
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyFlightbookData\MyFlightbookData.csproj">
+    <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj">
       <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>
-      <Name>MyFlightbookData</Name>
+      <Name>MyFlightbook.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

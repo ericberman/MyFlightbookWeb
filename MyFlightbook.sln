@@ -4,11 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Web", "MyFlightbook.Web\MyFlightbook.Web.csproj", "{6B5F6A9B-EC19-432E-9B3B-A1B542C92CCE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F487E951-5414-49FB-9481-F05A54A0D51B} = {F487E951-5414-49FB-9481-F05A54A0D51B}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbookData", "MyFlightbookData\MyFlightbookData.csproj", "{F487E951-5414-49FB-9481-F05A54A0D51B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Data", "MyFlightbookData\MyFlightbook.Data.csproj", "{F487E951-5414-49FB-9481-F05A54A0D51B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.CSV", "MyFlightbook.CSV\MyFlightbook.CSV.csproj", "{8705EC69-4746-4BAC-A490-142178CAE996}"
 EndProject
