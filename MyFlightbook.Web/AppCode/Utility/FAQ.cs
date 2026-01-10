@@ -1,9 +1,9 @@
 ﻿using Ganss.Xss;
 using HtmlAgilityPack;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Globalization;
 using System.Text;
 
@@ -74,7 +74,7 @@ namespace MyFlightbook
             idFAQ = -1;
         }
 
-        protected FAQItem(MySqlDataReader dr) : this()
+        protected FAQItem(IDataReader dr) : this()
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));

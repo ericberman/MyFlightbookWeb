@@ -1,12 +1,11 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2025 MyFlightbook LLC
+ * Copyright (c) 2020-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -145,7 +144,7 @@ namespace MyFlightbook.Web.Sharing
             ID = Guid.NewGuid().ToString();
         }
 
-        private ShareKey(MySqlDataReader dr) : this()
+        private ShareKey(IDataReader dr) : this()
         {
             ID = (string)dr["GUID"];
             Username = (string)dr["username"];
