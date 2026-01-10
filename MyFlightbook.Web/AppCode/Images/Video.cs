@@ -1,7 +1,7 @@
-﻿using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2024 MyFlightbook LLC
+ * Copyright (c) 2013-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,11 +62,14 @@ namespace MyFlightbook.Image
             ErrorString = string.Empty;
         }
 
-        protected VideoRef(MySqlDataReader dr) : this()
+        protected VideoRef(IDataReader dr) : this()
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
-            InitFromDataReader(dr);
+            ID = Convert.ToInt32(dr["idFlightVideos"], CultureInfo.InvariantCulture);
+            FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture);
+            VideoReference = dr["vidRef"].ToString();
+            Comment = dr["Comment"].ToString();
         }
 
         public VideoRef(int idFlight, string szVidRef, string szComment) : this()
@@ -157,15 +160,6 @@ namespace MyFlightbook.Image
         }
 
         #region DB
-        private VideoRef InitFromDataReader(MySqlDataReader dr)
-        {
-            ID = Convert.ToInt32(dr["idFlightVideos"], CultureInfo.InvariantCulture);
-            FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture);
-            VideoReference = dr["vidRef"].ToString();
-            Comment = dr["Comment"].ToString();
-            return this;
-        }
-
         public void Commit()
         {
             // never update - only insert.
