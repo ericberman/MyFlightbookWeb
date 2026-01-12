@@ -1,7 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -898,7 +897,7 @@ namespace MyFlightbook.Currency
         {
             foreach (ModelFeatureTotal mft in rgModelFeatureTotals)
             {
-                comm.CommandText = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsByModelType"], szTempTableName, mft.Restriction);
+                comm.CommandText = String.Format(CultureInfo.InvariantCulture, szTotalsByModelType, szTempTableName, mft.Restriction);
 
                 try
                 {
@@ -971,6 +970,154 @@ namespace MyFlightbook.Currency
         }
         #endregion
 
+        #region query strings
+
+        private const string szTotalsByModelType = @"SELECT SUM(ROUND(PIC*?qf))/?qf AS PIC, SUM(ROUND(SIC*?qf))/?qf AS SIC, SUM(ROUND(totalFlightTime * ?qf))/?qf AS TotalTime FROM {0} WHERE {1}";
+
+        private const string szTotalsTimesSubQuery = @"SUM(IF(YEAR(dtFlightStart) > 1 AND YEAR(dtFlightEnd) > 1 AND dtFlightEnd > dtFlightStart, TIME_TO_SEC(TIMEDIFF(dtFlightEnd, dtFlightStart)) / 3600.0, 0)) AS TotalFlightTime,
+       SUM(IF(YEAR(dtEngineStart) > 1 AND YEAR(dtEngineEnd) > 1 AND dtEngineEnd > dtEngineStart, TIME_TO_SEC(TIMEDIFF(dtEngineEnd, dtEngineStart)) / 3600.0, 0)) AS TotalEngineTime,
+       SUM(IF(HobbsEnd > 0 AND HobbsStart > 0 AND HobbsEnd - HobbsStart > 0, HobbsEnd - HobbsStart, 0)) AS TotalHobbs,";
+
+        private const string szTotalsQuery = @"SELECT COALESCE(l.Text, CatClassDisplay) AS CatClassDisplay,
+         cc.idCatClass,
+         cc.CatClass,
+         f.idmodel,
+         f.typename,
+         f.ModelDisplay,
+         f.Family,
+         f.FamilyDisplay,
+         COUNT(DISTINCT f.idFlight) AS numFlights,
+         {0}
+         SUM(ROUND(crosscountry*?qf))/?qf AS XCountry,
+         SUM(ROUND(night*?qf))/?qf AS Night,
+         SUM(ROUND(imc*?qf))/?qf AS IMC,
+         SUM(ROUND(simulatedinstrument*?qf))/?qf AS SimulatedInstrument,
+         SUM(ROUND(dualReceived*?qf))/?qf AS Dualtime,
+         SUM(ROUND(cfi*?qf))/?qf AS cfi,
+         SUM(ROUND(PIC*?qf))/?qf AS PIC,
+         SUM(ROUND(SIC*?qf))/?qf AS SIC,
+         SUM(ROUND(totalFlightTime*?qf))/?qf AS Total,
+         SUM(cLandings) AS cLandings,
+         SUM(cNightLandings) AS cNightLandings,
+         SUM(cFullStopLandings) AS cFullStopLandings,
+         SUM(cInstrumentApproaches) AS cApproaches,
+         SUM(ROUND(groundSim*?qf))/?qf AS GroundSim
+         FROM {1} f
+         INNER JOIN CategoryClass cc ON f.CatClassOverride=cc.idCatClass
+         LEFT JOIN loctext l ON (l.idTableID=1 AND l.idItemID=cc.idCatClass AND l.LangID=?lang)
+         GROUP BY {2}";
+
+        private const string szTotalsCustomProperties = @"SELECT
+          sum(fp.intvalue) AS intTotal,
+          sum(ROUND(fp.decValue*?qf))/?qf AS timeTotal,
+          sum(fp.decValue) AS decTotal,
+          cpt.*,
+          cpt.Title AS LocTitle,
+          cpt.FormatString AS LocFormatString,
+          '' AS LocDescription, '' AS prevValues,
+          0 AS isFavorite
+          FROM flightproperties fp
+          INNER JOIN custompropertytypes cpt ON fp.idPropType=cpt.idProptype
+          INNER JOIN {0} f ON fp.idflight=f.idflight
+          WHERE  (cpt.Type IN (0, 1, 2, 6)) AND ((cpt.Flags & 0x2000) = 0) 
+          GROUP BY fp.idPropType
+          ORDER BY cpt.Title ";
+
+        public const string sz8710ForUserQuery = @"SELECT
+  InstanceTypeID,
+  Category,
+  Class,
+  CatClass,
+  IF(InstanceTypeID = 1, SUM(ROUND(TotalTime*?qf))/?qf, SUM(ROUND(GroundSim*?qf))/?qf) AS TotalTime,
+  SUM(ROUND(InstructionReceived*?qf))/?qf AS InstructionReceived,
+  IF(InstanceTypeID = 1, SUM(ROUND(SoloTime*?qf))/?qf, 0) AS SoloTime,
+  IF(InstanceTypeID = 1, SUM(ROUND(PIC*?qf))/?qf, 0) AS PIC,
+  IF(InstanceTypeID = 1, SUM(ROUND(SIC*?qf))/?qf, 0) AS SIC,
+  IF(InstanceTypeID = 1, SUM(ROUND(XC*?qf))/?qf, 0) AS CrossCountry,
+  IF(InstanceTypeID = 1, SUM(ROUND(XCDual*?qf))/?qf, 0) AS CrossCountryDual,
+  IF(InstanceTypeID = 1, SUM(ROUND(XCSolo*?qf))/?qf, 0) AS CrossCountrySolo,
+  IF(InstanceTypeID = 1, SUM(ROUND(XCPIC*?qf))/?qf, 0) AS CrossCountryPIC,
+  IF(InstanceTypeID = 1, SUM(ROUND(XCSIC*?qf))/?qf, 0) AS CrossCountrySIC,
+  SUM(ROUND(IMC*?qf))/?qf AS InstrumentTime,
+  IF(InstanceTypeID IN (1,4), SUM(ROUND(NightDual*?qf))/?qf, 0) AS NightDual,
+  IF(InstanceTypeID IN (1,4), SUM(NightLandings), 0) AS NightLandings,
+  IF(InstanceTypeID IN (1,4), SUM(NightTakeoffs), 0) AS NightTakeoffs,
+  IF(InstanceTypeID = 1, SUM(ROUND(NightPIC*?qf))/?qf, 0) AS NightPIC,
+  IF(InstanceTypeID = 1, SUM(ROUND(NightSIC*?qf))/?qf, 0) AS NightSIC,
+  IF(InstanceTypeID IN (1,4), SUM(NightPICLandings), 0) AS NightPICLandings,
+  IF(InstanceTypeID IN (1,4), SUM(NightSICLandings), 0) AS NightSICLandings,
+  IF(InstanceTypeID IN (1,4), SUM(NightPICTakeoffs), 0) AS NightPICTakeoffs,
+  IF(InstanceTypeID IN (1,4), SUM(NightSICTakeoffs), 0) AS NightSICTakeoffs,
+  IF(InstanceTypeID = 1, SUM(AeroTows), 0) AS AeroTows,
+  IF(InstanceTypeID = 1, SUM(WinchedLaunches), 0) AS WinchedLaunches,
+  IF(InstanceTypeID = 1, SUM(SelfLaunches), 0) AS SelfLaunches,
+  SUM(flightCount) AS NumberOfFlights
+FROM
+(SELECT
+    categoryclass.idcatclass AS CatClassID,
+		categoryclass.Class,
+    categoryclass.CatClass,
+    ait.ID AS InstanceTypeID,
+    ait.Description AS InstanceTypeDescription,
+    IF (ait.ID = 1, categoryclass.Category, CONCAT(categoryclass.Category, ' - ', ait.Description)) AS Category,
+    TRIM(CONCAT(models.model, ', ', manufacturers.Manufacturer, ' ',  models.typename, ' ', models.modelname)) AS ModelDisplay,
+    IF (aircraft.Tailnumber LIKE '#%', CONCAT('(', models.model, ')'), aircraft.tailnumber) AS 'TailNumberDisplay',
+    aircraft.TailNumber AS RawTailNumber,
+    flights.route,
+    flights.comments,
+    GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title) SEPARATOR ' ') AS CustomProperties,
+    flights.totalFlightTime AS TotalTime,
+    flights.dualReceived AS InstructionReceived,
+    IF (fpSolo.decValue IS NULL, 0, fpSolo.decValue) AS SoloTime,
+    flights.pic AS PIC,
+    flights.cficomment,
+    flights.cfiname,
+    useraircraft.privatenotes AS AircraftPrivateNotes,
+    IF (flights.sic IS NULL, 0, flights.sic) AS SIC,
+    flights.crosscountry AS XC,
+    LEAST(flights.crosscountry, flights.dualReceived) AS XCDual,
+    LEAST(flights.crosscountry, IF(fpSolo.decValue IS null, 0, fpSolo.decValue)) AS XCSolo,
+    LEAST(flights.crosscountry, flights.PIC) AS XCPIC,
+    LEAST(flights.crosscountry, IF(flights.SIC IS NULL, 0, flights.SIC)) AS XCSIC,
+    imc + simulatedInstrument AS IMC, 
+    flights.GroundSim,
+    LEAST(flights.night, flights.dualReceived) AS NightDual,
+    flights.cNightLandings AS NightLandings,
+    models.*,
+    IF(models.family is null OR models.family='', models.model, models.family) AS FamilyDisplay,
+    IF (fpNightTakeoff.intValue IS NULL, 0, fpNightTakeoff.intValue) AS NightTakeoffs,
+    LEAST(flights.night, flights.PIC) AS NightPIC,
+    LEAST(flights.night, IF(flights.SIC IS NULL, 0, flights.SIC)) AS NightSIC,
+    IF (flights.PIC > 0, flights.cNightLandings, 0) AS NightPICLandings, 
+    IF (flights.SIC > 0, flights.cNightLandings, 0) AS NightSICLandings,
+    IF (flights.PIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightPICTakeoffs,
+    IF (flights.SIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightSICTakeoffs,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpAeroTow.intValue IS NOT NULL, fpAeroTow.intValue, 0) AS AeroTows,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpWinchedLaunch.intValue IS NOT NULL, fpWinchedLaunch.intValue, 0) AS WinchedLaunches,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpSelfLaunch.intValue IS NOT NULL, fpSelfLaunch.intValue, 0) AS SelfLaunches,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12), flights.cLandings, 1) AS flightCount
+  FROM flights
+  INNER JOIN aircraft ON flights.idaircraft=aircraft.idaircraft
+  INNER JOIN models ON aircraft.idmodel=models.idmodel
+  INNER JOIN categoryclass ON IF(flights.idCatClassOverride = 0, models.idcategoryclass, flights.idcatclassoverride)=categoryclass.idcatclass
+  INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer 
+  INNER JOIN AircraftInstanceTypes ait ON ait.ID = aircraft.InstanceType
+  INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft)
+  LEFT JOIN flighttelemetry ft ON (flights.idflight=ft.idflight)
+  LEFT JOIN flightproperties fpSolo ON (fpSolo.idflight = flights.idflight AND fpSolo.idPropType=77)
+  LEFT JOIN flightproperties fpNightTakeoff ON (fpNightTakeOff.idFlight = flights.idFlight AND fpNightTakeoff.idPropType=73)
+  LEFT JOIN flightproperties fpAeroTow ON (fpAeroTow.idFlight = flights.idFlight AND fpAeroTow.idPropType=222)
+  LEFT JOIN flightproperties fpSelfLaunch ON (fpSelfLaunch.idFlight = flights.idFlight AND fpSelfLaunch.idPropType=227)
+  LEFT JOIN flightproperties fpWinchedLaunch ON (fpWinchedLaunch.idFlight = flights.idFlight AND fpWinchedLaunch.idPropType IN (226, 341, 349))
+  LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
+  LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
+  WHERE {0}
+  GROUP BY flights.idFlight, models.idmodel
+  {1}) f
+GROUP BY {2}
+ORDER BY f.InstanceTypeID, f.CatClassID;";
+        #endregion
+
         /// <summary>
         /// Binds to the user's totals so that the Totals property is valid.
         /// </summary>
@@ -1007,10 +1154,10 @@ namespace MyFlightbook.Currency
                     }
 
                     // All three queries below use the innerquery above to find the matching flights; they then find totals from that subset of flights.
-                    string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"] : string.Empty;
-                    string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, szGroupField);
-                    string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
-                    string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"], szTempTableName);
+                    string szQTotalTimes = pf.DisplayTimesByDefault ? szTotalsTimesSubQuery : string.Empty;
+                    string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, szTotalsQuery, szQTotalTimes, szTempTableName, szGroupField);
+                    string szQTotals = String.Format(CultureInfo.InvariantCulture, szTotalsQuery, szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
+                    string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, szTotalsCustomProperties, szTempTableName);
 
                     alTotals.Clear();
 
@@ -1189,7 +1336,7 @@ namespace MyFlightbook.Currency
             }
 
             DBHelper.ExecuteWithArgs(args, 
-                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["8710ForUserQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.category"), 
+                String.Format(CultureInfo.InvariantCulture, UserTotals.sz8710ForUserQuery, fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.category"), 
                 (dr) =>
                 {
                     if (dr.HasRows)
@@ -1235,7 +1382,7 @@ namespace MyFlightbook.Currency
             }
 
             DBHelper.ExecuteWithArgs(args,
-                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["8710ForUserQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.InstanceTypeID, f.CatClassID"),
+                String.Format(CultureInfo.InvariantCulture, UserTotals.sz8710ForUserQuery, fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause, "f.InstanceTypeID, f.CatClassID"),
                 (dr) =>
                 {
                     if (dr.HasRows)
@@ -1361,8 +1508,76 @@ namespace MyFlightbook.Currency
 
             List<ModelRollupRow> lst = new List<ModelRollupRow>();
 
+            const string szRollupQuery = @"SELECT 
+    familydisplay,
+    ModelDisplay,
+    IF(InstanceTypeID=1, SUM(ROUND(PIC * ?qf))/?qf, 0) AS PIC,
+    IF(InstanceTypeID=1, SUM(ROUND(SIC * ?qf))/?qf, 0) AS SIC,
+    SUM(ROUND(dualReceived * ?qf))/?qf AS DualReceived,
+    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 1, PIC, 0) * ?qf))/?qf, 0) AS TurboPropPIC,
+    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 1, SIC, 0) * ?qf))/?qf, 0) AS TurboPropSIC,
+    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 2, PIC, 0) * ?qf))/?qf, 0) AS JetPIC,
+    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 2, SIC, 0) * ?qf))/?qf, 0) AS JetSIC,
+    SUM(IF(instancetypeid=1 and f.CatClassID in (2, 4), ROUND(PIC * ?qf) / ?qf, 0)) AS MultiPIC,
+    SUM(IF(instancetypeid=1 and f.CatClassID in (2, 4), ROUND(SIC * ?qf) / ?qf, 0)) AS MultiSIC,
+    IF(instancetypeid=1, SUM(ROUND(EngineerTime * ?qf))/?qf, 0) AS flightengineer,
+    IF(instancetypeid=1, SUM(ROUND(MilitaryTime * ?qf))/?qf, 0) AS MilTime,
+    SUM(ROUND(CFI * ?qf))/?qf AS CFI,
+    IF(instancetypeid=1, SUM(ROUND(Night * ?qf))/?qf, 0) AS Night,
+    IF(instancetypeid=1, SUM(ROUND(IMC * ?qf))/?qf, 0) AS IMC,
+    SUM(ROUND(SimulatedInstrument * ?qf))/?qf AS SimIMC,
+    IF(instancetypeid=1, SUM(ROUND(crossCountry * ?qf))/?qf, 0) AS XC,
+    SUM(ROUND(IF(instancetypeid=1, TotalFlightTime, 0) * ?qf))/?qf AS Total,
+    SUM(ROUND(IF(instancetypeid=1 and f.date > DATE_SUB(NOW(), INTERVAL 1 YEAR), TotalFlightTime, 0) * ?qf))/?qf AS _12MonthTotal,
+    SUM(ROUND(IF(instancetypeid=1 and f.date > DATE_SUB(NOW(), INTERVAL 2 YEAR), TotalFlightTime, 0) * ?qf))/?qf AS _24MonthTotal,
+    SUM(IF(iscertifiedLanding <> 0, cLandings, 0)) AS landings,
+    SUM(IF(iscertifiedIFR <> 0, cInstrumentApproaches, 0)) AS approaches,
+    SUM(IF(iscertifiedIFR <> 0 and f.date > DATE_SUB(NOW(), Interval 6 month), cInstrumentApproaches, 0)) as _6MonthApproaches,
+    SUM(IF(iscertifiedIFR <> 0 and f.date > DATE_SUB(NOW(), Interval 12 month), cInstrumentApproaches, 0)) as _12MonthApproaches,
+    MAX(f.date) AS LastFlight
+FROM (SELECT 
+        flights.*,
+        categoryclass.idcatclass AS CatClassID,
+        categoryclass.Class,
+        categoryclass.CatClass,
+        ait.IsCertifiedIFR,
+        ait.IsCertifiedLanding,
+        ait.ID AS InstanceTypeID,
+        ait.Description AS InstanceTypeDescription,
+        IF(ait.ID = 1, categoryclass.Category, CONCAT(categoryclass.Category, ' - ', ait.Description)) AS Category,
+        IF(ait.ID = 1, IF(models.family = '', models.model, models.family), CONCAT('(', ait.Description, ')')) AS FamilyDisplay,
+        TRIM(CONCAT(manufacturers.manufacturer, ' - ', IF(models.family = '', models.model, models.family))) AS ModelDisplay,
+        IF(aircraft.Tailnumber LIKE '#%',
+            CONCAT('(', models.model, ')'),
+            aircraft.tailnumber) AS 'TailNumberDisplay',
+        aircraft.TailNumber AS RawTailNumber,
+        useraircraft.privatenotes AS AircraftPrivateNotes,
+        GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title)
+            SEPARATOR ' ') AS CustomProperties,
+        models.*,
+        fpEng.decValue AS EngineerTime,
+        fpMil.decValue AS MilitaryTime
+    FROM
+        flights
+            INNER JOIN aircraft ON flights.idaircraft = aircraft.idaircraft
+            INNER JOIN models ON aircraft.idmodel = models.idmodel
+            INNER JOIN categoryclass ON (IF(flights.idCatClassOverride = 0, models.idcategoryclass, flights.idcatclassoverride) = categoryclass.idcatclass)
+            INNER JOIN manufacturers ON manufacturers.idManufacturer = models.idmanufacturer
+            INNER JOIN AircraftInstanceTypes ait ON ait.ID = aircraft.InstanceType
+            INNER JOIN useraircraft ON (flights.username = useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) 
+            LEFT JOIN flighttelemetry ft ON (flights.idflight = ft.idflight)
+            LEFT JOIN FlightProperties fpEng ON fpEng.idflight = flights.idflight AND fpEng.idproptype = 257
+            LEFT JOIN flightproperties fpMil ON fpMil.idflight = flights.idflight AND fpMil.idproptype = 90
+            LEFT JOIN FlightProperties fdc ON flights.idFlight = fdc.idFlight
+            LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType
+      WHERE
+        {0}
+    GROUP BY flights.idFlight , models.idmodel {1}
+    ORDER BY familyDisplay asc) f
+GROUP BY f.familyDisplay WITH ROLLUP";
+
             DBHelper.ExecuteWithArgs(args,
-                String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause),
+                String.Format(CultureInfo.InvariantCulture, szRollupQuery, fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause),
                 (dr) =>
                 {
                     if (dr.HasRows)

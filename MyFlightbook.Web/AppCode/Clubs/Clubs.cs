@@ -9,7 +9,6 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -1568,7 +1567,7 @@ namespace MyFlightbook.Clubs
 
         public static List<ClubAircraft> AircraftForClub(int idclub)
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
             List<ClubAircraft> lst = new List<ClubAircraft>();
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("clubid", idclub); },
                 (dr) => { lst.Add(new ClubAircraft(dr)); });

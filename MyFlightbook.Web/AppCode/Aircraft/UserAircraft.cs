@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -101,7 +100,7 @@ namespace MyFlightbook
                     break;
             }
 
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
             List<Aircraft> lst = new List<Aircraft>();
 
             DBHelper dbh = new DBHelper(szQ);

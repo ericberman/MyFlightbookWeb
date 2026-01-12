@@ -6,10 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 
 /******************************************************
  * 
@@ -45,7 +43,10 @@ namespace MyFlightbook
         public static SimpleMakeModel[] GetAllMakeModels()
         {
             List<SimpleMakeModel> al = new List<SimpleMakeModel>();
-            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["MakesAndModels"]);
+            DBHelper dbh = new DBHelper(@"SELECT models.idmodel AS idmodel,
+CONCAT(manufacturers.manufacturer, ' (', TRIM(CONCAT(models.model, IF(models.modelname='', '', CONCAT(' &quot;', models.modelname, '&quot;')))), ') - ', categoryclass.Catclass) AS MakeName
+FROM models INNER JOIN manufacturers ON models.idmanufacturer = manufacturers.idManufacturer INNER JOIN categoryclass ON models.idcategoryclass=categoryclass.idcatclass
+ORDER BY MakeName");
             if (!dbh.ReadRows(
                 (comm) => { },
                 (dr) =>

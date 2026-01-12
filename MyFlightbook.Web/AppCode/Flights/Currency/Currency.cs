@@ -2,7 +2,6 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -994,9 +993,72 @@ namespace MyFlightbook.Currency
             return (DateTime.Compare(DateTime.Now.Date, dtExp.Date) <= 0);
         }
 
+        private const string flightsCurrencyQueryTemplate = @"SELECT f.*,
+       Concat(COALESCE(l.Text, categoryclass.CatClass), if(f.typename = '', '', Concat(' (', f.typename, ')'))) as CatClassWithType,
+       categoryclass.CatClass AS BaseCatClass,
+       f.typename AS TypeName,
+       categoryclass.category AS Category
+         FROM (SELECT flights.date AS 'Date',
+         Flights.idFlight as FlightID,
+         cInstrumentApproaches, 
+         IMC,
+         PIC,
+         SIC,
+         CFI,
+         simulatedInstrument,
+         cLandings, 
+         cNightLandings,
+         cFullStopLandings,
+         night, 
+         fHold, 
+         route,
+         totalFlightTime,
+         dualReceived,
+         crosscountry,
+         groundSim,
+         comments,
+         models.fTailwheel as fTailWheel,
+         models.ArmyMissionDesignSeries AS ArmyMDS,
+         models.family AS family,
+         aircraftinstancetypes.ID AS InstanceTypeID,
+         aircraftinstancetypes.*,
+         models.typename,
+         models.model,
+         models.idmodel,
+         models.fcomplex,
+         models.fTurbine,
+         models.fCertifiedSinglePilot,
+         models.fMotorGlider,
+         IF(models.fTAA <> 0 OR (aircraft.HasTAAUpgrade  <> 0 AND (aircraft.GlassUpgradeDate IS NULL OR flights.date >= aircraft.GlassUpgradeDate)), 1, 0) AS IsTAA,
+         IF(YEAR(flights.dtEngineStart) < 100, NULL, flights.dtEngineStart) AS dtEngineStart,
+         IF(YEAR(flights.dtEngineEnd) < 100, NULL, flights.dtEngineEnd) AS dtEngineEnd,
+         IF(YEAR(flights.dtFlightStart) < 100, NULL, flights.dtFlightStart) AS dtFlightStart,
+         IF(YEAR(flights.dtFlightEnd) < 100, NULL, flights.dtFlightEnd) AS dtFlightEnd,
+         hobbsStart,
+         aircraft.idaircraft,
+         IF (man.idManufacturer = 20 AND models.idcategoryclass=7 AND (models.model LIKE 'R%22' OR models.typename LIKE 'R%22'), 1, 0) AS IsR22,
+         IF (man.idManufacturer = 20 AND models.idcategoryclass=7 AND (models.model LIKE 'R%44' OR models.typename LIKE 'R%44'), 1, 0) AS IsR44,
+         IF (flights.idCatClassOverride = 0, 0, 1) AS IsOverridden,
+         IF (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) AS CatClassOverride,
+         fdc2.dateValue AS blockOut,
+		 IF (fdc.idprop IS NULL, CONVERT(null using utf8mb4), JSON_ARRAYAGG(JSON_OBJECT('PropID', fdc.idprop, 'PropTypeID', fdc.idPropType, 'ValueString', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, IF(fdc.IntValue<>0, 'true', 'false'), fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)))) AS CustomPropsJSON
+         FROM flights INNER JOIN aircraft on flights.idaircraft = aircraft.idaircraft
+           INNER JOIN models on aircraft.idmodel = models.idmodel
+           INNER JOIN manufacturers man ON models.idManufacturer=man.idManufacturer
+           INNER JOIN aircraftinstancetypes on aircraft.InstanceType = aircraftinstancetypes.ID
+           LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
+           LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
+           LEFT JOIN FlightProperties fdc2 ON flights.idFlight=fdc2.idflight AND fdc2.idPropType=187
+         WHERE flights.username = ?UserName 
+         GROUP BY flights.idflight
+         ORDER BY flights.date DESC) f
+           INNER JOIN categoryclass on f.CatClassOverride = categoryclass.idCatClass
+           LEFT JOIN LocText l ON (l.idTableID = 1 AND f.CatClassOverride = l.idItemID AND l.langID = ?langID)
+         ORDER BY f.date {0}, blockOut {0}, dtEngineStart {0}, dtFlightStart {0}, hobbsStart {0}, f.FlightID {0}";
+
         public static string CurrencyQuery(SortDirection dir)
         {
-            return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["FlightsCurrencyQuery"], dir.ToMySQLSort());
+            return String.Format(CultureInfo.InvariantCulture, flightsCurrencyQueryTemplate, dir.ToMySQLSort());
         }
         #endregion
 

@@ -3,12 +3,11 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2024 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -256,6 +255,13 @@ namespace MyFlightbook
             lst.Add(ml);
         }
 
+        private const string szMaintenanceLogBaseQuery = @"SELECT m.idaircraft as idAircraft, m.Description as Description, m.Date as Date, m.User as User, m.Comment as Comment, aircraft.tailnumber as Tailnumber, users.FirstName as firstname, users.lastname as lastname
+      FROM maintenancelog m
+       INNER JOIN users ON (m.User = users.Username)
+       INNER JOIN aircraft ON (m.idAircraft = aircraft.idaircraft)
+      WHERE {0}
+      ORDER BY m.Date desc, id desc;";
+
         /// <summary>
         /// Get a log of all the changes made to a specific aircraft
         /// </summary>
@@ -264,7 +270,7 @@ namespace MyFlightbook
         public static MaintenanceLog[] ChangesByAircraftID(int aircraftid)
         {
             List<MaintenanceLog> lst = new List<MaintenanceLog>();
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["GetMaintenanceLog"], "m.idaircraft = ?idAircraft"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szMaintenanceLogBaseQuery, "m.idaircraft = ?idAircraft"));
             dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", aircraftid); },
                 (dr) => { AddLogToArray(lst, dr); });
@@ -281,7 +287,7 @@ namespace MyFlightbook
             string szRestrict = @"INNER JOIN useraircraft ON aircraft.idAircraft = useraircraft.idAircraft 
 INNER JOIN maintenancelog ON maintenancelog.user = useraircraft.userName AND maintenancelog.idaircraft = aircraft.idaircraft
 WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], "useraircraft.flags", "''", "''", "''", szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, "useraircraft.flags", "''", "''", "''", szRestrict);
             List<Aircraft> rgac = new List<Aircraft>();
 
             DBHelper dbh = new DBHelper(szQ);
