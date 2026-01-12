@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 /******************************************************
  * 
@@ -314,7 +314,19 @@ namespace MyFlightbook
 
     public interface IEmailSender
     {
-        void SendEmail(MailMessage msg);    // sends the specified email message
+        /// <summary>
+        /// Sends the specified email message
+        /// </summary>
+        /// <param name="msg"></param>
+        void SendEmail(MailMessage msg);
+
+        /// <summary>
+        /// Add admins to the message that match the specified role mask
+        /// </summary>
+        /// <param name="msg">The message</param>
+        /// <param name="fTo">True to put the admins on the "To" line, false to Bcc them</param>
+        /// <param name="RoleMask">The admins that should receive the message</param>
+        void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask);
     }
 
     /// <summary>
@@ -476,12 +488,12 @@ namespace MyFlightbook
         /// <param name="email">User's email</param>
         /// <param name="message">The message</param>
         /// <param name="subject">The subject of the message</param>
-        /// <param name="postedFile">If provided, any posted files</param>
+        /// <param name="addAttachments">If provided, a callback to add any attachments to the message via a 2nd callback that takes a stream, a filename, and a contenttype</param>
         /// <param name="captchaScore">The captcha score</param>
         /// <param name="fRespondOOF">True to respond with an out-of-office message</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        static public void ContactUs(string userName, string displayName, string email, string subject, string message, HttpFileCollectionBase postedFiles, double captchaScore, bool fRespondOOF)
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, double captchaScore, bool fRespondOOF, Action<MailMessage, Action<Stream, string, string>> addAttachments)
         {
             if (String.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
@@ -509,15 +521,7 @@ namespace MyFlightbook
                 IsBodyHtml = true
             })
             {
-                if (postedFiles != null)
-                {
-                    for (int i = 0; i < postedFiles.Count; i++)
-                    {
-                        HttpPostedFileBase pf = postedFiles[i];
-                        if (pf.ContentLength > 0 && !String.IsNullOrEmpty(pf.FileName) && !String.IsNullOrEmpty(pf.ContentType))
-                            msg.Attachments.Add(new Attachment(pf.InputStream, pf.FileName, pf.ContentType));
-                    }
-                }
+                addAttachments?.Invoke(msg, (stream, fname, contentType) => { msg.Attachments.Add(new Attachment(stream, fname, contentType)); });
                 msg.ReplyToList.Add(ma);
                 AddAdminsToMessage(msg, true, ProfileRoles.maskCanContact);
                 SendMessage(msg);
@@ -576,20 +580,7 @@ namespace MyFlightbook
         /// <param name="RoleMask">The admins that should receive the message</param>
         static public void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask)
         {
-            if (msg == null)
-                throw new ArgumentNullException(nameof(msg));
-            IEnumerable<ProfileBase> lst = ProfileRoles.GetNonUsers();
-            foreach (ProfileBase pf in lst)
-            {
-                if ((RoleMask & (uint)pf.Role) != 0)
-                {
-                    MailAddress ma = new MailAddress(pf.Email, pf.UserFullName);
-                    if (fTo)
-                        msg.To.Add(ma);
-                    else
-                        msg.Bcc.Add(ma);
-                }
-            }
+            emailSender.AddAdminsToMessage(msg, fTo, RoleMask);
         }
 
         /// <summary>
@@ -679,10 +670,6 @@ namespace MyFlightbook
                 return;
 
             string szErr = ex.PrettyPrint(szInfo);
-
-            // Reduce viewstate spam if it's just a viewstate error.
-            if (szErr.Contains("Failed to load viewstate") || szErr.Contains("Invalid viewstate"))
-                return;
 
             NotifyAdminEvent("Error on the myflightbook site", szErr, ProfileRoles.maskSiteAdminOnly);
         }

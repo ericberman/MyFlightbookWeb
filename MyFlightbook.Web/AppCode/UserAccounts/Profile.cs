@@ -39,75 +39,6 @@ namespace MyFlightbook
         Partial = 2 // accepted only essential cookies
     }
 
-    public static class ProfileRoles
-    {
-        [FlagsAttribute]
-        public enum UserRoles
-        {
-            None = 0x0000,
-            Support = 0x0001,
-            DataManager = 0x0002,
-            Reporter = 0x0004,
-            Accountant = 0x0008,
-            SiteAdmin = 0x0010
-        };
-
-        #region Bitmasks for roles
-        public const uint maskCanManageData = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.DataManager);
-        public const uint maskCanReport = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Reporter);
-        public const uint maskSiteAdminOnly = (uint)UserRoles.SiteAdmin;
-        public const uint maskCanManageMoney = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Accountant);
-        public const uint maskCanSupport = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support | (uint)UserRoles.DataManager); // reporters cannot support
-        public const uint maskCanContact = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support);
-        public const uint maskUnrestricted = 0xFFFFFFFF;
-        #endregion
-
-        #region Helper routines for roles
-        static public bool CanSupport(UserRoles r)
-        {
-            return ((uint)r & maskCanSupport) != 0;
-        }
-
-        static public bool CanManageData(UserRoles r)
-        {
-            return ((uint)r & maskCanManageData) != 0;
-        }
-
-        static public bool CanReport(UserRoles r)
-        {
-            return ((uint)r & maskCanReport) != 0;
-        }
-
-        static public bool CanManageMoney(UserRoles r)
-        {
-            return ((uint)r & maskCanManageMoney) != 0;
-        }
-
-        static public bool CanDoSomeAdmin(UserRoles r)
-        {
-            return r != UserRoles.None;
-        }
-
-        static public bool CanDoAllAdmin(UserRoles r)
-        {
-            return r == UserRoles.SiteAdmin;
-        }
-        #endregion
-
-        /// <summary>
-        /// Returns all users on the site who have some sort of admin privileges.
-        /// </summary>
-        /// <returns>A list of profile objects</returns>
-        static public IEnumerable<ProfileBase> GetNonUsers()
-        {
-            List<Profile> lst = new List<Profile>();
-            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM usersinroles uir INNER JOIN users u ON uir.username=u.username WHERE uir.ApplicationName='Logbook' AND uir.Rolename <> ''");
-            dbh.ReadRows((comm) => { },
-                (dr) => { lst.Add(new Profile(dr)); });
-            return lst;
-        }
-    }
-
     /// <summary>
     /// Encapsulates a user of the system.  This is the base class.
     /// </summary>
@@ -1356,7 +1287,19 @@ namespace MyFlightbook
 
             util.GlobalCache.Remove(GetCacheKey(szUserName));
         }
-        #endregion
+
+        /// <summary>
+        /// Returns all users on the site who have some sort of admin privileges.
+        /// </summary>
+        /// <returns>A list of profile objects</returns>
+        static public IEnumerable<ProfileBase> GetNonUsers()
+        {
+            List<Profile> lst = new List<Profile>();
+            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM usersinroles uir INNER JOIN users u ON uir.username=u.username WHERE uir.ApplicationName='Logbook' AND uir.Rolename <> ''");
+            dbh.ReadRows((comm) => { },
+                (dr) => { lst.Add(new Profile(dr)); });
+            return lst;
+        }
 
         public static IEnumerable<Profile> UsersWithSubscriptions(UInt32 subscriptionMask, DateTime dtMin)
         {
@@ -1368,6 +1311,7 @@ namespace MyFlightbook
                 (dr) => { l.Add(new Profile(dr)); });
             return l;
         }
+        #endregion
 
         #region Basic Administrative Functions (stuff that doesn't require admin privileges)
         /// <summary>
