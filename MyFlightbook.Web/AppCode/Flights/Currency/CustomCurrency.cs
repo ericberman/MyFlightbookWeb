@@ -1,14 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -547,6 +546,24 @@ namespace MyFlightbook.Currency
 
         #endregion
 
+        private const string szCustomCurrencyForUserQuery = @"SELECT cc.*, 
+group_concat(CAST(ac.idaircraft AS CHAR(10)) SEPARATOR ',') AS AircraftRestriction,
+group_concat(ac.TailNumber SEPARATOR ', ') AS AircraftDisplay,
+group_concat(CAST(models.idmodel AS CHAR(10)) SEPARATOR ',') AS ModelsRestriction,
+group_concat(models.model SEPARATOR ', ') AS ModelsDisplay,
+group_concat(CAST(cpt.idPropType AS CHAR(10)) SEPARATOR ', ') AS PropertyRestriction,
+group_concat(cpt.Title SEPARATOR ', ') AS PropertyDisplay,
+catclass.catclass AS CatClassDisplay
+FROM customcurrency cc
+LEFT JOIN custcurrencyref ccf ON ccf.idCurrency=cc.idCurrency
+LEFT JOIN aircraft ac ON (ccf.value=ac.idaircraft AND ccf.type=0)
+LEFT JOIN models ON (ccf.value= models.idmodel AND ccf.type=1)
+LEFT JOIN custompropertytypes cpt ON (ccf.value = cpt.idProptype AND ccf.type=2)
+LEFT JOIN categoryclass catclass ON cc.catclassRestriction=catclass.idCatClass
+WHERE cc.username=?uName
+GROUP BY cc.idCurrency
+ORDER BY cc.name ASC;";
+
         /// <summary>
         /// Retrieves custom currencies for the specified user
         /// </summary>
@@ -557,7 +574,7 @@ namespace MyFlightbook.Currency
         static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser, bool fActiveOnly = false)
         {
             List<CustomCurrency> lst = new List<CustomCurrency>();
-            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"]);
+            DBHelper dbh = new DBHelper(szCustomCurrencyForUserQuery);
             if (!dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("uname", szUser); },
                 (dr) => { lst.Add(new CustomCurrency(dr)); }))
@@ -572,7 +589,7 @@ namespace MyFlightbook.Currency
         static public CustomCurrency CustomCurrencyForUser(string szUser, int id)
         {
             CustomCurrency cc = null;
-            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"]);
+            DBHelper dbh = new DBHelper(szCustomCurrencyForUserQuery);
             if (!dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("uname", szUser); },
                 (dr) => {

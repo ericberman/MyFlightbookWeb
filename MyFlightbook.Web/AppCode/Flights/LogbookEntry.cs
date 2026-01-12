@@ -13,7 +13,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1758,6 +1757,85 @@ namespace MyFlightbook
             return le;
         }
 
+        private const string szBaseQueryTemplate = @"SELECT flights.idFlight,
+    flights.date,
+    flights.idaircraft,
+    flights.cInstrumentApproaches,
+    flights.cLandings,
+    flights.crosscountry,
+    flights.night,
+    flights.IMC,
+    flights.simulatedInstrument,
+    flights.dualReceived,
+    flights.PIC,
+    flights.totalFlightTime,
+    flights.fHold,
+    flights.Route,
+    flights.Comments,
+    flights.username,
+    flights.groundSim,
+    flights.fPublic,
+    flights.hobbsStart,
+    flights.hobbsEnd,
+    IF(YEAR(flights.dtEngineStart) < 100, NULL, flights.dtEngineStart) AS dtEngineStart,
+    IF(YEAR(flights.dtEngineEnd) < 100, NULL, flights.dtEngineEnd) AS dtEngineEnd,
+    IF(YEAR(flights.dtFlightStart) < 100, NULL, flights.dtFlightStart) AS dtFlightStart,
+    IF(YEAR(flights.dtFlightEnd) < 100, NULL, flights.dtFlightEnd) AS dtFlightEnd,
+    flights.cfi,
+    flights.SIC,
+    flights.cNightLandings,
+    flights.cFullStopLandings,
+    flights.idCatClassOverride,
+    flights.FlightHash,
+    flights.SignatureHash,
+    flights.CFIComment,
+    flights.SignatureDate,
+    flights.CFICertificate,
+    flights.CFIExpiration,
+    flights.CFIUserName,
+    flights.CFIEmail,
+    flights.CFIName,
+    IF (flights.DigitizedSignature IS NOT NULL AND Length(DigitizedSignature) > 0, 1, 0) AS HasDigitizedSignature,
+    flights.SignatureState,
+    {0}
+    IF (coalesce(flights.Telemetry, ft.idflight) IS NULL, 0, 1) AS FlightDataLength,
+    ft.distance,
+    ft.flightpath,
+    ft.telemetrytype,
+    ft.metadata,
+    fp2.DateValue AS blockOut,
+	IF (fv.idFlightVideos IS NULL, CONVERT(null using utf8mb4), CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_OBJECT('ID', fv.idFlightVideos, 'FlightID', fv.idFlight, 'VideoReference', fv.vidRef, 'Comment', fv.comment)), ']') AS JSON)) AS FlightVids,
+	IF (fdc.idprop IS NULL, CONVERT(null using utf8mb4), JSON_ARRAYAGG(JSON_OBJECT('PropID', fdc.idprop, 'PropTypeID', fdc.idPropType, 'ValueString', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, IF(fdc.IntValue<>0, 'true', 'false'), fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)))) AS CustomPropsJSON,
+    GROUP_CONCAT(DISTINCT REPLACE(cpt.FormatString, '{{0}}', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, '', fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)) SEPARATOR ' ') AS CustomProperties,
+    models.*,
+    IF(models.fTAA <> 0 OR (aircraft.HasTAAUpgrade  <> 0 AND (aircraft.GlassUpgradeDate IS NULL OR flights.date >= aircraft.GlassUpgradeDate)), 1, 0) AS IsTAA,
+    if (flights.idCatClassOverride = 0 OR flights.idCatClassOverride=models.idCategoryClass, 0, 1) AS IsOverridden,
+    if (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) AS CatClassOverride,
+    TRIM(CONCAT(models.model, ', ', manufacturers.Manufacturer, ' ',  models.typename, ' ', models.modelname)) AS ModelDisplay,
+    TRIM(CONCAT(manufacturers.Manufacturer, ' ', models.model)) AS ShortModelDisplay,
+    IF(models.family is null OR models.family='', models.model, models.family) AS FamilyDisplay,
+    IF (aircraft.Tailnumber LIKE '#%', CONCAT('(', models.model, ')'), aircraft.tailnumber) AS 'TailNumberDisplay',
+    aircraft.TailNumber AS RawTailNumber,
+    aircraft.InstanceType,
+    CONCAT(IF(ccOver.CatClass is null, ccOrig.CatClass, ccOver.CatClass), IF(models.typename='','', CONCAT(' (', models.typename, ')'))) AS CatClassDisplay
+FROM flights
+  INNER JOIN aircraft ON flights.idaircraft = aircraft.idaircraft
+  INNER JOIN models ON aircraft.idmodel = models.idmodel
+  INNER JOIN manufacturers ON manufacturers.idmanufacturer = models.idmanufacturer
+  INNER JOIN categoryclass ccOrig ON (models.idCategoryClass = ccOrig.idCatClass)
+  {1}
+  LEFT JOIN flighttelemetry ft ON (flights.idflight=ft.idflight)
+  LEFT JOIN categoryclass ccOver ON (flights.idCatClassOverride = ccOver.idCatClass)
+  LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
+  LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
+  LEFT JOIN flightvideos fv ON fv.idflight=flights.idflight
+  LEFT JOIN FlightProperties fp2 ON flights.idflight=fp2.idflight AND fp2.idproptype=187
+WHERE {2}
+GROUP BY flights.idFlight, aircraft.idaircraft
+{3}
+ORDER BY flights.date {4}, COALESCE(blockOut, '0001-01-01') {4}, COALESCE(dtEngineStart, '0001-01-01') {4}, COALESCE(dtFlightStart, '0001-01-01') {4}, hobbsStart {4}, flights.idFlight {4}
+{5}";
+
         /// <summary>
         /// Returns a command object with the query string for the user and any optional restriction
         /// INCLUDES ALL RELEVANT PARAMETERS
@@ -1779,8 +1857,6 @@ namespace MyFlightbook
             foreach (MySqlParameter p in fq.QueryParameters())
                 comm.Parameters.Add(p);
 
-            string szTemplate = ConfigurationManager.AppSettings["LogbookForUserQuery"];
-
             StringBuilder sbAdditionalColumns = new StringBuilder(fq.SearchColumns);
             if (lto != LoadTelemetryOption.None)
                 sbAdditionalColumns.Append("CAST(UNCOMPRESS(flights.Telemetry) AS CHAR) AS FlightData, ");
@@ -1789,7 +1865,7 @@ namespace MyFlightbook
             if (fq.NeedsUserAircraft)
                 sbAdditionalJoins.Append(" INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) ");
 
-            comm.QueryString = String.Format(CultureInfo.InvariantCulture, szTemplate,
+            comm.QueryString = String.Format(CultureInfo.InvariantCulture, szBaseQueryTemplate,
                 sbAdditionalColumns.ToString(),                                                             // FlightData column and/or extra search columns
                 sbAdditionalJoins.ToString(),                                                              // Join on user aircraft or images if needed
                 fq.RestrictClause,                                                                          // WHERE clause

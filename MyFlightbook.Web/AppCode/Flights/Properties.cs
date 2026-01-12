@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -851,6 +850,23 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             return lst;
         }
 
+        private const string szCustomPropsForUserQuery = @"SELECT cpt.*,
+           COALESCE(l.Text, cpt.Title) AS LocTitle,
+           COALESCE(l2.Text, cpt.FormatString) AS LocFormatString,
+           COALESCE(l3.Text, cpt.Description) AS LocDescription,
+           IF (usedProps.numflights IS NULL OR ((cpt.Flags & 0x00100000) <> 0), 0, 1) AS IsFavorite,
+           IF (((cpt.flags & 0x02000000) = 0), usedProps.prevValues, null) AS PrevValues
+FROM custompropertytypes cpt 
+LEFT JOIN locText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID)
+LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?LangID)
+LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?LangID)
+LEFT JOIN
+  (SELECT fp.idPropType AS idPropType, COUNT(f.idFlight) AS numFlights, GROUP_CONCAT(DISTINCT IF(fp.stringvalue='', NULL, fp.stringvalue) SEPARATOR '\t') AS prevValues
+  FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idFlight
+  WHERE f.username=?uname {0}
+  GROUP BY fp.idproptype) AS usedProps ON usedProps.idPropType=cpt.idPropType
+ORDER BY IsFavorite DESC, IF(SortKey='', Title, SortKey) ASC";
+
         /// <summary>
         /// Get custom property types for the specified user, or the global list (if szUser is null or empty)
         /// </summary>
@@ -898,7 +914,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
                 Profile pf = Profile.GetUser(szUser);
-                szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["CustomPropsForUserQuery"], pf.BlocklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlocklistedProperties)));
+                szQ = String.Format(CultureInfo.InvariantCulture, szCustomPropsForUserQuery, pf.BlocklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlocklistedProperties)));
             }
 
             DBHelper dbh = new DBHelper(szQ);

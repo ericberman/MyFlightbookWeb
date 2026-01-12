@@ -1801,6 +1801,7 @@
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
     <Compile Include="AppCode\Utility\MVCRequestContext.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
+    <Compile Include="AppCode\Utility\ProfileRoles.cs" />
     <Compile Include="AppCode\Utility\RegexUtility.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />
     <Compile Include="AppCode\Utility\SmtpSupport.cs" />

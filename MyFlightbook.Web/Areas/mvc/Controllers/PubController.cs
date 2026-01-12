@@ -363,7 +363,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("contact");
             }
 
-            util.ContactUs(User.Identity.Name, name, email, subject, message, Request.Files, score, (ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0);
+            util.ContactUs(User.Identity.Name, name, email, subject, message, score, (ConfigurationManager.AppSettings["UseOOF"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0, (msg, addStream) =>
+            {
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    HttpPostedFileBase pf = Request.Files[i];
+                    if (pf.ContentLength > 0 && !String.IsNullOrEmpty(pf.FileName) && !String.IsNullOrEmpty(pf.ContentType))
+                        addStream(pf.InputStream, pf.FileName, pf.ContentType);
+                }
+            });
             ViewBag.success = true;
             ViewBag.showReturn = (noCap == 0);
 

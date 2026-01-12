@@ -29,19 +29,19 @@ namespace MyFlightbook
                 HttpContext.Current.Session[key] = value;
         }
 
-        public bool IsAuthenticated => HttpContext.Current.Request?.IsAuthenticated ?? false;
+        public bool IsAuthenticated => HttpContext.Current?.Request?.IsAuthenticated ?? false;
 
-        public bool IsSecure => HttpContext.Current.Request?.IsSecureConnection ?? false;
+        public bool IsSecure => HttpContext.Current?.Request?.IsSecureConnection ?? false;
 
-        public bool IsLocal => HttpContext.Current.Request?.IsLocal ?? false;
+        public bool IsLocal => HttpContext.Current?.Request?.IsLocal ?? false;
 
-        public string CurrentUserName => HttpContext.Current.User?.Identity?.Name;
+        public string CurrentUserName => HttpContext.Current?.User?.Identity?.Name;
 
-        public Uri CurrentRequestUrl => HttpContext.Current.Request?.Url;
+        public Uri CurrentRequestUrl => HttpContext.Current?.Request?.Url;
 
-        public string CurrentRequestHostAddress => HttpContext.Current.Request?.UserHostAddress;
+        public string CurrentRequestHostAddress => HttpContext.Current?.Request?.UserHostAddress;
 
-        public string CurrentRequestUserAgent => HttpContext.Current.Request?.UserAgent;
+        public string CurrentRequestUserAgent => HttpContext.Current?.Request?.UserAgent;
 
         public IEnumerable<string> CurrentRequestLanguages => HttpContext.Current.Request?.UserLanguages;
 

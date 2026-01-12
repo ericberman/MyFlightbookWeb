@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1026,13 +1025,30 @@ ORDER BY user ASC");
             InitFromDataReader(dr);
         }
 
+        public const string szAircraftForUserCore = @"SELECT DISTINCT 
+         aircraft.*, 
+         models.*, 
+		 IF (aircraft.Tailnumber LIKE '#%', CONCAT('#', models.model), aircraft.TailNormal) AS sortKey,
+         if (aircraft.InstanceType = 1, '', Concat(' (', aircraftinstancetypes.Description, ')')) as 'InstanceTypeDesc',
+         TRIM(CONCAT(manufacturers.manufacturer, ' ', CONCAT(COALESCE(models.typename, ''), ' '), models.modelname)) AS 'ModelCommonName',
+         {0} AS Flags,
+         {1} AS DefaultImage,
+         {2} AS UserNotes,
+         {3} AS TemplateIDs
+         FROM aircraft 
+          INNER JOIN models ON aircraft.idmodel=models.idmodel 
+          INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer 
+          INNER JOIN aircraftinstancetypes ON aircraft.InstanceType=aircraftinstancetypes.ID
+          {4}
+         ORDER BY sortKey ASC, Version ASC, aircraft.version ASC";
+
         /// <summary>
         /// Create a new aircraft from the database, loading based on aircraft ID
         /// </summary>
         /// <param name="id"></param>
         public Aircraft(int id) : this()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
             dbh.ReadRow(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", id); },
                 (dr) => { InitFromDataReader(dr); });
@@ -1118,7 +1134,7 @@ ORDER BY user ASC");
             if (ids == null)
                 return lst;
             string szIDs = String.Join(",", ids);
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
             new DBHelper(dba).ReadRows(
                 (comm) => { },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -1144,7 +1160,7 @@ ORDER BY user ASC");
 
             szPrefix = RegexUtility.NonAlphaNumeric.Replace(szPrefix, string.Empty) + "%";
             // Issue #1000: speed up autocomplete; doing query on tailnumber
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE aircraft.tailNormal LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", " WHERE aircraft.tailNormal LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
             new DBHelper(dba).ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("prefix", szPrefix); },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -2062,7 +2078,7 @@ ORDER BY user ASC");
         /// </summary>
         private static string AircraftByTailQuery
         {
-            get { return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", "WHERE UPPER(tailnormal)=?tailNum"); }
+            get { return String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", "WHERE UPPER(tailnormal)=?tailNum"); }
         }
 
         /// <summary>
@@ -2073,7 +2089,7 @@ ORDER BY user ASC");
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, "WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, "WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 
@@ -2388,7 +2404,7 @@ OR (aircraft.tailnormal IN ('{5}'))";
                 (int)AircraftInstanceTypes.RealAircraft,
                 szNaked);
 
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", szQInvalid);
+            string szQ = String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, 0, "''", "''", "''", szQInvalid);
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Aircraft(dr)); });
@@ -2592,7 +2608,7 @@ ORDER BY aircraft.instancetype, aircraft.idmodel");
 
         public static IEnumerable<Aircraft> OrphanedAircraft()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", @"LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft WHERE ua.idaircraft IS NULL"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, 0, "''", "''", "''", @"LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft WHERE ua.idaircraft IS NULL"));
 
             List<Aircraft> lstAc = new List<Aircraft>();
             dbh.ReadRows(
@@ -2609,7 +2625,7 @@ ORDER BY aircraft.instancetype, aircraft.idmodel");
 
             string szTailToMatch = rWild.Replace(szPattern, "*").ConvertToMySQLWildcards();
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", @"WHERE tailnormal LIKE ?tailNum"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, 0, "''", "''", "''", @"WHERE tailnormal LIKE ?tailNum"));
 
             List<Aircraft> lstAc = new List<Aircraft>();
             dbh.ReadRows(
