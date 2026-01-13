@@ -117,30 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContactUsEmail" xml:space="preserve">
-    <value>Votre addresse mail:</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ContactMeResponse" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
-  <data name="ContactUsMessage" xml:space="preserve">
-    <value>Message:</value>
+  <data name="EmailSenderAddress" xml:space="preserve">
+    <value>{0} au nom de {1}</value>
   </data>
-  <data name="ContactUsName" xml:space="preserve">
-    <value>Votre nom:</value>
-  </data>
-  <data name="ContactUsReturnHome" xml:space="preserve">
-    <value>Retour écran principal</value>
-    <comment>Return home after filling out contact form.</comment>
-  </data>
-  <data name="ContactUsSend" xml:space="preserve">
-    <value>Envoyer</value>
-  </data>
-  <data name="ContactUsSubject" xml:space="preserve">
-    <value>Objet:</value>
-  </data>
-  <data name="ContactUsThankYou" xml:space="preserve">
-    <value>Merci de nous avoir contacté</value>
-  </data>
-  <data name="ContactUsTitle" xml:space="preserve">
-    <value>Contactez nous</value>
+  <data name="HTMLTemplate" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="ValidationEmailFormat" xml:space="preserve">
     <value>Merci de saisir une adresse email valide</value>
@@ -151,16 +136,10 @@
   <data name="ValidationNameRequired" xml:space="preserve">
     <value>Nom obligatoire</value>
   </data>
-  <data name="ContactUsReadFAQ" xml:space="preserve">
-    <value>S'il vous plaît noter que de nombreuses questions peuvent être répondu dans la FAQ.</value>
+  <data name="ValidationRecaptchaRequired" xml:space="preserve">
+    <value>Veuillez indiquer que vous n'êtes pas un robot.</value>
   </data>
-  <data name="SessionExpiredHeader" xml:space="preserve">
-    <value>Session expirée</value>
-  </data>
-  <data name="SessionExpiredBody" xml:space="preserve">
-    <value>Votre session a expiré. Veuillez revenir à la page que vous consultiez pour reprendre vos activités.</value>
-  </data>
-  <data name="RSSTitle" xml:space="preserve">
-    <value>Flux RSS</value>
+  <data name="ValidationSubjectRequired" xml:space="preserve">
+    <value>Veuillez indiquer un sujet.</value>
   </data>
 </root>

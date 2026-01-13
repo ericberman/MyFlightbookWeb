@@ -117,50 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContactUsEmail" xml:space="preserve">
-    <value>Votre addresse mail:</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ContactMeResponse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ContactMeResponse.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="ContactUsMessage" xml:space="preserve">
-    <value>Message:</value>
+  <data name="CustomTimeZone" xml:space="preserve">
+    <value>Custom TZ</value>
   </data>
-  <data name="ContactUsName" xml:space="preserve">
-    <value>Votre nom:</value>
+  <data name="EmailSenderAddress" xml:space="preserve">
+    <value>{0} on behalf of {1}</value>
+    <comment>E.g., From "John Smith on behalf of Alice Johnson"</comment>
   </data>
-  <data name="ContactUsReturnHome" xml:space="preserve">
-    <value>Retour écran principal</value>
-    <comment>Return home after filling out contact form.</comment>
-  </data>
-  <data name="ContactUsSend" xml:space="preserve">
-    <value>Envoyer</value>
-  </data>
-  <data name="ContactUsSubject" xml:space="preserve">
-    <value>Objet:</value>
-  </data>
-  <data name="ContactUsThankYou" xml:space="preserve">
-    <value>Merci de nous avoir contacté</value>
-  </data>
-  <data name="ContactUsTitle" xml:space="preserve">
-    <value>Contactez nous</value>
+  <data name="HTMLTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HTMLTemplate.htm;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ValidationEmailFormat" xml:space="preserve">
-    <value>Merci de saisir une adresse email valide</value>
+    <value>Please enter a valid email address</value>
   </data>
   <data name="ValidationEmailRequired" xml:space="preserve">
-    <value>Adresse e-mail obligatoire</value>
+    <value>You must provide an email address</value>
   </data>
   <data name="ValidationNameRequired" xml:space="preserve">
-    <value>Nom obligatoire</value>
+    <value>Please tell us your name</value>
   </data>
-  <data name="ContactUsReadFAQ" xml:space="preserve">
-    <value>S'il vous plaît noter que de nombreuses questions peuvent être répondu dans la FAQ.</value>
+  <data name="ValidationRecaptchaRequired" xml:space="preserve">
+    <value>Please indicate that you are not a bot</value>
   </data>
-  <data name="SessionExpiredHeader" xml:space="preserve">
-    <value>Session expirée</value>
-  </data>
-  <data name="SessionExpiredBody" xml:space="preserve">
-    <value>Votre session a expiré. Veuillez revenir à la page que vous consultiez pour reprendre vos activités.</value>
-  </data>
-  <data name="RSSTitle" xml:space="preserve">
-    <value>Flux RSS</value>
+  <data name="ValidationSubjectRequired" xml:space="preserve">
+    <value>Please provide a subject</value>
   </data>
 </root>

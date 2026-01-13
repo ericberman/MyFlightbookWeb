@@ -1,4 +1,4 @@
-using MyFlightbook.Utility.Email;
+using MyFlightbook.Injection;
 using System;
 using System.Configuration;
 using System.Text;
@@ -27,8 +27,7 @@ namespace MyFlightbook.Web
             // Dependency Injection
             DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
             ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
-            util.InitEmail(new SmtpSupport());
-            util.InitRequestContext(new MVCRequestContext());
+            util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());
             Branding.InitBrands(ConcreteBrand.KnownBrands, MFBConstants.BaseStylesheet);
         }
 

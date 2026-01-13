@@ -468,7 +468,6 @@
     <Content Include="App_GlobalResources\Content.en\Email\ClubInviteJoin.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubRequestAccepted.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubRequestJoin.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\ContactMeResponse.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DonationThankYou.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
@@ -476,7 +475,6 @@
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\HTMLTemplate.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PendingFlightsReminder.htm" />
@@ -1798,16 +1796,16 @@
     <Compile Include="AppCode\Utility\Branding.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
     <Compile Include="AppCode\Utility\Histogram.cs" />
-    <Compile Include="AppCode\Utility\MFBExtensions.cs" />
+    <Compile Include="AppCode\Utility\HttpRequestExtensions.cs" />
+    <Compile Include="AppCode\Utility\MemCache.cs" />
+    <Compile Include="AppCode\Utility\MFBConstants.cs" />
+    <Compile Include="AppCode\Utility\MFBEnumExtensions.cs" />
     <Compile Include="AppCode\Utility\MVCRequestContext.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
-    <Compile Include="AppCode\Utility\ProfileRoles.cs" />
-    <Compile Include="AppCode\Utility\RegexUtility.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />
     <Compile Include="AppCode\Utility\SmtpSupport.cs" />
     <Compile Include="AppCode\Utility\SponsoredAd.cs" />
     <Compile Include="AppCode\Utility\Tabs.cs" />
-    <Compile Include="AppCode\Utility\util.cs" />
     <Compile Include="AppCode\WebService.cs" />
     <Compile Include="App_GlobalResources\Achievements.designer.cs">
       <AutoGen>True</AutoGen>
@@ -2252,6 +2250,10 @@
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj">
+      <Project>{00e4d545-1149-44a2-aa0f-a775377581de}</Project>
+      <Name>MyFlightbook.SharedUtility</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj">
       <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>

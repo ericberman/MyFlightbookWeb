@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,6 +62,38 @@ namespace MyFlightbook
             base.GetObjectData(info, context);
 
             info.AddValue("Username", Username);
+        }
+    }
+
+    /// <summary>
+    /// Data validation exception.
+    /// </summary>
+    [Serializable]
+    public class MyFlightbookValidationException : Exception
+    {
+        public string ParameterName { get; set; }
+
+        public MyFlightbookValidationException()
+            : base()
+        { }
+
+        public MyFlightbookValidationException(string message)
+            : base(message)
+        { }
+
+        public MyFlightbookValidationException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
+
+        protected MyFlightbookValidationException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
         }
     }
 }

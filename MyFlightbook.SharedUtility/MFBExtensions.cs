@@ -1,4 +1,4 @@
-﻿using MyFlightbook.Currency;
+﻿using MyFlightbook.SharedUtility.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -752,7 +752,7 @@ namespace MyFlightbook
         {
             if (szLabel == null)
                 throw new ArgumentNullException(nameof(szLabel));
-            return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", Resources.LocalizedText.CustomTimeZone);
+            return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", SharedUtilityResources.CustomTimeZone);
         }
 
         /// <summary>
@@ -966,22 +966,7 @@ namespace MyFlightbook
             return sz;
         }
 
-        /// <summary>
-        /// Format a signature state
-        /// </summary>
-        /// <param name="i">The signature state object (must be an integer that casts to a signature state</param>
-        /// <returns>Empty string, valid, or invalid.</returns>
-        public static string FormatSignatureState(this object i)
-        {
-            try
-            {
-                LogbookEntry.SignatureState ss = (LogbookEntry.SignatureState)i;
-                if (ss != LogbookEntry.SignatureState.None)
-                    return ss.ToString();
-            }
-            catch (Exception ex) when (ex is InvalidCastException) { }
-            return string.Empty;
-        }
+        public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
 
         /// <summary>
         /// Formats a decimal object into a 0.0 object or an empty string
@@ -998,7 +983,7 @@ namespace MyFlightbook
             // See if this user has a decimal preference
             // This is stored in the current session.  It's a bit of a hack because hhmm vs. decimal is deeply embedded throughout the system, and in many cases there's no way to pass down the context if it's an explicit property.
             DecimalFormat df = DecimalFormat.Adaptive;  // default
-            df = (DecimalFormat) (util.RequestContext?.GetSessionValue(MFBConstants.keyDecimalSettings) ?? df);
+            df = (DecimalFormat) (util.RequestContext?.GetSessionValue(keyDecimalSettings) ?? df);
 
             return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString(df == DecimalFormat.Adaptive ? "#,##0.0#" : (df == DecimalFormat.OneDecimal ? "#,##0.0" : "#,##0.00"), CultureInfo.CurrentCulture));
         }
@@ -1013,7 +998,7 @@ namespace MyFlightbook
             if (o == null || o == System.DBNull.Value)
                 return string.Empty;
             int i = Convert.ToInt32(o, CultureInfo.InvariantCulture);
-            return (i == 0) ? "" : i.PrettyString();
+            return (i == 0) ? string.Empty : i.PrettyString();
         }
 
         public static string FormatMulti(this decimal[] values, bool fUseHHMM, string separator = " / ")
@@ -1202,87 +1187,5 @@ namespace MyFlightbook
         {
             throw new NotImplementedException();
         }
-    }
-
-    public static class MFBEnumExtensions
-    {
-        #region Enum Extensions
-        /// <summary>
-        /// Determines if the specified turbinelevel is turbine (vs. piston or electric)
-        /// </summary>
-        /// <param name="tl"></param>
-        /// <returns></returns>
-        public static bool IsTurbine(this MakeModel.TurbineLevel tl) { return tl == MakeModel.TurbineLevel.Jet || tl == MakeModel.TurbineLevel.UnspecifiedTurbine || tl == MakeModel.TurbineLevel.TurboProp; }
-
-        /// <summary>
-        /// Determines if the currency state is any of the current states.
-        /// </summary>
-        /// <param name="cs"></param>
-        /// <returns></returns>
-        public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
-
-        /// <summary>
-        /// Indicates whether a particular column type can be graphed.
-        /// </summary>
-        /// <param name="kct"></param>
-        /// <returns></returns>
-        public static bool CanGraph(this Telemetry.KnownColumnTypes kct) { return kct != Telemetry.KnownColumnTypes.ctLatLong && kct != Telemetry.KnownColumnTypes.ctString; }
-
-        public static string ToMySQLSort(this SortDirection sd) { return sd == SortDirection.Ascending ? "ASC" : "DESC"; }
-        #endregion
-    }
-
-    public static class HttpRequestExtensions
-    {
-        #region HttpRequest Extensions
-        /// <summary>
-        /// Returns the string as a fully resolved absolute url, including scheme and host
-        /// </summary>
-        /// <param name="s">The relative URL</param>
-        /// <param name="Request">The request</param>
-        /// <returns>A fully resolved absolute URL</returns>
-        public static Uri ToAbsoluteURL(this string s, System.Web.HttpRequestBase Request)
-        {
-            if (Request == null)
-                throw new ArgumentNullException(nameof(Request));
-            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
-        }
-
-        /// <summary>
-        /// Determines if this is a known mobile device.  Tablets are NOT considered mobile; use IsMobileDeviceOrTablet
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if it's known</returns>
-        public static bool IsMobileDevice(this System.Web.HttpRequestBase r)
-        {
-            if (r == null || r.UserAgent == null)
-                return false;
-
-            string s = r.UserAgent.ToUpperInvariant();
-
-            return !s.Contains("IPAD") && // iPad is NOT mobile, as far as I'm concerned.
-            (r.Browser.IsMobileDevice || s.Contains("IPHONE") ||
-              s.Contains("PPC") ||
-              s.Contains("WINDOWS CE") ||
-              s.Contains("BLACKBERRY") ||
-              s.Contains("OPERA MINI") ||
-              s.Contains("MOBILE") ||
-              s.Contains("PARLM") ||
-              s.Contains("PORTABLE"));
-        }
-
-        /// <summary>
-        /// IsMobileDevice OR iPad OR Android
-        /// </summary>
-        /// <param name="r">The HTTPRequest object</param>
-        /// <returns>True if it's a mobile device or a tablet</returns>
-        public static bool IsMobileDeviceOrTablet(this System.Web.HttpRequestBase r)
-        {
-            if (r == null || String.IsNullOrEmpty(r.UserAgent))
-                return false;
-
-            return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
-        }
-        #endregion
     }
 }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Data", "MyFlig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.CSV", "MyFlightbook.CSV\MyFlightbook.CSV.csproj", "{8705EC69-4746-4BAC-A490-142178CAE996}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.SharedUtility", "MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj", "{00E4D545-1149-44A2-AA0F-A775377581DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8705EC69-4746-4BAC-A490-142178CAE996}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8705EC69-4746-4BAC-A490-142178CAE996}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8705EC69-4746-4BAC-A490-142178CAE996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00E4D545-1149-44A2-AA0F-A775377581DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E4D545-1149-44A2-AA0F-A775377581DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00E4D545-1149-44A2-AA0F-A775377581DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00E4D545-1149-44A2-AA0F-A775377581DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

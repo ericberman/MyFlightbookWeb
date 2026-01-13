@@ -9,7 +9,7 @@ using System.Net.Mail;
  *
 *******************************************************/
 
-namespace MyFlightbook.Utility.Email
+namespace MyFlightbook.Injection
 {
     public class SmtpSupport : IEmailSender
     {

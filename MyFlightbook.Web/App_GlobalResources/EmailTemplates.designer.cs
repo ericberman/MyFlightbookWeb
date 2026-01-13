@@ -199,22 +199,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank-you for contacting %APP_NAME%.
-        ///
-        ///I usually respond to requests within a few hours.  
-        ///
-        ///However, I will be traveling with intermittant Internet access from April 4-22, so I will be slower than usual to reply.  I&apos;ll be checking in daily, and can handle simple requests like account access issues pretty easily, but if you have a more involved question, it may be at the back end of that window before I can reply.
-        ///
-        ///The FAQ on the site addresses many common questions; please give that a try.
-        ///.
-        /// </summary>
-        internal static string ContactMeResponse {
-            get {
-                return ResourceManager.GetString("ContactMeResponse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dear {0}:
         ///
         ///Thank-you very much for your donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
@@ -381,23 +365,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
-        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/StyleSheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///&lt;/head&gt;
-        ///&lt;body style=&quot;min-width: 300px; max-width: 800px; margin-left: auto; margin-right: auto;&quot;&gt;
-        ///    &lt;p style=&quot;text-align:center&quot;&gt;&lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
-        ///    %BODYCONTENT%
-        ///    &lt;br /&gt;&lt; [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string HTMLTemplate {
-            get {
-                return ResourceManager.GetString("HTMLTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dear {0}:
         ///
         ///The backup of your logbook on %APP_NAME% to OneDrive was not successful.  
@@ -448,20 +415,13 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  	&lt;p&gt;
-        ///		&lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;
-        ///	&lt;/p&gt;
+        ///   Looks up a localized string similar to  	&lt;p&gt;&lt;img alt=&quot;%APP_NAME% Logo&quot; src=&quot;https://%APP_URL%%APP_LOGO%&quot; /&gt;&lt;/p&gt;
         ///	&lt;p&gt;Welcome to %APP_NAME%, an online pilot&apos;s logbook.&lt;/p&gt;
-        ///	&lt;p&gt;
-        ///		%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It&apos;s your data, so you always have the ability to download it from the &lt;a href=&quot;https://%APP_URL%&quot;&gt;%APP_NAME% Website&lt;/a&gt;.)
-        ///	&lt;/p&gt;
-        ///	&lt;p&gt;
-        ///		With %APP_NAME%, you can:
-        ///	&lt;/p&gt;
+        ///	&lt;p&gt;%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It&apos;s your data, so you always have the ability to download it from the &lt;a href=&quot;https://%APP_URL%&quot;&gt;%APP_NAME% Website&lt;/a&gt;.)&lt;/p&gt;
+        ///	&lt;p&gt;With %APP_NAME%, you can:&lt;/p&gt;
         ///	&lt;ul&gt;
         ///		&lt;li&gt;Track your flights and access your logbook anywhere.&lt;/li&gt;
-        ///		&lt;li&gt;
-        ///			Enter n [rest of string was truncated]&quot;;.
+        ///		&lt;li&gt;Enter new flights and view your f [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WelcomeEmail {
             get {

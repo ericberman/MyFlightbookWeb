@@ -325,7 +325,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
                 if (se == null)
                     se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
-                util.GlobalCache.Set(webinarKey, se, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(15) });
+                util.GlobalCache.Set(webinarKey, se, DateTimeOffset.UtcNow.AddMinutes(15));
             }
             if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
             {

@@ -1,16 +1,13 @@
-using Newtonsoft.Json;
+using MyFlightbook.SharedUtility.Properties;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Caching;
 using System.Text;
-using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -21,62 +18,6 @@ using System.Threading.Tasks;
 
 namespace MyFlightbook
 {
-    public static class MFBConstants
-    {
-        public const string keyIsImpersonating = "IsImpersonating";
-        public const string keyOriginalID = "OriginalID";
-        public const string keyNewUser = "IsNewUser";
-        public const string keyCookiePrivacyOld = "cookiesAccepted";
-        public const string keyCookiePrivacy = "cookiesAcceptedNEW";
-        public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
-        public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
-        public const string keyMathRoundingUnits = "prefMath";   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding
-        public const string keyPrefLastUsedLocale = "prefLastUsedLocale";   // most recently used locale, if not en-us
-        public const string keyPrefHobbsDefault = "prefUseHobbs";
-        public const string keyPrefTachDefault = "prefUseTach";
-        public const string keyPrefBlockDefault = "prefUseBlock";
-        public const string keyPrefEngineDefault = "prefUseEngine";
-        public const string keyPrefFlightsDefault = "prefUseFlight";
-        public const string USCulture = "en-us";
-        public const string keyMedicalNotes = "prefMedicalNotes";   // any notes on your medical
-        public const string keyCoreFieldsPermutation = "prefCoreFields";    // permutation of the core fields
-        public const string keyWindowAircraftMaintenance = "prefMaintenanceWindow"; // default window for showing/hiding aircraft maintenance
-        public const string keyTrackOriginal = "prefTrackOriginal";  // true if the user tracks the original version of a flight.
-        public const string keyRouteColor = "prefRouteColor";   // key for the color when showing routes on a map
-        public const string keyPathColor = "prefPathColor";     // key for the color when showing a path on a map
-        public const string keyIsNightSession = "IsNightSession";   // key if we have a night session.
-        public const int DefaultMaintenanceWindow = 90;
-
-        // Logbook preferences
-        public const string keyPrefFlatHierarchy = "UsesFlatCloudStorageFileHierarchy";    // indicates that cloud storage should be done in a flat hierarchy rather than by month.
-        public const string keyPrefCompact = "mfbLogbookDisplayCompact";
-        public const string keyPrefInlineImages = "mfbLogbookDisplayImages";
-        public const string keyPrefFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
-        public const int DefaultFlightsPerPage = 25;
-
-        // Signing preferences
-        public const string keyPrefCopyFlightToCFI = "copySignedFlights";
-
-        public const string keySessLastNewFlight = "sessNewFlightID";
-
-        public const int StyleSheetVer = 73;
-
-        public static string BaseStylesheet
-        {
-            get { return String.Format(CultureInfo.InvariantCulture, "~/Public/stylesheet.css?v={0}", StyleSheetVer); }
-        }
-
-        public static string BaseCssVars(bool isNight)
-        {
-            return String.Format(CultureInfo.InvariantCulture, isNight ? "~/public/css/night.css?v=fdn{0}" : "~/public/css/day.css?v=fdn{0}", StyleSheetVer).ToAbsolute();
-        }
-
-        public static string AdminAjaxScriptLink
-        {
-            get { return "~/Public/Scripts/adminajax.js?v=6".ToAbsolute(); }
-        }
-    }
-
     public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
 
     public enum SortDirection { Ascending, Descending }
@@ -119,200 +60,6 @@ namespace MyFlightbook
         string RelativeToAbsoluteFilePath(string relativePath);
     }
 
-    public static class ShuntState
-    {
-        public const string keyShuntMsg = "ShuntMessage";
-        public const string keyShuntState = "ShuntState";
-
-        /// <summary>
-        /// True if site is shunted
-        /// </summary>
-        public static bool IsShunted { get; private set; }
-
-        private static string _rawShuntMessage;
-
-        /// <summary>
-        /// The branded message to display when shunted (the underlying shunt message is NOT branded)
-        /// </summary>
-        public static string ShuntMessage { get { return Branding.ReBrand(_rawShuntMessage); } }
-
-        /// <summary>
-        /// Caches the current shunt state; should only be called on application start.
-        /// <paramref name="fShunted">true if the site is shunted</paramref>
-        /// <paramref name="rawShuntMessage">The message to display when shunted.  It will be rebranded, so you can use "%APP_NAME%" and such.</paramref>
-        /// </summary>
-        public static void Init(bool fShunted, string rawShuntMessage)
-        {
-            IsShunted = fShunted;
-            _rawShuntMessage = rawShuntMessage;
-        }
-    }
-
-    /// <summary>
-    /// Provides text with an optionally linked string.
-    /// </summary>
-    [Serializable]
-    public class LinkedString
-    {
-        public string Value { get; set; }
-        public string Link { get; set; }
-
-        public LinkedString() { }
-
-        public LinkedString(string szValue, string szLink)
-        {
-            Value = szValue;
-            Link = szLink;
-        }
-
-        public LinkedString(string szValue)
-        {
-            Value = szValue;
-            Link = null;
-        }
-
-        public override string ToString()
-        {
-            return Value ?? string.Empty;
-        }
-    }
-
-    /// <summary>
-    /// Encapsulates the shared httpclient
-    /// </summary>
-    public static class SharedHttpClient
-    {
-        private static readonly HttpClient _client = new HttpClient();
-
-        /// <summary>
-        /// GetResponseForAuthenticatedUri - assumes a POST
-        /// </summary>
-        /// <param name="uri">The target URI</param>
-        /// <param name="szAuth">Bearer token</param>
-        /// <param name="OnResult">Action called on result</param>
-        public static async Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, Func<HttpResponseMessage, object> OnResult)
-        {
-            return await GetResponseForAuthenticatedUri(uri, szAuth, HttpMethod.Post, null, OnResult);
-        }
-
-        /// <summary>
-        /// GetResponseForAuthenticatedUri
-        /// </summary>
-        /// <param name="uri">The target URI</param>
-        /// <param name="szAuth">Bearer token</param>
-        /// <param name="OnResult">Action called on result</param>
-        /// <param name="content">HttpContent to post (REQUIRES POST/PUT)</param>
-        public static async Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, HttpContent content, Func<HttpResponseMessage, object> OnResult)
-        {
-            return await GetResponseForAuthenticatedUri(uri, szAuth, HttpMethod.Post, content, OnResult);
-        }
-
-        /// <summary>
-        /// GetResponseForAuthenticatedUri
-        /// </summary>
-        /// <param name="uri">The target URI</param>
-        /// <param name="szAuth">Bearer token</param>
-        /// <param name="OnResult">Action called on result</param>
-        /// <param name="method">The http method to use (GET or POST)</param>
-        public static async Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, HttpMethod method, Func<HttpResponseMessage, object> OnResult)
-        {
-            return await GetResponseForAuthenticatedUri(uri, szAuth, method, null, OnResult);
-        }
-
-        /// <summary>
-        /// GetResponseForAuthenticatedUri
-        /// </summary>
-        /// <param name="uri">The target URI</param>
-        /// <param name="szAuth">Bearer token</param>
-        /// <param name="OnResult">Action called on result</param>
-        /// <param name="content">HttpContent to post (REQUIRES POST/PUT)</param>
-        /// <param name="method">The http method to use (GET or POST)</param>
-        /// <param name="dictHeaders">Any additional request headers</param>
-        public async static Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, HttpMethod method, HttpContent content, Func<HttpResponseMessage, object> OnResult, IDictionary<string, string> dictHeaders = null)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
-            if (OnResult == null)
-                throw new ArgumentNullException(nameof(OnResult));
-            if (content != null && method == HttpMethod.Get)
-                throw new InvalidOperationException("Cannot do http GET with content passed.");
-
-            object result = null;
-            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, uri))
-            {
-                if (!String.IsNullOrEmpty(szAuth))
-                    requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", szAuth);
-
-                if (dictHeaders != null)
-                {
-                    foreach (string szKey in dictHeaders.Keys)
-                        requestMessage.Headers.Add(szKey, dictHeaders[szKey]);
-                }
-
-                if (content != null)
-                    requestMessage.Content = content;
-
-                using (HttpResponseMessage response = await _client.SendAsync(requestMessage).ConfigureAwait(false))
-                {
-                    result = OnResult(response);
-                }
-            }
-            return result;
-        }
-    }
-
-    public static class RecaptchaUtil
-    {
-        /// <summary>
-        /// Validates a recaptcha token
-        /// </summary>
-        /// <param name="token">The token</param>
-        /// <param name="action">Optional, the action being validated</param>
-        /// <param name="referringDomain">The referring domain</param>
-        /// <returns>The score (0 to 1.0); 1.0 if any error</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="HttpRequestException"></exception>
-        static async public Task<double> ValidateRecaptcha(string token, string action, string referringDomain)
-        {
-            if (String.IsNullOrEmpty(token))
-                throw new InvalidOperationException(Resources.LocalizedText.ValidationRecaptchaRequired);
-
-            Dictionary<string, string> dInner = new Dictionary<string, string>()
-            {
-                {"token", token },
-                { "expectedAction", (action ?? string.Empty) },
-                { "siteKey", LocalConfig.SettingForKey("recaptchaKey") }
-            };
-            Dictionary<string, object> dOuter = new Dictionary<string, object>() { { "event", dInner } };
-
-            string szResult = string.Empty;
-            using (StringContent sc = new StringContent(JsonConvert.SerializeObject(dOuter)))
-            {
-                try
-                {
-                    string r = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(LocalConfig.SettingForKey("recaptchaValidateEndpoint")), null, HttpMethod.Post, sc, (response) =>
-                    {
-                        szResult = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-                        return szResult;
-                    }, new Dictionary<string, string> { { "referer", referringDomain } });
-
-                    dynamic d = JsonConvert.DeserializeObject<dynamic>(r);
-
-                    if (d?.riskAnalysis?.score == null) // let's debug this
-                        util.NotifyAdminEvent("Unrecognized recaptcha response", r, ProfileRoles.maskSiteAdminOnly);
-
-                    return d?.riskAnalysis?.score ?? 1.0;   // if null, pass 1 - treat as accepted.
-                }
-                catch (HttpRequestException e)
-                {
-                    // pass up the exception, along with whatever detail we can.
-                    throw new HttpRequestException($"{e.Message} - szResult = {szResult ?? "(not set)"}, referringDomain = '{referringDomain}'", e);
-                }
-            }
-        }
-    }
-
     public interface IEmailSender
     {
         /// <summary>
@@ -330,6 +77,17 @@ namespace MyFlightbook
         void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask);
     }
 
+    public interface ICacheService
+    {
+        void Set(string key, object value, DateTimeOffset offset);
+        object Get(string key);
+        void Remove(string key);
+
+        int FlushCache();
+
+        IEnumerator GetEnumerator();
+    }
+
     /// <summary>
     /// Utility Class - contains a few commonly used/needed functions
     /// </summary>
@@ -338,21 +96,26 @@ namespace MyFlightbook
         private const string sessCultureKey = "currCulture";
         private static readonly char[] isoLanguageRegionSeparator = new char[] { '-' };
 
+
         #region Dependency Injection
-        private static IRequestContext _requestContext;
+        public static ICacheService GlobalCache { get; private set; }
 
-        public static IRequestContext RequestContext { get { return _requestContext; } }
+        public static IRequestContext RequestContext { get; private set; }
 
-        public static void InitRequestContext(IRequestContext context)
+        private static IEmailSender EmailSender { get; set; }
+
+        public static void Init(ICacheService cacheService, IRequestContext requestContext, IEmailSender emailSender)
         {
-            _requestContext = context;
+            GlobalCache = cacheService;
+            RequestContext = requestContext;
+            EmailSender = emailSender;
         }
+        #endregion
 
-        private static IEmailSender emailSender { get; set; }
-
-        public static void InitEmail(IEmailSender sender)
+        #region Cache management
+        public static int FlushCache()
         {
-            emailSender = sender;
+            return GlobalCache?.FlushCache() ?? throw new InvalidOperationException("Global cache is not set up!");
         }
         #endregion
 
@@ -497,13 +260,13 @@ namespace MyFlightbook
         static public void ContactUs(string userName, string displayName, string email, string subject, string message, double captchaScore, bool fRespondOOF, Action<MailMessage, Action<Stream, string, string>> addAttachments)
         {
             if (String.IsNullOrWhiteSpace(displayName))
-                throw new ArgumentNullException(Resources.LocalizedText.ValidationNameRequired);
+                throw new ArgumentNullException(SharedUtilityResources.ValidationNameRequired);
             if (String.IsNullOrWhiteSpace(email))
-                throw new ArgumentNullException(Resources.LocalizedText.ValidationEmailRequired);
+                throw new ArgumentNullException(SharedUtilityResources.ValidationEmailRequired);
             if (!RegexUtility.Email.IsMatch(email))
-                throw new InvalidOperationException(Resources.LocalizedText.ValidationEmailFormat);
+                throw new InvalidOperationException(SharedUtilityResources.ValidationEmailFormat);
             if (string.IsNullOrWhiteSpace(subject))
-                throw new ArgumentNullException(Resources.LocalizedText.ValidationSubjectRequired);
+                throw new ArgumentNullException(SharedUtilityResources.ValidationSubjectRequired);
             
             MailAddress ma = new MailAddress(email, displayName ?? string.Empty);
 
@@ -516,7 +279,7 @@ namespace MyFlightbook
             string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, subject);
             using (MailMessage msg = new MailMessage()
             {
-                From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.InvariantCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, displayName)),
+                From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.InvariantCulture, SharedUtilityResources.EmailSenderAddress, Branding.CurrentBrand.AppName, displayName)),
                 Subject = szSubject,
                 Body = szBody,
                 IsBodyHtml = true
@@ -529,7 +292,7 @@ namespace MyFlightbook
             }
 
             if (fRespondOOF)
-                NotifyUser(szSubject, ApplyHtmlEmailTemplate(Resources.EmailTemplates.ContactMeResponse, false), ma, false, false);
+                NotifyUser(szSubject, ApplyHtmlEmailTemplate(SharedUtilityResources.ContactMeResponse, false), ma, false, false);
         }
 
         /// <summary>
@@ -540,7 +303,7 @@ namespace MyFlightbook
         {
             if (msg == null)
                 throw new ArgumentNullException(nameof(msg));
-            if (emailSender == null)
+            if (EmailSender == null)
                 throw new InvalidOperationException("Email sender not initialized.");
 
             if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
@@ -559,7 +322,7 @@ namespace MyFlightbook
                             sb.AppendLine(node.InnerText.Trim());
 
                         if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
-                            sb.AppendFormat(CultureInfo.CurrentCulture, " {1}", Resources.LocalizedText.LocalizedSpace, node.ParentNode.Attributes["href"].Value, Resources.LocalizedText.LocalizedSpace);
+                            sb.Append($" {node.ParentNode.Attributes["href"].Value}");
 
                         sb.Append(' ');
                     }
@@ -570,7 +333,7 @@ namespace MyFlightbook
                 }
             }
 
-            emailSender?.SendEmail(msg);
+            EmailSender?.SendEmail(msg);
         }
 
         /// <summary>
@@ -581,7 +344,7 @@ namespace MyFlightbook
         /// <param name="RoleMask">The admins that should receive the message</param>
         static public void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask)
         {
-            emailSender.AddAdminsToMessage(msg, fTo, RoleMask);
+            EmailSender.AddAdminsToMessage(msg, fTo, RoleMask);
         }
 
         /// <summary>
@@ -689,7 +452,7 @@ namespace MyFlightbook
             if (content == null)
                 throw new ArgumentNullException(nameof(content));
 
-            string template = Branding.ReBrand(Resources.EmailTemplates.HTMLTemplate);
+            string template = Branding.ReBrand(Encoding.UTF8.GetString(SharedUtilityResources.HTMLTemplate));
 
             if (fIsHtml)
             {
@@ -729,13 +492,13 @@ namespace MyFlightbook
         static public void SendEmail(string szFrom, string szFromDisplay, string szTo, string szToDisplay, string szReply, string szReplyDisplay, string szSubject, string szBody, bool fIsHtml)
         {
             if (String.IsNullOrWhiteSpace(szTo))
-                throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
             if (!RegexUtility.Email.IsMatch(szTo))
-                throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailFormat);
             if (String.IsNullOrWhiteSpace(szFrom))
-                throw new ArgumentException(Resources.LocalizedText.ValidationEmailRequired);
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
             if (!RegexUtility.Email.IsMatch(szFrom))
-                throw new ArgumentException(Resources.LocalizedText.ValidationEmailFormat);
+                throw new ArgumentException(SharedUtilityResources  .ValidationEmailFormat);
 
             using (MailMessage msg = new MailMessage())
             {
@@ -812,55 +575,6 @@ namespace MyFlightbook
                 (dr) => { al.Add(dr[keyColumn].ToString()); }))
                 return al.ToArray();
             return Array.Empty<string>();
-        }
-
-        #region CacheManagement
-        public static MemoryCache GlobalCache { get; } = new MemoryCache("GlobalCache");
-
-        public static int FlushCache()
-        {
-            int items = 0;
-            foreach (var item in GlobalCache)
-            {
-                GlobalCache.Remove(item.Key);
-                items++;
-            }
-
-            GC.Collect();
-            return items;
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Data validation exception.
-    /// </summary>
-    [Serializable]
-    public class MyFlightbookValidationException : Exception
-    {
-        public string ParameterName { get; set; }
-
-        public MyFlightbookValidationException()
-            : base()
-        { }
-
-        public MyFlightbookValidationException(string message)
-            : base(message)
-        { }
-
-        public MyFlightbookValidationException(string message, Exception innerException)
-            : base(message, innerException)
-        { }
-
-        protected MyFlightbookValidationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
         }
     }
 }

@@ -1584,15 +1584,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom TZ.
-        /// </summary>
-        internal static string CustomTimeZone {
-            get {
-                return ResourceManager.GetString("CustomTimeZone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;br /&gt;The specified date is not valid.&lt;br /&gt;.
         /// </summary>
         internal static string DateErrInvalid {
@@ -5780,15 +5771,6 @@ namespace Resources {
         internal static string ValidationRecaptchaFailed {
             get {
                 return ResourceManager.GetString("ValidationRecaptchaFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please indicate that you are not a bot.
-        /// </summary>
-        internal static string ValidationRecaptchaRequired {
-            get {
-                return ResourceManager.GetString("ValidationRecaptchaRequired", resourceCulture);
             }
         }
         

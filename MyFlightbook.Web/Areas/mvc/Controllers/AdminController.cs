@@ -4,6 +4,7 @@ using MyFlightbook.Instruction;
 using MyFlightbook.Subscriptions;
 using MyFlightbook.Web.Admin;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -726,7 +727,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             Dictionary<string, int> d = new Dictionary<string, int>();
             int cItems = 0;
-            foreach (var item in util.GlobalCache)
+            foreach (DictionaryEntry item in util.GlobalCache)
             {
                 cItems++;
                 string szClass = item.Value.GetType().ToString();

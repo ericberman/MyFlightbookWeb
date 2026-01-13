@@ -14,7 +14,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Runtime.Caching;
 using System.Text;
 using System.Web;
 
@@ -1368,7 +1367,7 @@ namespace MyFlightbook.Clubs
 
             string szCacheKey = "clubPeersFor" + szUser1;
 
-            MemoryCache cache = util.GlobalCache;
+            ICacheService cache = util.GlobalCache;
 
             if (!(cache.Get(szCacheKey) is HashSet<string> hsPeers))
             {
@@ -1389,7 +1388,7 @@ namespace MyFlightbook.Clubs
                     (dr) => { hsPeers.Add(dr["username"].ToString()); });
 
                 // We are likely to get a few requests all at once, and then none for a while, so cache this for 15 minutes.
-                cache.Set(szCacheKey, hsPeers, new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(15) });
+                cache.Set(szCacheKey, hsPeers, DateTimeOffset.UtcNow.AddMinutes(15));
             }
             return hsPeers.Contains(szUser2);
         }

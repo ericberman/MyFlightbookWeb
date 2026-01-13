@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Caching;
-using System.Web;
 
 /******************************************************
  * 
@@ -145,7 +143,7 @@ namespace MyFlightbook
             if (flights == null)
                 util.GlobalCache.Remove(CacheKeyForUser(szUser));
             else
-                util.GlobalCache.Set(CacheKeyForUser(szUser), flights, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(15) });
+                util.GlobalCache.Set(CacheKeyForUser(szUser), flights, DateTimeOffset.UtcNow.AddMinutes(15));
         }
 
         static private IEnumerable<PendingFlight> CachedFlightsForUser(string szUser)

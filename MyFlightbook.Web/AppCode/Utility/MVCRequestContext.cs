@@ -11,7 +11,7 @@ using System.Web.Hosting;
 *******************************************************/
 
 
-namespace MyFlightbook
+namespace MyFlightbook.Injection
 {
 
     /// <summary>

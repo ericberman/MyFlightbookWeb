@@ -526,9 +526,6 @@
   <data name="RSSGoogle" xml:space="preserve">
     <value>Add to Google</value>
   </data>
-  <data name="RSSTitle" xml:space="preserve">
-    <value>RSS Feed</value>
-  </data>
   <data name="TweetThis" xml:space="preserve">
     <value>Tweet this</value>
   </data>
@@ -1466,9 +1463,6 @@
   <data name="PrintViewIncludeSignatures" xml:space="preserve">
     <value>Include Signatures</value>
   </data>
-  <data name="CustomTimeZone" xml:space="preserve">
-    <value>Custom TZ</value>
-  </data>
   <data name="CopyToClipboard" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
@@ -2009,9 +2003,6 @@
   <data name="ValidationSubjectRequired" xml:space="preserve">
     <value>Please provide a subject</value>
   </data>
-  <data name="ValidationRecaptchaRequired" xml:space="preserve">
-    <value>Please indicate that you are not a bot</value>
-  </data>
   <data name="ValidationRecaptchaFailed" xml:space="preserve">
     <value>Recaptcha failed - please try again</value>
   </data>
@@ -2125,5 +2116,8 @@
   </data>
   <data name="PrivacyDataFeatures" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Content.en\PrivacyDataFeatures.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RSSTitle" xml:space="preserve">
+    <value>RSS Feed</value>
   </data>
 </root>
