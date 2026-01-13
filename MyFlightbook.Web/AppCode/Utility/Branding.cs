@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
+using System.Linq;
 
 /******************************************************
  * 
@@ -19,83 +19,135 @@ namespace MyFlightbook
         brandMyFlightbook, brandMyFlightbookStaging, brandNone
     };
 
+    public class ConcreteBrand : Brand
+    {
+        public ConcreteBrand(BrandID brandID) : base(brandID)
+        {
+        }
+
+        static public readonly List<Brand> KnownBrands = new List<Brand>()
+        {
+            new ConcreteBrand(BrandID.brandMyFlightbook)
+            {
+                AppName = "MyFlightbook",
+                HostName = "myflightbook.com",
+                Root = "/logbook",
+                LogoHRef = "~/Images/mfblogonew.png",
+                IconHRef = "~/Images/favicon.png",
+                StyleSheet = string.Empty,
+                EmailAddress = "noreply@mg.myflightbook.com",
+                FacebookFeed = "https://www.facebook.com/MyFlightbook",
+                // TwitterFeed = "https://twitter.com/MyFlightbook",
+                SwagRef = "https://www.cafepress.com/shop/MyFlightbookSwagShop/products?designId=134274099",
+                BlogAddress = "https://myflightbookblog.blogspot.com/",
+                VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
+                AWSBucket = "mfbimages",
+                AWSETSPipelineConfigKey = "ETSPipelineID"
+            },
+            new ConcreteBrand(BrandID.brandMyFlightbookStaging)
+            {
+                AppName = "MFBStaging",
+                HostName = "staging.myflightbook.com",
+                Root = "/logbook",
+                IconHRef = "~/Images/favicon-stg.png",
+                LogoHRef = "~/Images/myflightbooknewstaging.png",
+                StyleSheet = "~/Public/CSS/staging.css",
+                EmailAddress = "noreply@mg.myflightbook.com",
+                AWSBucket = "mfb-staging",
+                AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
+            },
+            new ConcreteBrand(BrandID.brandNone)
+            {
+                AppName = string.Empty,
+                HostName = "myflightbook.com",
+                Root = "/logbook",
+                IconHRef = "~/Images/x.gif",
+                LogoHRef = "~/Images/x.gif",
+                StyleSheet = string.Empty,
+                EmailAddress = "noreply@mg.myflightbook.com",
+                AWSBucket = "mfbimages",
+                AWSETSPipelineConfigKey = "ETSPipelineID"
+            }
+        };
+    }
+
     public class Brand
     {
         #region properties
         /// <summary>
         /// The ID for the brand
         /// </summary>
-        public BrandID BrandID { get; private set; }
+        public BrandID BrandID { get; protected set; }
 
         /// <summary>
         /// The name of the app (e.g., "MyFlightbook")
         /// </summary>
-        public string AppName { get; private set; }
+        public string AppName { get; protected set; }
 
         /// <summary>
         /// The host name for the app (e.g., "myflightbook.com")
         /// </summary>
-        public string HostName { get; private set; }
+        public string HostName { get; protected set; }
 
         /// <summary>
         /// The root for the app (e.g., "/logbook" on the live site).  The equivalent to "~" in relative URLs
         /// </summary>
-        public string Root { get; private set; }
+        public string Root { get; protected set; }
 
         /// <summary>
         /// The URL for the logo for the app (upper corner)
         /// </summary>
-        public string LogoHRef { get; private set; }
+        public string LogoHRef { get; protected set; }
 
         /// <summary>
         /// The URL for the icon for a browser tab
         /// </summary>
-        public string IconHRef { get; private set; }
+        public string IconHRef { get; protected set; }
 
         /// <summary>
         /// The Email address used for mail that gets sent from the app
         /// </summary>
-        public string EmailAddress { get; private set; }
+        public string EmailAddress { get; protected set; }
 
         /// <summary>
         /// Link to Facebook feed
         /// </summary>
-        public string FacebookFeed { get; private set; }
+        public string FacebookFeed { get; protected set; }
 
         /// <summary>
         /// Link to Twitter feed
         /// </summary>
-        public string TwitterFeed { get; private set; }
+        public string TwitterFeed { get; protected set; }
 
         /// <summary>
         /// Link to Blog
         /// </summary>
-        public string BlogAddress { get; private set; }
+        public string BlogAddress { get; protected set; }
 
         /// <summary>
         /// Link to stylesheet path.
         /// </summary>
-        public string StyleSheet { get; private set; }
+        public string StyleSheet { get; protected set; }
 
         /// <summary>
         /// Link to any video/tutorial channel
         /// </summary>
-        public string VideoRef { get; private set; }
+        public string VideoRef { get; protected set; }
 
         /// <summary>
         /// Link to any swag shop
         /// </summary>
-        public string SwagRef { get; private set; }
+        public string SwagRef { get; protected set; }
 
         /// <summary>
         /// which AWS bucket to use for this brand?
         /// </summary>
-        public string AWSBucket { get; private set; }
+        public string AWSBucket { get; protected set; }
 
         /// <summary>
         /// Which LocalConfig key retrieves the pipeline config for this brand
         /// </summary>
-        public string AWSETSPipelineConfigKey { get; private set; }
+        public string AWSETSPipelineConfigKey { get; protected set; }
         #endregion
 
         public Brand(BrandID brandID)
@@ -162,51 +214,6 @@ namespace MyFlightbook
             return String.Compare(HostName, szHost, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        static internal readonly List<Brand> KnownBrands = new List<Brand>()
-        {
-            new Brand(BrandID.brandMyFlightbook)
-            {
-                AppName = "MyFlightbook",
-                HostName = "myflightbook.com",
-                Root = "/logbook",
-                LogoHRef = "~/Images/mfblogonew.png",
-                IconHRef = "~/Images/favicon.png",
-                StyleSheet = string.Empty,
-                EmailAddress = "noreply@mg.myflightbook.com",
-                FacebookFeed = "https://www.facebook.com/MyFlightbook",
-                // TwitterFeed = "https://twitter.com/MyFlightbook",
-                SwagRef = "https://www.cafepress.com/shop/MyFlightbookSwagShop/products?designId=134274099",
-                BlogAddress = "https://myflightbookblog.blogspot.com/",
-                VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
-                AWSBucket = "mfbimages",
-                AWSETSPipelineConfigKey = "ETSPipelineID"
-            },
-            new Brand(BrandID.brandMyFlightbookStaging)
-            {
-                AppName = "MFBStaging",
-                HostName = "staging.myflightbook.com",
-                Root = "/logbook",
-                IconHRef = "~/Images/favicon-stg.png",
-                LogoHRef = "~/Images/myflightbooknewstaging.png",
-                StyleSheet = "~/Public/CSS/staging.css",
-                EmailAddress = "noreply@mg.myflightbook.com",
-                AWSBucket = "mfb-staging",
-                AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
-            },
-            new Brand(BrandID.brandNone)
-            {
-                AppName = string.Empty,
-                HostName = "myflightbook.com",
-                Root = "/logbook",
-                IconHRef = string.Empty,
-                LogoHRef = string.Empty,
-                StyleSheet = string.Empty,
-                EmailAddress = "noreply@mg.myflightbook.com",
-                AWSBucket = "mfbimages",
-                AWSETSPipelineConfigKey = "ETSPipelineID"
-            }
-        };
-
         public enum FooterLinkKey
         {
             About, Privacy, Terms, Developers, Contact, FAQ, Videos, Blog, Mobile, Classic, Facebook, Twitter, Swag, RSS
@@ -242,6 +249,15 @@ namespace MyFlightbook
 
     public static class Branding
     {
+        private static Brand[] _knownBrands;
+        private static string _baseStyleSheet;
+
+        static public void InitBrands(IEnumerable<Brand> brands, string baseStyleSheet)
+        {
+            _knownBrands = brands.ToArray();
+            _baseStyleSheet = baseStyleSheet;
+        }
+
         private const string brandStateKey = "_brandid";
 
         /// <summary>
@@ -258,7 +274,7 @@ namespace MyFlightbook
                 BrandID result = BrandID.brandMyFlightbook;
 
                 string szHost = util.RequestContext?.CurrentRequestUrl?.Host ?? string.Empty;
-                foreach (Brand b in Brand.KnownBrands)
+                foreach (Brand b in _knownBrands)
                     if (String.Compare(szHost, b.HostName, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         result = b.BrandID;
@@ -280,7 +296,7 @@ namespace MyFlightbook
         /// </summary>
         static public Brand CurrentBrand
         {
-            get { return Brand.KnownBrands[(int)CurrentBrandID]; }
+            get { return _knownBrands.ToArray()[(int)CurrentBrandID]; }
         }
 
         /// <summary>
@@ -307,9 +323,9 @@ namespace MyFlightbook
                 Replace("%SHORT_DATE%", System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern).
                 Replace("%DATE_TIME%", DateTime.UtcNow.UTCDateFormatString()).
                 Replace("%APP_URL%", brand.HostName).
-                Replace("%APP_LOGO%", String.IsNullOrWhiteSpace(brand.LogoHRef) ? string.Empty : VirtualPathUtility.ToAbsolute(brand.LogoHRef)).
+                Replace("%APP_LOGO%", String.IsNullOrWhiteSpace(brand.LogoHRef) ? string.Empty : brand.LogoHRef.ToAbsolute()).
                 Replace("%APP_ROOT%", brand.Root).
-                Replace("%APP_CSS%", (String.IsNullOrEmpty(brand.StyleSheet) ? MFBConstants.BaseStylesheet : brand.StyleSheet).ToAbsolute());
+                Replace("%APP_CSS%", (String.IsNullOrEmpty(brand.StyleSheet) ? _baseStyleSheet : brand.StyleSheet).ToAbsolute());
 
             return szNew;
         }
