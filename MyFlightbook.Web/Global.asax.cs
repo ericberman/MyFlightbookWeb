@@ -21,10 +21,8 @@ namespace MyFlightbook.Web
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
 
-            // CoordinateSharp can be very slow - pegging CPU - due to EagerLoading, which matters for celestial computations that we generally don't care about, so just set the default to NOT do eager load.
-            CoordinateSharp.GlobalSettings.Default_EagerLoad = new CoordinateSharp.EagerLoad(false);
-
             // Dependency Injection
+            Geography.Geography.Init();
             DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
             ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
             util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());

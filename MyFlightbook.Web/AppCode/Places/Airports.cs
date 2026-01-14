@@ -23,17 +23,6 @@ using System.Xml;
 namespace MyFlightbook.Airports
 {
     /// <summary>
-    /// Represents a named point in space.
-    /// </summary>
-    public interface IFix
-    {
-        string Code { get; }
-        LatLong LatLong { get; }
-
-        double DistanceFromFix(IFix f);
-    }
-
-    /// <summary>
     /// Represents an airport as a latitude/longitude, airport code, and name
     /// </summary>
     [Serializable]

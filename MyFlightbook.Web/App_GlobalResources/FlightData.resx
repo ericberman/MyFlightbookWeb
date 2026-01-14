@@ -126,9 +126,6 @@
   <data name="errBadLatLong" xml:space="preserve">
     <value>Suspected bad latitude/longitude: {0}</value>
   </data>
-  <data name="errBadPosition" xml:space="preserve">
-    <value>Unable to parse position: {0}</value>
-  </data>
   <data name="errGeneric" xml:space="preserve">
     <value>An error was encountered: {0}</value>
   </data>

@@ -5,7 +5,7 @@ using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
 using MyFlightbook.OAuth;
 using MyFlightbook.Schedule;
-using MyFlightbook.SolarTools;
+using MyFlightbook.Geography.SolarTools;
 using MyFlightbook.Telemetry;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;

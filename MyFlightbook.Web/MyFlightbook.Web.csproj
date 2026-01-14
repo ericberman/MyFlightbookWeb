@@ -1775,15 +1775,12 @@
     <Compile Include="AppCode\Places\Airports.cs" />
     <Compile Include="AppCode\Places\CSV.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
-    <Compile Include="AppCode\Places\Geography.cs" />
     <Compile Include="AppCode\Places\GPX.cs" />
     <Compile Include="AppCode\Places\IGC.cs" />
     <Compile Include="AppCode\Places\KML.cs" />
     <Compile Include="AppCode\Places\Mapping.cs" />
     <Compile Include="AppCode\Places\NavaidTypes.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
-    <Compile Include="AppCode\Places\Solar.cs" />
-    <Compile Include="AppCode\Places\TravelingSalesman.cs" />
     <Compile Include="AppCode\Places\VisitedAirport.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
@@ -1866,11 +1863,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FlightQuery.resx</DependentUpon>
-    </Compile>
-    <Compile Include="App_GlobalResources\Geography.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Geography.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\LocalizedText.designer.cs">
       <AutoGen>True</AutoGen>
@@ -2129,10 +2121,6 @@
       <LastGenOutput>FlightQuery.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_GlobalResources\Geography.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>Geography.designer.cs</LastGenOutput>
-    </Content>
     <Content Include="App_GlobalResources\LocalizedText.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LocalizedText.fr.designer.cs</LastGenOutput>
@@ -2250,6 +2238,10 @@
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj">
+      <Project>{e44b743c-99dd-4ae6-8a87-53475e545c20}</Project>
+      <Name>MyFlightbook.Geography</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj">
       <Project>{00e4d545-1149-44a2-aa0f-a775377581de}</Project>

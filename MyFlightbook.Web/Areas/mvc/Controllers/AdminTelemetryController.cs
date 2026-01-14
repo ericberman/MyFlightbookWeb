@@ -11,7 +11,7 @@ using System.Web.Script.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -157,7 +157,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         rgStraight = fdOriginal.GetPath();
                         rgAntipodes = new LatLong[rgStraight.Length];
                         for (int i = 0; i < rgStraight.Length; i++)
-                            rgAntipodes[i] = rgStraight[i].Antipode;
+                            rgAntipodes[i] = rgStraight[i].Antipode();
                     }
                 }
 

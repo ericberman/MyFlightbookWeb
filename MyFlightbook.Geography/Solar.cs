@@ -2,12 +2,12 @@
 
 /******************************************************
  * 
- * Copyright (c) 2011-2021 MyFlightbook LLC
+ * Copyright (c) 2011-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook.SolarTools
+namespace MyFlightbook.Geography.SolarTools
 {
     // Code below adapted from http://www.srrb.noaa.gov/highlights/sunrise/sunrise.html and http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
     public class SunriseSunsetTimes
@@ -100,9 +100,9 @@ namespace MyFlightbook.SolarTools
         private void ComputeTimesAtLocation(DateTime dt)
         {
             if (Latitude > 90 || Latitude < -90)
-                throw new MyFlightbookException(Resources.Airports.errInvalidLatitude);
+                throw new MyFlightbookException(Properties.Geography.errInvalidLatitude);
             if (Longitude > 180 || Longitude < -180)
-                throw new MyFlightbookException(Resources.Airports.errInvalidLongitude);
+                throw new MyFlightbookException(Properties.Geography.errInvalidLongitude);
 
             double JD = Solar.calcJD(dt.Year, dt.Month, dt.Day);
 

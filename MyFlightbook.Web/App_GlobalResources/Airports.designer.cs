@@ -448,29 +448,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Latitude must be between -90 and 90.
-        /// </summary>
-        internal static string errInvalidLatitude {
-            get {
-                return ResourceManager.GetString("errInvalidLatitude", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please type valid numbers for latitude/longitude..
         /// </summary>
         internal static string errInvalidLatLong {
             get {
                 return ResourceManager.GetString("errInvalidLatLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Longitude must be between -180 and 180.
-        /// </summary>
-        internal static string errInvalidLongitude {
-            get {
-                return ResourceManager.GetString("errInvalidLongitude", resourceCulture);
             }
         }
         

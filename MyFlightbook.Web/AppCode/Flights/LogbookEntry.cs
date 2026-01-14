@@ -3139,7 +3139,7 @@ WHERE f1.username = ?uName ");
                 if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
                 {
                     Geography.LatLong ll = rgap[1].LatLong;
-                    MyFlightbook.SolarTools.SunriseSunsetTimes sst = new MyFlightbook.SolarTools.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
+                    MyFlightbook.Geography.SolarTools.SunriseSunsetTimes sst = new MyFlightbook.Geography.SolarTools.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
                     if (sst.IsFAANight)
                         NightLandings = 1;
                 }

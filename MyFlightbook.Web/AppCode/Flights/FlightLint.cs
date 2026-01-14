@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Geography.SolarTools;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2025 MyFlightbook LLC
+ * Copyright (c) 2020-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -308,10 +309,10 @@ namespace MyFlightbook.Lint
                 airport apArr = alSubset.GetAirportByCode(rgCodes.ElementAt(rgCodes.Count() - 1));
                 if (apDep != null)
                     AddConditionalIssue(le.FlightStart.HasValue() && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNightTakeoff) &&
-                        new SolarTools.SunriseSunsetTimes(le.FlightStart, apDep.LatLong.Latitude, apDep.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightTakeoff, apDep.Code, le.FlightStart.UTCFormattedStringOrEmpty(false)));
+                        new SunriseSunsetTimes(le.FlightStart, apDep.LatLong.Latitude, apDep.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightTakeoff, apDep.Code, le.FlightStart.UTCFormattedStringOrEmpty(false)));
                 if (apArr != null)
                     AddConditionalIssue(le.FlightEnd.HasValue() && le.NightLandings == 0 &&
-                        new SolarTools.SunriseSunsetTimes(le.FlightEnd, apArr.LatLong.Latitude, apArr.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightLanding, apArr.Code, le.FlightEnd.UTCFormattedStringOrEmpty(false)));
+                        new SunriseSunsetTimes(le.FlightEnd, apArr.LatLong.Latitude, apArr.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightLanding, apArr.Code, le.FlightEnd.UTCFormattedStringOrEmpty(false)));
             }
         }
 

@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="errBadPosition" xml:space="preserve">
+    <value>Unable to parse position: {0}</value>
+  </data>
+  <data name="errInvalidLatitude" xml:space="preserve">
+    <value>Latitude must be between -90 and 90</value>
+  </data>
+  <data name="errInvalidLongitude" xml:space="preserve">
+    <value>Longitude must be between -180 and 180</value>
+  </data>
   <data name="regionAfrica" xml:space="preserve">
     <value>Africa</value>
   </data>

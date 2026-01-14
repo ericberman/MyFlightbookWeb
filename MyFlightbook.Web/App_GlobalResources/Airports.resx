@@ -138,14 +138,8 @@
   <data name="errIllegalCharacters" xml:space="preserve">
     <value>Facility code has unallowed characters</value>
   </data>
-  <data name="errInvalidLatitude" xml:space="preserve">
-    <value>Latitude must be between -90 and 90</value>
-  </data>
   <data name="errInvalidLatLong" xml:space="preserve">
     <value>Please type valid numbers for latitude/longitude.</value>
-  </data>
-  <data name="errInvalidLongitude" xml:space="preserve">
-    <value>Longitude must be between -180 and 180</value>
   </data>
   <data name="errNotKnownType" xml:space="preserve">
     <value>'{0}' is not a known type of airport or navaid.</value>

@@ -5,13 +5,12 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2021 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-
-namespace MyFlightbook.Airports
+namespace MyFlightbook.Geography
 {
     /// <summary>
     /// Solution to TSP for a collection of airports, code adapted from https://stackoverflow.com/questions/2927469/traveling-salesman-problem-2-opt-algorithm-c-sharp-implementation
@@ -167,12 +166,12 @@ namespace MyFlightbook.Airports
         public static IEnumerable<IFix> ShortestPath(IEnumerable<IFix> rgFixes)
         {
             if (rgFixes == null)
-                return Array.Empty<airport>();
+                return Array.Empty<IFix>();
             if (rgFixes.Count() <= 2)
                 return rgFixes;
 
             var lstStops = new List<Stop>();
-            foreach (airport ap in rgFixes)
+            foreach (IFix ap in rgFixes)
                 lstStops.Add(new Stop(ap));
 
             lstStops.NearestNeighbors().Connect(true);
