@@ -5,6 +5,7 @@ using MyFlightbook.Currency;
 using MyFlightbook.Instruction;
 using MyFlightbook.Payments;
 using MyFlightbook.Schedule;
+using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -1738,7 +1739,7 @@ ORDER BY username asc;"));
                     ClubInsuranceReportItem ciri = d[(string)dr["username"]];
                     int idAircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
                     decimal timeInAircraft = Convert.ToDecimal(dr["TimeInAircraft"], CultureInfo.InvariantCulture);
-                    Aircraft ac = lstAc.FirstOrDefault(ac2 => ac2.AircraftID == idAircraft) ?? throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
+                    Aircraft ac = lstAc.FirstOrDefault(ac2 => ac2.AircraftID == idAircraft) ?? throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
                     ciri.TotalsByClubAircraft[ac.DisplayTailnumber] = timeInAircraft;
                 });
         }
@@ -2107,9 +2108,12 @@ ORDER BY f.DATE ASC";
                 }
                 else
                 {
-                    VisitedAirport.AllFlightsAsKML(new FlightQuery(), ms, out string szErr, lstIds);
+                    FlightQuery fq = new FlightQuery();
+                    if (lstIds.Any())
+                        fq.EnumeratedFlights = new HashSet<int>(lstIds);
+                    FlightData.AllFlightsAsKML(fq, new AirportList(LogbookEntryDisplay.AllRoutesAsOne(fq)), ms, out string szErr);
                     if (!String.IsNullOrEmpty(szErr))
-                        throw new MyFlightbookException("Error writing KML to stream: " + szErr);
+                        throw new InvalidOperationException("Error writing KML to stream: " + szErr);
                 }
                 return ms.ToArray();
             }

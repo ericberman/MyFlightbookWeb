@@ -40,7 +40,7 @@ namespace MyFlightbook
     /// Base class for a logbook entry, including validation.
     /// </summary>
     [Serializable]
-    public abstract class LogbookEntryCore
+    public abstract class LogbookEntryCore : IAirportVisitor
     {
         public const int idFlightNew = -1;
         public const int idFlightNone = -1;
@@ -4199,6 +4199,119 @@ WHERE f1.username = ?uName ");
 
             // Sort the list by the sort expression and direction
             return SortLogbook(lst, szSortExpr, sd);
+        }
+
+        /// <summary>
+        /// Retrieves all flights that might visit an airport.
+        /// </summary>
+        /// <param name="szUser">User</param>
+        /// <param name="fq">Any additional restriction.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        public static IEnumerable<IAirportVisitor> GetPotentialVisitsForQuery(string szUser, FlightQuery fq = null)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            fq = fq ?? new FlightQuery(szUser); // if no query provided, create a default one.
+
+            if (fq.UserName.CompareCurrentCultureIgnoreCase(szUser) != 0)
+                throw new UnauthorizedAccessException("FlightQuery username does not match the specified username");
+
+            FlightResult fr = FlightResultManager.FlightResultManagerForUser(szUser).ResultsForQuery(fq);  // get any cached results - very likely this avoids a database hit.
+
+            SortDirection curSortDir = fr.CurrentSortDir;
+            string curSortKey = fr.CurrentSortKey;
+            fr.SortFlights("Date", SortDirection.Ascending);
+
+            // Visited airports must in a real aircraft and have some logged time.
+            // We don't do this in the query partly so that we don't muck with the caching, but also so that we don't muck with the query.  E.g., if the query requires IMC and PIC, then if we put "PIC OR SIC OR Dual", we'd be changing the conjunction and the overall query semantics.
+            List<LogbookEntryDisplay> lstFlights = new List<LogbookEntryDisplay>(fr.Flights);
+            lstFlights.RemoveAll(le => le.InstanceType != AircraftInstanceTypes.RealAircraft || le.TotalFlightTime + le.PIC + le.SIC + le.CFI + le.Dual <= 0.0M || string.IsNullOrEmpty(le.Route));
+
+            fr.SortFlights(curSortKey, curSortDir); // restore sort
+            return lstFlights;
+        }
+
+        /// <summary>
+        /// Calls a provided function for each flight returned by the query.
+        /// </summary>
+        /// <param name="dbh">Query that returns the relevant flights</param>
+        /// <param name="action">Action that takes flight data, route, date, and comments.</param>
+        /// <returns>Any error string, empty or null for no error</returns>
+        public static string IterateFlightsForQuery(FlightQuery fq, LoadTelemetryOption lto, Action<LogbookEntry> action, bool fForceLoad = false)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            DBHelper dbh = new DBHelper(QueryCommand(fq, fAsc: true, lto: lto));
+            dbh.ReadRows(
+                (comm) => { },
+                (dr) =>
+                {
+                    LogbookEntry le = new LogbookEntry(dr, fForceLoad ? (string)dr["username"] : fq.UserName, lto);
+                    action(le);
+                });
+            return dbh.LastError;
+        }
+
+        /// <summary>
+        /// Concatenates all routes ever flown for the specified query.
+        /// </summary>
+        /// <returns></returns>
+        public static string AllRoutesAsOne(FlightQuery fq)
+        {
+            DBHelper dbh = new DBHelper(QueryCommand(fq));
+            StringBuilder sb = new StringBuilder();
+            dbh.ReadRows((comm) => { }, (dr) => { sb.AppendFormat(CultureInfo.InvariantCulture, "{0} ", util.ReadNullableField(dr, "Route", string.Empty)); });
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Estimates the total distance flown by the user for the subset of flights described by the query
+        /// </summary>
+        /// <param name="fq">The flight query</param>
+        /// <param name="fAutofillDistanceFlown">True to autofill the distance flown property if not found.</param>
+        /// <param name="error">Any error</param>
+        /// <returns>Distance flown, in nm</returns>
+        public static double DistanceFlownByUser(FlightQuery fq, bool fAutofillDistanceFlown, out string error)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (String.IsNullOrEmpty(fq.UserName))
+                throw new MyFlightbookException("Don't estimate distance for an empty user!!");
+
+            double distance = 0.0;
+
+            // Get the master airport list
+            AirportList alMaster = new AirportList(AllRoutesAsOne(fq));
+
+            error = IterateFlightsForQuery(
+                fq,
+                LoadTelemetryOption.MetadataOrDB,
+                (le) =>
+                {
+                    double distThisFlight = 0;
+
+                    // If the trajectory had a distance, use it; otherwise, use airport-to-airport.
+                    double dPath = le.Telemetry.Distance();
+                    if (dPath > 0)
+                        distThisFlight = dPath;
+                    else if (!String.IsNullOrEmpty(le.Route))
+                        distThisFlight = alMaster.CloneSubset(le.Route).DistanceForRoute();
+
+                    distance += distThisFlight;
+
+                    if (fAutofillDistanceFlown && distThisFlight > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDistanceFlown))
+                    {
+                        le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDistanceFlown, (decimal)distThisFlight));
+                        le.FCommit();
+                    }
+                });
+
+            return distance;
         }
 
         /// <summary>

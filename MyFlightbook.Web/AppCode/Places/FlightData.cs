@@ -1504,6 +1504,60 @@ namespace MyFlightbook.Telemetry
             }
         }
 
+        /// <summary>
+        /// Returns a KML respresentation of all of the flights represented by the specified query
+        /// </summary>
+        /// <param name="fq">The flight query</param>
+        /// <param name="alMaster">A pre-populated list of all navaids/airports referenced by the user (for efficiency)</param>
+        /// <param name="s">The stream to which to write</param>
+        /// <param name="error">Any error</param>
+        /// <returns>KML string for the matching flights.</returns>
+        public static void AllFlightsAsKML(FlightQuery fq, AirportList alMaster, Stream s, out string error)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (String.IsNullOrEmpty(fq.UserName) && fq.EnumeratedFlights.Count == 0)
+                throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
+            if (alMaster == null)
+                throw new ArgumentNullException(nameof(alMaster));
+
+            // Force load if no user name in the query but we have been given explicit flights to load (i.e., enumerated flights only, as in a club scenario)
+            bool fForceLoad = String.IsNullOrEmpty(fq.UserName) && fq.EnumeratedFlights.Count > 0;
+
+            using (KMLWriter kw = new KMLWriter(s))
+            {
+                kw.BeginKML();
+
+                error = LogbookEntryDisplay.IterateFlightsForQuery(
+                    fq,
+                    LogbookEntryCore.LoadTelemetryOption.LoadAll,
+                    (le) =>
+                    {
+                        if (le.Telemetry.HasPath)
+                        {
+                            using (FlightData fd = new FlightData())
+                            {
+                                try
+                                {
+                                    fd.ParseFlightData(le.Telemetry.RawData, le.Telemetry.MetaData);
+                                    if (fd.HasLatLongInfo)
+                                    {
+                                        kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Comment), fd.SpeedFactor);
+                                        return;
+                                    }
+                                }
+                                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }   // eat any error and fall through below
+                            }
+                        }
+                        // No path was found above.
+                        AirportList al = alMaster.CloneSubset(le.Route);
+                        kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Route));
+                    }, 
+                    fForceLoad);
+                kw.EndKML();
+            }
+        }
+
         public void WriteGPXData(Stream s, IEnumerable<Position> positions = null, bool hasTime = false, bool hasAlt = false, bool hasSpeed = false, IDictionary<string, string> dictMeta = null)
         {
             Position[] rgPos = positions == null ? GetTrajectory() : positions.ToArray();

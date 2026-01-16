@@ -12,7 +12,6 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Authentication;
 using System.ServiceModel;
-using System.Web;
 using System.Web.Security;
 using System.Web.Services;
 
@@ -626,7 +625,7 @@ namespace MyFlightbook
             if (szUser.Length == 0)
                 return null;
             EventRecorder.LogCall("VisitedAirports - user {user}", szUser);
-            return VisitedAirport.VisitedAirportsForUser(szUser).ToArray();
+            return VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser)).ToArray();
         }
 
         /// <summary>

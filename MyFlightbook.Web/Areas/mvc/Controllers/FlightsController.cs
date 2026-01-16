@@ -634,7 +634,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (sk.CanViewVisitedAirports)
             {
-                IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(fq);
+                IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(fq.UserName, fq));
                 ViewBag.rgva = rgva;
                 GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = new AirportList[] { new AirportList(rgva) },  };
                 map.Options.fShowRoute = false;

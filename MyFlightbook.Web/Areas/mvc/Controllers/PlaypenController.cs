@@ -22,7 +22,7 @@ using static MyFlightbook.Telemetry.AutoFillOptions;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

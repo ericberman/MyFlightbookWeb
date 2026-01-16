@@ -1790,6 +1790,7 @@
     <Compile Include="AppCode\Places\Solar.cs" />
     <Compile Include="AppCode\Places\TravelingSalesman.cs" />
     <Compile Include="AppCode\Places\VisitedAirport.cs" />
+    <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
