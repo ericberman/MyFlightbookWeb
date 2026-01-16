@@ -708,6 +708,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0.0}NM ({1}⬌{2})&lt;/value&gt;.
+        /// </summary>
+        internal static string RouteSegmentTemplate {
+            get {
+                return ResourceManager.GetString("RouteSegmentTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View a colored map of visited countries/regions/sub-regions.
         /// </summary>
         internal static string viewCountryAdminMap {

@@ -571,9 +571,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.visitedAirports = rgva;
             AirportList alMatches = new AirportList(rgva);
             bool fShowRoute = GetIntParam("path", 0) != 0;
+            IEnumerable<IAirportVisitor> rgvisits = LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq);
             GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
             {
-                Airports = AirportList.PathsForQuery(fq, alMatches, fShowRoute)
+                Airports = AirportList.PathsForAirportVisits(rgvisits, alMatches, fShowRoute)
             };
             map.Options.fShowRoute = fShowRoute;
             ViewBag.Map = map;
