@@ -363,4 +363,7 @@
   <data name="errReservedCode" xml:space="preserve">
     <value>The codes "ZZZZ" and "AFIL" are reserved; please use a different code.</value>
   </data>
+  <data name="RouteSegmentTemplate" xml:space="preserve">
+    <value>{0:#,##0.0}NM ({1}⬌{2})&lt;/value&gt;</value>
+  </data>
 </root>

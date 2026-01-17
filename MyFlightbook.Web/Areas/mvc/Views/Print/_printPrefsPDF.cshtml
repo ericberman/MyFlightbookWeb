@@ -82,5 +82,27 @@
         <td colspan="2"><label><input type="checkbox" name="pdfIncludePageCount" /> @Resources.LocalizedText.PrintViewShowTotalPages</label></td>
     </tr>
 </table>
-<div style="margin-top: 10pt;"><a style="vertical-align: middle;" href="#" onclick="javascript: getPDF();"><img style="vertical-align: middle;" src="@("~/images/download.png".ToAbsolute())" /><img style="vertical-align: middle; margin-left: 10px; margin-right: 10px;" src="@("~/images/pdficon_med.png".ToAbsolute())" />@Resources.LocalizedText.DownloadAsPDF</a><button name="refreshPrintView" value="PDF" style="display: none;" type="submit" id="btnPDF"></button></div>
+<table>
+    <tr>
+        <td><input type="radio" id="rbSignWet" name="rbSigningType" value="wet" checked onclick="javascript: $('#divSigning').hide();" /></td>
+        <td><label for="rbSignWet"><img src="@("~/images/pdf-wetink.png".ToAbsolute())" class="imgMiddle" />&nbsp;&nbsp;@Resources.LocalizedText.PrintViewSignWetInk</label></td>
+    </tr>
+    <tr>
+        <td><input type="radio" id="rbSignScribble" name="rbSigningType" value="digital" onclick="javascript: $('#divSigning').show();" /></td>
+        <td>
+            <div><label for="rbSignScribble"><img src="@("~/images/pdf-scribble.png".ToAbsolute())" class="imgMiddle" />&nbsp;&nbsp;@Resources.LocalizedText.PrintViewSignDigitally</label></div>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <div class="dn" id="divSigning" style="margin-left: 44px;">
+                <div class="b">@Resources.LocalizedText.PrintViewAttestPrompt</div>
+                <div>@{ Html.RenderAction("RenderScribble", "Training", new { colorRef = "#0000ff" }); }</div>
+                <div class="fineprint">@Resources.LocalizedText.PrintViewDigitalSigningNote</div>
+            </div>
+        </td>
+    </tr>
+</table>
+<div style="margin-top: 10pt;"><a style="vertical-align: middle;" href="#" onclick="javascript: getPDF(); return false;"><img style="vertical-align: middle;" src="@("~/images/download.png".ToAbsolute())" /><img style="vertical-align: middle; margin-left: 10px; margin-right: 10px;" src="@("~/images/pdficon_med.png".ToAbsolute())" />@Resources.LocalizedText.DownloadAsPDF</a><button name="refreshPrintView" value="PDF" class="dn" type="submit" id="btnPDF"></button></div>
 <div style="margin-top: 10pt;" class="fineprint"><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> @Html.Raw(Resources.LocalizedText.wkhtmlnote)</div>

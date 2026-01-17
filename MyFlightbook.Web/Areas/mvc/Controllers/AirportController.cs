@@ -498,7 +498,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 CheckCanViewData(fq, skID);
 
-                double distance = VisitedAirport.DistanceFlownByUser(fq, df, out string szErr);
+                double distance = LogbookEntryDisplay.DistanceFlownByUser(fq, df, out string szErr);
 
                 return (String.IsNullOrEmpty(szErr)) ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance) : szErr;
             });
@@ -542,7 +542,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
                 string error = string.Empty;
-                VisitedAirport.AllFlightsAsKML(query, ms, out error);
+                FlightData.AllFlightsAsKML(query, new AirportList(LogbookEntryDisplay.AllRoutesAsOne(query)), ms, out error);
                 return File(ms.ToArray(), dst.Mimetype, String.Format(CultureInfo.CurrentCulture, "{0}-Visited.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
             }
         }
@@ -552,7 +552,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
             CheckCanViewData(query, id);
 
-            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(query);
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, query));
 
             return File(VisitedAirport.DownloadVisitedTable(rgva), "text/csv", String.Format(CultureInfo.InvariantCulture, "{0}-Visited-{1}.csv", Branding.CurrentBrand.AppName, DateTime.Now.YMDString()));
         }
@@ -568,13 +568,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private ViewResult VisitedAirportViewForQuery(FlightQuery fq)
         {
             ViewBag.query = fq;
-            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(fq);
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq));
             ViewBag.visitedAirports = rgva;
             AirportList alMatches = new AirportList(rgva);
             bool fShowRoute = GetIntParam("path", 0) != 0;
+            IEnumerable<IAirportVisitor> rgvisits = LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq);
             GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic)
             {
-                Airports = AirportList.PathsForQuery(fq, alMatches, fShowRoute)
+                Airports = AirportList.PathsForAirportVisits(rgvisits, alMatches, fShowRoute)
             };
             map.Options.fShowRoute = fShowRoute;
             ViewBag.Map = map;
@@ -623,7 +624,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fq.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
                     throw new UnauthorizedAccessException();
 
-                locations = new VisitedLocations(VisitedAirport.VisitedAirportsForQuery(fq));
+                locations = new VisitedLocations(VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq)));
             }
 
             ViewBag.DataToMap = JsonConvert.SerializeObject(locations, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });

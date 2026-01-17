@@ -4,7 +4,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -112,7 +112,7 @@ namespace MyFlightbook.Airports
             if (String.IsNullOrEmpty(szUser))
                 return new AirportList(szDefault).GetAirportList();
 
-            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForUser(szUser);
+            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser));
 
             if (rgva.Count() < 15)
             {

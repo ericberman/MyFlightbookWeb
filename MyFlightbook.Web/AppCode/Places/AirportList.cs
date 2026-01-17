@@ -8,7 +8,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2023 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -75,7 +75,7 @@ namespace MyFlightbook.Airports
 
         public override string ToString()
         {
-            return Distance == 0.0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.RouteSegmentTemplate, Distance, From.Code, To.Code);
+            return Distance == 0.0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Airports.RouteSegmentTemplate, Distance, From.Code, To.Code);
         }
 
         public static RouteSegment LongerRouteSegment(RouteSegment rs1, RouteSegment rs2)
@@ -314,31 +314,29 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Returns a list of airportlists for the specified query, breaking into paths if the route is meant to be shown.  Just returns alMatches if not showing routes
         /// </summary>
-        /// <param name="fq">The flight query</param>
-        /// <param name="alMatches">An airport list of all known matches</param>
+        /// <param name="rgVAirportisits">The list of potential visits</param>
+        /// <param name="alMaster">An airport list of all known matches</param>
         /// <param name="fShowRoute">True to break it into separate routes</param>
         /// <returns></returns>
-        public static IEnumerable<AirportList> PathsForQuery(FlightQuery fq, AirportList alMatches, bool fShowRoute)
+        public static IEnumerable<AirportList> PathsForAirportVisits(IEnumerable<IAirportVisitor> rgVAirportisits, AirportList alMaster, bool fShowRoute)
         {
-            if (alMatches == null)
-                throw new ArgumentNullException(nameof(alMatches));
-            if (fq == null)
-                throw new ArgumentNullException(nameof(fq));
+            if (rgVAirportisits == null)
+                throw new ArgumentNullException(nameof(rgVAirportisits));
+            if (alMaster == null)
+                throw new ArgumentNullException(nameof(alMaster));
 
             if (!fShowRoute)
-                return new AirportList[] { alMatches };
+                return new AirportList[] { alMaster };
 
             List<AirportList> lst = new List<AirportList>();
 
-            DBHelper dbh = new DBHelper(LogbookEntryBase.QueryCommand(fq, lto: LogbookEntryCore.LoadTelemetryOption.None));
-            dbh.ReadRows((comm) => { }, (dr) =>
+            foreach (IAirportVisitor av in rgVAirportisits)
             {
-                object o = dr["Route"];
-                string szRoute = (string)(o == DBNull.Value ? string.Empty : o);
+                if (av == null || String.IsNullOrEmpty(av.Route))
+                    continue;
+                lst.Add(alMaster.CloneSubset(av.Route));
+            }
 
-                if (!String.IsNullOrEmpty(szRoute))
-                    lst.Add(alMatches.CloneSubset(szRoute));
-            });
             return lst;
         }
         #endregion

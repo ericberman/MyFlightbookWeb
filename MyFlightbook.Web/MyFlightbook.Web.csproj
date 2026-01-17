@@ -450,6 +450,8 @@
     <Content Include="App_Data\connection.config" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionHint.txt" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionSamplesList.txt" />
+    <Content Include="App_GlobalResources\Content.en\AttestationCover.htm" />
+    <Content Include="App_GlobalResources\Content.en\AttestationVerification.htm" />
     <Content Include="App_GlobalResources\Content.en\ClubsManual.htm" />
     <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\CFISigs.htm" />
@@ -601,6 +603,8 @@
     <Content Include="images\mfblogonew-large.png" />
     <Content Include="images\mfblogonew.png" />
     <Content Include="images\myflightbooknewstaging.png" />
+    <Content Include="images\pdf-scribble.png" />
+    <Content Include="images\pdf-wetink.png" />
     <Content Include="images\prohibited.png" />
     <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\Hartnack_Co_Copper2.png" />
@@ -1637,6 +1641,7 @@
     <Content Include="Areas\mvc\Views\Print\_footerLandingDesc.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\sessionExpired.cshtml" />
     <Content Include="Areas\mvc\Views\Image\snsListener.cshtml" />
+    <Content Include="Areas\mvc\Views\Print\_printAttest.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
@@ -1782,6 +1787,7 @@
     <Compile Include="AppCode\Places\NavaidTypes.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
     <Compile Include="AppCode\Places\VisitedAirport.cs" />
+    <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS.cs" />
     <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />

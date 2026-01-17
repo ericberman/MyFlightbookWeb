@@ -99,7 +99,7 @@ namespace MyFlightbook.Achievements
             pf.SetAchievementStatus(ComputeStatus.InProgress);
 
             // Pre-fill context with Visitedairports, since we know we're going to use that a bunch
-            List<VisitedAirport> lstVA = new List<VisitedAirport>(VisitedAirport.VisitedAirportsForQuery(new FlightQuery(UserName) { AircraftInstanceTypes = FlightQuery.AircraftInstanceRestriction.RealOnly }));
+            List<VisitedAirport> lstVA = new List<VisitedAirport>(VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(UserName)));
             lstVA.Sort((va1, va2) => { return va1.EarliestVisitDate.CompareTo(va2.EarliestVisitDate); });
             BadgeContext[KeyVisitedAirports] = lstVA.ToArray();
 

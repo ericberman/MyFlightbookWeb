@@ -4758,15 +4758,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0.0}NM ({1}⬌{2}).
-        /// </summary>
-        internal static string RouteSegmentTemplate {
-            get {
-                return ResourceManager.GetString("RouteSegmentTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Running Totals:.
         /// </summary>
         internal static string RunningTotalComment {

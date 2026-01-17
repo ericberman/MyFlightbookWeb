@@ -727,14 +727,6 @@ namespace MyFlightbook.Airports
                 return false;
             }
 
-            // if current user is admin and this is user-created, we can do anything.  Preserve the username, though.
-            if (Profile.GetUser(util.RequestContext.CurrentUserName).CanManageData)
-            {
-                if (!isNew && apMatch != null)
-                    this.UserName = apMatch.UserName;
-                return true;
-            }
-            
             // see if the returned object is owned by this user.
             // We've already checked above that this.username is not empty string, so
             // this can never return true for a built-in airport.
@@ -856,7 +848,7 @@ namespace MyFlightbook.Airports
         /// Deletes the airport.  Must be admin or owner.
         /// </summary>
         /// <returns></returns>
-        public Boolean FDelete(bool fAdminForce = false)
+        public Boolean FDelete(bool fAdminForce)
         {
             if (FValidate() && (fAdminForce || FIsOwned()))
             {
@@ -885,10 +877,9 @@ namespace MyFlightbook.Airports
         {
             if (Username == null)
                 throw new ArgumentNullException(nameof(Username));
-            fAdmin = fAdmin && MyFlightbook.Profile.GetUser(Username).CanManageData;
             List<airport> lst = new List<airport>(airport.AirportsForUser(Username, fAdmin));
             airport ap = lst.FirstOrDefault(a => a.Code.CompareCurrentCultureIgnoreCase(Code) == 0 && a.FacilityTypeCode.CompareCurrentCultureIgnoreCase(TypeCode) == 0);
-            ap?.FDelete();
+            ap?.FDelete(fAdmin);
         }
 
         public void ADMINReviewPotentialDupe(IEnumerable<airport> rgap)
