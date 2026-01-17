@@ -6,13 +6,15 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -847,6 +849,7 @@ namespace MyFlightbook.Printing
         private const uint flagCoverPage = 0x00000001;
         private const uint flagTotalPages = 0x00000002;
         private const uint flagShowTracking = 0x00000004;
+        private const uint flagDigitalSign = 0x00000008;
 
         public uint OptionFlags { get; set; }
 
@@ -882,6 +885,16 @@ namespace MyFlightbook.Printing
         {
             get { return (OptionFlags & flagShowTracking) != 0; }
             set { OptionFlags |= value ? flagShowTracking : 0; }
+        }
+
+        /// <summary>
+        /// Whether or not to digitally sign the PDF
+        /// </summary>
+        [JsonIgnore]
+        public bool fDigitalSignature
+        {
+            get { return (OptionFlags & flagDigitalSign) != 0; }
+            set { OptionFlags |= value ? flagDigitalSign : 0; }
         }
 
         /// <summary>
@@ -1019,7 +1032,7 @@ namespace MyFlightbook.Printing
     public static class PDFRenderer
     {
         /// <summary>
-        /// Renders the specified HTML to a PDF file on the disk.  FILE IS DELETED AT END OF THE CALL, SO DO WHAT YOU NEED IN THE ONSUCCESS CALL
+        /// Renders the specified HTML to a PDF file on the disk.  FILE CLEANUP OF THE PDF IS THE RESPONSIBILITY OF THE CALLER.
         /// </summary>
         /// <param name="pdfOptions">The options controlling the rendering</param>
         /// <param name="render">Action to render the html to a writer</param>
@@ -1070,7 +1083,6 @@ namespace MyFlightbook.Printing
                 finally
                 {
                     File.Delete(szOutputHtm);
-                    File.Delete(szOutputPDF);
 
                     if (p != null && !p.HasExited)
                         p.Kill();
@@ -1078,6 +1090,54 @@ namespace MyFlightbook.Printing
             }
 
             GC.Collect();   // We could have used a bunch of memory.
+        }
+
+        /// <summary>
+        /// Computes the SHA256 hash for the specified file
+        /// </summary>
+        /// <param name="filename">Name of the file on which to compute the hash</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        public static string ComputeSHAForFile(string filename)
+        {
+            if (String.IsNullOrEmpty(filename))
+                throw new ArgumentNullException(nameof(filename));
+
+            if (!File.Exists(filename))
+                throw new FileNotFoundException("File not found", filename);
+
+            // Compute the hash
+            using (var sha = SHA256.Create())
+            {
+                using (var stream = System.IO.File.OpenRead(filename))
+                {
+                    return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a zip file containing the specified files and returns the name of the zip file.
+        /// </summary>
+        /// <param name="dFileMap">A dictionary where the keys are the full file names of the files to add, and the values are the human-readable file names.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string CreateZipForFiles(IDictionary<string, string> dFileMap)
+        {
+            if (dFileMap == null)
+                throw new ArgumentNullException(nameof(dFileMap));
+            string szTempPath = Path.GetTempPath();
+            string szZipFile = szTempPath + Guid.NewGuid().ToString() + ".zip";
+            using (FileStream zipToOpen = new FileStream(szZipFile, FileMode.Create))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    foreach (string szFilePath in dFileMap.Keys)
+                        archive.CreateEntryFromFile(szFilePath, dFileMap[szFilePath]);
+                }
+            }
+            return szZipFile;
         }
     }
 

@@ -1,9 +1,11 @@
-﻿using MyFlightbook.Printing;
+﻿using MyFlightbook.Image;
+using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -221,23 +223,42 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (int.TryParse(Request["t"] ?? string.Empty, NumberStyles.None, CultureInfo.InvariantCulture, out int t))
                 routeVals["tabIndex"] = t;
 
+            // Digital signing should not be preserved in the URL - put it in session
+            Session["rbSigningType"] = Request["rbSigningType"] ?? string.Empty;
+            string base64Data = Request["hdnSigData"];
+            Session["attestationSignature"] = String.IsNullOrEmpty(base64Data) ? null : ScribbleImage.FromDataLinkURL(base64Data);
+
             return RedirectToAction("Index", routeVals);
         }
 
         private void RenderPDF(PrintingOptions printingOptions, string viewName, string szUser)
         {
             Profile pf = MyFlightbook.Profile.GetUser(szUser);
+            bool fDigitalAttestation = ((string) Session["rbSigningType"] ?? string.Empty).CompareCurrentCultureIgnoreCase("digital") == 0;
+            byte[] sigData = (byte[]) Session["attestationSignature"] ?? Array.Empty<byte>();
+            
+            Session["rbSigningType"] = null;
+            Session["attestationSignature"] = null;
+                        
             PDFFooterOptions footerOptions = new PDFFooterOptions()
             {
                 fCover = printingOptions.Sections.IncludeCoverPage,
                 fTotalPages = printingOptions.PDFSettings.IncludeTotalPageCount,
                 fTrackChanges = pf.PreferenceExists(MFBConstants.keyTrackOriginal),
+                fDigitalSignature = fDigitalAttestation,
                 StartPageOffset = printingOptions.StartingPageNumberOffset,
                 UserName = String.IsNullOrEmpty(pf.FirstName + pf.LastName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)
             };
             printingOptions.PDFSettings.FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + footerOptions.ToEncodedPathSegment()).ToAbsoluteURL(Request);
+            string szFileName = $"{RegexUtility.UnSafeFileChars.Replace($"{MyFlightbook.Profile.GetUser(szUser).UserFullName} {Resources.LocalizedText.PrintViewCoverSheetNameTemplate}", "-")}.pdf";
 
-            PDFRenderer.RenderFile(
+            // Dictionary to map file names to human friendly names
+            Dictionary<string, string> dictFiles = new Dictionary<string, string>();
+            string szFileToDownload = string.Empty;
+
+            try
+            {
+                PDFRenderer.RenderFile(
                 printingOptions.PDFSettings,
                 (htwOut) =>
                 {
@@ -248,26 +269,70 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 },
                 (szErr) => // onError
                 {
-                    util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "{0}\r\nUser: {1}\r\nOptions:\r\n{2}\r\n",
-                        szErr, szUser, JsonConvert.SerializeObject(printingOptions)), ProfileRoles.maskSiteAdminOnly);
-
-                    // put the error into the session
-                    ViewBag.error = szErr;
+                    util.NotifyAdminEvent("Error saving PDF", $"{szErr}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
                 },
                 (szOutputPDF) => // onSuccess
                 {
-                    try
+                    szFileToDownload = szOutputPDF;
+                    dictFiles[szOutputPDF] = szFileName;
+
+                    if (fDigitalAttestation)
                     {
-                        // hack, ideally we want to return a File actionresult, but the file will be deleted by the time we get there.
-                        Response.Clear();
-                        Response.ContentType = "application/pdf";
-                        Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", MyFlightbook.Profile.GetUser(szUser).UserFullName));
-                        Response.WriteFile(szOutputPDF);
-                        Response.Flush();
+                        // Create a digital attestation page: include the hash of the PDF we just created, and do it portrait with no footer
+                        // Compute the hash
+                        string szHash = PDFRenderer.ComputeSHAForFile(szOutputPDF);
+                        printingOptions.PDFSettings.FooterUri = null; // no footer on attestation page
+                        printingOptions.PDFSettings.Orientation = PDFOptions.PageOrientation.Portrait;
+
+                        // Now create the attestation page
+                        PDFRenderer.RenderFile(printingOptions.PDFSettings,
+                                    (htwOut) =>
+                                    {
+                                        IView view = ViewEngines.Engines.FindView(ControllerContext, "_printAttest", null).View;
+                                        // Populate ViewBag (ViewBag is just ViewData)
+                                        var viewData = ControllerContext.Controller.ViewData;
+                                        viewData["pf"] = pf;
+                                        viewData["scribble"] = sigData;
+                                        viewData["fileName"] = szFileName;
+                                        viewData["hashValue"] = szHash;
+
+                                        var viewContext = new ViewContext(ControllerContext, view, viewData, ControllerContext.Controller.TempData, htwOut);
+                                        view.Render(viewContext, htwOut);
+                                    },
+                                    (szErr) => // onError
+                                    {
+                                        util.NotifyAdminEvent("Error saving PDF", $"{szErr}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
+                                    },
+                                    (szAttestationPDF) => // onSuccess
+                                    {
+                                        dictFiles[szAttestationPDF] = szFileName.Replace(".pdf", $"{Resources.LocalizedText.AttestationFileNameSuffix}.pdf"); // Add the attestation page
+                                        szFileToDownload = PDFRenderer.CreateZipForFiles(dictFiles);  // and zip it up to return that.
+
+                                        // Now change the output file name to indicate it's a zip and add the zip file to the dictionary for cleanup
+                                        szFileName = szFileName.Replace(".pdf", ".zip");
+                                        dictFiles[szFileToDownload] = szFileName;
+                                    });
                     }
-                    catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
-                    catch (HttpException) { }
                 });
+
+                // hack, ideally we want to return a File actionresult, but the file will be deleted by the time we get there.
+                bool fIsPDF = szFileToDownload.EndsWith(".pdf");
+                Response.Clear();
+                Response.ContentType = fIsPDF ? "application/pdf" : "application/zip";
+                Response.AddHeader("content-disposition", $"attachment;filename=\"{szFileName}\"");
+                Response.WriteFile(szFileToDownload);
+                Response.Flush();
+            }
+            catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
+            catch (HttpException) { }
+            finally
+            {
+                foreach (string szFile in dictFiles.Keys)
+                {
+                    if (System.IO.File.Exists(szFile))
+                        System.IO.File.Delete(szFile);
+                }
+            }
         }
 
         // GET: mvc/Print

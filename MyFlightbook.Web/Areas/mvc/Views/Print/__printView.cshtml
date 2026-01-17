@@ -37,7 +37,7 @@
 
         tbody tr.bordered.breakable.breakBefore:hover td {
             background-color: var(--menu-background-selected);
-            color: var(----menu-color-selected);
+            color: var(--menu-color-selected);
         }
     }
 </style>
@@ -50,13 +50,20 @@
             }
         });
 
-        validateForm($("#frmPrintOptions"), {
+        $.validator.addMethod("validateSig", function (value, element, param) {
+            return !$("#signatureCanvas").is(":visible") || $("#hdnSigData").val() != "";
+        }, "@Resources.SignOff.errScribbleRequired");
+
+        var v = validateForm($("#frmPrintOptions"), {
+            hdnSigData: { validateSig: true },
             pdfCustWidth: { required: true, min: 50, max: 1000 },
             pdfCustHeight: { required: true, min: 50, max: 1000 }
         }, {
+            hdnSigData: "@Resources.SignOff.errScribbleRequired",
             pdfCustWidth: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions",
             pdfCustHeight: "@Resources.LocalizedText.PDFPageSizeInvalidDimensions"
         });
+        v.settings.ignore = ":hidden:not(#hdnSigData)";
 
         $("tbody tr.bordered.breakable").on("click", function (e) {
             var ck = $(this).find("input[type='checkbox'][name='ckpb']");
@@ -147,7 +154,7 @@
         @if (po.Sections.IncludeCoverPage)
         {
             <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;">
-                <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large; margin-top: 36pt;">
+                <div class="b" style="text-transform:uppercase; font-size:xx-large; margin-top: 36pt;">
                     <p>@pf.UserFullName</p>
                     @if (po.Sections.IncludeHeadshot && pf.HasHeadShot)
                     {

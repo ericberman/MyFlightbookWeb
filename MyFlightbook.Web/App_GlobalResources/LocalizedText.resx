@@ -2129,4 +2129,34 @@
   <data name="PrivacyDataFeatures" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Content.en\PrivacyDataFeatures.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="PrintViewSignWetInk" xml:space="preserve">
+    <value>I will print on paper and sign each page (wet ink)</value>
+  </data>
+  <data name="PrintViewSignDigitally" xml:space="preserve">
+    <value>I have reviewed the logbook below and will attest to its accuracy digitally</value>
+  </data>
+  <data name="PrintViewDigitalSigningNote" xml:space="preserve">
+    <value>Instead of downloading a single PDF, you will get a ZIP file containing two PDFs: your logbook, and a digital attestation of that logbook.  Provide both of these to the requestor of your logbook</value>
+  </data>
+  <data name="PrintViewAttestPrompt" xml:space="preserve">
+    <value>By signing below, I am electronically signing certifying the accuracy of the referenced logbook.</value>
+  </data>
+  <data name="PDFAttestationSignatureRequired" xml:space="preserve">
+    <value>Please provide a scribbled signature</value>
+  </data>
+  <data name="PDFFooterDigitalAttestation" xml:space="preserve">
+    <value>[See accompanying attestation for validity notes]</value>
+  </data>
+  <data name="PrintViewRecipientAttestationHeader" xml:space="preserve">
+    <value>Instructions to the recipient of this notice and the accompanying logbook file</value>
+  </data>
+  <data name="AttestationVerification" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\AttestationVerification.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AttestationCover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\AttestationCover.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AttestationFileNameSuffix" xml:space="preserve">
+    <value>-Attestation</value>
+  </data>
 </root>

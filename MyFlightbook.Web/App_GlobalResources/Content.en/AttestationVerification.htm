@@ -1,0 +1,19 @@
+﻿<h2>To verify the authenticity of the referenced logbook &quot;%FILENAME%&quot;:</h2>
+<ol>
+    <li> Save the PDF file to your computer</li>
+    <li>
+        Compute its SHA‑256 hash using any standard tool:
+        <ul>
+            <li>Windows: <span style="font-family:Courier New, Courier, monospace" class="b"> certutil -hashfile &quot;%FILENAME%&quot; SHA256</span></li>
+            <li>macOS: <span style="font-family:Courier New, Courier, monospace" class="b"> shasum -a 256 &quot;%FILENAME%&quot;</span></li>
+            <li>Linux: <span style="font-family:Courier New, Courier, monospace" class="b"> sha256sum &quot;%FILENAME%&quot;</span></li>
+        </ul>
+    </li>
+    <li>Confirm that the resulting hash matches the value printed above.</li>
+    <li>Verify that the scribbled signature on each page matches the signature above</li>
+</ol>
+<p>
+    If the hashes match, the attestation applies to the provided file.
+    Any modification to the logbook PDF will result in a different hash.
+</p>
+<p class="fineprint">By requiring an affirmative, non-refutable action on the part of the pilot to produce this and using a SHA256 hash to verify the document contents, this document should meet the standards of AC-120-78B without requiring wet-ink-on-paper</p>

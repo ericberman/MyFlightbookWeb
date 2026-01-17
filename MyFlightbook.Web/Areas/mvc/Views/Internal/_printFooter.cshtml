@@ -15,6 +15,8 @@
     {
         <div>&nbsp;</div>
         <div style="float: right">@(opt.fTotalPages ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, page + opt.StartPageOffset, topage + opt.StartPageOffset) : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, page + opt.StartPageOffset))</div>
-        <div>@Resources.LogbookEntry.LogbookCertification @(opt.UserName ?? string.Empty) _____________________________</div>
+        <div>
+            @Resources.LogbookEntry.LogbookCertification @(opt.UserName ?? string.Empty) @(opt.fDigitalSignature ? @Resources.LocalizedText.PDFFooterDigitalAttestation : "_____________________________")
+        </div>
     }
 }

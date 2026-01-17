@@ -1,0 +1,35 @@
+﻿@using System.Globalization
+@{
+    Profile pf = ViewBag.pf;
+    byte[] scribble = ViewBag.scribble;
+    ViewBag.AddBaseRef = ViewBag.isPDF;
+    ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<div class="c centered">
+    <div class="b" style="text-transform:uppercase; font-size:xx-large; margin-top: 36pt;">
+        <p>@pf.UserFullName</p>
+        @if (pf.HasHeadShot)
+        {
+            <div class="c"><img src="@pf.HeadShotHRefWithKey" /></div>
+        }
+    </div>
+    <div><img src="@(Branding.CurrentBrand.LogoHRef.ToAbsolute())" style="max-width: 300px;" /></div>
+</div>
+<div class="wsprel">
+    @Html.Raw(Branding.ReBrand(Resources.LocalizedText.AttestationCover
+                                            .Replace("%PilotName%", pf.UserFullName)
+                                            .Replace("%LogbookEndDate%", DateTime.Now.ToShortDateString())
+                                            .Replace("%AttestationDateTime%", DateTime.Now.ToString("f", CultureInfo.CurrentCulture))
+                                            .Replace("%FileName%", ViewBag.fileName)
+                                            .Replace("%HashValue%", ViewBag.hashValue)))
+</div>
+<div class="c">
+    @if (scribble != null)
+    {
+        <img src="@MyFlightbook.Image.ScribbleImage.DataLinkForByteArray(scribble)" />
+    }
+</div>
+<hr />
+<h2>@Resources.LocalizedText.PrintViewRecipientAttestationHeader</h2>
+<div>@Html.Raw(Resources.LocalizedText.AttestationVerification.Replace("%FILENAME%", ViewBag.fileName))</div>
