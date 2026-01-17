@@ -761,6 +761,8 @@ namespace MyFlightbook
         /// <param name="q">The query from which to initialize</param>
         public FlightQuery(FlightQuery q) : this()
         {
+            if (q == null)
+                throw new ArgumentNullException(nameof(q));
             // Collections are copied by reference (unlike arrays), so util.copyobject doesn't quite work.
             // So we start with copyObject, but then explicitly make copies of the other collections.
             util.CopyObject(q, this);
