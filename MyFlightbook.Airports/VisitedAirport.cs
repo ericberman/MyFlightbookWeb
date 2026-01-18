@@ -1,4 +1,5 @@
-﻿using MyFlightbook.CSV;
+﻿using MyFlightbook.Airports.Properties;
+using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using Newtonsoft.Json;
 using System;
@@ -472,13 +473,13 @@ namespace MyFlightbook.Airports
                 dt.Locale = CultureInfo.CurrentCulture;
 
                 // add the header columns from the gridview
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportCode, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportName, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportCountry + "*", typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportRegion, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportVisits, typeof(int)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportEarliestVisit, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Airports.airportLatestVisit, typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportCode, typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportName, typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportCountry + "*", typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportRegion, typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportVisits, typeof(int)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportEarliestVisit, typeof(string)));
+                dt.Columns.Add(new DataColumn(AirportResources.airportLatestVisit, typeof(string)));
 
                 foreach (VisitedAirport va in rgva)
                 {
@@ -499,7 +500,7 @@ namespace MyFlightbook.Airports
                     using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8, 1024))
                     {
                         CsvWriter.WriteToStream(sw, dt, true, true);
-                        sw.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(Resources.Airports.airportCountryDisclaimer)));
+                        sw.Write(String.Format(CultureInfo.CurrentCulture, "\r\n\r\n\" *{0}\"", Branding.ReBrand(AirportResources.airportCountryDisclaimer)));
                         sw.Flush();
                         return ms.ToArray();
                     }

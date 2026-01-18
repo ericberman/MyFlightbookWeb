@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.Airports.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -107,17 +108,12 @@ namespace MyFlightbook.Airports
         /// <param name="szUser"></param>
         /// <param name="szDefault"></param>
         /// <returns></returns>
-        private IEnumerable<airport> AirportsForGame(string szUser, string szDefault)
+        private IEnumerable<airport> AirportsForGame(IEnumerable<VisitedAirport> rgva)
         {
-            if (String.IsNullOrEmpty(szUser))
-                return new AirportList(szDefault).GetAirportList();
-
-            IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser));
-
-            if (rgva.Count() < 15)
+            if ((rgva?.Count() ?? 0) < 15)
             {
-                Notes = Resources.LocalizedText.AirportGameTooFewAirports;
-                return airport.AirportsWithExactMatch(szDefault);
+                Notes = AirportResources.AirportGameTooFewAirports;
+                return airport.AirportsWithExactMatch(szBusyUSAirports);
             }
 
             List<airport> lst = new List<airport>();
@@ -142,12 +138,12 @@ namespace MyFlightbook.Airports
             CorrectAnswerCount = 0;
         }
 
-        public void Init(string szUser, string szDefault)
+        public void Init(IEnumerable<VisitedAirport> rgva)
         {
-            if (String.IsNullOrEmpty(szUser))
-                Init(airport.AirportsWithExactMatch(szDefault).ToArray());
+            if (rgva?.Any() ?? false)
+                Init(AirportsForGame(rgva));
             else
-                Init(AirportsForGame(szUser, szDefault).ToArray());
+                Init(airport.AirportsWithExactMatch(szBusyUSAirports));
         }
 
         /// <summary>

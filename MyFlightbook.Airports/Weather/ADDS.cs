@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Airports.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +10,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2023 MyFlightbook LLC
+ * Copyright (c) 2017-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +31,7 @@ namespace MyFlightbook.Weather.ADDS
             {
                 if (String.IsNullOrEmpty(observation_time))
                     return null;
-                if (DateTime.TryParse(observation_time, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out DateTime dt))
+                if (DateTime.TryParse(observation_time, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dt))
                     return dt.ToUniversalTime();
                 return null;
             }
@@ -75,7 +76,7 @@ namespace MyFlightbook.Weather.ADDS
                     case "METAR":
                         return string.Empty;
                     case "SPECI":
-                        return Resources.Weather.metarTypeSpecial;
+                        return Airports.Properties.Weather.metarTypeSpecial;
                     default:
                         return metar_type;
                 }
@@ -98,7 +99,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string AltitudeHgDisplay
         {
-            get { return altim_in_hgFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.pressureHgFormat, altim_in_hg) : string.Empty; }
+            get { return altim_in_hgFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.pressureHgFormat, altim_in_hg) : string.Empty; }
         }
 
         /// <summary>
@@ -106,7 +107,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string VisibilityDisplay
         {
-            get { return visibility_statute_miSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.visibilitySmFormat, visibility_statute_mi) : string.Empty; }
+            get { return visibility_statute_miSpecified ? String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.visibilitySmFormat, visibility_statute_mi) : string.Empty; }
         }
 
         /// <summary>
@@ -120,17 +121,17 @@ namespace MyFlightbook.Weather.ADDS
                     return string.Empty;
                 StringBuilder sb = new StringBuilder();
                 if (quality_control_flags.auto_station.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.auto_stationField);
+                    sb.Append(Airports.Properties.Weather.auto_stationField);
                 if (quality_control_flags.corrected.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.correctedField);
+                    sb.Append(Airports.Properties.Weather.correctedField);
                 if (quality_control_flags.freezing_rain_sensor_off.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.freezing_rain_sensor_offField);
+                    sb.Append(Airports.Properties.Weather.freezing_rain_sensor_offField);
                 if (quality_control_flags.lightning_sensor_off.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.lightning_sensor_offField);
+                    sb.Append(Airports.Properties.Weather.lightning_sensor_offField);
                 if (quality_control_flags.maintenance_indicator_on.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.maintenance_indicator_onField);
+                    sb.Append(Airports.Properties.Weather.maintenance_indicator_onField);
                 if (quality_control_flags.present_weather_sensor_off.CompareOrdinalIgnoreCase("TRUE") == 0)
-                    sb.Append(Resources.Weather.present_weather_sensor_offField);
+                    sb.Append(Airports.Properties.Weather.present_weather_sensor_offField);
                 return sb.ToString();
             }
         }
@@ -143,11 +144,11 @@ namespace MyFlightbook.Weather.ADDS
             get
             {
                 if (temp_cSpecified && dewpoint_cSpecified)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Weather.TempAndDewpoint, temp_c, dewpoint_c);
+                    return String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.TempAndDewpoint, temp_c, dewpoint_c);
                 else if (temp_cSpecified)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Weather.temp_cField, temp_c);
+                    return String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.temp_cField, temp_c);
                 else if (dewpoint_cSpecified)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.Weather.dewpoint_cField, dewpoint_c);
+                    return String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.dewpoint_cField, dewpoint_c);
                 else
                     return string.Empty;
             }
@@ -158,7 +159,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string TempDisplay
         {
-            get { return temp_cFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.tempFormat, temp_c) : string.Empty; }
+            get { return temp_cFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.tempFormat, temp_c) : string.Empty; }
         }
 
         /// <summary>
@@ -166,7 +167,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string DewpointDisplay
         {
-            get { return dewpoint_cFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.tempFormat, dewpoint_c) : string.Empty; }
+            get { return dewpoint_cFieldSpecified ? String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.tempFormat, dewpoint_c) : string.Empty; }
         }
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace MyFlightbook.Weather.ADDS
         /// </summary>
         public string WindDirDisplay
         {
-            get { return wind_dir_degreesFieldSpecified ? (Int32.TryParse(wind_dir_degrees, out int wdir) ?  String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_dir_degreesField, wdir) : wind_dir_degrees) : string.Empty; }
+            get { return wind_dir_degreesFieldSpecified ? (Int32.TryParse(wind_dir_degrees, out int wdir) ?  String.Format(CultureInfo.CurrentCulture, Airports.Properties.Weather.wind_dir_degreesField, wdir) : wind_dir_degrees) : string.Empty; }
         }
 
 
@@ -369,15 +370,15 @@ namespace MyFlightbook.Weather.ADDS
                     default:
                         return sky_cover;
                     case "CLR":
-                        return Resources.Weather.Clear;
+                        return Airports.Properties.Weather.Clear;
                     case "FEW":
-                        return Resources.Weather.Few;
+                        return Airports.Properties.Weather.Few;
                     case "SCT":
-                        return Resources.Weather.Scattered;
+                        return Airports.Properties.Weather.Scattered;
                     case "BKN":
-                        return Resources.Weather.Broken;
+                        return Airports.Properties.Weather.Broken;
                     case "OVC":
-                        return Resources.Weather.Overcast;
+                        return Airports.Properties.Weather.Overcast;
                 }
             }
         }

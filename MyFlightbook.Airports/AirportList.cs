@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Geography;
+using MyFlightbook.Airports.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -75,7 +76,7 @@ namespace MyFlightbook.Airports
 
         public override string ToString()
         {
-            return Distance == 0.0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Airports.RouteSegmentTemplate, Distance, From.Code, To.Code);
+            return Distance == 0.0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, AirportResources.RouteSegmentTemplate, Distance, From.Code, To.Code);
         }
 
         public static RouteSegment LongerRouteSegment(RouteSegment rs1, RouteSegment rs2)

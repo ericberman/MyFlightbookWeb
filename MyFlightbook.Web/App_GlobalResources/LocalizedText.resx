@@ -165,9 +165,6 @@
   <data name="AirportGameTitle" xml:space="preserve">
     <value>How well can you recognize airports based on satellite imagery? Try your skills here!</value>
   </data>
-  <data name="AirportGameTooFewAirports" xml:space="preserve">
-    <value>You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead.</value>
-  </data>
   <data name="AirportGameUnauthenticated" xml:space="preserve">
     <value>Unauthenticated user - using US airports</value>
   </data>

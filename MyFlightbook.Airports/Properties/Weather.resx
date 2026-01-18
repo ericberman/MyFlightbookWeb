@@ -120,11 +120,20 @@
   <data name="altim_in_hgField" xml:space="preserve">
     <value>Altimeter {0:#,##0.00}"hg</value>
   </data>
+  <data name="altitudeFtFormat" xml:space="preserve">
+    <value>{0:#,##0}ft</value>
+  </data>
   <data name="autoField" xml:space="preserve">
     <value>??? </value>
   </data>
   <data name="auto_stationField" xml:space="preserve">
     <value>Automatic Station </value>
+  </data>
+  <data name="Broken" xml:space="preserve">
+    <value>Broken</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Sky Clear</value>
   </data>
   <data name="cloud_base_ft_aglField" xml:space="preserve">
     <value>{0:#,##0}' AGL</value>
@@ -138,125 +147,17 @@
   <data name="elevation_mField" xml:space="preserve">
     <value>Field Elevation (m)</value>
   </data>
+  <data name="Few" xml:space="preserve">
+    <value>Few</value>
+  </data>
   <data name="flight_categoryField" xml:space="preserve">
     <value>Flight Category</value>
   </data>
   <data name="freezing_rain_sensor_offField" xml:space="preserve">
     <value>Freezing Rain Sensor Offline </value>
   </data>
-  <data name="latitudeField" xml:space="preserve">
-    <value>Latitude</value>
-  </data>
-  <data name="lightning_sensor_offField" xml:space="preserve">
-    <value>Lightning Sensor Offline </value>
-  </data>
-  <data name="longitudeField" xml:space="preserve">
-    <value>Longitude</value>
-  </data>
-  <data name="maintenance_indicator_onField" xml:space="preserve">
-    <value>Maintenance Indicator On </value>
-  </data>
-  <data name="maxT24hr_cField" xml:space="preserve">
-    <value>24-hour Max Temperature (°C)</value>
-  </data>
-  <data name="maxT_cField" xml:space="preserve">
-    <value>Max Temperature (°C)</value>
-  </data>
-  <data name="metar_typeField" xml:space="preserve">
-    <value>METAR Type</value>
-  </data>
-  <data name="minT24hr_cField" xml:space="preserve">
-    <value>24-hour Min Temperature (°C)</value>
-  </data>
-  <data name="minT_cField" xml:space="preserve">
-    <value>Min Temperature (°C)</value>
-  </data>
-  <data name="no_signalField" xml:space="preserve">
-    <value>No Signal </value>
-  </data>
-  <data name="observation_timeField" xml:space="preserve">
-    <value>Observation</value>
-  </data>
-  <data name="pcp24hr_inField" xml:space="preserve">
-    <value>24-hour Precipitation (in)</value>
-  </data>
-  <data name="pcp3hr_inField" xml:space="preserve">
-    <value>3-hr Precipitation (in)</value>
-  </data>
-  <data name="pcp6hr_inField" xml:space="preserve">
-    <value>6-hr Precipitation (in)</value>
-  </data>
-  <data name="precip_inField" xml:space="preserve">
-    <value>Precipitation (in)</value>
-  </data>
-  <data name="present_weather_sensor_offField" xml:space="preserve">
-    <value>Weather Sensor Off Field </value>
-  </data>
-  <data name="quality_control_flagsField" xml:space="preserve">
-    <value>Quality Control</value>
-  </data>
-  <data name="raw_textField" xml:space="preserve">
-    <value>Raw</value>
-  </data>
-  <data name="sea_level_pressure_mbField" xml:space="preserve">
-    <value>Sea level pressure {0}mb</value>
-  </data>
-  <data name="sky_conditionField" xml:space="preserve">
-    <value>Sky Conditions</value>
-  </data>
-  <data name="sky_coverField" xml:space="preserve">
-    <value>Sky Coverage</value>
-  </data>
-  <data name="snow_inField" xml:space="preserve">
-    <value>Snow (in)</value>
-  </data>
-  <data name="station_idField" xml:space="preserve">
-    <value>Station Identifier</value>
-  </data>
-  <data name="TempAndDewpoint" xml:space="preserve">
-    <value>Temp/Dewpoint (°C) {0:#,##0}/{1:#,##0}</value>
-  </data>
-  <data name="temp_cField" xml:space="preserve">
-    <value>Temp {0}°C</value>
-  </data>
-  <data name="three_hr_pressure_tendency_mbField" xml:space="preserve">
-    <value>3-hour Pressure {0}mb</value>
-  </data>
-  <data name="vert_vis_ftField" xml:space="preserve">
-    <value>Vertical Visibility {0}ft</value>
-  </data>
-  <data name="visibility_statute_miField" xml:space="preserve">
-    <value>Visibility {0}sm</value>
-  </data>
-  <data name="wind_dir_degreesField" xml:space="preserve">
-    <value>{0}°</value>
-  </data>
-  <data name="wind_gust_ktField" xml:space="preserve">
-    <value>Gusts {0}kt</value>
-  </data>
-  <data name="wind_speed_ktField" xml:space="preserve">
-    <value>Wind {0}kt</value>
-  </data>
-  <data name="Broken" xml:space="preserve">
-    <value>Broken</value>
-  </data>
-  <data name="Clear" xml:space="preserve">
-    <value>Sky Clear</value>
-  </data>
-  <data name="Few" xml:space="preserve">
-    <value>Few</value>
-  </data>
   <data name="GetMETARSPrompt" xml:space="preserve">
     <value>Show current METARS</value>
-  </data>
-  <data name="Overcast" xml:space="preserve">
-    <value>Overcast</value>
-  </data>
-  <data name="Scattered" xml:space="preserve">
-    <value>Scattered</value>
-  </data>
-  <data name="altitudeFtFormat" xml:space="preserve">
-    <value>{0:#,##0}ft</value>
   </data>
   <data name="headerAltimeter" xml:space="preserve">
     <value>Altimeter</value>
@@ -282,22 +183,121 @@
   <data name="headerWind" xml:space="preserve">
     <value>Wind</value>
   </data>
+  <data name="latitudeField" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="lightning_sensor_offField" xml:space="preserve">
+    <value>Lightning Sensor Offline </value>
+  </data>
+  <data name="longitudeField" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="maintenance_indicator_onField" xml:space="preserve">
+    <value>Maintenance Indicator On </value>
+  </data>
+  <data name="maxT24hr_cField" xml:space="preserve">
+    <value>24-hour Max Temperature (°C)</value>
+  </data>
+  <data name="maxT_cField" xml:space="preserve">
+    <value>Max Temperature (°C)</value>
+  </data>
   <data name="metarTypeSpecial" xml:space="preserve">
     <value>Special Observation</value>
+  </data>
+  <data name="metar_typeField" xml:space="preserve">
+    <value>METAR Type</value>
+  </data>
+  <data name="minT24hr_cField" xml:space="preserve">
+    <value>24-hour Min Temperature (°C)</value>
+  </data>
+  <data name="minT_cField" xml:space="preserve">
+    <value>Min Temperature (°C)</value>
+  </data>
+  <data name="NoMetarsFound" xml:space="preserve">
+    <value>(No weather available)</value>
+  </data>
+  <data name="no_signalField" xml:space="preserve">
+    <value>No Signal </value>
+  </data>
+  <data name="observation_timeField" xml:space="preserve">
+    <value>Observation</value>
+  </data>
+  <data name="Overcast" xml:space="preserve">
+    <value>Overcast</value>
+  </data>
+  <data name="pcp3hr_inField" xml:space="preserve">
+    <value>3-hr Precipitation (in)</value>
+  </data>
+  <data name="pcp6hr_inField" xml:space="preserve">
+    <value>6-hr Precipitation (in)</value>
+  </data>
+  <data name="pcp24hr_inField" xml:space="preserve">
+    <value>24-hour Precipitation (in)</value>
+  </data>
+  <data name="precip_inField" xml:space="preserve">
+    <value>Precipitation (in)</value>
+  </data>
+  <data name="present_weather_sensor_offField" xml:space="preserve">
+    <value>Weather Sensor Off Field </value>
   </data>
   <data name="pressureHgFormat" xml:space="preserve">
     <value>{0:#,##0.00}"hg</value>
   </data>
+  <data name="quality_control_flagsField" xml:space="preserve">
+    <value>Quality Control</value>
+  </data>
+  <data name="raw_textField" xml:space="preserve">
+    <value>Raw</value>
+  </data>
+  <data name="Scattered" xml:space="preserve">
+    <value>Scattered</value>
+  </data>
+  <data name="sea_level_pressure_mbField" xml:space="preserve">
+    <value>Sea level pressure {0}mb</value>
+  </data>
+  <data name="sky_conditionField" xml:space="preserve">
+    <value>Sky Conditions</value>
+  </data>
+  <data name="sky_coverField" xml:space="preserve">
+    <value>Sky Coverage</value>
+  </data>
+  <data name="snow_inField" xml:space="preserve">
+    <value>Snow (in)</value>
+  </data>
+  <data name="station_idField" xml:space="preserve">
+    <value>Station Identifier</value>
+  </data>
+  <data name="TempAndDewpoint" xml:space="preserve">
+    <value>Temp/Dewpoint (°C) {0:#,##0}/{1:#,##0}</value>
+  </data>
   <data name="tempFormat" xml:space="preserve">
     <value>{0:#,##0}°C</value>
+  </data>
+  <data name="temp_cField" xml:space="preserve">
+    <value>Temp {0}°C</value>
+  </data>
+  <data name="three_hr_pressure_tendency_mbField" xml:space="preserve">
+    <value>3-hour Pressure {0}mb</value>
+  </data>
+  <data name="vert_vis_ftField" xml:space="preserve">
+    <value>Vertical Visibility {0}ft</value>
   </data>
   <data name="visibilitySmFormat" xml:space="preserve">
     <value>{0}sm</value>
   </data>
+  <data name="visibility_statute_miField" xml:space="preserve">
+    <value>Visibility {0}sm</value>
+  </data>
+  <data name="wind_dir_degreesField" xml:space="preserve">
+    <value>{0}°</value>
+  </data>
+  <data name="wind_gust_ktField" xml:space="preserve">
+    <value>Gusts {0}kt</value>
+  </data>
+  <data name="wind_speed_ktField" xml:space="preserve">
+    <value>Wind {0}kt</value>
+  </data>
   <data name="wind_speed_nolabel" xml:space="preserve">
     <value>{0}kt</value>
-  </data>
-  <data name="NoMetarsFound" xml:space="preserve">
-    <value>(No weather available)</value>
   </data>
 </root>

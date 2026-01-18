@@ -1774,22 +1774,14 @@
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
     <Compile Include="AppCode\Places\Airbly.cs" />
-    <Compile Include="AppCode\Places\AirportImport.cs" />
-    <Compile Include="AppCode\Places\AirportList.cs" />
-    <Compile Include="AppCode\Places\AirportQuiz.cs" />
-    <Compile Include="AppCode\Places\Airports.cs" />
     <Compile Include="AppCode\Places\CSV.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
     <Compile Include="AppCode\Places\GPX.cs" />
     <Compile Include="AppCode\Places\IGC.cs" />
     <Compile Include="AppCode\Places\KML.cs" />
     <Compile Include="AppCode\Places\Mapping.cs" />
-    <Compile Include="AppCode\Places\NavaidTypes.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
-    <Compile Include="AppCode\Places\VisitedAirport.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
-    <Compile Include="AppCode\Places\Weather\ADDS.cs" />
-    <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLRoleProvider.cs" />
@@ -1934,11 +1926,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Totals.fr.resx</DependentUpon>
-    </Compile>
-    <Compile Include="App_GlobalResources\Weather.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Weather.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\WebService.designer.cs">
       <AutoGen>True</AutoGen>
@@ -2188,10 +2175,6 @@
       <LastGenOutput>Totals.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_GlobalResources\Weather.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>Weather.designer.cs</LastGenOutput>
-    </Content>
     <Content Include="App_GlobalResources\WebService.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>WebService.designer.cs</LastGenOutput>
@@ -2241,6 +2224,10 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj">
+      <Project>{0878c055-b690-40ab-a1df-6a7a076fa0f5}</Project>
+      <Name>MyFlightbook.Airports</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>

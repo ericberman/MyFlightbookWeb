@@ -427,15 +427,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead..
-        /// </summary>
-        internal static string AirportGameTooFewAirports {
-            get {
-                return ResourceManager.GetString("AirportGameTooFewAirports", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unauthenticated user - using US airports.
         /// </summary>
         internal static string AirportGameUnauthenticated {

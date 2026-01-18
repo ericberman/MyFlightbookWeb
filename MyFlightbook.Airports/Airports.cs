@@ -1,3 +1,4 @@
+using MyFlightbook.Airports.Properties;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using MySql.Data.MySqlClient;
@@ -705,13 +706,13 @@ namespace MyFlightbook.Airports
                 // We can't disambiguate two airports from each other, nor can we disambiguate two navaids.  Only navaids from airports
                 if (IsPort && fMatchedPorts)
                 {
-                    ErrorText = String.Format(CultureInfo.CurrentCulture, Resources.Airports.errConflict, Code);
+                    ErrorText = String.Format(CultureInfo.CurrentCulture, AirportResources.errConflict, Code);
                     return false;
                 }
 
                 if (!IsPort && fMatchedNavaids)
                 {
-                    ErrorText = String.Format(CultureInfo.CurrentCulture, Resources.Airports.errConflictNavaid, Code);
+                    ErrorText = String.Format(CultureInfo.CurrentCulture, AirportResources.errConflictNavaid, Code);
                     return false;
                 }
 
@@ -723,7 +724,7 @@ namespace MyFlightbook.Airports
             // Can't edit if username doesn't match the user
             if (apMatch.UserName.Length == 0)
             {
-                ErrorText = String.Format(CultureInfo.CurrentCulture, Resources.Airports.errBuiltInAirport, Code);
+                ErrorText = String.Format(CultureInfo.CurrentCulture, AirportResources.errBuiltInAirport, Code);
                 return false;
             }
 
@@ -732,7 +733,7 @@ namespace MyFlightbook.Airports
             // this can never return true for a built-in airport.
             if (String.Compare(apMatch.UserName, this.UserName, StringComparison.CurrentCultureIgnoreCase) != 0)
             {
-                ErrorText = String.Format(CultureInfo.CurrentCulture, Resources.Airports.errNotYourAirport, Code);
+                ErrorText = String.Format(CultureInfo.CurrentCulture, AirportResources.errNotYourAirport, Code);
                 return false;
             }
 
@@ -750,27 +751,27 @@ namespace MyFlightbook.Airports
             try
             {
                 if (Code.Length < (IsPort ? minAirportCodeLength : minNavaidCodeLength))
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Airports.errCodeTooShort, Code));
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, AirportResources.errCodeTooShort, Code));
 
                 if (Code.Length > maxCodeLength)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Airports.errCodeTooLong, Code));
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, AirportResources.errCodeTooLong, Code));
 
                 string[] airports = AirportList.NormalizeAirportList(Code);
 
                 if (airports.Length != 1)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Airports.errIllegalCharacters, Code));
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, AirportResources.errIllegalCharacters, Code));
 
                 if (Name.Length == 0)
-                    throw new MyFlightbookException(Resources.Airports.errEmptyName);
+                    throw new MyFlightbookException(AirportResources.errEmptyName);
 
                 if (LatLong.Latitude == 0 && LatLong.Longitude == 0)
-                    throw new MyFlightbookException(Resources.Airports.errEmptyLatLong);
+                    throw new MyFlightbookException(AirportResources.errEmptyLatLong);
 
                 if (!LatLong.IsValid)
                     throw new MyFlightbookException(LatLong.ValidationError);
 
                 if (Code.CompareCurrentCultureIgnoreCase("ZZZZ") == 0 || Code.CompareCurrentCultureIgnoreCase("AFIL") == 0)
-                    throw new MyFlightbookException(Resources.Airports.errReservedCode);
+                    throw new MyFlightbookException(AirportResources.errReservedCode);
 
                 NavAidTypes[] rgNavAidTypes = NavAidTypes.GetKnownTypes();
                 Boolean fIsKnownType = false;
@@ -778,7 +779,7 @@ namespace MyFlightbook.Airports
                     if (String.Compare(navaidtype.Code, this.FacilityTypeCode, StringComparison.CurrentCultureIgnoreCase) == 0)
                         fIsKnownType = true;
                 if (!fIsKnownType)
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Airports.errNotKnownType, this.Code));
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, AirportResources.errNotKnownType, this.Code));
 
                 return true;
             }
