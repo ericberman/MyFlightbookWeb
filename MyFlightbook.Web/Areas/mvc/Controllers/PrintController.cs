@@ -322,6 +322,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Response.AddHeader("content-disposition", $"attachment;filename=\"{szFileName}\"");
                 Response.WriteFile(szFileToDownload);
                 Response.Flush();
+                Response.End();
             }
             catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
             catch (HttpException) { }
@@ -375,7 +376,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             const string viewName = "__printView";
 
             if (pdf)
+            {
                 RenderPDF(printingOptions, viewName, szUser);
+                return new EmptyResult();
+            }
 
             return View(viewName);
         }

@@ -13,12 +13,13 @@
     ViewBag.UseMaps = true;
     FlightQuery fq = new FlightQuery(szUser) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtStart, DateMax = dtEnd };
 
-    IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsForQuery(fq);
+    IEnumerable<IAirportVisitor> rgPotentialVisits = LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser, fq);
+    IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(rgPotentialVisits);
     IEnumerable<VisitedRegion> regions = VisitedAirport.VisitedCountriesAndAdmins(rgva);
-    GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = AirportList.PathsForQuery(fq, new AirportList(rgva), true) };
+    GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = AirportList.PathsForAirportVisits(rgPotentialVisits, new AirportList(rgva), true) };
     map.Options.fShowRoute = true;
 
-    double distance = VisitedAirport.DistanceFlownByUser(fq, false, out string szErr);
+    double distance = LogbookEntryDisplay.DistanceFlownByUser(fq, false, out string szErr);
 
     IEnumerable<MFBImageInfo> lstImages = LogbookEntry.SampleImagesForUserInDateRange(szUser, dtStart, dtEnd);
 
@@ -52,6 +53,7 @@
         background-color: lightgray;
         border-radius: 5pt;
     }
+
     .ownerCallout {
         margin-left: auto;
         margin-right: auto;
