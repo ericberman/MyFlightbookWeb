@@ -340,51 +340,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Airport &apos;{0}&apos; is built-in and cannot be edited..
-        /// </summary>
-        internal static string errBuiltInAirport {
-            get {
-                return ResourceManager.GetString("errBuiltInAirport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Facility code &apos;{0}&apos; too long.
-        /// </summary>
-        internal static string errCodeTooLong {
-            get {
-                return ResourceManager.GetString("errCodeTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Facility code &apos;{0}&apos; is too short.
-        /// </summary>
-        internal static string errCodeTooShort {
-            get {
-                return ResourceManager.GetString("errCodeTooShort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An airport/heliport/seaport with the id &apos;{0}&apos; already exists..
-        /// </summary>
-        internal static string errConflict {
-            get {
-                return ResourceManager.GetString("errConflict", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A navaid with the identifier &apos;{0}&apos; already exists..
-        /// </summary>
-        internal static string errConflictNavaid {
-            get {
-                return ResourceManager.GetString("errConflictNavaid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The airport you are creating looks like it may be a duplicate of one of the following.  This is OK, but if there is an &quot;official&quot; code, then you should probably use that to avoid your code conflicting in the future:.
         /// </summary>
         internal static string errDupeAirport {
@@ -412,33 +367,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please provide a latitude/longitude.
-        /// </summary>
-        internal static string errEmptyLatLong {
-            get {
-                return ResourceManager.GetString("errEmptyLatLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Facility name is empty; please provide a name..
-        /// </summary>
-        internal static string errEmptyName {
-            get {
-                return ResourceManager.GetString("errEmptyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Facility code has unallowed characters.
-        /// </summary>
-        internal static string errIllegalCharacters {
-            get {
-                return ResourceManager.GetString("errIllegalCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Code must be 2-5 characters in length (3-6 for airports).
         /// </summary>
         internal static string errInvalidCodeLength {
@@ -448,29 +376,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Latitude must be between -90 and 90.
-        /// </summary>
-        internal static string errInvalidLatitude {
-            get {
-                return ResourceManager.GetString("errInvalidLatitude", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please type valid numbers for latitude/longitude..
         /// </summary>
         internal static string errInvalidLatLong {
             get {
                 return ResourceManager.GetString("errInvalidLatLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Longitude must be between -180 and 180.
-        /// </summary>
-        internal static string errInvalidLongitude {
-            get {
-                return ResourceManager.GetString("errInvalidLongitude", resourceCulture);
             }
         }
         
@@ -516,33 +426,6 @@ namespace Resources {
         internal static string errNoAirportsFound {
             get {
                 return ResourceManager.GetString("errNoAirportsFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not a known type of airport or navaid..
-        /// </summary>
-        internal static string errNotKnownType {
-            get {
-                return ResourceManager.GetString("errNotKnownType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Airport &apos;{0}&apos; was created by another user; you cannot edit it..
-        /// </summary>
-        internal static string errNotYourAirport {
-            get {
-                return ResourceManager.GetString("errNotYourAirport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The codes &quot;ZZZZ&quot; and &quot;AFIL&quot; are reserved; please use a different code..
-        /// </summary>
-        internal static string errReservedCode {
-            get {
-                return ResourceManager.GetString("errReservedCode", resourceCulture);
             }
         }
         
@@ -704,15 +587,6 @@ namespace Resources {
         internal static string MapZoomOut {
             get {
                 return ResourceManager.GetString("MapZoomOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0:#,##0.0}NM ({1}⬌{2})&lt;/value&gt;.
-        /// </summary>
-        internal static string RouteSegmentTemplate {
-            get {
-                return ResourceManager.GetString("RouteSegmentTemplate", resourceCulture);
             }
         }
         

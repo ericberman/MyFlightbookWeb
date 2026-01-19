@@ -11,6 +11,7 @@ using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -1457,7 +1458,7 @@ namespace MyFlightbook
             dbh.DoNonQuery();
 
             // update all of the cached profile objects
-            foreach (var item in util.GlobalCache)
+            foreach (DictionaryEntry item in util.GlobalCache)
             {
                 if (item.Value is Profile pf)
                     pf.AchievementStatus = Achievement.ComputeStatus.NeedsComputing;

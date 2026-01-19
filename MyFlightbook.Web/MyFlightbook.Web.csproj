@@ -470,7 +470,6 @@
     <Content Include="App_GlobalResources\Content.en\Email\ClubInviteJoin.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubRequestAccepted.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\ClubRequestJoin.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\ContactMeResponse.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DonationThankYou.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
@@ -478,7 +477,6 @@
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
-    <Content Include="App_GlobalResources\Content.en\Email\HTMLTemplate.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PendingFlightsReminder.htm" />
@@ -1677,9 +1675,6 @@
     <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
-    <Compile Include="AppCode\CSV\CSVAnalyzer.cs" />
-    <Compile Include="AppCode\CSV\CSVReader.cs" />
-    <Compile Include="AppCode\CSV\CSVWriter.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
     <Compile Include="AppCode\Flights\ApproachDescription.cs" />
     <Compile Include="AppCode\Flights\Backup.cs" />
@@ -1779,25 +1774,14 @@
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
     <Compile Include="AppCode\Places\Airbly.cs" />
-    <Compile Include="AppCode\Places\AirportImport.cs" />
-    <Compile Include="AppCode\Places\AirportList.cs" />
-    <Compile Include="AppCode\Places\AirportQuiz.cs" />
-    <Compile Include="AppCode\Places\Airports.cs" />
     <Compile Include="AppCode\Places\CSV.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
-    <Compile Include="AppCode\Places\Geography.cs" />
     <Compile Include="AppCode\Places\GPX.cs" />
     <Compile Include="AppCode\Places\IGC.cs" />
     <Compile Include="AppCode\Places\KML.cs" />
     <Compile Include="AppCode\Places\Mapping.cs" />
-    <Compile Include="AppCode\Places\NavaidTypes.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
-    <Compile Include="AppCode\Places\Solar.cs" />
-    <Compile Include="AppCode\Places\TravelingSalesman.cs" />
-    <Compile Include="AppCode\Places\VisitedAirport.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
-    <Compile Include="AppCode\Places\Weather\ADDS.cs" />
-    <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLRoleProvider.cs" />
@@ -1805,22 +1789,18 @@
     <Compile Include="AppCode\UserAccounts\Subscriptions.cs" />
     <Compile Include="AppCode\Admin\AdminStats.cs" />
     <Compile Include="AppCode\Utility\Branding.cs" />
-    <Compile Include="AppCode\Utility\DBHelper.cs" />
-    <Compile Include="AppCode\Utility\Encryptor.cs" />
-    <Compile Include="AppCode\Utility\Exceptions.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
     <Compile Include="AppCode\Utility\Histogram.cs" />
-    <Compile Include="AppCode\Utility\LocalConfig.cs" />
-    <Compile Include="AppCode\Utility\MFBExtensions.cs" />
+    <Compile Include="AppCode\Utility\HttpRequestExtensions.cs" />
+    <Compile Include="AppCode\Utility\MemCache.cs" />
+    <Compile Include="AppCode\Utility\MFBConstants.cs" />
+    <Compile Include="AppCode\Utility\MFBEnumExtensions.cs" />
     <Compile Include="AppCode\Utility\MVCRequestContext.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
-    <Compile Include="AppCode\Utility\ProfileRoles.cs" />
-    <Compile Include="AppCode\Utility\RegexUtility.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />
     <Compile Include="AppCode\Utility\SmtpSupport.cs" />
     <Compile Include="AppCode\Utility\SponsoredAd.cs" />
     <Compile Include="AppCode\Utility\Tabs.cs" />
-    <Compile Include="AppCode\Utility\util.cs" />
     <Compile Include="AppCode\WebService.cs" />
     <Compile Include="App_GlobalResources\Achievements.designer.cs">
       <AutoGen>True</AutoGen>
@@ -1881,11 +1861,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FlightQuery.resx</DependentUpon>
-    </Compile>
-    <Compile Include="App_GlobalResources\Geography.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Geography.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\LocalizedText.designer.cs">
       <AutoGen>True</AutoGen>
@@ -1951,11 +1926,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Totals.fr.resx</DependentUpon>
-    </Compile>
-    <Compile Include="App_GlobalResources\Weather.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Weather.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\WebService.designer.cs">
       <AutoGen>True</AutoGen>
@@ -2144,10 +2114,6 @@
       <LastGenOutput>FlightQuery.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_GlobalResources\Geography.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>Geography.designer.cs</LastGenOutput>
-    </Content>
     <Content Include="App_GlobalResources\LocalizedText.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LocalizedText.fr.designer.cs</LastGenOutput>
@@ -2209,10 +2175,6 @@
       <LastGenOutput>Totals.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_GlobalResources\Weather.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>Weather.designer.cs</LastGenOutput>
-    </Content>
     <Content Include="App_GlobalResources\WebService.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>WebService.designer.cs</LastGenOutput>
@@ -2220,7 +2182,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_LocalResources\" />
     <Folder Include="Areas\mvc\Data\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />
@@ -2260,6 +2221,28 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj">
+      <Project>{0878c055-b690-40ab-a1df-6a7a076fa0f5}</Project>
+      <Name>MyFlightbook.Airports</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
+      <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
+      <Name>MyFlightbook.CSV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj">
+      <Project>{e44b743c-99dd-4ae6-8a87-53475e545c20}</Project>
+      <Name>MyFlightbook.Geography</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj">
+      <Project>{00e4d545-1149-44a2-aa0f-a775377581de}</Project>
+      <Name>MyFlightbook.SharedUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj">
+      <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>
+      <Name>MyFlightbook.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

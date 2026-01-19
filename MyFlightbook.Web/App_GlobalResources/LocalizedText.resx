@@ -165,9 +165,6 @@
   <data name="AirportGameTitle" xml:space="preserve">
     <value>How well can you recognize airports based on satellite imagery? Try your skills here!</value>
   </data>
-  <data name="AirportGameTooFewAirports" xml:space="preserve">
-    <value>You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead.</value>
-  </data>
   <data name="AirportGameUnauthenticated" xml:space="preserve">
     <value>Unauthenticated user - using US airports</value>
   </data>
@@ -525,9 +522,6 @@
   </data>
   <data name="RSSGoogle" xml:space="preserve">
     <value>Add to Google</value>
-  </data>
-  <data name="RSSTitle" xml:space="preserve">
-    <value>RSS Feed</value>
   </data>
   <data name="TweetThis" xml:space="preserve">
     <value>Tweet this</value>
@@ -958,9 +952,6 @@
   </data>
   <data name="DownloadYourData" xml:space="preserve">
     <value>It's YOUR data, so we make sure that you can download it in whatever way works best for you.</value>
-  </data>
-  <data name="errImportXLSNotCSV" xml:space="preserve">
-    <value>This file appears to be in Excel native format, not CSV</value>
   </data>
   <data name="AnswerWhyCantEditLockedAircraft" xml:space="preserve">
     <value>This aircraft has been the subject of frequent back-and-forth edits among pilots, so it has been locked down by the site administrator.  Please check if an alternative version of the aircraft is already listed (below), or else use the "Contact Us" link and we can make things right.</value>
@@ -1468,9 +1459,6 @@
   </data>
   <data name="PrintViewIncludeSignatures" xml:space="preserve">
     <value>Include Signatures</value>
-  </data>
-  <data name="CustomTimeZone" xml:space="preserve">
-    <value>Custom TZ</value>
   </data>
   <data name="CopyToClipboard" xml:space="preserve">
     <value>Copy to clipboard</value>
@@ -2012,9 +2000,6 @@
   <data name="ValidationSubjectRequired" xml:space="preserve">
     <value>Please provide a subject</value>
   </data>
-  <data name="ValidationRecaptchaRequired" xml:space="preserve">
-    <value>Please indicate that you are not a bot</value>
-  </data>
   <data name="ValidationRecaptchaFailed" xml:space="preserve">
     <value>Recaptcha failed - please try again</value>
   </data>
@@ -2128,6 +2113,9 @@
   </data>
   <data name="PrivacyDataFeatures" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Content.en\PrivacyDataFeatures.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RSSTitle" xml:space="preserve">
+    <value>RSS Feed</value>
   </data>
   <data name="PrintViewSignWetInk" xml:space="preserve">
     <value>I will print on paper and sign each page (wet ink)</value>

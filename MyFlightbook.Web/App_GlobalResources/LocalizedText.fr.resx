@@ -160,4 +160,7 @@
   <data name="SessionExpiredBody" xml:space="preserve">
     <value>Votre session a expiré. Veuillez revenir à la page que vous consultiez pour reprendre vos activités.</value>
   </data>
+  <data name="RSSTitle" xml:space="preserve">
+    <value>Flux RSS</value>
+  </data>
 </root>

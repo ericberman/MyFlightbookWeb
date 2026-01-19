@@ -3,7 +3,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
-using MyFlightbook.SolarTools;
+using MyFlightbook.Geography.SolarTools;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NodaTime;

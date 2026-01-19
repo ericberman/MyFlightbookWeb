@@ -10,7 +10,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2024 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -196,7 +196,7 @@ namespace MyFlightbook.Telemetry
                                         }
                                         catch (Exception ex)
                                         {
-                                            MyFlightbookException.NotifyAdminException(new MyFlightbookException("Unknown error in ParseFlightDataGPX", ex));
+                                            util.NotifyAdminException("Unknown error in ParseFlightdataGPX", ex);
                                             throw;
                                         }
                                     }

@@ -3139,7 +3139,7 @@ WHERE f1.username = ?uName ");
                 if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
                 {
                     Geography.LatLong ll = rgap[1].LatLong;
-                    MyFlightbook.SolarTools.SunriseSunsetTimes sst = new MyFlightbook.SolarTools.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
+                    MyFlightbook.Geography.SolarTools.SunriseSunsetTimes sst = new MyFlightbook.Geography.SolarTools.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
                     if (sst.IsFAANight)
                         NightLandings = 1;
                 }
@@ -4186,6 +4186,8 @@ WHERE f1.username = ?uName ");
         /// <returns>List of LogbookEntry objects</returns>
         public static IList<LogbookEntryDisplay> GetFlightsForQuery(DBHelperCommandArgs args, string szUser, string szSortExpr, SortDirection sd, bool fUseHHMM, bool fUseUTCDate)
         {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
             DBHelper dbh = new DBHelper(args);
             args.Timeout = 120; // give it up to 120 seconds.
             List<LogbookEntryDisplay> lst = new List<LogbookEntryDisplay>();

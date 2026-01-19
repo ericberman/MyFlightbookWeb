@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="airportCode" xml:space="preserve">
+    <value>Facility</value>
+  </data>
+  <data name="airportCountry" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="airportCountryDisclaimer" xml:space="preserve">
+    <value>Country here is distinct from Nations - %APP_NAME% makes no statement about political boundaries.  E.g., in the taxonomy here, Greenland is distinct from Denmark, even though it is governed by Denmark.</value>
+  </data>
+  <data name="airportEarliestVisit" xml:space="preserve">
+    <value>Date of first visit</value>
+  </data>
+  <data name="AirportGameTooFewAirports" xml:space="preserve">
+    <value>You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead.</value>
+  </data>
+  <data name="airportLatestVisit" xml:space="preserve">
+    <value>Date of last visit</value>
+  </data>
+  <data name="airportName" xml:space="preserve">
+    <value>Facility Name</value>
+  </data>
+  <data name="airportRegion" xml:space="preserve">
+    <value>State/Province/Region</value>
+  </data>
+  <data name="airportVisits" xml:space="preserve">
+    <value>Visits</value>
+  </data>
+  <data name="errBuiltInAirport" xml:space="preserve">
+    <value>Airport '{0}' is built-in and cannot be edited.</value>
+  </data>
+  <data name="errCodeTooLong" xml:space="preserve">
+    <value>Facility code '{0}' too long</value>
+  </data>
+  <data name="errCodeTooShort" xml:space="preserve">
+    <value>Facility code '{0}' is too short</value>
+  </data>
+  <data name="errConflict" xml:space="preserve">
+    <value>An airport/heliport/seaport with the id '{0}' already exists.</value>
+  </data>
+  <data name="errConflictNavaid" xml:space="preserve">
+    <value>A navaid with the identifier '{0}' already exists.</value>
+  </data>
+  <data name="errEmptyLatLong" xml:space="preserve">
+    <value>Please provide a latitude/longitude</value>
+  </data>
+  <data name="errEmptyName" xml:space="preserve">
+    <value>Facility name is empty; please provide a name.</value>
+  </data>
+  <data name="errIllegalCharacters" xml:space="preserve">
+    <value>Facility code has unallowed characters</value>
+  </data>
+  <data name="errNotKnownType" xml:space="preserve">
+    <value>'{0}' is not a known type of airport or navaid.</value>
+  </data>
+  <data name="errNotYourAirport" xml:space="preserve">
+    <value>Airport '{0}' was created by another user; you cannot edit it.</value>
+  </data>
+  <data name="errReservedCode" xml:space="preserve">
+    <value>The codes "ZZZZ" and "AFIL" are reserved; please use a different code.</value>
+  </data>
+  <data name="RouteSegmentTemplate" xml:space="preserve">
+    <value>{0:#,##0.0}NM ({1}⬌{2})</value>
+  </data>
+</root>

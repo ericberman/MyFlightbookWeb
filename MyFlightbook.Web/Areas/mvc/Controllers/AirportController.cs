@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
@@ -463,7 +464,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public string GetQuiz(bool fAnonymous, int bluffCount, int questionCount)
         {
             AirportQuiz quiz = new AirportQuiz() { BluffCount = bluffCount, QuestionCount = questionCount };
-            quiz.Init(fAnonymous ? string.Empty : User.Identity.Name, AirportQuiz.szBusyUSAirports);
+            IEnumerable<VisitedAirport> rgva = fAnonymous ? Array.Empty<VisitedAirport>() : VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name));
+            quiz.Init(rgva);
             string sessionGuid = Guid.NewGuid().ToString();
             Session[sessionGuid] = quiz;
             return sessionGuid;

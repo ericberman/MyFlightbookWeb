@@ -439,78 +439,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Row {0} has too many columns {1} to append to the prior row(s) (had {2} columns so far); will put that on a new row..
-        /// </summary>
-        internal static string csvAuditAppendedRowTooLong {
-            get {
-                return ResourceManager.GetString("csvAuditAppendedRowTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Found {0} columns.
-        /// </summary>
-        internal static string csvauditColumnsFound {
-            get {
-                return ResourceManager.GetString("csvauditColumnsFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skipping empty row {0}, since it has no data.
-        /// </summary>
-        internal static string csvAuditEmptyRow {
-            get {
-                return ResourceManager.GetString("csvAuditEmptyRow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error parsing CSV: {0}.
-        /// </summary>
-        internal static string csvAuditErrorFound {
-            get {
-                return ResourceManager.GetString("csvAuditErrorFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row {0} appears incomplete - has {1} columns, needs {2}; will append next row.
-        /// </summary>
-        internal static string csvAuditRowIncomplete {
-            get {
-                return ResourceManager.GetString("csvAuditRowIncomplete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row {0} is being merged with prior row; has {1} columns; row is now complete!.
-        /// </summary>
-        internal static string csvAuditRowMergedWithPrior {
-            get {
-                return ResourceManager.GetString("csvAuditRowMergedWithPrior", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All rows had the right number of columns; file looks fine.
-        /// </summary>
-        internal static string csvAuditSuccess {
-            get {
-                return ResourceManager.GetString("csvAuditSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} rows found in total.
-        /// </summary>
-        internal static string csvAuditTotalRows {
-            get {
-                return ResourceManager.GetString("csvAuditTotalRows", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ({0}D, {1}N).
         /// </summary>
         internal static string DayAndNightLandingTemplate {
@@ -925,29 +853,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Header row was found, but no rows of data were found..
-        /// </summary>
-        internal static string errImportNoData {
-            get {
-                return ResourceManager.GetString("errImportNoData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No &quot;Date&quot; column was found.  Each flight must have a date..
         /// </summary>
         internal static string errImportNoDate {
             get {
                 return ResourceManager.GetString("errImportNoDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First row must contain column headers..
-        /// </summary>
-        internal static string errImportNoHeaders {
-            get {
-                return ResourceManager.GetString("errImportNoHeaders", resourceCulture);
             }
         }
         
@@ -984,15 +894,6 @@ namespace Resources {
         internal static string errImportRowHasError {
             get {
                 return ResourceManager.GetString("errImportRowHasError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row {0} has {1} columns; expected {2}; we will lose data..
-        /// </summary>
-        internal static string errImportTooManyColumns {
-            get {
-                return ResourceManager.GetString("errImportTooManyColumns", resourceCulture);
             }
         }
         

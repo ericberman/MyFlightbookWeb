@@ -6,12 +6,12 @@
         <thead>
             <tr>
                 <th></th>
-                <th>@Resources.Weather.headerCategory</th>
-                <th>@Resources.Weather.headerWind</th>
-                <th>@Resources.Weather.headerVisibility</th>
-                <th>@Resources.Weather.headerCeiling</th>
-                <th>@Resources.Weather.headerTemp</th>
-                <th>@Resources.Weather.headerAltimeter</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerCategory</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerWind</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerVisibility</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerCeiling</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerTemp</th>
+                <th>@MyFlightbook.Airports.Properties.Weather.headerAltimeter</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,14 +33,14 @@
                         </div>
                     }
                     @m.WindDirDisplay
-                    @(m.wind_speed_ktSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_speed_nolabel, m.wind_speed_kt) : string.Empty)
-                    @(m.wind_gust_ktSpecified ? String.Format(CultureInfo.CurrentCulture, Resources.Weather.wind_gust_ktField, m.wind_speed_kt) : string.Empty)
+                    @(m.wind_speed_ktSpecified ? String.Format(CultureInfo.CurrentCulture, MyFlightbook.Airports.Properties.Weather.wind_speed_nolabel, m.wind_speed_kt) : string.Empty)
+                    @(m.wind_gust_ktSpecified ? String.Format(CultureInfo.CurrentCulture, MyFlightbook.Airports.Properties.Weather.wind_gust_ktField, m.wind_speed_kt) : string.Empty)
                 </td>
                 <td>
                     @m.VisibilityDisplay
                     @if (m.vert_vis_ftSpecified)
                     {
-                        @String.Format(CultureInfo.CurrentCulture, Resources.Weather.altitudeFtFormat, m.vert_vis_ft)
+                        @String.Format(CultureInfo.CurrentCulture, MyFlightbook.Airports.Properties.Weather.altitudeFtFormat, m.vert_vis_ft)
                     }
                 </td>
                 <td>
@@ -49,7 +49,7 @@
                         @sc.SkyCoverDisplay
                         if (sc.cloud_base_ft_aglSpecified)
                         {
-                            <div>@String.Format(CultureInfo.CurrentCulture, Resources.Weather.cloud_base_ft_aglField, sc.cloud_base_ft_agl)</div>
+                            <div>@String.Format(CultureInfo.CurrentCulture, MyFlightbook.Airports.Properties.Weather.cloud_base_ft_aglField, sc.cloud_base_ft_agl)</div>
                         }
                     }
                 </td>
@@ -62,5 +62,5 @@
 }
 else
 {
-    <p>@Resources.Weather.NoMetarsFound</p>
+    <p>@MyFlightbook.Airports.Properties.Weather.NoMetarsFound</p>
 }

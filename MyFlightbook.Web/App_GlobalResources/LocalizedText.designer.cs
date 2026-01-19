@@ -427,15 +427,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead..
-        /// </summary>
-        internal static string AirportGameTooFewAirports {
-            get {
-                return ResourceManager.GetString("AirportGameTooFewAirports", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unauthenticated user - using US airports.
         /// </summary>
         internal static string AirportGameUnauthenticated {
@@ -1623,15 +1614,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom TZ.
-        /// </summary>
-        internal static string CustomTimeZone {
-            get {
-                return ResourceManager.GetString("CustomTimeZone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;br /&gt;The specified date is not valid.&lt;br /&gt;.
         /// </summary>
         internal static string DateErrInvalid {
@@ -2258,15 +2240,6 @@ namespace Resources {
         internal static string errContentBlockedTitle {
             get {
                 return ResourceManager.GetString("errContentBlockedTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This file appears to be in Excel native format, not CSV.
-        /// </summary>
-        internal static string errImportXLSNotCSV {
-            get {
-                return ResourceManager.GetString("errImportXLSNotCSV", resourceCulture);
             }
         }
         
@@ -5891,15 +5864,6 @@ namespace Resources {
         internal static string ValidationRecaptchaFailed {
             get {
                 return ResourceManager.GetString("ValidationRecaptchaFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please indicate that you are not a bot.
-        /// </summary>
-        internal static string ValidationRecaptchaRequired {
-            get {
-                return ResourceManager.GetString("ValidationRecaptchaRequired", resourceCulture);
             }
         }
         

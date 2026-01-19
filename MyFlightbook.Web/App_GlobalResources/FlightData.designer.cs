@@ -250,15 +250,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to parse position: {0}.
-        /// </summary>
-        internal static string errBadPosition {
-            get {
-                return ResourceManager.GetString("errBadPosition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to load flight {0}: {1}.
         /// </summary>
         internal static string errCantLoadFlight {

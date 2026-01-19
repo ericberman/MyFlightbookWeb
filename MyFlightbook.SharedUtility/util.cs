@@ -1,0 +1,580 @@
+using MyFlightbook.SharedUtility.Properties;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
+using System.IO;
+using System.Net.Mail;
+using System.Reflection;
+using System.Text;
+
+/******************************************************
+ * 
+ * Copyright (c) 2008-2026 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+namespace MyFlightbook
+{
+    public enum EditMode { Integer, Decimal, Currency, HHMMFormat };
+
+    public enum SortDirection { Ascending, Descending }
+
+    /// <summary>
+    /// Encapsulates the context of the current request, including session, cache, request, etc.
+    /// </summary>
+    public interface IRequestContext
+    {
+        object GetSessionValue(string key);
+
+        void SetSessionValue(string key, object value);
+
+        IEnumerable<string> SessionKeys { get; }
+
+        bool IsAuthenticated { get; }
+
+        bool IsSecure { get; }
+
+        bool IsLocal { get; }
+
+        string CurrentUserName { get; }
+
+        Uri CurrentRequestUrl { get; }
+
+        string CurrentRequestHostAddress { get; }
+
+        string CurrentRequestUserAgent { get; }
+
+        IEnumerable<string> CurrentRequestLanguages { get; }
+
+        string GetCookie(string name);
+
+        void SetCookie(string name, string value, DateTime? expires = null);
+
+        void RemoveCookie(string name);
+
+        string RelativeToAbsolute(string relativePath);
+
+        string RelativeToAbsoluteFilePath(string relativePath);
+    }
+
+    public interface IEmailSender
+    {
+        /// <summary>
+        /// Sends the specified email message
+        /// </summary>
+        /// <param name="msg"></param>
+        void SendEmail(MailMessage msg);
+
+        /// <summary>
+        /// Add admins to the message that match the specified role mask
+        /// </summary>
+        /// <param name="msg">The message</param>
+        /// <param name="fTo">True to put the admins on the "To" line, false to Bcc them</param>
+        /// <param name="RoleMask">The admins that should receive the message</param>
+        void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask);
+    }
+
+    public interface ICacheService
+    {
+        void Set(string key, object value, DateTimeOffset offset);
+        object Get(string key);
+        void Remove(string key);
+
+        int FlushCache();
+
+        IEnumerator GetEnumerator();
+    }
+
+    /// <summary>
+    /// Utility Class - contains a few commonly used/needed functions
+    /// </summary>
+    public static class util
+    {
+        private const string sessCultureKey = "currCulture";
+        private static readonly char[] isoLanguageRegionSeparator = new char[] { '-' };
+
+
+        #region Dependency Injection
+        public static ICacheService GlobalCache { get; private set; }
+
+        public static IRequestContext RequestContext { get; private set; }
+
+        private static IEmailSender EmailSender { get; set; }
+
+        public static void Init(ICacheService cacheService, IRequestContext requestContext, IEmailSender emailSender)
+        {
+            GlobalCache = cacheService;
+            RequestContext = requestContext;
+            EmailSender = emailSender;
+        }
+        #endregion
+
+        #region Cache management
+        public static int FlushCache()
+        {
+            return GlobalCache?.FlushCache() ?? throw new InvalidOperationException("Global cache is not set up!");
+        }
+        #endregion
+
+        /// <summary>
+        /// Set the culture for the duration of the request.
+        /// </summary>
+        /// <param name="szCulture">The user language string (e.g., "en-us")</param>
+        public static void SetCulture(string szCulture)
+        {
+            if (!String.IsNullOrEmpty(szCulture))
+            {
+                if (szCulture.Length < 3)
+                    szCulture = szCulture + "-" + szCulture.ToUpperInvariant();
+
+                try
+                {
+                    CultureInfo ciRequested = new CultureInfo(szCulture);
+                    // Some locale's like Slovak have multi-character date separators, and this kills masked edit extender.
+                    // hack workaround is to just use the first character of the date separator.
+                    if (ciRequested.DateTimeFormat.DateSeparator.Length > 1)
+                        ciRequested.DateTimeFormat.DateSeparator = ciRequested.DateTimeFormat.DateSeparator.Substring(0, 1);
+                    System.Threading.Thread.CurrentThread.CurrentCulture = ciRequested;
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = ciRequested;
+                }
+                catch (Exception ex) when (ex is CultureNotFoundException)
+                {
+                    try
+                    {
+                        // iPhone sends fucked up strings like "en-GB-GB" for UK-English.  So try removing the middle string
+                        string[] rgsz = szCulture.Split(isoLanguageRegionSeparator, StringSplitOptions.RemoveEmptyEntries);
+                        if (rgsz.Length == 3)
+                            SetCulture(String.Format(CultureInfo.InvariantCulture, "{0}-{1}", rgsz[0], rgsz[2]));
+                    }
+                    catch (Exception ex2) when (ex2 is CultureNotFoundException || ex2 is ArgumentNullException) { }
+                }
+
+                // Culture isn't passed up to Ajax calls, so store it in the session in case any ajax call needs it
+                RequestContext?.SetSessionValue(sessCultureKey, System.Threading.Thread.CurrentThread.CurrentCulture);
+            }
+        }
+
+        /// <summary>
+        /// Deep copy one object to another using reflection
+        /// </summary>
+        /// <param name="objSrc">The source object</param>
+        /// <param name="objDest">The destination object</param>
+        static public void CopyObject(object objSrc, object objDest)
+        {
+            if (objSrc == null)
+                throw new MyFlightbookException("Attempt to copy from null object");
+            if (objDest == null)
+                throw new MyFlightbookException("Attempt to copy to null object");
+
+            //	Get the type of each object
+            Type sourceType = objSrc.GetType();
+            Type targetType = objDest.GetType();
+
+            //	Loop through the source properties
+            foreach (PropertyInfo p in sourceType.GetProperties())
+            {
+                //	Get the matching property in the destination object
+                PropertyInfo targetObj = targetType.GetProperty(p.Name);
+                //	If there is none, skip
+                if (targetObj == null)
+                    continue;
+
+                //	Set the value in the destination
+                if (targetObj.CanWrite)
+                    targetObj.SetValue(objDest, p.GetValue(objSrc, null), null);
+            }
+        }
+
+        /// <summary>
+        /// Since iPhone doesn't seem to properly HTML encode objects (or too aggressively does so?), we need to decode objects.
+        /// This uses introspection to un-escape the TOP-LEVEL string properties of an object.
+        /// </summary>
+        /// <param name="o"></param>
+        public static void UnescapeObject(object o)
+        {
+            if (o == null)
+                return;
+
+            Type objType = o.GetType();
+            foreach (PropertyInfo p in objType.GetProperties())
+            {
+                if (p.CanRead && p.CanWrite && (p.PropertyType == typeof(string) || p.PropertyType == typeof(String)))
+                {
+                    object propVal = p.GetValue(o, null);
+                    if (propVal != null)
+                        p.SetValue(o, ((string)propVal).UnescapeHTML(), null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Given a set of objects, slices them up into smaller lists grouping by the values in the specified property name.
+        /// </summary>
+        /// <param name="lst">The set of objects to slice</param>
+        /// <param name="PropertyName">The name of the property - obviously must exist</param>
+        /// <returns>An IDictionary grouped by names of the properties</returns>
+        public static IDictionary<string, IEnumerable<T>> GroupByProperty<T>(IEnumerable<T> lst, string PropertyName)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+            if (PropertyName == null)
+                throw new ArgumentNullException(nameof(PropertyName));
+
+            Dictionary<string, IEnumerable<T>> d = new Dictionary<string, IEnumerable<T>>();
+
+            if (String.IsNullOrEmpty(PropertyName))
+            {
+                d.Add(PropertyName, new List<T>(lst));
+                return d;
+            }
+
+            foreach (T o in lst)
+            {
+                string key = o.GetType().GetProperty(PropertyName).GetValue(o, null).ToString();
+                if (!d.ContainsKey(key))
+                    d[key] = new List<T>();
+                List<T> l = (List<T>)d[key];
+                l.Add(o);
+            }
+
+            return d;
+        }
+
+        #region Email
+        /// <summary>
+        /// Contact the authors/admins of the system.  Will reply with an out-of-office message, if needed.
+        /// </summary>
+        /// <param name="userName">Username of the user, if known.  This can be null</param>
+        /// <param name="displayName">The user's name</param>
+        /// <param name="email">User's email</param>
+        /// <param name="message">The message</param>
+        /// <param name="subject">The subject of the message</param>
+        /// <param name="addAttachments">If provided, a callback to add any attachments to the message via a 2nd callback that takes a stream, a filename, and a contenttype</param>
+        /// <param name="captchaScore">The captcha score</param>
+        /// <param name="fRespondOOF">True to respond with an out-of-office message</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        static public void ContactUs(string userName, string displayName, string email, string subject, string message, double captchaScore, bool fRespondOOF, Action<MailMessage, Action<Stream, string, string>> addAttachments)
+        {
+            if (String.IsNullOrWhiteSpace(displayName))
+                throw new ArgumentNullException(SharedUtilityResources.ValidationNameRequired);
+            if (String.IsNullOrWhiteSpace(email))
+                throw new ArgumentNullException(SharedUtilityResources.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(email))
+                throw new InvalidOperationException(SharedUtilityResources.ValidationEmailFormat);
+            if (string.IsNullOrWhiteSpace(subject))
+                throw new ArgumentNullException(SharedUtilityResources.ValidationSubjectRequired);
+            
+            MailAddress ma = new MailAddress(email, displayName ?? string.Empty);
+
+            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}\r\nScore: {4}</pre></body></html>", 
+                (message ?? string.Empty).Replace("\r\n", "<br />").Replace("\n", "<br />"), 
+                (String.IsNullOrEmpty(userName) ? "anonymous" : userName), 
+                email, 
+                DateTime.Now.ToLongDateString(),
+                captchaScore);
+            string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, subject);
+            using (MailMessage msg = new MailMessage()
+            {
+                From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.InvariantCulture, SharedUtilityResources.EmailSenderAddress, Branding.CurrentBrand.AppName, displayName)),
+                Subject = szSubject,
+                Body = szBody,
+                IsBodyHtml = true
+            })
+            {
+                addAttachments?.Invoke(msg, (stream, fname, contentType) => { msg.Attachments.Add(new Attachment(stream, fname, contentType)); });
+                msg.ReplyToList.Add(ma);
+                AddAdminsToMessage(msg, true, ProfileRoles.maskCanContact);
+                SendMessage(msg);
+            }
+
+            if (fRespondOOF)
+                NotifyUser(szSubject, ApplyHtmlEmailTemplate(SharedUtilityResources.ContactMeResponse, false), ma, false, false);
+        }
+
+        /// <summary>
+        /// Sends a message, setting enableSSL appropriately
+        /// </summary>
+        /// <param name="msg"></param>
+        static public void SendMessage(MailMessage msg)
+        {
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+            if (EmailSender == null)
+                throw new InvalidOperationException("Email sender not initialized.");
+
+            if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
+            {
+                string szHTML = msg.Body;
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(msg.Body);
+                // Issue #1081: A bit of a hack, but don't create a plain text view of anything that contains a table - it won't be pretty.
+                if (doc.DocumentNode.SelectNodes("//table") == null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (HtmlAgilityPack.HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
+                    {
+                        string szLine = node.InnerText.Trim();
+                        if (!String.IsNullOrEmpty(szLine))
+                            sb.AppendLine(node.InnerText.Trim());
+
+                        if (node.ParentNode.OriginalName.CompareCurrentCultureIgnoreCase("a") == 0 && node.ParentNode.Attributes["href"] != null)
+                            sb.Append($" {node.ParentNode.Attributes["href"].Value}");
+
+                        sb.Append(' ');
+                    }
+
+                    msg.Body = sb.ToString();
+                    msg.IsBodyHtml = false; // we're now sending plain text with an html alternate
+                    msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
+                }
+            }
+
+            EmailSender?.SendEmail(msg);
+        }
+
+        /// <summary>
+        /// Add admins to the message
+        /// </summary>
+        /// <param name="msg">The message</param>
+        /// <param name="fTo">True to put the admins on the "To" line, false to Bcc them</param>
+        /// <param name="RoleMask">The admins that should receive the message</param>
+        static public void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask)
+        {
+            EmailSender.AddAdminsToMessage(msg, fTo, RoleMask);
+        }
+
+        /// <summary>
+        /// Notify the user of an event, optionally Bcc admins.
+        /// </summary>
+        /// <param name="szSubject">The subject to send</param>
+        /// <param name="szMessage">The message to send  This will be rebranded per Branding.ReBrand().</param>
+        /// <param name="maUser">The address of the recipient</param>
+        /// <param name="fCcAdmins">True if you want Admins CC'd; false if not</param>
+        /// <param name="fIsHTML">True if the content of the message is HTML</param>
+        /// <param name="brand">The branding to use</param>
+        /// <param name="RoleMask">The roles to whom this should go (if admin)</param>
+        /// <param name="unsubscribeLink">If present, will provide one-click unsubscribe in the headers</param>
+        static private void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, Brand brand, uint RoleMask, string unsubscribeLink = null)
+        {
+            if (brand == null)
+                brand = Branding.CurrentBrand;
+
+            if (szMessage == null)
+                throw new ArgumentNullException(nameof(szMessage));
+
+            new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    using (MailMessage msg = new MailMessage())
+                    {
+                        msg.Subject = szSubject;
+                        msg.Body = Branding.ReBrand(szMessage, brand);
+                        msg.IsBodyHtml = fIsHTML || szMessage.Contains("<!DOCTYPE");
+
+                        msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+
+                        if (!String.IsNullOrEmpty(unsubscribeLink))
+                        {
+                            msg.Headers.Add("List-Unsubscribe", String.Format(CultureInfo.InvariantCulture, "<{0}>", unsubscribeLink));
+                            msg.Headers.Add("List-Unsubscribe-Post", "List-Unsubscribe=One-Click");
+                        }
+
+                        if (maUser != null)
+                            msg.To.Add(maUser);
+
+                        if (fCcAdmins)
+                            AddAdminsToMessage(msg, (maUser == null), RoleMask);
+
+                        SendMessage(msg);
+                    }
+                }
+                catch (ArgumentNullException) { }
+                catch (InvalidOperationException) { }
+                catch (Exception ex) when (ex is SmtpException) { }
+            }).Start();
+        }
+
+        /// <summary>
+        /// Notify the user of an event, optionally Bcc admins.  Uses the current brand
+        /// </summary>
+        /// <param name="szSubject">The subject to send</param>
+        /// <param name="szMessage">The message to send  This will be rebranded per Branding.ReBrand().</param>
+        /// <param name="maUser">The address of the recipient</param>
+        /// <param name="fCcAdmins">True if you want Admins CC'd; false if not</param>
+        /// <param name="fIsHTML">True if the content of the message is HTML</param>
+        static public void NotifyUser(string szSubject, string szMessage, MailAddress maUser, bool fCcAdmins, bool fIsHTML, string unsubscribeLink = null)
+        {
+            NotifyUser(szSubject, szMessage, maUser, fCcAdmins, fIsHTML, Branding.CurrentBrand, fCcAdmins ? ProfileRoles.maskCanSupport : 0, unsubscribeLink);
+        }
+
+        /// <summary>
+        /// Notify the admin of an event.
+        /// </summary>
+        /// <param name="szSubject">The subject to send</param>
+        /// <param name="szMessage">The message to send</param>
+        /// <param name="RoleMask">The roles to whom the notification should go</param>
+        static public void NotifyAdminEvent(string szSubject, string szMessage, uint RoleMask)
+        {
+            NotifyUser(szSubject, szMessage, null, true, false, Branding.CurrentBrand, RoleMask);
+        }
+
+        /// <summary>
+        /// Notify the site admin of an exception
+        /// </summary>
+        /// <param name="szInfo">Additional data</param>
+        /// <param name="ex">The exception</param>
+        static public void NotifyAdminException(string szInfo, Exception ex)
+        {
+            if (ex == null)
+                return;
+
+            string szErr = ex.PrettyPrint(szInfo);
+
+            NotifyAdminEvent("Error on the myflightbook site", szErr, ProfileRoles.maskSiteAdminOnly);
+        }
+
+        private static readonly char[] lineSeparator = new char[] { '\r', '\n' };
+
+        /// <summary>
+        /// Returns email message content with the HTML template applied.  If the content is plain text, it is linkified and newlines are converted to html "p" tags.
+        /// </summary>
+        /// <param name="content">The content to inject</param>
+        /// <param name="fIsHtml">True if the content is already in HTML form (vs. plain text)</param>
+        /// <returns>HTML representing the body of an HTML email message</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        static public string ApplyHtmlEmailTemplate(string content, bool fIsHtml)
+        {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+
+            string template = Branding.ReBrand(Encoding.UTF8.GetString(SharedUtilityResources.HTMLTemplate));
+
+            if (fIsHtml)
+            {
+                // Already HTML content - just inject it
+                return template.Replace("%BODYCONTENT%", content);
+            }
+            else
+            {
+                string[] rgLines = content.Linkify(true).Split(lineSeparator, StringSplitOptions.RemoveEmptyEntries);
+                return template.Replace("%BODYCONTENT%", String.Format(CultureInfo.InvariantCulture, "<p>{0}</p>", String.Join("</p><p>", rgLines)));
+            }
+        }
+
+        /// <summary>
+        /// Populates the body of a message using Resources
+        /// </summary>
+        /// <param name="email">The content of the message.  If msg.IsBodyHtml is true, this is assumed to already be in HTML</param>
+        /// <param name="msg">The mail message to which to set the content</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        static public void PopulateMessageContentWithTemplate(MailMessage msg, string email)
+        {
+            if (email == null)
+                throw new ArgumentNullException(nameof(email));
+
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+
+
+            // replace newlines with html divs.
+            string szContent = Branding.ReBrand(email);
+
+            msg.Body = ApplyHtmlEmailTemplate(szContent, msg.IsBodyHtml);
+            msg.IsBodyHtml = true;
+            // Don't set an alternate - it will be created and set by util.sendMsg
+        }
+
+        static public void SendEmail(string szFrom, string szFromDisplay, string szTo, string szToDisplay, string szReply, string szReplyDisplay, string szSubject, string szBody, bool fIsHtml)
+        {
+            if (String.IsNullOrWhiteSpace(szTo))
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(szTo))
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailFormat);
+            if (String.IsNullOrWhiteSpace(szFrom))
+                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
+            if (!RegexUtility.Email.IsMatch(szFrom))
+                throw new ArgumentException(SharedUtilityResources  .ValidationEmailFormat);
+
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.From = new MailAddress(szFrom, szFromDisplay ?? szFrom);
+                msg.To.Add(new MailAddress(szTo, szToDisplay ?? szTo));
+                if (!String.IsNullOrEmpty(szReply))
+                    msg.ReplyToList.Add(new MailAddress(szReply, szReplyDisplay ?? szReply));
+                msg.Subject = szSubject;
+                msg.Body = Branding.ReBrand(szBody);
+                msg.IsBodyHtml = fIsHtml;
+                SendMessage(msg);
+            }
+        }
+        #endregion
+
+        #region Read nullable MySql fields - should be extension?
+        /// <summary>
+        /// Reads the specified field from the datareader row, returning the default object in case of an exception.
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <param name="key"></param>
+        /// <param name="defObj"></param>
+        /// <returns></returns>
+        static public object ReadNullableField(IDataReader dr, string key, object defObj)
+        {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
+            if (string.IsNullOrEmpty(key))
+                return defObj;
+            try
+            {
+                object o = dr[key];
+                if (o == null || o == System.DBNull.Value || o.ToString().Length == 0)
+                    return defObj;
+                else
+                    return o;
+            }
+            catch (Exception ex) when (ex is IndexOutOfRangeException || ex is NullReferenceException)
+            {
+                return defObj;
+            }
+        }
+
+        static public string ReadNullableString(IDataReader dr, string key)
+        {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
+            object o = dr[key];
+            if (o == null || o == System.DBNull.Value)
+                return string.Empty;
+            else
+                return o.ToString();
+        }
+        #endregion
+
+        public const string keyColumn = "ColumnKey";
+
+        /// <summary>
+        /// Retrieves completions for a specified prefix, using the given database query.  MUST have a parameter named "?prefix" and MUST have a result column called "ColumnKey" (=util.keyColumn)
+        /// </summary>
+        /// <param name="szQ">The database query</param>
+        /// <param name="prefixText">The prefix</param>
+        /// <returns>An array of results with the specified prefix</returns>
+        public static string[] GetKeysFromDB(string szQ, string prefixText)
+        {
+            if (String.IsNullOrEmpty(szQ) || prefixText == null)
+                return Array.Empty<string>();
+
+            List<string> al = new List<string>();
+            DBHelper dbo = new DBHelper(szQ);
+
+            if (dbo.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
+                (dr) => { al.Add(dr[keyColumn].ToString()); }))
+                return al.ToArray();
+            return Array.Empty<string>();
+        }
+    }
+}
