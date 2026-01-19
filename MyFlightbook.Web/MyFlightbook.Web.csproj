@@ -2182,7 +2182,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_LocalResources\" />
     <Folder Include="Areas\mvc\Data\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Public\OpenSource\" />
