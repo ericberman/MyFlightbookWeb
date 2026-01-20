@@ -257,15 +257,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (le.LastError != LogbookEntryCore.ErrorCode.None)
                     throw new UnauthorizedAccessException(le.ErrorString);
 
-                using (FlightData fd = new FlightData())
-                {
-                    if (!fd.ParseFlightData(le))
-                    {
-                        throw new InvalidOperationException(fd.ErrorString);
-                    }
-                    TelemetryDataTable tdt = fd.Data;
-                    return Content(tdt.RenderHtmlTable(), "text/html");
-                }
+                ViewBag.le = le;
+                return PartialView("_telemetryDataTable");
             });
         }
 

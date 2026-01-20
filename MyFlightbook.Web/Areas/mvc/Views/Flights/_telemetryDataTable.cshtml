@@ -1,0 +1,66 @@
+﻿@using MyFlightbook.Telemetry;
+@using MyFlightbook.Geography;
+@using System.Globalization;
+@using System.Data;
+@{ 
+    LogbookEntry le = ViewBag.le;
+    using (FlightData fd = new FlightData())
+    {
+        if (!fd.ParseFlightData(le))
+        {
+            throw new InvalidOperationException(fd.ErrorString);
+        }
+        TelemetryDataTable tdt = fd.Data;
+        bool HasLatLong = tdt.HasLatLongInfo;
+        string pinRef = "~/images/pushpinsm.png".ToAbsolute();
+        bool hasPosition = tdt.Columns.Contains(MyFlightbook.Charting.KnownColumnNames.POS);
+    <style type="text/css">
+        .pinImage {
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
+        <table class="stickyHeaderTable stickyHeaderAlternate">
+            <thead>
+                <tr>
+                    <th class="headerBase gvhDefault"></th>
+                    @if (hasPosition)
+                    {
+                        <th class="headerBase gvhDefault">@Resources.LogbookEntry.flightDetailsPositionHeader</th>
+                    }
+                    @foreach (DataColumn dc in tdt.Columns)
+                    {
+                        <th class="headerBase gvhDefault">@dc.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow dr in tdt.Rows)
+                {
+                    string rowDesc = null;
+                    LatLong ll = HasLatLong ? tdt.LatLongForRow(dr, out rowDesc) : null;
+                    <tr>
+                        <td>
+                            @if (ll != null)
+                            {
+                                string szDrop = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", ll.Latitude, ll.Longitude, rowDesc);
+                                string szTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, ll.ToString());
+                                <img src="@pinRef" class="pinImage" onclick="@szDrop" title="@szTip" />
+                                <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14); return false;", ll.Latitude, ll.Longitude)">@Resources.FlightData.ZoomIn</a>
+                            }
+                        </td>
+                        @if (hasPosition)
+                        {
+                            <td>@ll.ToDegMinSecString()</td>
+                        }
+                        @foreach (DataColumn dc in tdt.Columns)
+                        {
+                            <td>@dr[dc.ColumnName]</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+

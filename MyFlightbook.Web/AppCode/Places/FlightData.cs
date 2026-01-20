@@ -19,7 +19,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web.UI;
 using System.Xml;
 
 /******************************************************
@@ -507,7 +506,7 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        protected LatLong LatLongForRow(DataRow dr, out string htmlDesc)
+        public LatLong LatLongForRow(DataRow dr, out string htmlDesc)
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
@@ -556,93 +555,6 @@ namespace MyFlightbook.Telemetry
             }
 
             return null;
-        }
-
-        public string RenderHtmlTable()
-        {
-            bool HasLatLong = HasLatLongInfo;
-            string pinRef = "~/images/pushpinsm.png".ToAbsolute();
-            bool hasPosition = Columns.Contains(KnownColumnNames.POS);
-            using (StringWriter sw = new StringWriter())
-            {
-                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
-                {
-                    tw.AddAttribute("cellpadding", "3");
-                    tw.AddAttribute("border", "1");
-                    tw.AddAttribute("style", "border-collapse: collapse;");
-                    tw.RenderBeginTag(HtmlTextWriterTag.Table);
-                    tw.RenderBeginTag(HtmlTextWriterTag.Thead);
-                    tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-
-                    tw.RenderBeginTag(HtmlTextWriterTag.Th);
-                    tw.RenderEndTag();
-
-                    if (hasPosition)
-                    {
-                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
-                        tw.WriteEncodedText(Resources.LogbookEntry.flightDetailsPositionHeader);
-                        tw.RenderEndTag();
-                    }
-                    foreach (DataColumn dc in Columns)
-                    {
-                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
-                        tw.WriteEncodedText(dc.ColumnName);
-                        tw.RenderEndTag();
-                    }
-                    tw.RenderEndTag();  // tr
-                    tw.RenderEndTag();  // thead
-
-                    tw.RenderBeginTag(HtmlTextWriterTag.Tbody);
-                    foreach (DataRow dr in Rows)
-                    {
-                        string rowDesc = null;
-                        LatLong ll = HasLatLong ? LatLongForRow(dr, out rowDesc) : null;
-                        tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-
-                        tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                        if (ll != null)
-                        {
-                            string szZoom = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", ll.Latitude, ll.Longitude);
-                            string szDrop = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", ll.Latitude, ll.Longitude, rowDesc);
-                            string szTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, ll.ToString());
-
-                            tw.AddAttribute("src", pinRef);
-                            tw.AddAttribute("style", "height: 20px;");
-                            tw.AddAttribute("onclick", szDrop);
-                            tw.AddAttribute("title", szTip);
-                            tw.RenderBeginTag(HtmlTextWriterTag.Img);
-                            tw.RenderEndTag();
-
-                            tw.AddAttribute("style", "cursor: pointer;");
-                            tw.AddAttribute("onclick", szZoom);
-                            tw.RenderBeginTag(HtmlTextWriterTag.A);
-                            tw.WriteEncodedText(Resources.FlightData.ZoomIn);
-                            tw.RenderEndTag();
-                        }
-                        tw.RenderEndTag();
-
-                        if (hasPosition)
-                        {
-                            tw.AddAttribute("style", "text-align: left");
-                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                            tw.WriteEncodedText(ll.ToDegMinSecString());
-                            tw.RenderEndTag();
-                        }
-
-                        foreach (DataColumn dc in Columns)
-                        {
-                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                            tw.WriteEncodedText(dr[dc.ColumnName].ToString());
-                            tw.RenderEndTag();
-                        }
-
-                        tw.RenderEndTag();  // tr
-                    }
-                    tw.RenderEndTag();  // tbody
-                    tw.RenderEndTag();  // table
-                }
-                return sw.ToString();
-            }
         }
 
         public IEnumerable<KnownColumn> YValCandidates
