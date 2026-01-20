@@ -830,4 +830,7 @@ Sender Email: {1}</value>
   <data name="errAircraftNotInClub" xml:space="preserve">
     <value>This aircraft is not in a club.</value>
   </data>
+  <data name="ReportHeaderFuelAtStart" xml:space="preserve">
+    <value>Fuel at Start</value>
+  </data>
 </root>

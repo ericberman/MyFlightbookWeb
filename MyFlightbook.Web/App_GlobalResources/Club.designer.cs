@@ -1626,6 +1626,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fuel at Start.
+        /// </summary>
+        internal static string ReportHeaderFuelAtStart {
+            get {
+                return ResourceManager.GetString("ReportHeaderFuelAtStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fuel Cost.
         /// </summary>
         internal static string ReportHeaderFuelCost {

@@ -33,6 +33,7 @@ else
                 <th class="PaddedCell">@Resources.Club.ReportHeaderOilAdded</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderOilAdded2ndEngine</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderOilLevel</th>
+                <th class="PaddedCell">@Resources.Club.ReportHeaderFuelAtStart</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderFuelAdded</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderFuelRemaining</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderFuelCost</th>
@@ -66,6 +67,7 @@ else
                         <td class="PaddedCell">@cfri.OilAdded.FormatDecimal(false)</td>
                         <td class="PaddedCell">@cfri.OilAdded2.FormatDecimal(false)</td>
                         <td class="PaddedCell">@cfri.OilLevel.FormatDecimal(false)</td>
+                        <td class="PaddedCell">@cfri.FuelAtStart.FormatDecimal(false)</td>
                         <td class="PaddedCell">@cfri.FuelAdded.FormatDecimal(false)</td>
                         <td class="PaddedCell">@cfri.FuelRemaining.FormatDecimal(false)</td>
                         <td class="PaddedCell">@(cfri.FuelCost == 0 ? string.Empty : cfri.FuelCost.ToString("C", CultureInfo.CurrentCulture))</td>

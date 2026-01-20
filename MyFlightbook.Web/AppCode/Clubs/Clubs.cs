@@ -1806,6 +1806,9 @@ ORDER BY username asc;"));
         public decimal OilLevel { get; set; }
         public decimal FuelAdded { get; set; }
         public decimal FuelRemaining { get; set; }
+
+        public decimal FuelAtStart { get; set; }
+
         public decimal FuelCost { get; set; }
         #endregion
 
@@ -1835,6 +1838,7 @@ fp5.decValue AS 'Fuel Cost',
 fp6.decValue AS 'Oil Level',
 fp7.decValue AS 'Oil Added 2nd',
 fp8.decValue AS 'Fuel Remaining',
+fp9.decValue AS 'Fuel At Start',
 IF(fppart91.StringValue is null, if(fppart121.StringValue is null, if(fppart135.StringValue is null, '', 'Part 131'), 'Part 121'), 'Part 91') AS FlightRules,
 COALESCE(fpPassCount.intValue, 0) as 'Passengers',
 IF(f.dualReceived > 0 OR f.cfi > 0, true, false) AS IsInstruction
@@ -1852,6 +1856,7 @@ LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=66
 LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
 LEFT JOIN flightproperties fp7 on (fp7.idflight=f.idflight AND fp7.idproptype=418)
 LEFT JOIN flightproperties fp8 on (fp8.idflight=f.idflight AND fp8.idproptype=72)
+LEFT JOIN flightproperties fp9 on (fp9.idflight=f.idflight AND fp9.idproptype=622)
 LEFT JOIN flightproperties fpPassCount on (fpPassCount.idflight=f.idflight and fpPassCount.idproptype=316)
 LEFT JOIN flightproperties fppart91 on (fppart91.idflight=f.idflight AND fppart91.idproptype=155)
 LEFT JOIN flightproperties fppart121 on (fppart121.idflight=f.idflight AND fppart121.idproptype=153)
@@ -1908,6 +1913,7 @@ ORDER BY f.DATE ASC";
                     OilLevel = Convert.ToDecimal(util.ReadNullableField(dr, "Oil Level", 0.0M), CultureInfo.InvariantCulture),
                     FuelAdded = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Added", 0.0M), CultureInfo.InvariantCulture),
                     FuelRemaining = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Remaining", 0.0M), CultureInfo.InvariantCulture),
+                    FuelAtStart = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel At Start", 0.0M), CultureInfo.InvariantCulture),
                     FuelCost = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Cost", 0.0M), CultureInfo.InvariantCulture)
                 });
             });
