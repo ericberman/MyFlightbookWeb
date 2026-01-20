@@ -209,10 +209,6 @@
   <data name="ChartTotalsHours" xml:space="preserve">
     <value>Hour(s)</value>
   </data>
-  <data name="ChartTotalsHoursOfX" xml:space="preserve">
-    <value>Hours of {0}</value>
-    <comment>e.g., hours of night flying, hours of instruction.</comment>
-  </data>
   <data name="ChartTotalsLandings" xml:space="preserve">
     <value>Landing(s)</value>
   </data>
@@ -225,10 +221,6 @@
   </data>
   <data name="ChartTotalsMouseHintClickHere" xml:space="preserve">
     <value>click here</value>
-  </data>
-  <data name="ChartTotalsNumOfX" xml:space="preserve">
-    <value>Number of {0}</value>
-    <comment>e.g., number of landings, number of instrument approaches</comment>
   </data>
   <data name="ChartTotalsOptionsPrompt" xml:space="preserve">
     <value>See your monthly flying trends by:</value>
@@ -715,9 +707,6 @@
   <data name="ChartTotalsHeader" xml:space="preserve">
     <value>View:</value>
   </data>
-  <data name="ChartRunningTotal" xml:space="preserve">
-    <value>Running Total</value>
-  </data>
   <data name="WhyStartingFlights" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\whystartingflights.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -847,9 +836,6 @@
   </data>
   <data name="ChartDataPeriod" xml:space="preserve">
     <value>Time Period</value>
-  </data>
-  <data name="ChartDataRunningTotal" xml:space="preserve">
-    <value>Running Total</value>
   </data>
   <data name="ChartDataTotal" xml:space="preserve">
     <value>Total</value>
@@ -1277,29 +1263,14 @@
   <data name="profileUpdatePreferences" xml:space="preserve">
     <value>Update Preferences</value>
   </data>
-  <data name="ChartTotalsGroupDay" xml:space="preserve">
-    <value>Day (up to a year)</value>
-  </data>
-  <data name="ChartTotalsGroupMonth" xml:space="preserve">
-    <value>Month</value>
-  </data>
   <data name="ChartTotalsGroupPrompt" xml:space="preserve">
     <value>Group by:</value>
-  </data>
-  <data name="ChartTotalsGroupWeek" xml:space="preserve">
-    <value>Week</value>
   </data>
   <data name="ChartTotalsTotalFlightDays" xml:space="preserve">
     <value>Days with Flights</value>
   </data>
   <data name="ChartTotalsTotalFlights" xml:space="preserve">
     <value>Flights</value>
-  </data>
-  <data name="ChartTotalsGroupYear" xml:space="preserve">
-    <value>Year</value>
-  </data>
-  <data name="WeeklyBucketTitleTemplate" xml:space="preserve">
-    <value>Week of {0}</value>
   </data>
   <data name="Privacy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\privacy.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
@@ -1601,9 +1572,6 @@
   <data name="GratuityThanksCurrencyNotification" xml:space="preserve">
     <value>You can sign up to receive notifications when currencies near expiration (Expires {0:d})</value>
   </data>
-  <data name="ChartTotalsAmountOfX" xml:space="preserve">
-    <value>Amount of {0}:</value>
-  </data>
   <data name="DownloadFlyingStats" xml:space="preserve">
     <value>Download</value>
   </data>
@@ -1633,9 +1601,6 @@
   </data>
   <data name="AnalysisShowAverages" xml:space="preserve">
     <value>Include Average</value>
-  </data>
-  <data name="ChartTotalsGroupDayOfWeek" xml:space="preserve">
-    <value>Day of Week</value>
   </data>
   <data name="ChartFormatWeekOf" xml:space="preserve">
     <value>'Week of' {0}</value>
@@ -1814,9 +1779,6 @@
   <data name="PrintViewBreakYear" xml:space="preserve">
     <value>Start of new year</value>
   </data>
-  <data name="ChartTotalsGroupMonthOfYear" xml:space="preserve">
-    <value>Month of Year</value>
-  </data>
   <data name="PrintFontSizeLarge" xml:space="preserve">
     <value>Larger</value>
   </data>
@@ -1871,17 +1833,11 @@
   <data name="footerVideos" xml:space="preserve">
     <value>Videos</value>
   </data>
-  <data name="ChartTotalsRankAndPercentOfTotals" xml:space="preserve">
-    <value>({0:#,##0} of {1:#,##0}, {2:#,##0.0}% of total)</value>
-  </data>
   <data name="PrintViewTotalsCompact" xml:space="preserve">
     <value>Compact Totals</value>
   </data>
   <data name="PrintViewTotalsCompactNote" xml:space="preserve">
     <value>(excludes trailing 12/24-month totals)</value>
-  </data>
-  <data name="ChartTotalsGroupDayOfYear" xml:space="preserve">
-    <value>Day of Year</value>
   </data>
   <data name="AirportServiceGuide" xml:space="preserve">
     <value>Airport Guide</value>

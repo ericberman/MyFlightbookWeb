@@ -1672,7 +1672,6 @@
     <Compile Include="AppCode\Aircraft\Makes.cs" />
     <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
-    <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
@@ -1790,7 +1789,6 @@
     <Compile Include="AppCode\Admin\AdminStats.cs" />
     <Compile Include="AppCode\Utility\Branding.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
-    <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\HttpRequestExtensions.cs" />
     <Compile Include="AppCode\Utility\MemCache.cs" />
     <Compile Include="AppCode\Utility\MFBConstants.cs" />
@@ -2226,6 +2224,10 @@
     <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj">
       <Project>{0878c055-b690-40ab-a1df-6a7a076fa0f5}</Project>
       <Name>MyFlightbook.Airports</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.Charting\MyFlightbook.Charting.csproj">
+      <Project>{671947de-169b-4447-83e1-dfb6f064e807}</Project>
+      <Name>MyFlightbook.Charting</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>

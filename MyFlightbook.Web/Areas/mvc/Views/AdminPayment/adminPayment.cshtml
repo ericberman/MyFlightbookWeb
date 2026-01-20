@@ -76,12 +76,12 @@
 <table class="stickyHeaderTable" style="width: unset;">
     <thead>
         <tr style="font-weight: bold;">
-            <th>@Resources.LocalizedText.ChartTotalsGroupYear</th>
+            <th>Year</th>
             @for (int i = 0; i < 12; i++)
             {
                 <th>@CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i]</th>
             }
-            <th>@Resources.LocalizedText.ChartDataTotal</th>
+            <th>Total</th>
         </tr>
     </thead>
     <tbody>

@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Geography;
+﻿using MyFlightbook.Charting;
+using MyFlightbook.Geography;
 using System;
 using System.Data;
 using System.Globalization;
@@ -6,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

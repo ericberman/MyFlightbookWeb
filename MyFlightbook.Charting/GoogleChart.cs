@@ -1,4 +1,4 @@
-﻿using MyFlightbook.Telemetry;
+﻿using MyFlightbook.Charting.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2025 MyFlightbook LLC
+ * Copyright (c) 2020-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,7 +57,7 @@ namespace MyFlightbook.Charting
 
         public string TrendlineLabel
         {
-            get { return Resources.FlightData.TrendLineLabel; }
+            get { return ChartingResources.TrendLineLabel; }
         }
 
         /// <summary>

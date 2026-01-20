@@ -214,15 +214,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Altitude less than -200 - seems suspect..
-        /// </summary>
-        internal static string errBadAlt {
-            get {
-                return ResourceManager.GetString("errBadAlt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expecting Latitude/Longitude pairs or Latitude/Longitude/Altitude tuples, but that&apos;s not what the coordinate data looks like..
         /// </summary>
         internal static string errBadKMLHeader {
@@ -237,15 +228,6 @@ namespace Resources {
         internal static string errBadKMLPosition {
             get {
                 return ResourceManager.GetString("errBadKMLPosition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Suspected bad latitude/longitude: {0}.
-        /// </summary>
-        internal static string errBadLatLong {
-            get {
-                return ResourceManager.GetString("errBadLatLong", resourceCulture);
             }
         }
         
@@ -577,15 +559,6 @@ namespace Resources {
         internal static string TelemetryCropReset {
             get {
                 return ResourceManager.GetString("TelemetryCropReset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trend (linear).
-        /// </summary>
-        internal static string TrendLineLabel {
-            get {
-                return ResourceManager.GetString("TrendLineLabel", resourceCulture);
             }
         }
         

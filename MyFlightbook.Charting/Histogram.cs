@@ -1,13 +1,12 @@
 ﻿using MyFlightbook.Charting;
+using MyFlightbook.Charting.Properties;
 using MyFlightbook.CSV;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
+using System.Net;
 
 /******************************************************
  * 
@@ -38,7 +37,7 @@ namespace MyFlightbook.Histogram
 
         public string RunningTotalDataName
         {
-            get { return DataName == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0} {1}", DataName, Resources.LocalizedText.ChartDataRunningTotal); }
+            get { return DataName == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, "{0} {1}", DataName, ChartingResources.ChartDataRunningTotal); }
         }
 
         /// <summary>
@@ -159,13 +158,13 @@ namespace MyFlightbook.Histogram
                 if (b.HasRunningTotals)
                     gcd.Y2Vals.Add(b.RunningTotals[hv.DataField]);
 
-                string RankAndPercent = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ChartTotalsRankAndPercentOfTotals, b.Ranks[hv.DataField], bm.Buckets.Count(), b.PercentOfTotal[hv.DataField]);
+                string RankAndPercent = String.Format(CultureInfo.CurrentCulture, ChartingResources.ChartTotalsRankAndPercentOfTotals, b.Ranks[hv.DataField], bm.Buckets.Count(), b.PercentOfTotal[hv.DataField]);
                 // Add a tooltip for the item.
                 gcd.Tooltips.Add(String.Format(CultureInfo.CurrentCulture, "<div class='ttip'><div class='dataVal'>{0}</div><div>{1}: <span class='dataVal'>{2}</span></div><div>{3}</div></div>",
-                    HttpUtility.HtmlEncode(b.DisplayName),
-                    HttpUtility.HtmlEncode(hv.DataName),
-                    HttpUtility.HtmlEncode(BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fUseHHMM)),
-                    HttpUtility.HtmlEncode(RankAndPercent)));
+                    WebUtility.HtmlEncode(b.DisplayName),
+                    WebUtility.HtmlEncode(hv.DataName),
+                    WebUtility.HtmlEncode(BucketManager.FormatForType(b.Values[hv.DataField], hv.DataType, fUseHHMM)),
+                    WebUtility.HtmlEncode(RankAndPercent)));
             }
 
             if (gcd.ShowAverage = (fIncludeAverage && count > 0))
@@ -176,19 +175,19 @@ namespace MyFlightbook.Histogram
                 switch (hv.DataType)
                 {
                     case HistogramValueTypes.Integer:
-                        szLabel = Resources.LocalizedText.ChartTotalsNumOfX;
+                        szLabel = ChartingResources.ChartTotalsNumOfX;
                         break;
                     case HistogramValueTypes.Time:
-                        szLabel = Resources.LocalizedText.ChartTotalsHoursOfX;
+                        szLabel = ChartingResources.ChartTotalsHoursOfX;
                         break;
                     case HistogramValueTypes.Decimal:
                     case HistogramValueTypes.Currency:
-                        szLabel = Resources.LocalizedText.ChartTotalsAmountOfX;
+                        szLabel = ChartingResources.ChartTotalsAmountOfX;
                         break;
                 }
             }
             gcd.YLabel = String.Format(CultureInfo.CurrentCulture, szLabel, hv.DataName);
-            gcd.Y2Label = Resources.LocalizedText.ChartRunningTotal;
+            gcd.Y2Label = ChartingResources.ChartRunningTotal;
 
             gcd.ClickHandlerJS = bm.ChartJScript;
 
@@ -430,7 +429,7 @@ namespace MyFlightbook.Histogram
 
             List<string> lst = new List<string>();
             foreach (string key in dictParams.Keys)
-                lst.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", key, HttpUtility.UrlEncode(dictParams[key])));
+                lst.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", key, WebUtility.UrlEncode(dictParams[key])));
 
             return String.Format(CultureInfo.InvariantCulture, "{0}?{1}", BaseHRef, string.Join("&", lst));
         }
@@ -541,88 +540,6 @@ namespace MyFlightbook.Histogram
             }
         }
 
-        /// <summary>
-        /// Renders the table as HTML (higher performance than using cshtml or even aspx).
-        /// </summary>
-        /// <param name="hm"></param>
-        /// <param name="fLink"></param>
-        /// <returns></returns>
-        public string RenderHTML(HistogramManager hm, bool fLink)
-        {
-            using (DataTable dt = ToDataTable(hm))
-            {
-                using (StringWriter sw = new StringWriter())
-                {
-                    using (HtmlTextWriter tw = new HtmlTextWriter(sw))
-                    {
-                        tw.AddAttribute("callpadding", "3");
-                        tw.AddAttribute("style", "font-size: 8pt; border-collapse: collapse;");
-                        tw.RenderBeginTag(HtmlTextWriterTag.Table);
-
-                        tw.RenderBeginTag(HtmlTextWriterTag.Thead);
-                        tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-
-                        tw.AddAttribute("class", "PaddedCell");
-                        tw.RenderBeginTag(HtmlTextWriterTag.Th);
-                        tw.WriteEncodedText(DisplayName);
-                        tw.RenderEndTag();  // th
-
-                        foreach (DataColumn dc in dt.Columns)
-                        {
-                            if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameDisplayName) != 0)
-                            {
-                                tw.AddAttribute("class", "PaddedCell");
-                                tw.RenderBeginTag(HtmlTextWriterTag.Th);
-                                tw.WriteEncodedText(dc.ColumnName);
-                                tw.RenderEndTag();
-                            }
-                        }
-
-                        tw.RenderEndTag();  // tr
-                        tw.RenderEndTag();  // thead
-
-                        tw.RenderBeginTag(HtmlTextWriterTag.Tbody);
-
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-
-                            tw.AddAttribute("class", "PaddedCell");
-                            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                            if(fLink && !String.IsNullOrEmpty(BaseHRef))
-                            {
-                                tw.AddAttribute("target", "_blank");
-                                tw.AddAttribute("href", dr[ColumnNameHRef].ToString().ToAbsolute());
-                                tw.RenderBeginTag(HtmlTextWriterTag.A);
-                                tw.WriteEncodedText(dr[ColumnNameDisplayName].ToString());
-                                tw.RenderEndTag();
-                            }
-                            else
-                                tw.WriteEncodedText(dr[ColumnNameDisplayName].ToString());
-                            tw.RenderEndTag();  // td
-
-                            foreach (DataColumn dc in dt.Columns)
-                            {
-                                if (dc.ColumnName.CompareCurrentCultureIgnoreCase(ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(ColumnNameDisplayName) != 0)
-                                {
-                                    tw.AddAttribute("class", "PaddedCell");
-                                    tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                                    tw.WriteEncodedText(dr[dc.ColumnName].ToString());
-                                    tw.RenderEndTag();
-                                }
-                            }
-
-                            tw.RenderEndTag();  // tr
-                        }
-
-                        tw.RenderEndTag();  // tbody
-                        tw.RenderEndTag();  // table
-                    }
-                    return sw.ToString();
-                }
-            }
-        }
-
         internal class RankedValue 
         {
             public int index { get; set; }
@@ -649,7 +566,7 @@ namespace MyFlightbook.Histogram
 
             hm.Context.Clear(); // start fresh, in case multiple scan-data passes.
 
-            object rf = util.RequestContext?.GetSessionValue(MFBConstants.keyMathRoundingUnits);
+            object rf = util.RequestContext?.GetSessionValue(MFBExtensions.keyMathRoundingUnits);
             double roundingFactor = rf == null ? 60.0 : Convert.ToDouble((int)rf);
 
             foreach (IHistogramable h in hm.SourceData)
@@ -749,7 +666,7 @@ namespace MyFlightbook.Histogram
         public DailyBucketManager(string szBaseHRef = null) : base(szBaseHRef)
         {
             DateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupDay;
+            DisplayName = ChartingResources.ChartTotalsGroupDay;
         }
 
         /// <summary>
@@ -781,7 +698,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate(), '_blank').focus(); }}", BaseHRef.ToAbsolute()); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -807,7 +724,7 @@ namespace MyFlightbook.Histogram
     {
         public DayOfWeekBucketManager() : base()
         {
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupDayOfWeek;
+            DisplayName = ChartingResources.ChartTotalsGroupDayOfWeek;
             BucketSelectorName = "Date";
         }
 
@@ -835,7 +752,7 @@ namespace MyFlightbook.Histogram
     {
         public DayOfYearBucketManager() : base()
         {
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupDayOfYear;
+            DisplayName = ChartingResources.ChartTotalsGroupDayOfYear;
             BucketSelectorName = "Date";
         }
 
@@ -866,7 +783,7 @@ namespace MyFlightbook.Histogram
     {
         public MonthOfYearBucketManager() : base()
         {
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupMonthOfYear;
+            DisplayName = ChartingResources.ChartTotalsGroupMonthOfYear;
             BucketSelectorName = "Date";
         }
 
@@ -905,7 +822,7 @@ namespace MyFlightbook.Histogram
         {
             WeekStart = DayOfWeek.Sunday;
             DateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupWeek;
+            DisplayName = ChartingResources.ChartTotalsGroupWeek;
         }
 
         /// <summary>
@@ -928,7 +845,7 @@ namespace MyFlightbook.Histogram
             DateTime dt = (DateTime) KeyForValue(MinDate);
             do
             {
-                dict[dt] = new Bucket((DateTime)KeyForValue(dt), String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.WeeklyBucketTitleTemplate, dt.ToShortDateString()), columns);
+                dict[dt] = new Bucket((DateTime)KeyForValue(dt), String.Format(CultureInfo.CurrentCulture, ChartingResources.WeeklyBucketTitleTemplate, dt.ToShortDateString()), columns);
                 dt = dt.AddDays(7);
             } while (dt.CompareTo(MaxDate) <= 0);
 
@@ -946,7 +863,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate() + '&w=1', '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth() + '&d=' + xvalue.getDate() + '&w=1', '_blank').focus(); }}", BaseHRef.ToAbsolute()); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -1010,7 +927,7 @@ namespace MyFlightbook.Histogram
             AlignStartToJanuary = true;
             AlignEndToDecember = false;
             DateFormat = "MMM yyyy";
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupMonth;
+            DisplayName = ChartingResources.ChartTotalsGroupMonth;
         }
 
         /// <summary>
@@ -1058,7 +975,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear()  + '&m=' + xvalue.getMonth(), '_blank').focus(); }}", BaseHRef.ToAbsolute()); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -1108,7 +1025,7 @@ namespace MyFlightbook.Histogram
         public YearlyBucketManager(string szBaseHRef = null) : base(szBaseHRef)
         { 
             DateFormat = "yyyy";
-            DisplayName = Resources.LocalizedText.ChartTotalsGroupYear;
+            DisplayName = ChartingResources.ChartTotalsGroupYear;
         }
 
         /// <summary>
@@ -1146,7 +1063,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear(), '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef)); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?y=' + xvalue.getFullYear(), '_blank').focus(); }}", BaseHRef.ToAbsolute()); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
@@ -1273,7 +1190,7 @@ namespace MyFlightbook.Histogram
 
         public override string ChartJScript
         {
-            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?{1}=' + xvalue, '_blank').focus(); }}", VirtualPathUtility.ToAbsolute(BaseHRef), SearchParam); }
+            get { return String.IsNullOrEmpty(BaseHRef) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "function(row, column, xvalue, value) {{ window.open('{0}?{1}=' + xvalue, '_blank').focus(); }}", BaseHRef.ToAbsolute(), SearchParam); }
         }
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)

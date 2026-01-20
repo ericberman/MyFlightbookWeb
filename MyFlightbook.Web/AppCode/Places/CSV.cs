@@ -1,4 +1,5 @@
-﻿using MyFlightbook.CSV;
+﻿using MyFlightbook.Charting;
+using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using System;
 using System.Collections.Generic;
@@ -221,7 +222,7 @@ namespace MyFlightbook.Telemetry
                     pc.fHasNakedDate = true;
                 if (kc.Type == KnownColumnTypes.ctNakedTime)
                     pc.fHasNakedTime = true;
-                DataColumn dc = new DataColumn(kc.ColumnHeaderName, KnownColumn.ColumnDataType(kc.Type));
+                DataColumn dc = new DataColumn(kc.ColumnHeaderName, kc.Type.ColumnDataType());
                 ParsedData.Columns.Add(dc);
                 if (kc.Type == KnownColumnTypes.ctNakedUTCDate || kc.Type == KnownColumnTypes.ctNakedUTCTime || kc.Type == KnownColumnTypes.ctUnixTimeStamp || kc.ColumnHeaderName.CompareCurrentCultureIgnoreCase(KnownColumnNames.UTCDateTime) == 0)
                     dc.DateTimeMode = DataSetDateTime.Utc;
@@ -232,7 +233,7 @@ namespace MyFlightbook.Telemetry
             {
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                DataColumn dc = ParsedData.Columns.Add(kc.Column, KnownColumn.ColumnDataType(kc.Type));
+                DataColumn dc = ParsedData.Columns.Add(kc.Column, kc.Type.ColumnDataType());
                 dc.DateTimeMode = DataSetDateTime.Utc;
                 pc.derivedColumnCount++;
             }
@@ -247,7 +248,7 @@ namespace MyFlightbook.Telemetry
                 pc.fDeriveUTCDateTime = true;
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                DataColumn dc = ParsedData.Columns.Add(kc.Column, KnownColumn.ColumnDataType(kc.Type));
+                DataColumn dc = ParsedData.Columns.Add(kc.Column, kc.Type.ColumnDataType());
                 dc.DateTimeMode = DataSetDateTime.Utc;
                 pc.derivedColumnCount++;
             }
@@ -257,7 +258,7 @@ namespace MyFlightbook.Telemetry
             {
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.DERIVEDSPEED);
                 pc.ColumnList.Add(kc);
-                ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)));
+                ParsedData.Columns.Add(new DataColumn(kc.Column, kc.Type.ColumnDataType()));
                 pc.derivedColumnCount++;
             }
         }

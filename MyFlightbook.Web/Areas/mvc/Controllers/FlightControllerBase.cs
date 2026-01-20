@@ -475,7 +475,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.bm = bm;
             ViewBag.hm = hm;
             ViewBag.hv = hm.Values.FirstOrDefault(h => h.DataField.CompareOrdinal(fieldToGraph) == 0);
-            ViewBag.rawData = bm.RenderHTML(hm, fLinkItems);
         }
 
         protected static byte[] RenderFlyingStats(FlightQuery fq, string selectedBucket)

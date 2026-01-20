@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Charting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Copyright (c) 2017-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

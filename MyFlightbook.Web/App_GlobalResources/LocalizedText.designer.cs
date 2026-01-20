@@ -843,15 +843,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running Total.
-        /// </summary>
-        internal static string ChartDataRunningTotal {
-            get {
-                return ResourceManager.GetString("ChartDataRunningTotal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         internal static string ChartDataTotal {
@@ -884,24 +875,6 @@ namespace Resources {
         internal static string ChartMinX {
             get {
                 return ResourceManager.GetString("ChartMinX", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Running Total.
-        /// </summary>
-        internal static string ChartRunningTotal {
-            get {
-                return ResourceManager.GetString("ChartRunningTotal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Amount of {0}:.
-        /// </summary>
-        internal static string ChartTotalsAmountOfX {
-            get {
-                return ResourceManager.GetString("ChartTotalsAmountOfX", resourceCulture);
             }
         }
         
@@ -942,74 +915,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day (up to a year).
-        /// </summary>
-        internal static string ChartTotalsGroupDay {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupDay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Day of Week.
-        /// </summary>
-        internal static string ChartTotalsGroupDayOfWeek {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupDayOfWeek", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Day of Year.
-        /// </summary>
-        internal static string ChartTotalsGroupDayOfYear {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupDayOfYear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Month.
-        /// </summary>
-        internal static string ChartTotalsGroupMonth {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupMonth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Month of Year.
-        /// </summary>
-        internal static string ChartTotalsGroupMonthOfYear {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupMonthOfYear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Group by:.
         /// </summary>
         internal static string ChartTotalsGroupPrompt {
             get {
                 return ResourceManager.GetString("ChartTotalsGroupPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Week.
-        /// </summary>
-        internal static string ChartTotalsGroupWeek {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupWeek", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Year.
-        /// </summary>
-        internal static string ChartTotalsGroupYear {
-            get {
-                return ResourceManager.GetString("ChartTotalsGroupYear", resourceCulture);
             }
         }
         
@@ -1028,15 +938,6 @@ namespace Resources {
         internal static string ChartTotalsHours {
             get {
                 return ResourceManager.GetString("ChartTotalsHours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hours of {0}.
-        /// </summary>
-        internal static string ChartTotalsHoursOfX {
-            get {
-                return ResourceManager.GetString("ChartTotalsHoursOfX", resourceCulture);
             }
         }
         
@@ -1077,29 +978,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of {0}.
-        /// </summary>
-        internal static string ChartTotalsNumOfX {
-            get {
-                return ResourceManager.GetString("ChartTotalsNumOfX", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to See your monthly flying trends by:.
         /// </summary>
         internal static string ChartTotalsOptionsPrompt {
             get {
                 return ResourceManager.GetString("ChartTotalsOptionsPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ({0:#,##0} of {1:#,##0}, {2:#,##0.0}% of total).
-        /// </summary>
-        internal static string ChartTotalsRankAndPercentOfTotals {
-            get {
-                return ResourceManager.GetString("ChartTotalsRankAndPercentOfTotals", resourceCulture);
             }
         }
         
@@ -6017,15 +5900,6 @@ namespace Resources {
         internal static string VisitedAirportsNumAirports {
             get {
                 return ResourceManager.GetString("VisitedAirportsNumAirports", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Week of {0}.
-        /// </summary>
-        internal static string WeeklyBucketTitleTemplate {
-            get {
-                return ResourceManager.GetString("WeeklyBucketTitleTemplate", resourceCulture);
             }
         }
         

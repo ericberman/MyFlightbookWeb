@@ -117,14 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="errBadAlt" xml:space="preserve">
-    <value>Altitude less than -200 - seems suspect.</value>
-  </data>
   <data name="errBadKMLPosition" xml:space="preserve">
     <value>Bad position data '{0}': {1}</value>
-  </data>
-  <data name="errBadLatLong" xml:space="preserve">
-    <value>Suspected bad latitude/longitude: {0}</value>
   </data>
   <data name="errGeneric" xml:space="preserve">
     <value>An error was encountered: {0}</value>
@@ -293,8 +287,5 @@
   </data>
   <data name="TelemetryCropReset" xml:space="preserve">
     <value>Reset Crop</value>
-  </data>
-  <data name="TrendLineLabel" xml:space="preserve">
-    <value>Trend (linear)</value>
   </data>
 </root>

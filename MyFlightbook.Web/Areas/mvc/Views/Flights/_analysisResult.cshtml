@@ -1,4 +1,5 @@
-﻿@using System.Globalization
+﻿@using System.Data
+@using System.Globalization
 @using MyFlightbook.Histogram
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Converters
@@ -23,7 +24,47 @@
 </p>
 
 <div style="display: none; overflow-x: auto;" id="divRawData" ?>
-    @Html.Raw(ViewBag.rawData)
+    <table cellpadding="3" style="font-size: 8pt; border-collapse: collapse;">
+        @using (DataTable dt = bm.ToDataTable(hm))
+        {
+            <thead>
+                <tr>
+                    <th class="PaddedCell">@bm.DisplayName</th>
+                    @foreach (DataColumn dc in dt.Columns)
+                    {
+                        if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameDisplayName) != 0)
+                        {
+                            <th class="PaddedCell">@dc.ColumnName</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(DataRow dr in dt.Rows) 
+                {
+                    <tr>
+                        <td class="PaddedCell">
+                            @if (fLink && !String.IsNullOrEmpty(bm.BaseHRef))
+                            {
+                                <a target="_blank" href="@dr[BucketManager.ColumnNameHRef].ToString().ToAbsolute()">@dr[BucketManager.ColumnNameDisplayName]</a>
+                            }
+                            else
+                            {
+                                @dr[BucketManager.ColumnNameDisplayName]
+                            }
+                        </td>
+                        @foreach (DataColumn dc in dt.Columns)
+                        {
+                            if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) != 0 && dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameDisplayName) != 0)
+                            {
+                                <td class="PaddedCell">@dr[dc.ColumnName]</td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        }
+    </table>
 </div>
 @if (yearlySummary.Any())
 {

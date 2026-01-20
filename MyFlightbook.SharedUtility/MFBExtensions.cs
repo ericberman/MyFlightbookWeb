@@ -967,6 +967,7 @@ namespace MyFlightbook
         }
 
         public const string keyDecimalSettings = "prefDecimalDisplay";  // adaptive, single, or double digit precision
+        public const string keyMathRoundingUnits = "prefMath";  // rounding units for math operations
 
         /// <summary>
         /// Formats a decimal object into a 0.0 object or an empty string

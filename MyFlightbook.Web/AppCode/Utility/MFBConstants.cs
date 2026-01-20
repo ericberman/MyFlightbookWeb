@@ -19,7 +19,7 @@ namespace MyFlightbook
         public const string keyCookiePrivacy = "cookiesAcceptedNEW";
         public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
         public static string keyDecimalSettings { get { return MFBExtensions.keyDecimalSettings; } }  // adaptive, single, or double digit precision    Note: moved to MFBExtensions for shared access.
-        public const string keyMathRoundingUnits = "prefMath";   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding
+        public static string keyMathRoundingUnits { get {return MFBExtensions.keyMathRoundingUnits;} }   // whether to use decimal math (36-second precision) or minute math (60-second precision) when adding
         public const string keyPrefLastUsedLocale = "prefLastUsedLocale";   // most recently used locale, if not en-us
         public const string keyPrefHobbsDefault = "prefUseHobbs";
         public const string keyPrefTachDefault = "prefUseTach";

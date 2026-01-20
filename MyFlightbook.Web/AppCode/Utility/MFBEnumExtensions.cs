@@ -1,6 +1,4 @@
 ﻿using MyFlightbook.Currency;
-using System;
-using System.Globalization;
 
 /******************************************************
  * 
@@ -27,13 +25,6 @@ namespace MyFlightbook
         /// <param name="cs"></param>
         /// <returns></returns>
         public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
-
-        /// <summary>
-        /// Indicates whether a particular column type can be graphed.
-        /// </summary>
-        /// <param name="kct"></param>
-        /// <returns></returns>
-        public static bool CanGraph(this Telemetry.KnownColumnTypes kct) { return kct != Telemetry.KnownColumnTypes.ctLatLong && kct != Telemetry.KnownColumnTypes.ctString; }
 
         public static string ToMySQLSort(this SortDirection sd) { return sd == SortDirection.Ascending ? "ASC" : "DESC"; }
 

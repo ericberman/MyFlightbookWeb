@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.Charting;
 using MyFlightbook.Clubs;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
