@@ -568,6 +568,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private ViewResult VisitedAirportViewForQuery(FlightQuery fq)
         {
+            fq.Refresh();
             ViewBag.query = fq;
             IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq));
             ViewBag.visitedAirports = rgva;
@@ -590,7 +591,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult VisitedAirports(string fqJSON, bool fPropDeleteClicked = false, string propToDelete = null, bool df = false)
         {
             FlightQuery fq = String.IsNullOrEmpty(fqJSON) ? new FlightQuery(User.Identity.Name) : JsonConvert.DeserializeObject<FlightQuery>(fqJSON);
-
             if (fq.UserName.CompareOrdinal(User.Identity.Name) != 0)
                 throw new UnauthorizedAccessException();
 
