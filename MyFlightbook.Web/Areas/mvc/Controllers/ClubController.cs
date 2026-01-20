@@ -711,10 +711,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             szAirport = (szAirport ?? string.Empty).Trim();
 
-            GoogleMap googleMap = new GoogleMap("divClubAirports", GMap_Mode.Dynamic)
-            {
-                ClubClickHandler = "displayClubDetails"
-            };
+            GoogleMap googleMap = new GoogleMap("divClubAirports", GMap_Mode.Dynamic);
 
             bool fAdmin = User.Identity.IsAuthenticated && GetIntParam("a", 0) != 0 && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
             IEnumerable<Club> rgClubs = Array.Empty<Club>();
@@ -735,7 +732,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
             }
 
-            googleMap.Clubs = rgClubs;
+            // Set up the map markers for the clubs
+            googleMap.Clubs = Club.MapMarkersFromClubs(rgClubs, "displayClubDetails");
+
             ViewBag.Map = googleMap;
             ViewBag.searchedAirport = szAirport.ToUpper(CultureInfo.CurrentCulture);
 

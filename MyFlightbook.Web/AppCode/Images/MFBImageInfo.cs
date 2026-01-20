@@ -2,6 +2,7 @@
 using gma.Drawing.ImageInfo;
 using ImageMagick;
 using MyFlightbook.Geography;
+using MyFlightbook.Mapping;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.UI;
 
 /******************************************************
@@ -59,6 +59,16 @@ namespace MyFlightbook.Image
 
     // Possible links for an image that has a location - on a map on the page, to a new google maps page, or no link
     public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
+
+    [Serializable]
+    public class MFBPhotoMarker : MFBGMapLatLon
+    {
+        public string hrefThumb { get; set; }
+        public string hrefFull { get; set; }
+        public string comment { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+    }
 
     /// <summary>
     /// MFBImageInfo wraps an image or PDF file.  It has the following characteristics:
@@ -637,6 +647,28 @@ namespace MyFlightbook.Image
                 ImageType = ImageFileType.S3PDF;
             else if (ImageType == ImageFileType.JPEG && ThumbnailFile.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
+        }
+
+        /// <summary>
+        /// Returns a set of map markers from a set of images
+        /// </summary>
+        /// <param name="rgmfbii"></param>
+        /// <returns></returns>
+        public static IEnumerable<IMapMarker> MapMarkersFromImages(IEnumerable<MFBImageInfo> rgmfbii)
+        {
+            if (rgmfbii == null || !rgmfbii.Any())
+                return Array.Empty<MFBPhotoMarker>();
+
+            LatLong ll;
+            List<MFBPhotoMarker> lst = new List<MFBPhotoMarker>();
+            foreach (MFBImageInfo ii in rgmfbii)
+            {
+                double ratio = ResizeRatio(ThumbnailHeight / 2, ThumbnailWidth / 2, ii.HeightThumbnail, ii.WidthThumbnail);
+                if ((ll = ii.Location) != null)
+                    lst.Add(new MFBPhotoMarker() { hrefThumb = ii.URLThumbnail, hrefFull = ii.URLFullImage, latitude = ii.Location.Latitude, longitude = ii.Location.Longitude, comment = ii.Comment, height = (int)(ii.HeightThumbnail * ratio), width = (int)(ii.WidthThumbnail * ratio) });
+            }
+
+            return lst;
         }
         #endregion
 

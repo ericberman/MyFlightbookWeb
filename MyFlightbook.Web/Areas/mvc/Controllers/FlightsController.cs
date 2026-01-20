@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Histogram;
+using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
@@ -805,7 +806,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     Airports = lfrr.Result,
                     Path = fd.GetPath(),
-                    Images = le.FlightImages
+                    Images = MFBImageInfo.MapMarkersFromImages(le.FlightImages)
                 };
                 gmap.Options.fShowMarkers = true;
                 gmap.Options.fShowRoute = true;

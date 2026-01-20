@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj" />
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj" />
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />

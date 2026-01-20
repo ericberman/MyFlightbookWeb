@@ -1,7 +1,5 @@
 ﻿using MyFlightbook.Airports;
-using MyFlightbook.Clubs;
 using MyFlightbook.Geography;
-using MyFlightbook.Image;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2024 MyFlightbook LLC
+ * Copyright (c) 2015-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,17 +61,12 @@ namespace MyFlightbook.Mapping
         /// <summary>
         /// An array of MFBImageInfo objects that are thumbnails to display on the map
         /// </summary>
-        public IEnumerable<MFBImageInfo> Images { get; set; } = Array.Empty<MFBImageInfo>();
+        public IEnumerable<IMapMarker> Images { get; set; } = Array.Empty<IMapMarker>();
 
         /// <summary>
         /// A list of clubs to display
         /// </summary>
-        public IEnumerable<Club> Clubs { get; set; } = Array.Empty<Club>();
-
-        /// <summary>
-        /// Name of a function to call when a club gets clicked.  The ID of the club is the parameter
-        /// </summary>
-        public string ClubClickHandler { get; set; } = string.Empty;
+        public IEnumerable<IMapMarker> Clubs { get; set; } = Array.Empty<IMapMarker>();
 
         /// <summary>
         /// A list of AirportLists containing the airports to display.  If markers are on, the airports within an airportlist will be connected
@@ -199,7 +192,7 @@ namespace MyFlightbook.Mapping
             Options.BoundingBox = null;
             Options.SetAirports(Airports, AllowDupeMarkers);
             Options.SetPath(Path);
-            Options.SetClubs(Clubs, ClubClickHandler);
+            Options.SetClubs(Clubs);
             Options.SetImages(Images);
             Options.fAutoZoom = Options.BoundingBox != null && !Options.BoundingBox.IsEmpty;
             if (Options.BoundingBox == null)
@@ -306,16 +299,16 @@ namespace MyFlightbook.Mapping
         /// Path to display
         /// </summary>
         [JsonIgnore]
-        public IEnumerable<MFBGMapLatLon> pathArray { get; private set; }
+        public IEnumerable<IMapMarker> pathArray { get; private set; }
 
         /// <summary>
         /// Name for the variable that holds the flight path array (array of lat/longs)
         /// </summary>
         public string PathVarName { get; set; } = "rgPath";
 
-        public IEnumerable<MFBPhotoMarker> rgImages { get; private set; }
+        public IEnumerable<IMapMarker> rgImages { get; private set; }
 
-        public IEnumerable<MFBClubMarker> rgClubs { get; private set; }
+        public IEnumerable<IMapMarker> rgClubs { get; private set; }
 
         [JsonIgnore]
         public LatLongBox BoundingBox { get; set; }
@@ -377,7 +370,7 @@ namespace MyFlightbook.Mapping
         public string PathColor { get; set; } = DefaultPathColor;
         #endregion
 
-        private void UpdateBoundingBox(MFBGMapLatLon gll)
+        private void UpdateBoundingBox(IMapMarker gll)
         {
             if (BoundingBox == null)
                 BoundingBox = new LatLongBox(gll.latlong);
@@ -385,11 +378,11 @@ namespace MyFlightbook.Mapping
                 BoundingBox.ExpandToInclude(gll.latlong);
         }
 
-        private void UpdateBoundingBox(IEnumerable<MFBGMapLatLon> rgll)
+        private void UpdateBoundingBox(IEnumerable<IMapMarker> rgll)
         {
             if (rgll == null)
                 return;
-            foreach (MFBGMapLatLon ll in rgll)
+            foreach (IMapMarker ll in rgll)
                 UpdateBoundingBox(ll);
         }
 
@@ -414,24 +407,23 @@ namespace MyFlightbook.Mapping
             rgAirports = routes;
         }
 
-        public void SetImages(IEnumerable<MFBImageInfo> rgmfbii)
+        public void SetImages(IEnumerable<IMapMarker> rgmfbii)
         {
             if (rgmfbii == null)
                 return;
 
-            rgImages = MFBPhotoMarker.FromImages(rgmfbii);
+            rgImages = rgmfbii;
         }
 
-        public void SetClubs(IEnumerable<Club> clubs, string szClickHandler)
+        public void SetClubs(IEnumerable<IMapMarker> clubs)
         {
             if (clubs == null)
                 return;
 
-            IEnumerable<MFBClubMarker> lst = MFBClubMarker.FromClubs(clubs, szClickHandler);
-            foreach (MFBClubMarker c in lst)
+            foreach (IMapMarker c in clubs)
                 UpdateBoundingBox(c);
 
-            rgClubs = lst;
+            rgClubs = clubs;
         }
 
         public void SetPath(IEnumerable<LatLong> rgll)
@@ -439,16 +431,27 @@ namespace MyFlightbook.Mapping
             if (rgll == null)
                 return;
 
-            List<MFBGMapLatLon> lst = new List<MFBGMapLatLon>();
+            List<IMapMarker> lst = new List<IMapMarker>();
             lst.AddRange(MFBGMapLatLon.FromLatlongs(rgll));
-            foreach (MFBGMapLatLon gll in lst)
+            foreach (IMapMarker gll in lst)
                 UpdateBoundingBox(gll);
             pathArray = lst;
         }
     }
 
+    /// <summary>
+    /// Interface for anything that can be mapped.
+    /// </summary>
+    public interface IMapMarker
+    {
+        double latitude { get; }
+        double longitude { get; }
+
+        LatLong latlong { get; }
+    }
+
     [Serializable]
-    public class MFBGMapLatLon {
+    public class MFBGMapLatLon : IMapMarker {
         public double latitude { get; set; }
         public double longitude { get; set; }
 
@@ -464,27 +467,26 @@ namespace MyFlightbook.Mapping
             }
         }
 
-        public static IEnumerable<MFBGMapLatLon> FromLatlongs(IEnumerable<LatLong> rgll)
+        public static IEnumerable<IMapMarker> FromLatlongs(IEnumerable<LatLong> rgll)
         {
             if (rgll == null || !rgll.Any())
-                return Array.Empty<MFBGMapLatLon>();
+                return Array.Empty<IMapMarker>();
 
-            List<MFBGMapLatLon> lst = new List<MFBGMapLatLon>();
+            List<IMapMarker> lst = new List<IMapMarker>();
             foreach (LatLong ll in rgll)
                 lst.Add(new MFBGMapLatLon() { latlong = ll });
 
             return lst;
         }
 
-        public static IEnumerable<double[]> AsArrayOfArrays(IEnumerable<MFBGMapLatLon> rg)
+        public static IEnumerable<double[]> AsArrayOfArrays(IEnumerable<IMapMarker> rg)
         {
             if (rg == null)
                 return null;
             List<double[]> lst = new List<double[]>();
-            foreach (MFBGMapLatLon ll in rg)
+            foreach (IMapMarker ll in rg)
                 lst.Add(new double[] { ll.latitude, ll.longitude });
             return lst;
-
         }
     }
 
@@ -509,56 +511,6 @@ namespace MyFlightbook.Mapping
                     continue;
                 lst.Add(new MFBAirportMarker() { latitude = ap.LatLong.Latitude, longitude = ap.LatLong.Longitude, Name = ap.NameWithGeoRegion, Code = ap.Code, Type = ap.FacilityType, fShowMarker = fShowMarkers });
             }
-            return lst;
-        }
-    }
-
-    [Serializable]
-    public class MFBPhotoMarker : MFBGMapLatLon
-    {
-        public string hrefThumb { get; set; }
-        public string hrefFull { get; set; }
-        public string comment { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
-
-        public static IEnumerable<MFBPhotoMarker> FromImages(IEnumerable<MFBImageInfo> rgmfbii)
-        {
-            if (rgmfbii == null || !rgmfbii.Any())
-                return Array.Empty<MFBPhotoMarker>();
-
-            LatLong ll;
-            List<MFBPhotoMarker> lst = new List<MFBPhotoMarker>();
-            foreach (MFBImageInfo ii in rgmfbii)
-            {
-                double ratio = MFBImageInfo.ResizeRatio(MFBImageInfo.ThumbnailHeight / 2, MFBImageInfo.ThumbnailWidth / 2, ii.HeightThumbnail, ii.WidthThumbnail);
-                if ((ll = ii.Location) != null)
-                    lst.Add(new MFBPhotoMarker() { hrefThumb = ii.URLThumbnail, hrefFull = ii.URLFullImage, latitude = ii.Location.Latitude, longitude = ii.Location.Longitude, comment = ii.Comment, height = (int)(ii.HeightThumbnail * ratio), width = (int)(ii.WidthThumbnail * ratio) });
-            }
-
-            return lst;
-        }
-    }
-
-    [Serializable]
-    public class MFBClubMarker : MFBGMapLatLon
-    {
-        public string name { get; set; }
-        public int clubID { get; set; }
-        public string onclickhandler { get; set; }
-
-        public static IEnumerable<MFBClubMarker> FromClubs(IEnumerable<Club> rgclubs, string szClickHandler)
-        {
-            if (rgclubs == null || !rgclubs.Any())
-                return Array.Empty<MFBClubMarker>();
-
-            List<MFBClubMarker> lst = new List<MFBClubMarker>();
-            foreach (Club c in rgclubs)
-            {
-                if (c.HomeAirport != null && !String.IsNullOrEmpty(c.HomeAirport.Code))
-                    lst.Add(new MFBClubMarker() { clubID = c.ID, latitude = c.HomeAirport.LatLong.Latitude, longitude = c.HomeAirport.LatLong.Longitude, name = c.Name, onclickhandler = szClickHandler });
-            }
-
             return lst;
         }
     }

@@ -3,6 +3,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.CSV;
 using MyFlightbook.Currency;
 using MyFlightbook.Instruction;
+using MyFlightbook.Mapping;
 using MyFlightbook.Payments;
 using MyFlightbook.Schedule;
 using MyFlightbook.Telemetry;
@@ -1102,6 +1103,37 @@ namespace MyFlightbook.Clubs
             }
         }
         #endregion
+
+        #region Mapping
+        /// <summary>
+        /// Return map markers for the specified clubs
+        /// </summary>
+        /// <param name="rgclubs">The list of the clubs</param>
+        /// <param name="szClickHandler">Javascript to run on click</param>
+        /// <returns>A set of IMapMarker objects</returns>
+        public static IEnumerable<IMapMarker> MapMarkersFromClubs(IEnumerable<Club> rgclubs, string szClickHandler)
+        {
+            if (rgclubs == null || !rgclubs.Any())
+                return Array.Empty<MFBClubMarker>();
+
+            List<MFBClubMarker> lst = new List<MFBClubMarker>();
+            foreach (Club c in rgclubs)
+            {
+                if (c.HomeAirport != null && !String.IsNullOrEmpty(c.HomeAirport.Code))
+                    lst.Add(new MFBClubMarker() { clubID = c.ID, latitude = c.HomeAirport.LatLong.Latitude, longitude = c.HomeAirport.LatLong.Longitude, name = c.Name, onclickhandler = szClickHandler });
+            }
+
+            return lst;
+        }
+        #endregion
+    }
+
+    [Serializable]
+    public class MFBClubMarker : MFBGMapLatLon
+    {
+        public string name { get; set; }
+        public int clubID { get; set; }
+        public string onclickhandler { get; set; }
     }
 
     /// <summary>

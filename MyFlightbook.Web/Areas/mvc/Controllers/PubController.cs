@@ -142,7 +142,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
             }
 
-            map.Images = i > 0 ? le.FlightImages.ToArray() : Array.Empty<MFBImageInfo>();
+            map.Images = i > 0 ? MFBImageInfo.MapMarkersFromImages(le.FlightImages) : Array.Empty<IMapMarker>();
 
             bool fHasGeotaggedImages = false;
             if (le.FlightImages != null)

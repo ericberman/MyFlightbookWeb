@@ -1778,7 +1778,6 @@
     <Compile Include="AppCode\Places\GPX.cs" />
     <Compile Include="AppCode\Places\IGC.cs" />
     <Compile Include="AppCode\Places\KML.cs" />
-    <Compile Include="AppCode\Places\Mapping.cs" />
     <Compile Include="AppCode\Places\NMEA.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
