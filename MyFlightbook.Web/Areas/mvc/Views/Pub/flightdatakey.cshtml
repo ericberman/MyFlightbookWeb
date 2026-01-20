@@ -1,24 +1,25 @@
-﻿@{
+﻿@using MyFlightbook.Charting;
+@{
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<div class="detailsSection" style="float:right; max-width: 250px;">
+<div class="detailsSection flR" style="max-width: 250px;">
     @Resources.LogbookEntry.BulkImportPrompt
     <a href="@VirtualPathUtility.ToAbsolute("~/mvc/playpen/ImportTelemetry")">@Resources.LogbookEntry.BulkImportLink</a>
 </div>
 
 @Html.Raw(ViewBag.HTMLContent)
-<table cellpadding="3">
+<table class="stickyHeaderTable stickyHeaderAlternate">
     <thead class="headerBase gvhDefault gvhLeft">
         <tr>
-            <td style="font-weight: bold;">@Resources.FlightData.headerColumnName</td>
-            <td style="font-weight: bold;">@Resources.FlightData.headerColumnDescription</td>
+            <td class="b">@Resources.FlightData.headerColumnName</td>
+            <td class="b">@Resources.FlightData.headerColumnDescription</td>
         </tr>
     </thead>
     <tbody>
-        @foreach (MyFlightbook.Telemetry.KnownColumn kc in ViewBag.Columns)
+        @foreach (KnownColumn kc in ViewBag.Columns)
         {
-            <tr style="vertical-align: top">
-                <td style="font-weight: bold;">@kc.Column</td>
+            <tr class="topAlign">
+                <td class="b">@kc.Column</td>
                 <td>
                     <div>@kc.ColumnDescription</div>
                     <div class="fineprint">@kc.ColumnNotes</div>
