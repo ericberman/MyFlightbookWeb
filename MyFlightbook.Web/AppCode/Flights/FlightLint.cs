@@ -494,7 +494,7 @@ namespace MyFlightbook.Lint
 
             // Flight end must be after engine/flight start (checked in regular validation), after block out, and before block in
             AddConditionalIssue(fHasFlightEnd && cfpBlockOut != null && le.FlightEnd.CompareTo(cfpBlockOut.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndBeforeBlockOut);
-            AddConditionalIssue(fHasFlightEnd && cfpBlockIn != null && le.FlightEnd.CompareTo(cfpBlockIn.DateValue) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterBlockIn);
+            AddConditionalIssue(fHasFlightEnd && cfpBlockIn != null && le.FlightEnd.CompareTo(cfpBlockIn.DateValue) >= 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterBlockIn);
             AddConditionalIssue(fHasFlightEnd && fHasEngineEnd && le.FlightEnd.CompareTo(le.EngineEnd) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterEngineEnd);
 
             AddConditionalIssue(fHasEngineEnd && cfpBlockIn != null && le.EngineEnd.CompareTo(cfpBlockIn.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineEndBeforeBlockIn);
