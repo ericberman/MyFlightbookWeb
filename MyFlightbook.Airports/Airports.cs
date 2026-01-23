@@ -4,7 +4,6 @@ using MyFlightbook.Geography;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -616,7 +615,7 @@ namespace MyFlightbook.Airports
         /// <returns>The airports/etc. created by that user</returns>
         public static IEnumerable<airport> AirportsForUser(string szUser, Boolean fAdmin)
         {
-            ArrayList rgAirports = new ArrayList();
+            List<airport> rgAirports = new List<airport>();
             string szQ = String.Format(CultureInfo.InvariantCulture, "{0} {1} ORDER BY AirportID", airport.DefaultSelectStatement("0.0"), fAdmin ? "WHERE SourceUsername <> '' " : "WHERE SourceUsername=?User ");
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows(
@@ -626,7 +625,7 @@ namespace MyFlightbook.Airports
                 },
                 (dr) => { rgAirports.Add(new airport(dr)); });
 
-            return (airport[])rgAirports.ToArray(typeof(airport));
+            return rgAirports;
         }
 
         /// <summary>

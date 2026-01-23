@@ -375,14 +375,14 @@ namespace MyFlightbook.Airports
         /// <returns></returns>
         public airport[] GetNormalizedAirports()
         {
-            ArrayList al = new ArrayList();
+            List<airport> al = new List<airport>();
             foreach (string sz in m_rgszAirportsNormal)
             {
                 airport ap = GetAirportByCode(sz);
                 if (ap != null)
                     al.Add(ap);
             }
-            return (airport[])al.ToArray(typeof(airport));
+            return al.ToArray();
         }
 
         /// <summary>
