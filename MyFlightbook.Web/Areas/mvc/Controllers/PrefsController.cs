@@ -38,7 +38,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     afo.TakeOffSpeed = AutoFillOptions.DefaultTakeoffSpeed;
                 afo.LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed((int) afo.TakeOffSpeed);
                 afo.IgnoreErrors = true;
-                afo.SaveForUser(User.Identity.Name);
+                afo.SaveForUser(MyFlightbook.Profile.GetUser(User.Identity.Name));
                 return new EmptyResult();
             });
         }
@@ -942,7 +942,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
 
-            ViewBag.afo = AutoFillOptions.DefaultOptionsForUser(szUser);
+            ViewBag.afo = AutoFillOptions.DefaultOptionsForUser(MyFlightbook.Profile.GetUser(szUser));
             return PartialView("_autofillOptions");
         }
         #endregion

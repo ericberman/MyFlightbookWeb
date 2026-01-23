@@ -4,7 +4,7 @@
     MyFlightbook.Profile m_pf = ViewBag.pf;
     DecimalFormat df = m_pf.PreferenceExists(MFBConstants.keyDecimalSettings) ? m_pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings) : DecimalFormat.Adaptive;
     string preferredTimeZoneID = m_pf.PreferredTimeZone?.Id ?? MyFlightbook.Schedule.ScheduledEvent.TimeZoneForOffset(TimeSpan.FromMinutes(0)).Id;
-    AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(User.Identity.Name);
+    AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(m_pf);
 }
 <script type="text/javascript">
     var pe;

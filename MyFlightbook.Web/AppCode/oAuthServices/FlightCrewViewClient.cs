@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -105,7 +105,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
                     {
                         DateTime dtSave = pf.Date;
                         using (FlightData fd = new FlightData())
-                            fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(szUser));
+                            fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUser) ? null : Profile.GetUser(szUser)));
                         pf.Date = dtSave;
                     }
 

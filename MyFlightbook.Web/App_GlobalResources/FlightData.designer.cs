@@ -151,69 +151,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Airbly File.
-        /// </summary>
-        internal static string dataTypeAirbly {
-            get {
-                return ResourceManager.GetString("dataTypeAirbly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CSV File (Units unspecified).
-        /// </summary>
-        internal static string dataTypeCSV {
-            get {
-                return ResourceManager.GetString("dataTypeCSV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to GPX File.
-        /// </summary>
-        internal static string dataTypeGPX {
-            get {
-                return ResourceManager.GetString("dataTypeGPX", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IGC File.
-        /// </summary>
-        internal static string dataTypeIGC {
-            get {
-                return ResourceManager.GetString("dataTypeIGC", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to KML File.
-        /// </summary>
-        internal static string dataTypeKML {
-            get {
-                return ResourceManager.GetString("dataTypeKML", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NMEA File.
-        /// </summary>
-        internal static string dataTypeNMEA {
-            get {
-                return ResourceManager.GetString("dataTypeNMEA", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (Unknown).
-        /// </summary>
-        internal static string dataTypeUnknown {
-            get {
-                return ResourceManager.GetString("dataTypeUnknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expecting Latitude/Longitude pairs or Latitude/Longitude/Altitude tuples, but that&apos;s not what the coordinate data looks like..
         /// </summary>
         internal static string errBadKMLHeader {
@@ -241,83 +178,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error was encountered: {0}.
-        /// </summary>
-        internal static string errGeneric {
-            get {
-                return ResourceManager.GetString("errGeneric", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error was encountered parsing GPX data, sample {0}.
-        /// </summary>
-        internal static string errGPXBadRow {
-            get {
-                return ResourceManager.GetString("errGPXBadRow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error parsing GPX data - no known information found!.
-        /// </summary>
-        internal static string errGPXNoPath {
-            get {
-                return ResourceManager.GetString("errGPXNoPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error in row {0}: {1}.
-        /// </summary>
-        internal static string errInRow {
-            get {
-                return ResourceManager.GetString("errInRow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid CSV data - no header row found..
-        /// </summary>
-        internal static string errNoCSVHeaderRowFound {
-            get {
-                return ResourceManager.GetString("errNoCSVHeaderRowFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No data associated with flight {0}.
         /// </summary>
         internal static string errNoDataForFlight {
             get {
                 return ResourceManager.GetString("errNoDataForFlight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No known KML track data found..
-        /// </summary>
-        internal static string errNoKMLTrack {
-            get {
-                return ResourceManager.GetString("errNoKMLTrack", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row {0} doesn&apos;t have data for every column.
-        /// </summary>
-        internal static string errNotEnoughColumns {
-            get {
-                return ResourceManager.GetString("errNotEnoughColumns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row {0} has more columns than the header had..
-        /// </summary>
-        internal static string errTooManyColumns {
-            get {
-                return ResourceManager.GetString("errTooManyColumns", resourceCulture);
             }
         }
         

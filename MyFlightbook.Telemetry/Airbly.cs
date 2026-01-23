@@ -114,12 +114,12 @@ namespace MyFlightbook.Telemetry
             return fResult;
         }
 
-        public override FlightData.AltitudeUnitTypes AltitudeUnits
+        public override AltitudeUnitTypes AltitudeUnits
         {
-            get { return FlightData.AltitudeUnitTypes.Feet; }
+            get { return AltitudeUnitTypes.Feet; }
         }
 
-        public override FlightData.SpeedUnitTypes SpeedUnits
+        public override SpeedUnitTypes SpeedUnits
         {
             get
             {

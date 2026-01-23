@@ -117,130 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="errBadKMLPosition" xml:space="preserve">
-    <value>Bad position data '{0}': {1}</value>
+  <data name="dataTypeAirbly" xml:space="preserve">
+    <value>Airbly File</value>
   </data>
-  <data name="errCantLoadFlight" xml:space="preserve">
-    <value>Unable to load flight {0}: {1}</value>
-    <comment>{0} is the ID of the flight, {1} is the error</comment>
+  <data name="dataTypeCSV" xml:space="preserve">
+    <value>CSV File (Units unspecified)</value>
   </data>
-  <data name="errNoDataForFlight" xml:space="preserve">
-    <value>No data associated with flight {0}</value>
+  <data name="dataTypeGPX" xml:space="preserve">
+    <value>GPX File</value>
   </data>
-  <data name="GraphDropPinTip" xml:space="preserve">
-    <value>Drop a pin on the map for this data point ({0})</value>
+  <data name="dataTypeIGC" xml:space="preserve">
+    <value>IGC File</value>
   </data>
-  <data name="GraphNoData" xml:space="preserve">
-    <value>(None)</value>
-    <comment>Used to select no data on an axis in the graph.</comment>
+  <data name="dataTypeKML" xml:space="preserve">
+    <value>KML File</value>
   </data>
-  <data name="errBadKMLHeader" xml:space="preserve">
-    <value>Expecting Latitude/Longitude pairs or Latitude/Longitude/Altitude tuples, but that's not what the coordinate data looks like.</value>
+  <data name="dataTypeNMEA" xml:space="preserve">
+    <value>NMEA File</value>
   </data>
-  <data name="FlightDataContactUs" xml:space="preserve">
-    <value>Please let us know if you have data not listed here</value>
+  <data name="dataTypeUnknown" xml:space="preserve">
+    <value>(Unknown)</value>
   </data>
-  <data name="FlightDataHeader" xml:space="preserve">
-    <value>Telemetry Data Description</value>
+  <data name="errGeneric" xml:space="preserve">
+    <value>An error was encountered: {0}</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="FlightDataKey" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\FlightDataKey.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="errGPXBadRow" xml:space="preserve">
+    <value>An error was encountered parsing GPX data, sample {0}</value>
   </data>
-  <data name="FlightDataTitle" xml:space="preserve">
-    <value>Telemetry Information</value>
+  <data name="errGPXNoPath" xml:space="preserve">
+    <value>Error parsing GPX data - no known information found!</value>
   </data>
-  <data name="ZoomIn" xml:space="preserve">
-    <value>Zoom In</value>
+  <data name="errInRow" xml:space="preserve">
+    <value>Error in row {0}: {1}</value>
   </data>
-  <data name="headerColumnDescription" xml:space="preserve">
-    <value>Description</value>
+  <data name="errNoCSVHeaderRowFound" xml:space="preserve">
+    <value>Invalid CSV data - no header row found.</value>
   </data>
-  <data name="headerColumnName" xml:space="preserve">
-    <value>Name of column</value>
+  <data name="errNoKMLTrack" xml:space="preserve">
+    <value>No known KML track data found.</value>
   </data>
-  <data name="PathForFlight" xml:space="preserve">
-    <value>Path for flight</value>
+  <data name="errNotEnoughColumns" xml:space="preserve">
+    <value>Row {0} doesn't have data for every column</value>
   </data>
-  <data name="KnotsTemplate" xml:space="preserve">
-    <value>{0}kts</value>
-  </data>
-  <data name="ImportBulkUploadDescription" xml:space="preserve">
-    <value>Upload multiple telemetry files at once.  MyFlightbook will try to match them to existing flights by date and location.</value>
-  </data>
-  <data name="ImportErrCantParse" xml:space="preserve">
-    <value>"Can't parse telemetry: not a recognized format: {0}</value>
-  </data>
-  <data name="ImportErrMultiMatchMultiClose" xml:space="preserve">
-    <value>Can't match to a flight: multiple Flights found, and several are close to the starting point of the telemetry</value>
-  </data>
-  <data name="ImportErrMultiMatchNoneClose" xml:space="preserve">
-    <value>Can't match to a flight: multiple Flights found, none are close to the starting point of the telemetry</value>
-  </data>
-  <data name="ImportErrNoDate" xml:space="preserve">
-    <value>Can't match to a flight: no date information</value>
-  </data>
-  <data name="ImportErrNoMatch" xml:space="preserve">
-    <value>Can't match to a flight: no flight found on that date</value>
-  </data>
-  <data name="ImportHeaderBulkUpload" xml:space="preserve">
-    <value>Bulk Import Telemetry</value>
-  </data>
-  <data name="ImportStatusMatch" xml:space="preserve">
-    <value>Matched Flight!</value>
-  </data>
-  <data name="ImportUseHeliports" xml:space="preserve">
-    <value>Use heliports in trying to match flights.</value>
-  </data>
-  <data name="ImportErrMultiMatchNoLocation" xml:space="preserve">
-    <value>Can't match to a flight: multiple flights found, but telemetry has no location by which to match</value>
-  </data>
-  <data name="FlightDataOriginalFormat" xml:space="preserve">
-    <value>Data was stored as:</value>
-  </data>
-  <data name="ConversionFtToM" xml:space="preserve">
-    <value>Convert Feet to Meters</value>
-  </data>
-  <data name="ConversionKtsToMph" xml:space="preserve">
-    <value>Convert Knots to Miles/Hour</value>
-  </data>
-  <data name="ConversionMphToKmh" xml:space="preserve">
-    <value>Convert Miles/Hour to Km/Hour</value>
-  </data>
-  <data name="ConversionMphToKts" xml:space="preserve">
-    <value>Convert Miles/Hour to Knots</value>
-  </data>
-  <data name="ConversionMSToKmh" xml:space="preserve">
-    <value>Convert Meters/Second to Km/Hour</value>
-  </data>
-  <data name="ConversionMSToKts" xml:space="preserve">
-    <value>Convert Meters/Second to Knots</value>
-  </data>
-  <data name="ConversionMToFt" xml:space="preserve">
-    <value>Convert Meters to Feet</value>
-  </data>
-  <data name="ConversionNone" xml:space="preserve">
-    <value>Raw (Unconverted)</value>
-  </data>
-  <data name="ConverstionKtsToKmh" xml:space="preserve">
-    <value>Convert Knots to Km/Hour</value>
-  </data>
-  <data name="ConverstionMSToMph" xml:space="preserve">
-    <value>Convert Meters/Second to Miles/Hour</value>
-  </data>
-  <data name="TelemetryCropCommit" xml:space="preserve">
-    <value>Apply Crop</value>
-  </data>
-  <data name="TelemetryCropIsApplied" xml:space="preserve">
-    <value>Telemetry has been cropped - reset to see it all and apply a new crop</value>
-  </data>
-  <data name="TelemetryCropNoCrop" xml:space="preserve">
-    <value>All data is being displayed (none is cropped)</value>
-  </data>
-  <data name="TelemetryCropPrompt" xml:space="preserve">
-    <value>Crop Data</value>
-  </data>
-  <data name="TelemetryCropReset" xml:space="preserve">
-    <value>Reset Crop</value>
+  <data name="errTooManyColumns" xml:space="preserve">
+    <value>Row {0} has more columns than the header had.</value>
   </data>
 </root>

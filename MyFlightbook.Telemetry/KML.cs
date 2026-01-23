@@ -1,7 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Geography;
+using MyFlightbook.Telemetry.Properties;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2022 MyFlightbook LLC
+ * Copyright (c) 2010-2025 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -173,7 +173,7 @@ namespace MyFlightbook.Telemetry
             public XElement ele { get; set; }
             public XElement ele22 { get; set; }
             public IEnumerable<XElement> eleCoords { get; set; }
-            public IEnumerable eleArray { get; set; }
+            public IEnumerable<XElement> eleArray { get; set; }
             public XNamespace ns { get; set; }
             public XNamespace ns22 { get; set; }
             public XNamespace nsAlt { get; set; }
@@ -266,7 +266,7 @@ namespace MyFlightbook.Telemetry
             if (mc.Count > 0)
             {
                 List<Position> lstSamples = new List<Position>();
-                ArrayList al = new ArrayList();
+                List<string> al = new List<string>();
                 for (int i = 1; i < mc[0].Groups.Count; i++)
                     if (mc[0].Groups[i].Value.Trim().Length > 0)
                         al.Add(mc[0].Groups[i].Value);
@@ -279,7 +279,7 @@ namespace MyFlightbook.Telemetry
                         al.Add(gc[i].Value);
                     try
                     {
-                        lstSamples.Add(new Position((string[])al.ToArray(typeof(string))));
+                        lstSamples.Add(new Position(al.ToArray()));
                     }
                     catch (MyFlightbookException ex)
                     {
@@ -365,14 +365,14 @@ namespace MyFlightbook.Telemetry
             return szData != null && IsXML(szData) && szData.Contains("<kml");
         }
 
-        public override FlightData.AltitudeUnitTypes AltitudeUnits
+        public override AltitudeUnitTypes AltitudeUnits
         {
-            get { return FlightData.AltitudeUnitTypes.Meters; }
+            get { return AltitudeUnitTypes.Meters; }
         }
 
-        public override FlightData.SpeedUnitTypes SpeedUnits
+        public override SpeedUnitTypes SpeedUnits
         {
-            get { return FlightData.SpeedUnitTypes.MetersPerSecond; }
+            get { return SpeedUnitTypes.MetersPerSecond; }
         }
 
         /// <summary>
@@ -398,17 +398,17 @@ namespace MyFlightbook.Telemetry
 
                         fResult = k.ele22 != null
                             ? ParseKMLv2(k)
-                            : k.ele != null || k.eleArray != null ? ParseKMLv1(k) : throw new MyFlightbookException(Resources.FlightData.errNoKMLTrack);
+                            : k.ele != null || k.eleArray != null ? ParseKMLv1(k) : throw new MyFlightbookException(TelemetryResources.errNoKMLTrack);
                     }
                 }
                 catch (XmlException ex)
                 {
-                    ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message);
+                    ErrorString = String.Format(CultureInfo.CurrentCulture, TelemetryResources.errGeneric, ex.Message);
                     fResult = false;
                 }
                 catch (MyFlightbookException ex)
                 {
-                    k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
+                    k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errGeneric, ex.Message));
                     fResult = false;
                 }
             }

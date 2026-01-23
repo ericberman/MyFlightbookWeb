@@ -1773,13 +1773,7 @@
     <Compile Include="AppCode\oAuthServices\RosterBusterClient.cs" />
     <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
-    <Compile Include="AppCode\Places\Airbly.cs" />
-    <Compile Include="AppCode\Places\CSV.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
-    <Compile Include="AppCode\Places\GPX.cs" />
-    <Compile Include="AppCode\Places\IGC.cs" />
-    <Compile Include="AppCode\Places\KML.cs" />
-    <Compile Include="AppCode\Places\NMEA.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
@@ -2240,6 +2234,10 @@
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj">
       <Project>{00e4d545-1149-44a2-aa0f-a775377581de}</Project>
       <Name>MyFlightbook.SharedUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.Telemetry\MyFlightbook.Telemetry.csproj">
+      <Project>{dcf181dc-f4f6-42d5-89ad-763f8dfbe2c1}</Project>
+      <Name>MyFlightbook.Telemetry</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj">
       <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>

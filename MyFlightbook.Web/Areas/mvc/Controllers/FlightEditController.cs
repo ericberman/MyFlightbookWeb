@@ -98,11 +98,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.IsNullOrEmpty(le.FlightData) && !LogbookEntryCore.IsNewFlightID(le.FlightID))
                     le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
 
-                AutoFillOptions afOptions = AutoFillOptions.DefaultOptionsForUser(le.User);
-                afOptions.TimeZoneOffset = Convert.ToInt32(Request["tzOffset"], CultureInfo.InvariantCulture);
-
                 Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);
                 Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+                AutoFillOptions afOptions = AutoFillOptions.DefaultOptionsForUser(pfTarget);
+                afOptions.TimeZoneOffset = Convert.ToInt32(Request["tzOffset"], CultureInfo.InvariantCulture);
 
                 using (FlightData fd = new FlightData())
                 {

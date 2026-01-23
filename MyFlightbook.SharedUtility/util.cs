@@ -22,6 +22,7 @@ namespace MyFlightbook
 
     public enum SortDirection { Ascending, Descending }
 
+    #region Dependency Injection Interfaces
     /// <summary>
     /// Encapsulates the context of the current request, including session, cache, request, etc.
     /// </summary>
@@ -60,6 +61,9 @@ namespace MyFlightbook
         string RelativeToAbsoluteFilePath(string relativePath);
     }
 
+    /// <summary>
+    /// Defines an entity that can send email
+    /// </summary>
     public interface IEmailSender
     {
         /// <summary>
@@ -77,6 +81,9 @@ namespace MyFlightbook
         void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask);
     }
 
+    /// <summary>
+    /// Defines an entity that can provide caching services
+    /// </summary>
     public interface ICacheService
     {
         void Set(string key, object value, DateTimeOffset offset);
@@ -87,6 +94,52 @@ namespace MyFlightbook
 
         IEnumerator GetEnumerator();
     }
+
+    /// <summary>
+    /// Defines an entity that can set or retrieve a user preference
+    /// </summary>
+    public interface IUserPreference
+    {
+        /// <summary>
+        /// Sets the specified object for persistence AND commits the object.  Removes the preference if the object is null.
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <param name="o"></param>
+        /// <param name="fClear">True to clear (remove) the preference</param>
+        /// <returns>True for success</returns>
+        bool SetPreferenceForKey(string szKey, object o, bool fClear = false);
+
+        /// <summary>
+        /// Determines if the preference exists
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        bool PreferenceExists(string szKey);
+
+        /// <summary>
+        /// Faster alternative to retrive the specified object (or default, if not found), but the return type is "dynamic", so you have to know what you're doing with the result.
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        dynamic GetPreferenceForKey(string szKey);
+
+        /// <summary>
+        /// Retrieves the specified non-nullable integer (or boolean)
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        T GetPreferenceForKey<T>(string szKey, T defObj);
+
+        /// <summary>
+        /// Retrieves the specified object (or default, if not found), casting to the specified type.  A bit slower than the non-generic version because it does an extra serialize/deserialize
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        T GetPreferenceForKey<T>(string szKey);
+    }
+    #endregion
 
     /// <summary>
     /// Utility Class - contains a few commonly used/needed functions

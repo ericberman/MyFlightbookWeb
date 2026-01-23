@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Charting;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
+using MyFlightbook.Telemetry.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -267,9 +268,9 @@ namespace MyFlightbook.Telemetry
         {
             int cColExpected = rgszRow.Length + pc.derivedColumnCount;
             if (cColExpected < ParsedData.Columns.Count)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errNotEnoughColumns, iRow));
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errNotEnoughColumns, iRow));
             if (cColExpected > ParsedData.Columns.Count)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errTooManyColumns, iRow));
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errTooManyColumns, iRow));
 
             DataRow dr = ParsedData.NewRow();
             for (int j = 0; j < rgszRow.Length; j++)
@@ -336,7 +337,7 @@ namespace MyFlightbook.Telemetry
 
                         if (rgszHeader == null) // no valid CSV header found
                         {
-                            sbErr.Append(Resources.FlightData.errNoCSVHeaderRowFound);
+                            sbErr.Append(TelemetryResources.errNoCSVHeaderRowFound);
                             return false;
                         }
 
@@ -360,12 +361,12 @@ namespace MyFlightbook.Telemetry
                             }
                             catch (MyFlightbookException ex)
                             {
-                                sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iRow, ex.Message));
+                                sbErr.Append(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errInRow, iRow, ex.Message));
                                 fResult = false;
                             }
                             catch (System.FormatException ex)
                             {
-                                sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iRow, ex.Message));
+                                sbErr.Append(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errInRow, iRow, ex.Message));
                                 fResult = false;
                             }
                         }
@@ -381,12 +382,12 @@ namespace MyFlightbook.Telemetry
                     }
                     catch (MyFlightbookException ex)
                     {
-                        sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
+                        sbErr.Append(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errGeneric, ex.Message));
                         fResult = false;
                     }
                     catch (DuplicateNameException ex)
                     {
-                        sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
+                        sbErr.Append(String.Format(CultureInfo.CurrentCulture, TelemetryResources.errGeneric, ex.Message));
                         fResult = false;
                     }
                     finally

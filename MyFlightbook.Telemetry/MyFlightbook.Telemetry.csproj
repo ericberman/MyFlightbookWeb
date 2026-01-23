@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.Charting\MyFlightbook.Charting.csproj" />
+    <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\TelemetryResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TelemetryResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\TelemetryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TelemetryResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

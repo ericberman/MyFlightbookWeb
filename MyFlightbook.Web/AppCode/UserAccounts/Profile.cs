@@ -646,7 +646,7 @@ namespace MyFlightbook
     /// Intermediate class: ProfileBase, but with database and validation capabilities.
     /// </summary>
     [Serializable]
-    public abstract class PersistedProfile : ProfileBase
+    public abstract class PersistedProfile : ProfileBase, IUserPreference
     {
         protected PersistedProfile() : base() { }
 
@@ -896,7 +896,7 @@ namespace MyFlightbook
             return JsonConvert.DeserializeObject<AuthorizationState>(sz);
         }
 
-        #region Persisted Preferences
+        #region Persisted Preferences (IUserPreference)
         /// <summary>
         /// Sets the specified object for persistence AND commits the object.  Removes the preference if the object is null.
         /// </summary>

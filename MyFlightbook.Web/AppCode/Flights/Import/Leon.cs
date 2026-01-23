@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2025 MyFlightbook LLC
+ * Copyright (c) 2022-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -209,7 +209,7 @@ namespace MyFlightbook.ImportFlights.Leon
         private static void AutoComplete(LogbookEntry le)
         {
             // Issue #939: autofill cross-country/night, when possible.
-            AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(le.User);
+            AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(le.User) ? null : Profile.GetUser(le.User));
             if (afo != null && le.CrossCountry == 0.0M)
             {
                 if (le.Nighttime == 0.0M)

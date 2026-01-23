@@ -299,7 +299,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> PushToCloudahoy(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
+        public async Task<ActionResult> PushToCloudahoy(int idFlight, SpeedUnitTypes speedUnits = SpeedUnitTypes.MetersPerSecond, AltitudeUnitTypes altUnits = AltitudeUnitTypes.Meters)
         {
             return await SafeOp(async () =>
             {
@@ -314,7 +314,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> PushToFlySto(int idFlight, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters)
+        public async Task<ActionResult> PushToFlySto(int idFlight, SpeedUnitTypes speedUnits = SpeedUnitTypes.MetersPerSecond, AltitudeUnitTypes altUnits = AltitudeUnitTypes.Meters)
         {
             return await SafeOp(async () =>
             {
@@ -807,7 +807,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ViewBag.distanceDisplay = le.GetPathDistanceDescription(fd.ComputePathDistance());
             }
         }
-        private FileContentResult DownloadTelemetryForFlight(LogbookEntry le, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.Knots, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Feet)
+        private FileContentResult DownloadTelemetryForFlight(LogbookEntry le, DownloadFormat downloadFormat, SpeedUnitTypes speedUnits = SpeedUnitTypes.Knots, AltitudeUnitTypes altUnits = AltitudeUnitTypes.Feet)
         {
             using (FlightData fd = new FlightData())
             {
@@ -822,7 +822,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DownloadTelemetry(int idFlight, DownloadFormat downloadFormat, FlightData.SpeedUnitTypes speedUnits = FlightData.SpeedUnitTypes.MetersPerSecond, FlightData.AltitudeUnitTypes altUnits = FlightData.AltitudeUnitTypes.Meters, bool asAdmin = false)
+        public ActionResult DownloadTelemetry(int idFlight, DownloadFormat downloadFormat, SpeedUnitTypes speedUnits = SpeedUnitTypes.MetersPerSecond, AltitudeUnitTypes altUnits = AltitudeUnitTypes.Meters, bool asAdmin = false)
         {
             return DownloadTelemetryForFlight(GetFlightToView(idFlight, asAdmin), downloadFormat, speedUnits, altUnits);
         }

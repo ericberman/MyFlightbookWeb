@@ -12,7 +12,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2024 MyFlightbook LLC
+ * Copyright (c) 2022-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -317,7 +317,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                             // generally a bad offset to use because that's global, not based on the departure airport.
                             DateTime dtSave = pf.Date;
                             using (FlightData fd = new FlightData())
-                                fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(szUser));
+                                fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUser) ? null : Profile.GetUser(szUser)));
                             pf.Date = dtSave;
                             pf.Commit();
                         }

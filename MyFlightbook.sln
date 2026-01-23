@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Airports", "My
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Charting", "MyFlightbook.Charting\MyFlightbook.Charting.csproj", "{671947DE-169B-4447-83E1-DFB6F064E807}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Telemetry", "MyFlightbook.Telemetry\MyFlightbook.Telemetry.csproj", "{DCF181DC-F4F6-42D5-89AD-763F8DFBE2C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{671947DE-169B-4447-83E1-DFB6F064E807} = {671947DE-169B-4447-83E1-DFB6F064E807}
+		{F487E951-5414-49FB-9481-F05A54A0D51B} = {F487E951-5414-49FB-9481-F05A54A0D51B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,10 @@ Global
 		{671947DE-169B-4447-83E1-DFB6F064E807}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671947DE-169B-4447-83E1-DFB6F064E807}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671947DE-169B-4447-83E1-DFB6F064E807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF181DC-F4F6-42D5-89AD-763F8DFBE2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF181DC-F4F6-42D5-89AD-763F8DFBE2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF181DC-F4F6-42D5-89AD-763F8DFBE2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF181DC-F4F6-42D5-89AD-763F8DFBE2C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

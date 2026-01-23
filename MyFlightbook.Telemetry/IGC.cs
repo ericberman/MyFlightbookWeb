@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook.Geography;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,14 +41,14 @@ namespace MyFlightbook.Telemetry
             return false;
         }
 
-        public override FlightData.AltitudeUnitTypes AltitudeUnits
+        public override AltitudeUnitTypes AltitudeUnits
         {
-            get { return FlightData.AltitudeUnitTypes.Meters; }
+            get { return AltitudeUnitTypes.Meters; }
         }
 
-        public override FlightData.SpeedUnitTypes SpeedUnits
+        public override SpeedUnitTypes SpeedUnits
         {
-            get { return FlightData.SpeedUnitTypes.KmPerHour; }
+            get { return SpeedUnitTypes.KmPerHour; }
         }
 
         /// <summary>

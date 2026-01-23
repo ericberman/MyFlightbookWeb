@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Charting;
 using MyFlightbook.Geography;
+using MyFlightbook.Telemetry.Properties;
 using System;
 using System.Data;
 using System.Globalization;
@@ -26,14 +27,14 @@ namespace MyFlightbook.Telemetry
             return szData != null && szData.StartsWith("$GP", StringComparison.OrdinalIgnoreCase);
         }
 
-        public override FlightData.AltitudeUnitTypes AltitudeUnits
+        public override AltitudeUnitTypes AltitudeUnits
         {
-            get { return FlightData.AltitudeUnitTypes.Meters; }
+            get { return AltitudeUnitTypes.Meters; }
         }
 
-        public override FlightData.SpeedUnitTypes SpeedUnits
+        public override SpeedUnitTypes SpeedUnits
         {
-            get { return FlightData.SpeedUnitTypes.Knots; }
+            get { return SpeedUnitTypes.Knots; }
         }
 
         public override bool Parse(string szData)
@@ -150,12 +151,12 @@ namespace MyFlightbook.Telemetry
                     }
                     catch (FormatException ex)
                     {
-                        sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iSentence, ex.Message);
+                        sbErr.AppendFormat(CultureInfo.CurrentCulture, TelemetryResources.errInRow, iSentence, ex.Message);
                         fResult = false;
                     }
                     catch (IndexOutOfRangeException ex)
                     {
-                        sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errInRow, iSentence, ex.Message);
+                        sbErr.AppendFormat(CultureInfo.CurrentCulture, TelemetryResources.errInRow, iSentence, ex.Message);
                         fResult = false;
                     }
 

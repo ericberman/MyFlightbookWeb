@@ -273,14 +273,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 byte[] data = new byte[Request.Files[0].ContentLength];
                 int _ = await Request.Files[0].InputStream.ReadAsync(data, 0, data.Length);
                 string szOriginal = pf.FlightData = System.Text.Encoding.UTF8.GetString(data);
-                AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(User.Identity.Name);
+                MyFlightbook.Profile user = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(user);
 
                 if (Enum.TryParse(Request["tzPref"] ?? "None", out TimeConversionCriteria tzc))
                 {
                     afo.TimeConversion = tzc;
                     afo.AutoFillTotal = AutoFillTotalOption.EngineTime;
                     if (tzc == TimeConversionCriteria.Preferred)
-                        afo.PreferredTimeZone = MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredTimeZone;
+                        afo.PreferredTimeZone = user.PreferredTimeZone;
                 }
 
                 using (FlightData fd = new FlightData())

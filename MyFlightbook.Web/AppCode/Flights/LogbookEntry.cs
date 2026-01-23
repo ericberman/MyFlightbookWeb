@@ -2779,7 +2779,7 @@ WHERE f1.username = ?uName ");
         /// <param name="altUnits"></param>
         /// <param name="fSandbox"></param>
         /// <returns></returns>
-        public async Task<bool> PushToCloudAhoy(FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits, bool fSandbox)
+        public async Task<bool> PushToCloudAhoy(SpeedUnitTypes speedUnits, AltitudeUnitTypes altUnits, bool fSandbox)
         {
             using (FlightData fd = new FlightData())
             {
@@ -2799,7 +2799,7 @@ WHERE f1.username = ?uName ");
         /// <param name="altUnits"></param>
         /// <param name="fSandbox"></param>
         /// <returns>The log ID of the resulting flight</returns>
-        public async Task<string> PushToFlySto(FlightData.SpeedUnitTypes speedUnits, FlightData.AltitudeUnitTypes altUnits)
+        public async Task<string> PushToFlySto(SpeedUnitTypes speedUnits, AltitudeUnitTypes altUnits)
         {
             using (FlightData fd = new FlightData())
             {

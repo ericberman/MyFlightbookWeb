@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyFlightbook.Geography;
+using MyFlightbook.Telemetry.Properties;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,11 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2025 MyFlightbook LLC
+ * Copyright (c) 2010-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,14 +31,14 @@ namespace MyFlightbook.Telemetry
             return rGPX.IsMatch(szData) || (IsXML(szData) && szData.Contains("<gpx"));
         }
 
-        public override FlightData.AltitudeUnitTypes AltitudeUnits
+        public override AltitudeUnitTypes AltitudeUnits
         {
-            get { return FlightData.AltitudeUnitTypes.Meters; }
+            get { return AltitudeUnitTypes.Meters; }
         }
 
-        public override FlightData.SpeedUnitTypes SpeedUnits
+        public override SpeedUnitTypes SpeedUnits
         {
-            get { return FlightData.SpeedUnitTypes.MetersPerSecond; }
+            get { return SpeedUnitTypes.MetersPerSecond; }
         }
 
         private class GPXPathRoot
@@ -173,25 +174,25 @@ namespace MyFlightbook.Telemetry
                                     fHasLatLon = (xLat != null && xLon != null);
 
                                     if (!fHasAlt && !fHasDate && !fHasSpeed && !fHasLatLon)
-                                        throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
+                                        throw new MyFlightbookException(TelemetryResources.errGPXNoPath);
 
                                     if (fHasLatLon)
                                     {
                                         try
                                         {
-                                            Position samp = new Position(Convert.ToDouble(xLat.Value, System.Globalization.CultureInfo.InvariantCulture), Convert.ToDouble(xLon.Value, System.Globalization.CultureInfo.InvariantCulture));
+                                            Position samp = new Position(Convert.ToDouble(xLat.Value, CultureInfo.InvariantCulture), Convert.ToDouble(xLon.Value, CultureInfo.InvariantCulture));
                                             if (fHasAlt)
-                                                samp.Altitude = (Int32)Convert.ToDouble(xAlt.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                                samp.Altitude = (Int32)Convert.ToDouble(xAlt.Value, CultureInfo.InvariantCulture);
                                             if (fHasDate)
                                                 samp.Timestamp = xTime.Value.ParseUTCDate();
                                             if (fHasSpeed)
-                                                samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                                samp.Speed = Convert.ToDouble(xSpeed.Value, CultureInfo.InvariantCulture);
                                             lst.Add(samp);
                                         }
                                         catch (Exception ex) when (ex is FormatException)
                                         {
                                             fResult = false;
-                                            sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errGPXBadRow, iRow);
+                                            sbErr.AppendFormat(CultureInfo.CurrentCulture, TelemetryResources.errGPXBadRow, iRow);
                                             sbErr.Append("\r\n");
                                         }
                                         catch (Exception ex)
@@ -210,17 +211,17 @@ namespace MyFlightbook.Telemetry
                             ToDataTable(lst);
                         }
                         else
-                            throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
+                            throw new MyFlightbookException(TelemetryResources.errGPXNoPath);
                     }
                 }
                 catch (System.Xml.XmlException ex)
                 {
-                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                    sbErr.Append(TelemetryResources.errGeneric + ex.Message);
                     fResult = false;
                 }
                 catch (MyFlightbookException ex)
                 {
-                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                    sbErr.Append(TelemetryResources.errGeneric + ex.Message);
                     fResult = false;
                 }
             }

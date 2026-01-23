@@ -358,7 +358,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
 
                 // make a copy of the autofill options so that we don't muck up user's settings in memory
-                AutoFillOptions afo = string.IsNullOrEmpty(autoFillOpt) ? null : new AutoFillOptions(AutoFillOptions.DefaultOptionsForUser(User.Identity.Name));
+                AutoFillOptions afo = string.IsNullOrEmpty(autoFillOpt) ? null : new AutoFillOptions(AutoFillOptions.DefaultOptionsForUser(pf));
                 if (afo != null && Enum.TryParse(autoFillOpt, true, out AutoFillOptions.TimeConversionCriteria tcc))
                 {
                     afo.TimeConversion = tcc;
