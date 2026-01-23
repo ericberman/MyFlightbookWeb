@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Telemetry.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -557,5 +558,34 @@ namespace MyFlightbook.Telemetry
             return sz != null && sz.StartsWith("<?xml", StringComparison.OrdinalIgnoreCase);
         }
         #endregion
+    }
+
+    [Serializable]
+    public class TelemetryMetaData
+    {
+        #region Properties
+        /// <summary>
+        /// Index of the first sample to display
+        /// </summary>
+        public int? DataStart { get; set; }
+
+        /// <summary>
+        /// Index of the last sample to display
+        /// </summary>
+        public int? DataEnd { get; set; }
+
+        [JsonIgnore]
+        public bool HasData
+        {
+            get { return DataStart.HasValue || DataEnd.HasValue; }
+        }
+        #endregion
+
+        public TelemetryMetaData() { }
+
+        public void Clear()
+        {
+            DataStart = DataEnd = null;
+        }
     }
 }

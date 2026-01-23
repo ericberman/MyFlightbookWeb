@@ -1036,35 +1036,6 @@ namespace MyFlightbook.Telemetry
         }
     }
 
-    [Serializable]
-    public class TelemetryMetaData
-    {
-        #region Properties
-        /// <summary>
-        /// Index of the first sample to display
-        /// </summary>
-        public int? DataStart { get; set; }
-
-        /// <summary>
-        /// Index of the last sample to display
-        /// </summary>
-        public int? DataEnd { get; set; }
-
-        [JsonIgnore]
-        public bool HasData
-        {
-            get { return DataStart.HasValue || DataEnd.HasValue; }
-        }
-        #endregion
-
-        public TelemetryMetaData() { }
-
-        public void Clear()
-        {
-            DataStart = DataEnd = null;
-        }
-    }
-
     /// <summary>
     /// Summarizes telemetry for a flight
     /// </summary>
@@ -1106,12 +1077,12 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         /// <param name="idFlight"></param>
         /// <returns></returns>
-        public static TelemetryReference LoadForFlight(int idFlight) 
+        public static TelemetryReference LoadForFlight(int idFlight)
         {
             TelemetryReference result = null;
             DBHelper dbh = new DBHelper("SELECT * FROM flighttelemetry WHERE idflight=?idf");
             dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("idf", idFlight); }, 
+                (comm) => { comm.Parameters.AddWithValue("idf", idFlight); },
                 (dr) => { result = new TelemetryReference(dr); });
             return result;
         }
@@ -1126,7 +1097,7 @@ namespace MyFlightbook.Telemetry
         {
             if (string.IsNullOrEmpty(szTelemetry) && string.IsNullOrEmpty(RawData))
                 throw new ArgumentNullException(nameof(szTelemetry));
-            
+
             if (szTelemetry == null)
                 szTelemetry = RawData;
 
@@ -1164,15 +1135,15 @@ namespace MyFlightbook.Telemetry
             if (o is DBNull)
                 return;
             TelemetryType = (DataSourceType.FileType)Convert.ToInt32(dr["telemetrytype"], CultureInfo.InvariantCulture);
-            
+
             o = dr["distance"];
-            CachedDistance = (o is DBNull) ? (double?) null : Convert.ToDouble(o, CultureInfo.InvariantCulture);
+            CachedDistance = (o is DBNull) ? (double?)null : Convert.ToDouble(o, CultureInfo.InvariantCulture);
             string szPath = dr["flightpath"].ToString();
             if (!string.IsNullOrEmpty(szPath))
                 GoogleData = new GoogleEncodedPath() { EncodedPath = szPath, Distance = CachedDistance ?? 0 };
 
             o = dr["metadata"];
-            string szJSONMeta = (o is DBNull) ? string.Empty : (string) o;
+            string szJSONMeta = (o is DBNull) ? string.Empty : (string)o;
             if (!String.IsNullOrEmpty(szJSONMeta))
                 MetaData = JsonConvert.DeserializeObject<TelemetryMetaData>(szJSONMeta);
         }
@@ -1266,7 +1237,7 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// Size of the uncompressed telemetry - NOT PERSISTED
         /// </summary>
-        public int Uncompressed 
+        public int Uncompressed
         {
             get { return RawData == null ? 0 : RawData.Length; }
         }
@@ -1310,14 +1281,14 @@ namespace MyFlightbook.Telemetry
                 if (LogbookEntry.IsNewFlightID(FlightID.Value))
                     throw new InvalidConstraintException("Attempt to generate a FilePath for a TelemetrySummary object without a new-flight FlightID");
 
-                return FlightID.Value.ToString(CultureInfo.InvariantCulture) + TelemetryExtension;                
+                return FlightID.Value.ToString(CultureInfo.InvariantCulture) + TelemetryExtension;
             }
         }
 
         /// <summary>
         /// Full path of the original data on disk.
         /// </summary>
-        private string FilePath 
+        private string FilePath
         {
             get
             {
@@ -1345,7 +1316,7 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         public bool HasRawPath
         {
-            get { return !String.IsNullOrEmpty(RawData);  }
+            get { return !String.IsNullOrEmpty(RawData); }
         }
 
         /// <summary>
@@ -1442,7 +1413,7 @@ namespace MyFlightbook.Telemetry
         /// <returns>An enumeration of flightIDs</returns>
         public static IEnumerable<int> FindOrphanedRefs()
         {
-            List<int> lst = new  List<int>();
+            List<int> lst = new List<int>();
             HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(FileDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
             DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
             dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
@@ -1587,7 +1558,7 @@ FROM flights f
 	LEFT JOIN FlightTelemetry ft ON f.idflight=ft.idflight
 WHERE username=?szUser AND Coalesce(f.telemetry, ft.idflight) IS NOT NULL 
 ORDER BY f.idFlight DESC;");
-            
+
             lst.Clear();
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("szUser", szUser); },
                 (dr) =>
@@ -1777,5 +1748,4 @@ ORDER BY f.idFlight DESC;");
             }
         }
     }
-
 }
