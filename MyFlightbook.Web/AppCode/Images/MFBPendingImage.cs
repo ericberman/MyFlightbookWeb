@@ -223,12 +223,14 @@ namespace MyFlightbook.Image
             return true;
         }
 
-        public static string ProcessUploadedFile(HttpPostedFileBase file, bool fCanDoVideo, ImageClass ic, Func<ImageFileType, bool> checkType, Action<MFBPendingImage, string> onProcess)
+        public static string ProcessUploadedFile(IPostedImageFile file, ImageClass ic, Func<ImageFileType, bool> checkType, Action<MFBPendingImage, string> onProcess)
         {
             if (onProcess == null)
                 throw new ArgumentNullException(nameof(onProcess));
             if (checkType == null)
                 throw new ArgumentNullException(nameof(checkType));
+            if (file == null)
+                throw new ArgumentNullException(nameof(file));
 
             MFBPostedFile pf = new MFBPostedFile(file);
             string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", ic.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());

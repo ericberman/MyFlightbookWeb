@@ -251,7 +251,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
+                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }
@@ -267,7 +267,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name, new MFBPostedFile(Request.Files[0]), string.Empty, null);
+                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name, new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }

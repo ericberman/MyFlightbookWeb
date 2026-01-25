@@ -909,7 +909,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBPostedFile pf = new MFBPostedFile(Request.Files[0]);
+                MFBPostedFile pf = new MFBPostedFile(Request.ImageFile(0));
                 string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", MFBImageInfoBase.ImageClass.BasicMed.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());
                 MFBPendingImage pi = new MFBPendingImage(pf, szID);
 

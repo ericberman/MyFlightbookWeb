@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MyFlightbook.Image;
+using System;
+using System.IO;
+using System.Web;
+
 /******************************************************
  * 
  * Copyright (c) 2008-2026 MyFlightbook LLC
@@ -20,7 +24,7 @@ namespace MyFlightbook
         /// <param name="s">The relative URL</param>
         /// <param name="Request">The request</param>
         /// <returns>A fully resolved absolute URL</returns>
-        public static Uri ToAbsoluteURL(this string s, System.Web.HttpRequestBase Request)
+        public static Uri ToAbsoluteURL(this string s, HttpRequestBase Request)
         {
             if (Request == null)
                 throw new ArgumentNullException(nameof(Request));
@@ -32,7 +36,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's known</returns>
-        public static bool IsMobileDevice(this System.Web.HttpRequestBase r)
+        public static bool IsMobileDevice(this HttpRequestBase r)
         {
             if (r == null || r.UserAgent == null)
                 return false;
@@ -55,12 +59,39 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="r">The HTTPRequest object</param>
         /// <returns>True if it's a mobile device or a tablet</returns>
-        public static bool IsMobileDeviceOrTablet(this System.Web.HttpRequestBase r)
+        public static bool IsMobileDeviceOrTablet(this HttpRequestBase r)
         {
             if (r == null || String.IsNullOrEmpty(r.UserAgent))
                 return false;
 
             return IsMobileDevice(r) || RegexUtility.IPadOrAndroid.IsMatch(r.UserAgent);
+        }
+
+        public static IPostedImageFile ImageFile(this HttpRequestBase req, int i)
+        {
+            return new PostedImageFile(req?.Files[i]);
+        }
+
+        public static IPostedImageFile ImageFile(this HttpRequestBase req, string key)
+        {
+            return new PostedImageFile(req?.Files[key]);
+        }
+        #endregion
+
+        #region Passing posted files to image handling
+        public class PostedImageFile : IPostedImageFile
+        {
+            private readonly HttpPostedFileBase _pf;
+
+            public PostedImageFile(HttpPostedFileBase pf)
+            {
+                _pf = pf ?? throw new ArgumentNullException(nameof(pf));
+            }
+
+            public string FileName => _pf.FileName;
+            public string ContentType => _pf.ContentType;
+            public int ContentLength => _pf.ContentLength;
+            public Stream InputStream => _pf.InputStream;
         }
         #endregion
     }

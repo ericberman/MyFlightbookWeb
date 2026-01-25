@@ -312,8 +312,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                return Content(MFBPendingImage.ProcessUploadedFile(Request.Files[0], false, MFBImageInfoBase.ImageClass.Flight,
-                    (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, false); },
+                return Content(MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Flight, (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, false); },
                     (pi, szID) =>
                     {
                         if (szKey > 0)

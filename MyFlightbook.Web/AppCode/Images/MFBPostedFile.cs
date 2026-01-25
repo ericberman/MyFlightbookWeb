@@ -4,11 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,37 +15,27 @@ using System.Web;
 namespace MyFlightbook.Image
 {
     /// <summary>
+    /// Encapsulates key elements of an uploaded image file.
+    /// </summary>
+    public interface IPostedImageFile
+    {
+        string FileName { get; }
+        string ContentType { get; }
+        int ContentLength { get; }
+        Stream InputStream { get; }
+    }
+
+    /// <summary>
     /// Pseudo HTTPPostedFile, since I can't create those.
     /// </summary>
     [Serializable]
     public class MFBPostedFile
     {
         #region Constructors
-        public MFBPostedFile()
-        {
-        }
+        public MFBPostedFile() { }
 
-        public MFBPostedFile(HttpPostedFile pf) : this()
-        {
-            if (pf == null)
-                throw new ArgumentNullException(nameof(pf));
-            WriteStreamToTempFile(pf.InputStream);
-            FileID = FileName = pf.FileName;
+        public MFBPostedFile(IPostedImageFile pf) : this(pf?.InputStream, pf?.FileName, pf?.ContentType, pf?.ContentLength ?? 0) { }
 
-            ContentType = pf.ContentType;
-            ContentLength = pf.ContentLength;
-        }
-
-        public MFBPostedFile(HttpPostedFileBase pf) : this()
-        {
-            if (pf == null)
-                throw new ArgumentNullException(nameof(pf));
-            WriteStreamToTempFile(pf.InputStream);
-            FileID = FileName = pf.FileName;
-
-            ContentType = pf.ContentType;
-            ContentLength = pf.ContentLength;
-        }
         public MFBPostedFile(Stream s, string fileName, string contentType, int contentLength) : this()
         {
             if (s == null)

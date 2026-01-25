@@ -251,8 +251,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 foreach (string key in Request.Files.Keys)
                 {
-                    HttpPostedFileBase pf = Request.Files[key];
-                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+                    MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
 
                     // Check if authorized for videos
                     if (MFBImageInfo.ImageTypeFromFile(mfbpf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
@@ -316,8 +315,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 foreach (string key in Request.Files.Keys)
                 {
-                    HttpPostedFileBase pf = Request.Files[key];
-                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+                    MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
 
                     // Check if authorized for videos
                     if (MFBImageInfo.ImageTypeFromFile(mfbpf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
@@ -339,8 +337,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 foreach (string key in Request.Files.Keys)
                 {
-                    HttpPostedFileBase pf = Request.Files[key];
-                    MFBPostedFile mfbpf = new MFBPostedFile(pf);
+                    MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
 
                     MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser, mfbpf, txtComment ?? string.Empty, null);
                     mfbii.IdempotencyCheck();
