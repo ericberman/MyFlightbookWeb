@@ -5,6 +5,7 @@ using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
+using MyFlightbook.HtmlUtility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1783,6 +1783,7 @@
     <Compile Include="AppCode\Admin\AdminStats.cs" />
     <Compile Include="AppCode\Utility\Branding.cs" />
     <Compile Include="AppCode\Utility\FAQ.cs" />
+    <Compile Include="AppCode\Utility\HtmlUtility.cs" />
     <Compile Include="AppCode\Utility\HttpRequestExtensions.cs" />
     <Compile Include="AppCode\Utility\MemCache.cs" />
     <Compile Include="AppCode\Utility\MFBConstants.cs" />

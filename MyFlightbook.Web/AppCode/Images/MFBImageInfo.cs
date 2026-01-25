@@ -13,12 +13,11 @@ using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Web;
-using System.Web.UI;
 
 /******************************************************
  * 
@@ -227,9 +226,9 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3VideoMP4:
                     case ImageFileType.S3PDF:
-                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewPic?r={0}&k={1}&t={2}", HttpUtility.UrlEncode(Class.ToString()), HttpUtility.UrlEncode(Key), HttpUtility.UrlEncode(ThumbnailFile)));
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewPic?r={0}&k={1}&t={2}", WebUtility.UrlEncode(Class.ToString()), WebUtility.UrlEncode(Key), WebUtility.UrlEncode(ThumbnailFile)).ToAbsolute();
                     case ImageFileType.PDF:
-                        return VirtualPathUtility.ToAbsolute(PathThumbnail);
+                        return PathThumbnail.ToAbsolute();
                 }
             }
             set { }
@@ -378,15 +377,15 @@ namespace MyFlightbook.Image
                 case ImageClass.Unknown:
                     return null;
                 case ImageClass.Aircraft:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]);
+                    return ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute();
                 case ImageClass.Endorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]);
+                    return ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute();
                 case ImageClass.OfflineEndorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]);
+                    return ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute();
                 case ImageClass.Flight:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]);
+                    return ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute();
                 case ImageClass.BasicMed:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]);
+                    return ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute();
             }
         }
 
@@ -413,7 +412,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="szVirtPath">The virtual path</param>
         /// <returns>The best-guess image class</returns>
-        public static ImageClass ClassFromVirtPath(string szVirtPath)
+        private static ImageClass ClassFromVirtPath(string szVirtPath)
         {
             if (String.IsNullOrEmpty(szVirtPath))
                 return ImageClass.Unknown;
@@ -422,15 +421,15 @@ namespace MyFlightbook.Image
                 szVirtPath = szVirtPath.Substring(0, szVirtPath.Length - 1);
             szVirtPath = szVirtPath.ToUpperInvariant();
 
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Aircraft;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Flight;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Endorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.OfflineEndorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.BasicMed;
 
             // No exact match - try looking for other clues
@@ -629,11 +628,6 @@ namespace MyFlightbook.Image
                 return ImageFileType.S3VideoMP4;
             else
                 return ImageTypeFromName(pf.FileName);
-        }
-
-        public static ImageFileType ImageTypeFromFile(HttpPostedFile pf)
-        {
-            return ImageTypeFromFile(new MFBPostedFile(pf));
         }
 
         /// <summary>
@@ -1306,11 +1300,6 @@ namespace MyFlightbook.Image
                 ImageType = ImageFileType.S3PDF;
         }
 
-        public MFBImageInfo(ImageClass ic, string szKey, HttpPostedFile myFile, string szComment, LatLong ll) : this(ic, szKey)
-        {
-            InitWithFile(new MFBPostedFile(myFile), szComment, ll);
-        }
-
         /// <summary>
         /// Uploads a picture into the specified directory/subdirectory ("key").
         /// </summary>
@@ -1832,45 +1821,6 @@ namespace MyFlightbook.Image
         }
 
         #region Misc
-        /// <summary>
-        /// Renders the image to html, using a thumbnail and linking to the full image
-        /// </summary>
-        /// <param name="tw">HtmlTextWriter</param>
-        /// <param name="szThumbFolder">The thumbnail folder, "thumbs/" if null</param>
-        public void ToHtml(HtmlTextWriter tw, string szThumbFolder)
-        {
-            if (tw == null)
-                throw new ArgumentNullException(nameof(tw));
-
-            if (szThumbFolder == null)
-                szThumbFolder = "thumbs/";
-
-            if (!szThumbFolder.EndsWith("/", StringComparison.Ordinal))
-                szThumbFolder += "/";
-
-            tw.AddStyleAttribute(HtmlTextWriterStyle.Display, "inline-block");
-            tw.AddStyleAttribute(HtmlTextWriterStyle.Padding, "3px");
-            tw.RenderBeginTag(HtmlTextWriterTag.Div);
-
-            tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveFullImage());
-            tw.RenderBeginTag(HtmlTextWriterTag.A);
-
-            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == ImageFileType.PDF || ImageType == ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, "~/images/pdficon_large.png".ToAbsolute()) : szThumbFolder + ThumbnailFile);
-            tw.RenderBeginTag(HtmlTextWriterTag.Img);
-            tw.RenderEndTag();  // img
-            tw.RenderEndTag();  // a
-
-            if (!String.IsNullOrEmpty(Comment))
-            {
-                tw.WriteBreak();
-                tw.RenderBeginTag(HtmlTextWriterTag.P);
-                tw.Write(HttpUtility.HtmlEncode(Comment));
-                tw.RenderEndTag();  // p
-            }
-
-            tw.RenderEndTag();  // div
-        }
-
         public override string ToString()
         {
             return String.Format(CultureInfo.CurrentCulture, "Class={0}, Key={1}, Thumb={2}", Class.ToString(), Key, ThumbnailFile);
