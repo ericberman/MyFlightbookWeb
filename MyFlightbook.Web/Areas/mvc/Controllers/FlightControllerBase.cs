@@ -376,7 +376,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                             Session[MFBConstants.keySessLastNewFlight] = le.FlightID;
 
                             // process pending images, if this was a new flight
-                            foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
+                            foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                             {
                                 pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
                                 pendingImage.DeleteImage();     // clean it up!

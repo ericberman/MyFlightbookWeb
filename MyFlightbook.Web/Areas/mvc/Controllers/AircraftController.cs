@@ -417,7 +417,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             else if (ac.IsValid())
             {
                 ac.Commit(User.Identity.Name);
-                foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
+                foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                 {
                     if (pendingImage.ImageType != MFBImageInfoBase.ImageFileType.S3VideoMP4)
                         pendingImage.Commit(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));

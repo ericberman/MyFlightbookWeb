@@ -50,7 +50,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 // First check if this is a pending image
                 // No need to do admin check on something that has yet to actually be committed
-                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession(Session)).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
+                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession()).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
                 if (pf != null)
                     pf.DeleteImage();
                 else
@@ -75,7 +75,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 // First check if this is a pending image
                 // No need to do admin check on something that has yet to actually be committed
-                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession(Session)).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
+                MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession()).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
                 if (pf != null)
                     pf.UpdateAnnotation(newAnnotation);
                 else
@@ -120,7 +120,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ImageList il = null;
                 // Pending Images are special - find them in the session object
                 if ((imageClass == MFBImageInfoBase.ImageClass.Flight || imageClass == MFBImageInfoBase.ImageClass.Aircraft || imageClass == MFBImageInfoBase.ImageClass.BasicMed) && szKey.CompareOrdinal((-1).ToString(CultureInfo.InvariantCulture)) == 0)
-                    il = new ImageList(MFBPendingImage.PendingImagesInSession(Session).ToArray()) { Class = imageClass };
+                    il = new ImageList(MFBPendingImage.PendingImagesInSession().ToArray()) { Class = imageClass };
                 else
                 {
                     il = new ImageList(imageClass, szKey);

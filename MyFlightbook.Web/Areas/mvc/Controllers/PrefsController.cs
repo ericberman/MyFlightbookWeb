@@ -864,7 +864,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 bme.Commit();
                 // process pending images, if this was a new pending image
-                foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession(Session))
+                foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                 {
                     if (pendingImage.ImageType == MFBImageInfoBase.ImageFileType.JPEG || pendingImage.ImageType == MFBImageInfoBase.ImageFileType.PDF)
                     {

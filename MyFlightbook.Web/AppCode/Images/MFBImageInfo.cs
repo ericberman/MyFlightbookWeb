@@ -6,7 +6,6 @@ using MyFlightbook.Mapping;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Dynamic;
@@ -104,6 +103,17 @@ namespace MyFlightbook.Image
 
         public const string ThumbnailPrefix = "t_";
         public const string ThumbnailPrefixVideo = "v_";
+
+        #region Dependency Injection
+        private static IDictionary<ImageClass, string> _imageFolders = null;
+        protected static bool _useDB = false;
+
+        public static void SetStorage(bool fUseDB, IDictionary<ImageClass, string> imageFolders)
+        {
+            _useDB = fUseDB;
+            _imageFolders = imageFolders;
+        }
+        #endregion
 
         #region Properties
         /// <summary>
@@ -371,22 +381,7 @@ namespace MyFlightbook.Image
         /// <returns>Virtual directory, null if not found.</returns>
         public static string BasePathFromClass(ImageClass ic)
         {
-            switch (ic)
-            {
-                default:
-                case ImageClass.Unknown:
-                    return null;
-                case ImageClass.Aircraft:
-                    return ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute();
-                case ImageClass.Endorsement:
-                    return ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute();
-                case ImageClass.OfflineEndorsement:
-                    return ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute();
-                case ImageClass.Flight:
-                    return ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute();
-                case ImageClass.BasicMed:
-                    return ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute();
-            }
+            return _imageFolders.TryGetValue(ic, out string path) ? path : null;
         }
 
         public static string TemplateForClass(ImageClass ic)
@@ -421,16 +416,11 @@ namespace MyFlightbook.Image
                 szVirtPath = szVirtPath.Substring(0, szVirtPath.Length - 1);
             szVirtPath = szVirtPath.ToUpperInvariant();
 
-            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Aircraft;
-            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Flight;
-            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Endorsement;
-            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.OfflineEndorsement;
-            if (String.Compare(szVirtPath, ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute(), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.BasicMed;
+            foreach (ImageClass ic in _imageFolders.Keys)
+            {
+                if (szVirtPath.CompareCurrentCultureIgnoreCase(_imageFolders[ic]) == 0)
+                    return ic;
+            }
 
             // No exact match - try looking for other clues
             if (szVirtPath.Contains("AIRCRAFT"))
@@ -979,15 +969,6 @@ namespace MyFlightbook.Image
 
         #region DB Support
         /// <summary>
-        /// Are we using the DB for images?
-        /// </summary>
-        /// <returns>True if we are using the DB</returns>
-        private static bool UseDB()
-        {
-            return (String.Compare(ConfigurationManager.AppSettings["UseImageDB"], "yes", StringComparison.OrdinalIgnoreCase) == 0);
-        }
-
-        /// <summary>
         /// Remove the image from the DB
         /// </summary>
         public void DeleteFromDB()
@@ -1007,7 +988,7 @@ namespace MyFlightbook.Image
         /// </summary>
         public void ToDB()
         {
-            if (!UseDB())
+            if (!_useDB)
                 return;
 
             if (this.Class == ImageClass.Unknown)

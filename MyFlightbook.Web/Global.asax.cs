@@ -1,5 +1,7 @@
+using MyFlightbook.Image;
 using MyFlightbook.Injection;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Web;
@@ -7,7 +9,7 @@ using System.Web.Mvc;
 
 /******************************************************
     * 
-    * Copyright (c) 2015-2025 MyFlightbook LLC
+    * Copyright (c) 2015-2026 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -16,7 +18,7 @@ namespace MyFlightbook.Web
 {
     public class MFBGlobal : HttpApplication
     {
-       protected void Application_Start(object sender, EventArgs e)
+        protected void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
@@ -27,6 +29,15 @@ namespace MyFlightbook.Web
             ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
             util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());
             Branding.InitBrands(ConcreteBrand.KnownBrands, MFBConstants.BaseStylesheet);
+
+            MFBImageInfo.SetStorage(ConfigurationManager.AppSettings["UseImageDB"].CompareCurrentCultureIgnoreCase("yes") == 0,
+                new Dictionary<MFBImageInfoBase.ImageClass, string>() {
+                    { MFBImageInfoBase.ImageClass.Aircraft, ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.Endorsement, ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.OfflineEndorsement, ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.Flight, ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.BasicMed, ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute() }
+                });
         }
 
         protected void Application_End(object sender, EventArgs e)

@@ -4,8 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 
 /******************************************************
  * 
@@ -50,7 +50,7 @@ namespace MyFlightbook.Image
                     return string.Empty;
 
                 if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", HttpUtility.UrlEncode(SessionKey)).ToAbsolute();
+                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", WebUtility.UrlEncode(SessionKey)).ToAbsolute();
                 else if (ImageType == ImageFileType.S3VideoMP4)
                     return "~/images/pendingvideo.png".ToAbsolute();
                 else
@@ -74,7 +74,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3PDF:   // should never happen for a pending image...
                     case ImageFileType.PDF:
-                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", HttpUtility.UrlEncode(SessionKey)).ToAbsolute();
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", WebUtility.UrlEncode(SessionKey)).ToAbsolute();
                     case ImageFileType.S3VideoMP4:
                         return string.Empty;    // nothing to click on, at least not yet.
                     default:
@@ -114,19 +114,12 @@ namespace MyFlightbook.Image
         #endregion
 
         #region Caching of in-memory objects
-        public static IEnumerable<MFBPendingImage> PendingImagesInSession(HttpSessionStateBase session = null)
+        public static IEnumerable<MFBPendingImage> PendingImagesInSession()
         {
-            if (session == null)
-            {
-                if (HttpContext.Current?.Session == null)
-                    return Array.Empty<MFBPendingImage>();
-                session = new HttpSessionStateWrapper(HttpContext.Current.Session);
-            }
-
             List<MFBPendingImage> lst = new List<MFBPendingImage>();
-            foreach (string szSessKey in session.Keys)
+            foreach (string szSessKey in util.RequestContext.SessionKeys)
             {
-                    MFBPendingImage pi = session[szSessKey] as MFBPendingImage;
+                    MFBPendingImage pi = util.RequestContext.GetSessionValue(szSessKey) as MFBPendingImage;
                     if (pi != null)
                         lst.Add(pi);
             }
@@ -152,8 +145,7 @@ namespace MyFlightbook.Image
             PostedFile?.CleanUp();
             PostedFile = null;
             ThumbnailFile = string.Empty;
-            if (SessionKey != null && HttpContext.Current?.Session?[SessionKey] != null)
-                HttpContext.Current.Session.Remove(SessionKey);
+            util.RequestContext.SetSessionValue(SessionKey, null);
         }
 
         public override void UpdateAnnotation(string szText)

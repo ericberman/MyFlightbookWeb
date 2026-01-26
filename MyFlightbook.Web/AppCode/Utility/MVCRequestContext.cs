@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 
@@ -26,7 +27,12 @@ namespace MyFlightbook.Injection
         public void SetSessionValue(string key, object value)
         {
             if (HttpContext.Current?.Session != null)
-                HttpContext.Current.Session[key] = value;
+            {
+                if (value == null)
+                    HttpContext.Current.Session.Remove(key);
+                else
+                    HttpContext.Current.Session[key] = value;
+            }
         }
 
         public bool IsAuthenticated => HttpContext.Current?.Request?.IsAuthenticated ?? false;
@@ -79,7 +85,7 @@ namespace MyFlightbook.Injection
 
         public IEnumerable<string> SessionKeys
         {
-            get { return (HttpContext.Current.Session?.Keys as IEnumerable<string>) ?? Array.Empty<string>(); }
+            get { return (HttpContext.Current.Session?.Keys.Cast<string>()) ?? Array.Empty<string>(); }
         }
     }
 }
