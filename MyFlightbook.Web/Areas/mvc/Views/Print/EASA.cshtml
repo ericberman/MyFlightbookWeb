@@ -124,7 +124,7 @@
                             <td colspan="2" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
                         }
                         <td>@led.CatClassDisplay</td>
-                        <td>@led.FlightCount.ToString(System.Globalization.CultureInfo.CurrentCulture)</td>
+                        <td>@led.FlightCount.FormatInt()</td>
                         @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                         {
                             <td>@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
