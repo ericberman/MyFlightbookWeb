@@ -4509,6 +4509,8 @@ WHERE f1.username = ?uName ");
                     CoPilotTotal += led.CoPilotTime;
                     CommanderTotal += led.MilitaryACCommanderTime;
 
+                    FlightCount++;
+
                     AddCatClassTotal(led);
                 }
                 else
@@ -4545,6 +4547,8 @@ WHERE f1.username = ?uName ");
                     CoPilotTotal += led.CoPilotTotal;
                     CommanderTotal += led.CommanderTotal;
 
+                    FlightCount += led.FlightCount;
+
                     AddCatClassTotalsFrom(led);
                 }
 
@@ -4569,8 +4573,6 @@ WHERE f1.username = ?uName ");
             }
 
             AddComboTotalsFromEntry(le, led);
-
-            FlightCount++;
         }
 
         #region Optional Columns
