@@ -106,15 +106,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} files comprising {1:#,##0} bytes moved.
-        /// </summary>
-        internal static string MigrateImagesTemplate {
-            get {
-                return ResourceManager.GetString("MigrateImagesTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No dupes found.
         /// </summary>
         internal static string NoDupesFound {

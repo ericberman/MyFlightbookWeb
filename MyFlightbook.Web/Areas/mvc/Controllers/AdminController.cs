@@ -487,12 +487,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string ProcessPendingVideos()
+        public async Task<ActionResult> ProcessPendingVideos()
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
-                PendingVideo.ProcessPendingVideos(out string szSummary);
-                return szSummary;
+                string s = await PendingVideo.ProcessPendingVideos();
+                return Content(s);
             });
         }
 

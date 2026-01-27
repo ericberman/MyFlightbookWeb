@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -388,9 +389,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AWSSNSListener()
+        public async Task<ActionResult> AWSSNSListener()
         {
-            SNSUtility.ProcessAWSSNSMessage(Request.InputStream, Request.Headers["x-amz-sns-message-type"]);
+            await SNSUtility.ProcessAWSSNSMessage(Request.InputStream, Request.Headers["x-amz-sns-message-type"]);
             return Content("OK");
         }
         #endregion

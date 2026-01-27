@@ -132,9 +132,6 @@
   <data name="ImportAirportStatusTemplate" xml:space="preserve">
     <value>Status: {0}</value>
   </data>
-  <data name="MigrateImagesTemplate" xml:space="preserve">
-    <value>{0} files comprising {1:#,##0} bytes moved</value>
-  </data>
   <data name="NoDupesFound" xml:space="preserve">
     <value>No dupes found</value>
   </data>

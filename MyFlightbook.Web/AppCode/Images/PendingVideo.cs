@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -134,7 +135,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="szBasePath">The base path for the video object</param>
         /// <param name="szPhysicalPath">The filename to use for the resulting thumbnail image</param>
-        public void InitThumbnail(string szBasePath, string szPhysicalPath)
+        public async Task<PendingVideo> InitThumbnail(string szBasePath, string szPhysicalPath)
         {
             if (szBasePath == null)
                 throw new ArgumentNullException(nameof(szBasePath));
@@ -159,7 +160,7 @@ namespace MyFlightbook.Image
                 //  * an .mp4 video.
                 do
                 {
-                    ListObjectsResponse response = s3.ListObjects(loRequest);
+                    ListObjectsResponse response = await s3.ListObjectsAsync(loRequest);
                     foreach (S3Object o in response.S3Objects)
                     {
                         if (o.Key.Contains(GUID))
@@ -194,7 +195,7 @@ namespace MyFlightbook.Image
 
                 try
                 {
-                    using (GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = thumbnail.Key }))
+                    using (GetObjectResponse gor = await s3.GetObjectAsync(new GetObjectRequest() { BucketName = Bucket, Key = thumbnail.Key }))
                     {
                         if (gor?.ResponseStream != null)
                         {
@@ -230,26 +231,27 @@ namespace MyFlightbook.Image
                     string thumbFileName = Path.GetFileName(thumbnail.Key);
                     string thumbFileNew = thumbnail.Key.Replace(thumbFileName, MFBImageInfoBase.ThumbnailPrefixVideo + GUID + "00001" + FileExtensions.JPG);
                     CopyObjectRequest coreq = new CopyObjectRequest() { SourceBucket = Bucket, SourceKey = thumbnail.Key, DestinationBucket = Bucket, DestinationKey = thumbFileNew };
-                    CopyObjectResponse cor = s3.CopyObject(coreq);
+                    CopyObjectResponse cor = await s3.CopyObjectAsync(coreq);
                     if (cor.ETag.CompareCurrentCultureIgnoreCase(thumbnail.ETag) == 0)
-                        s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = thumbnail.Key });
+                        await s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = Bucket, Key = thumbnail.Key });
 
                     if (originalVideo != null)
-                        s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = originalVideo.Key });
+                        await s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = Bucket, Key = originalVideo.Key });
 
                     // Now set the ACLs so that it's all public
-                    s3.PutObjectAcl(new PutObjectAclRequest() { BucketName = Bucket, Key = thumbFileNew, ACL = S3CannedACL.PublicRead });
-                    s3.PutObjectAcl(new PutObjectAclRequest() { BucketName = Bucket, Key = mp4Video.Key, ACL = S3CannedACL.PublicRead });
+                    await s3.PutObjectAclAsync(new PutObjectAclRequest() { BucketName = Bucket, Key = thumbFileNew, ACL = S3CannedACL.PublicRead });
+                    await s3.PutObjectAclAsync(new PutObjectAclRequest() { BucketName = Bucket, Key = mp4Video.Key, ACL = S3CannedACL.PublicRead });
                 }
                 catch (AmazonS3Exception)
                 {
                     // Thumbnail was not found - audio file perhaps?  Use the generic audio file.
-                    System.IO.File.Copy("~/images/audio.png".MapAbsoluteFilePath(), szPhysicalPath);
+                    File.Copy("~/images/audio.png".MapAbsoluteFilePath(), szPhysicalPath);
                 }
             }
+            return this;
         }
 
-        public static IEnumerable<int> ProcessPendingVideos(out string szSummary)
+        public async static Task<string> ProcessPendingVideos()
         {
             List<SNSNotification> lstPending = new List<SNSNotification>();
             List<int> lstFlights = new List<int>();
@@ -269,14 +271,15 @@ namespace MyFlightbook.Image
             // Now, go through them and create each one.  Should clean up as part of the process.
             // simply creating the object will do all that is necessary.
             foreach (SNSNotification sns in lstPending)
-                _ = new MFBImageInfo(sns);
+            {
+                MFBImageInfo _ = await new MFBImageInfo().InitFromSNSNotification(sns);
+            }
 
             int cRemaining = 0;
             dbh.CommandText = "SELECT count(*) AS numRemaining FROM pendingvideos pv WHERE submitted < DATE_ADD(Now(), INTERVAL -1 HOUR)";
             dbh.ReadRow((comm) => { }, (dr) => { cRemaining = Convert.ToInt32(dr["numRemaining"], CultureInfo.InvariantCulture); });
 
-            szSummary = String.Format(CultureInfo.CurrentCulture, "Found {0} videos orphaned, {1} now remain", cPending, cRemaining);
-            return lstFlights;
+            return $"Found {cPending} videos orphaned, {cRemaining} now remain";
         }
     }
 }

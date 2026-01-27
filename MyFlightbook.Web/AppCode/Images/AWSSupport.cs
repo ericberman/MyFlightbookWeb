@@ -616,7 +616,7 @@ namespace MyFlightbook.Image
                 }
             }
 
-            return String.Format(CultureInfo.CurrentCulture, Resources.Admin.MigrateImagesTemplate, cFilesDone, cBytesDone);
+            return $"{cFilesDone} files comprising {cBytesDone.ToString("#,##0", CultureInfo.CurrentCulture)} bytes moved";
         }
     }
 }

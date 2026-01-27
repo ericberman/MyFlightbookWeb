@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -146,7 +147,7 @@ namespace AWSNotifications
             }
         }
 
-        public static void ProcessAWSSNSMessage(Stream stream, string szMessageType)
+        public static async Task<bool> ProcessAWSSNSMessage(Stream stream, string szMessageType)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
@@ -157,9 +158,7 @@ namespace AWSNotifications
                     SNSNotification snsNotification = ReadJSONObject<SNSNotification>(stream);
                     if (String.IsNullOrEmpty(snsNotification.Signature) || snsNotification.VerifySignature())
                     {
-                        // simply creating the object will do all that is necessary.
-                        if (new MFBImageInfo(snsNotification) == null)
-                        { }
+                        await new MFBImageInfo().InitFromSNSNotification(snsNotification);
                     }
                     break;
                 case "SUBSCRIPTIONCONFIRMATION":
@@ -184,6 +183,7 @@ namespace AWSNotifications
                     // Test messages/etc. can go here.
                     break;
             }
+            return true;
         }
 
         public static void SendTestPost(string szContent, string snsMessageType, Uri uri)

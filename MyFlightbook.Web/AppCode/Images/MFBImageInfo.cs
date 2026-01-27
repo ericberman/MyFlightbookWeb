@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -557,7 +558,6 @@ namespace MyFlightbook.Image
         public const int MaxImgWidth = 1600;
 
         private readonly System.Object lockObject = new System.Object();
-        private readonly static System.Object videoLockObject = new System.Object();
         private readonly static System.Object idempotencyLock = new System.Object();
 
         #region Static Utility Functions
@@ -1296,51 +1296,49 @@ namespace MyFlightbook.Image
         /// Creates a video object from a completed Amazon mediaconvert notification
         /// </summary>
         /// <param name="notification">Notification of completion from Amazon mediaconvert - MUST have a corresponding PendingVideo</param>
-        public MFBImageInfo(SNSNotification notification) : this()
+        public async Task<MFBImageInfo> InitFromSNSNotification(SNSNotification notification)
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification));
             dynamic etsNotification = JsonConvert.DeserializeObject<ExpandoObject>(notification.Message);
 
-            lock (videoLockObject)   // avoid re-entrancy due to possible timeouts.
+            PendingVideo pv = new PendingVideo(etsNotification.detail?.jobId ?? string.Empty);
+
+            switch (((string)(etsNotification.detail?.status ?? string.Empty)).ToUpperInvariant())
             {
-                PendingVideo pv = new PendingVideo(etsNotification.detail?.jobId ?? string.Empty);
+                default:
+                    break;
+                case "ERROR":
+                case "WARNING":
+                    util.NotifyAdminEvent("Error from Elastic Transcoder", JsonConvert.SerializeObject(notification), ProfileRoles.maskSiteAdminOnly);
+                    break;
+                case "COMPLETE":
+                    if (!String.IsNullOrEmpty(pv.JobID))
+                    {
+                        Class = pv.Class;
+                        Key = pv.Key;
 
-                switch (((string) (etsNotification.detail?.status ?? string.Empty)).ToUpperInvariant())
-                {
-                    default:
-                        break;
-                    case "ERROR":
-                    case "WARNING":
-                        util.NotifyAdminEvent("Error from Elastic Transcoder", JsonConvert.SerializeObject(notification), ProfileRoles.maskSiteAdminOnly);
-                        break;
-                    case "COMPLETE":
-                        if (!String.IsNullOrEmpty(pv.JobID))
-                        {
-                            Class = pv.Class;
-                            Key = pv.Key;
+                        DirectoryInfo di = new DirectoryInfo(PhysicalPath);
+                        if (!di.Exists)
+                            di.Create();
 
-                            DirectoryInfo di = new DirectoryInfo(PhysicalPath);
-                            if (!di.Exists)
-                                di.Create();
+                        Comment = pv.Comment;
+                        ImageType = ImageFileType.S3VideoMP4;
+                        ThumbnailFile = pv.ThumbnailFileName;
 
-                            Comment = pv.Comment;
-                            ImageType = ImageFileType.S3VideoMP4;
-                            ThumbnailFile = pv.ThumbnailFileName;
+                        await pv.InitThumbnail(VirtualPath, PhysicalPathThumbnail);
+                        WidthThumbnail = pv.ThumbWidth;
+                        HeightThumbnail = pv.ThumbHeight;
 
-                            pv.InitThumbnail(VirtualPath, PhysicalPathThumbnail);
-                            WidthThumbnail = pv.ThumbWidth;
-                            HeightThumbnail = pv.ThumbHeight;
+                        // Then add it to the database
+                        ToDB();
 
-                            // Then add it to the database
-                            ToDB();
-
-                            // finally, delete the pending job
-                            pv.Delete();
-                        }
-                        break;
-                }
+                        // finally, delete the pending job
+                        pv.Delete();
+                    }
+                    break;
             }
+            return this;
         }
         #endregion
 
