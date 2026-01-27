@@ -59,7 +59,7 @@
                 @{
                     Html.RenderAction("ImageListDisplay", "Image", new
                     {
-                        il = new ImageList(MFBPendingImage.PendingImagesInSession(Session).ToArray()),
+                        il = new ImageList(MFBPendingImage.PendingImagesInSession().ToArray()),
                         zoomLinkType = GeoLinkType.None,
                         fCanEdit = true,
                         fCanDelete = true,
