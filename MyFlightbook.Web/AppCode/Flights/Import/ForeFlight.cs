@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2025 MyFlightbook LLC
+ * Copyright (c) 2017-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -70,6 +70,7 @@ namespace MyFlightbook.ImportFlights
         public decimal DualReceived { get; set; }
         public decimal SimulatedFlight { get; set; }
         public decimal GroundTraining { get; set; }
+        public decimal GroundTrainingGiven { get; set; }
         public string InstructorName { get; set; }
         public string InstructorComments { get; set; }
         public string Person1 { get; set; }
@@ -206,6 +207,10 @@ namespace MyFlightbook.ImportFlights
 
             string szModel = rModelFixed.Expr.Replace(((String.IsNullOrEmpty(TypeCode) ? Model : TypeCode) ?? string.Empty), string.Empty);
 
+            // If ground instruction and no tail number, use #007705, which is anonymous generic ground
+            if (String.IsNullOrEmpty(TailNum) && GroundTraining > 0)
+                AircraftID = "#007705";
+
             LogbookEntry le = new LogbookEntry()
             {
                 Date = this.Date,
@@ -250,12 +255,13 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, GroundTrainingGiven),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, GroundTraining),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
-                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride)
-            });
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalFlightRemarks, InstructorComments),
+          });
 
             return le;
         }
