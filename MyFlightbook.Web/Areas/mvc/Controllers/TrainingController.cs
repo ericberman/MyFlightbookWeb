@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using static MyFlightbook.Instruction.Endorsement;
@@ -244,14 +245,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult UploadOfflineEndorsement()
+        public async Task<ActionResult> UploadOfflineEndorsement()
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name, new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
+                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }
@@ -260,14 +261,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Endorsements
         [HttpPost]
         [Authorize]
-        public ActionResult UploadEndorsement(string szKey = null)
+        public async Task<ActionResult> UploadEndorsement(string szKey = null)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name, new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
+                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }

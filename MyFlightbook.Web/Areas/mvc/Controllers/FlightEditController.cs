@@ -25,9 +25,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CommitFlight()
+        public async Task<ActionResult> CommitFlight()
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 LogbookEntry le = LogbookEntryFromForm();
 
@@ -35,7 +35,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!String.IsNullOrEmpty(le.ErrorString))
                     throw new InvalidOperationException(le.ErrorString);
 
-                if (!CommitFlight(le) || !String.IsNullOrEmpty(le.ErrorString))
+                bool fResult = await CommitFlight(le);
+                if (!fResult || !String.IsNullOrEmpty(le.ErrorString))
                     throw new InvalidOperationException(le.ErrorString);
 
                 // Issue #1458: if this is a flight being added by an instructor into a student's logbook, then implicitly request a signature.
@@ -181,19 +182,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult UploadFlightImages(int szKey, bool fCanDoVideo)
+        public async Task<ActionResult> UploadFlightImages(int szKey, bool fCanDoVideo)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                return Content(MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Flight, (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, fCanDoVideo); },
+                return Content(await MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Flight, szKey > 0 ? szKey.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                    (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, fCanDoVideo); },
                     (pi, szID) =>
                     {
-                        if (szKey > 0)
-                            pi?.Commit(MFBImageInfoBase.ImageClass.Flight, szKey.ToString(CultureInfo.InvariantCulture));
-                        else if (pi?.IsValid ?? false)
+                        if (pi?.IsValid ?? false)
                             Session[szID] = pi;
                     }));
             });
@@ -212,12 +212,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!le.IsNewFlight && String.IsNullOrEmpty(le.FlightData))
                     le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
 
-                await MFBPendingImage.ProcessSelectedPhotosResult(User.Identity.Name, Request["gmrJSON"], le.FlightData, (pi, szKey) =>
+                await MFBPendingImage.ProcessSelectedPhotosResult(User.Identity.Name, Request["gmrJSON"], le.FlightData, MFBImageInfoBase.ImageClass.Flight, le.IsNewFlight ? null : le.FlightID.ToString(CultureInfo.InvariantCulture), (pi, szKey) =>
                 {
-                    if (le.IsNewFlight)
-                        Session[szKey] = pi;
-                    else
-                        pi?.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                    Session[szKey] = pi;
                 });
                 le.PopulateImages();
 

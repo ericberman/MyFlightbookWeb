@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 using System.Threading.Tasks;
 
 /******************************************************
@@ -18,7 +17,6 @@ namespace MyFlightbook.Image
 {
     /// <summary>
     /// MFBImageInfo that has NOT YET been persisted
-    /// TODO: These are currently tied to HttpSessionStateBase, which is passed in (good) but not the right model - should instead have a collection in the session and pass the collection in/out, and interact with that.
     /// </summary>
     [Serializable]
     public class MFBPendingImage : MFBImageInfo
@@ -50,7 +48,7 @@ namespace MyFlightbook.Image
                     return string.Empty;
 
                 if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", WebUtility.UrlEncode(SessionKey)).ToAbsolute();
+                    return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}", Uri.EscapeDataString(SessionKey)).ToAbsolute();
                 else if (ImageType == ImageFileType.S3VideoMP4)
                     return "~/images/pendingvideo.png".ToAbsolute();
                 else
@@ -74,7 +72,7 @@ namespace MyFlightbook.Image
                     case ImageFileType.JPEG:
                     case ImageFileType.S3PDF:   // should never happen for a pending image...
                     case ImageFileType.PDF:
-                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", WebUtility.UrlEncode(SessionKey)).ToAbsolute();
+                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/PendingImage/{0}?full=1", Uri.EscapeDataString(SessionKey)).ToAbsolute();
                     case ImageFileType.S3VideoMP4:
                         return string.Empty;    // nothing to click on, at least not yet.
                     default:
@@ -119,9 +117,9 @@ namespace MyFlightbook.Image
             List<MFBPendingImage> lst = new List<MFBPendingImage>();
             foreach (string szSessKey in util.RequestContext.SessionKeys)
             {
-                    MFBPendingImage pi = util.RequestContext.GetSessionValue(szSessKey) as MFBPendingImage;
-                    if (pi != null)
-                        lst.Add(pi);
+                MFBPendingImage pi = util.RequestContext.GetSessionValue(szSessKey) as MFBPendingImage;
+                if (pi != null)
+                    lst.Add(pi);
             }
 
             return lst;
@@ -132,9 +130,9 @@ namespace MyFlightbook.Image
         /// Persists the pending image, returning the resulting MFBImageInfo object.
         /// </summary>
         /// <returns>The newly created MFBImageInfo object</returns>
-        public MFBImageInfo Commit(ImageClass ic, string szKey)
+        public async Task<MFBImageInfo> Commit(ImageClass ic, string szKey)
         {
-            return new MFBImageInfo(ic, szKey, PostedFile, Comment, Location);
+            return await new MFBImageInfo(ic, szKey).InitWithFile(PostedFile, Comment, Location);
         }
 
         /// <summary>
@@ -186,16 +184,18 @@ namespace MyFlightbook.Image
         /// <param name="szJSONResponse">A JSON string representing a GPickerMediaResponse</param>
         /// <param name="flightData">Any flight data (for geotagging)</param>
         /// <param name="userName">user for whom this is being called</param>
-        /// <param name="onProcess">An action called on each pending image; commit it or stash it away somewhere as needed</param>
+        /// <param name="ic">The image class to commit the image</param>
+        /// <param name="imageKey">The image key to use to commit the pending image.  If null or empty, no commit will be attempted</param>
+        /// <param name="onNoSave">An action called on each pending image that was NOT saved (e.g., to store in a session or cache or database)</param>
         /// <returns>true if no errors were encountered</returns>
-        public static async Task<bool> ProcessSelectedPhotosResult(string userName, string szJSONResponse, string flightData, Action<MFBPendingImage, string> onProcess)
+        public static async Task<bool> ProcessSelectedPhotosResult(string userName, string szJSONResponse, string flightData, ImageClass ic, string imageKey, Action<MFBPendingImage, string> onNoSave)
         {
             if (String.IsNullOrEmpty(szJSONResponse))
                 return false;
             if (String.IsNullOrEmpty(userName))
                 throw new ArgumentNullException(nameof(userName));
-            if (onProcess == null)
-                throw new ArgumentNullException(nameof(onProcess));
+            if (onNoSave == null)
+                throw new ArgumentNullException(nameof(onNoSave));
 
             Profile pf = Profile.GetUser(userName);
             string accessToken = new GooglePhoto(pf).AuthState.AccessToken;
@@ -209,16 +209,29 @@ namespace MyFlightbook.Image
             {
                 string szKey = String.Format(CultureInfo.InvariantCulture, "googlePhoto_{0}_{1}", i++, DateTime.Now.Ticks);
                 MFBPendingImage pi = await FromGooglePhoto(flightData, accessToken, item, szKey);
-                onProcess(pi, szKey);
+                if (!String.IsNullOrEmpty(imageKey))
+                    _ = await pi.Commit(ic, imageKey);
+                else
+                    onNoSave(pi, szKey);
             }
 
             return true;
         }
 
-        public static string ProcessUploadedFile(IPostedImageFile file, ImageClass ic, Func<ImageFileType, bool> checkType, Action<MFBPendingImage, string> onProcess)
+        /// <summary>
+        /// Processes the uploaded file for the specified imageclass and key.  Commits if the key is non-empty
+        /// </summary>
+        /// <param name="file">The file</param>
+        /// <param name="ic">Image class</param>
+        /// <param name="szKey">The key; if null or empty, no commit will be attempted</param>
+        /// <param name="checkType">Lambda to verify that the type is allowed (e.g., videos or PDFs)</param>
+        /// <param name="onNoSave">If the file is NOT saved, pending image back to the caller (e.g., to store in a session or cache or database)</param>
+        /// <returns>The absolute URL thumbnail to the resulting image</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static async Task<string> ProcessUploadedFile(IPostedImageFile file, ImageClass ic, string szKey, Func<ImageFileType, bool> checkType, Action<MFBPendingImage, string> onNoSave)
         {
-            if (onProcess == null)
-                throw new ArgumentNullException(nameof(onProcess));
+            if (onNoSave == null)
+                throw new ArgumentNullException(nameof(onNoSave));
             if (checkType == null)
                 throw new ArgumentNullException(nameof(checkType));
             if (file == null)
@@ -231,7 +244,10 @@ namespace MyFlightbook.Image
             if (!checkType(ImageTypeFromFile(pf)))
                 return string.Empty;
 
-            onProcess(pi, szID);
+            if (!String.IsNullOrEmpty(szKey))
+                _ = await pi.Commit(ic, szKey.ToString(CultureInfo.InvariantCulture));
+            else
+                onNoSave(pi, szID);
 
             return pi.URLThumbnail.ToAbsolute();
         }

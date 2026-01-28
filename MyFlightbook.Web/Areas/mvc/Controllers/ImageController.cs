@@ -230,9 +230,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFlightImage(int idFlight = -1, string txtAuthToken = null, string txtComment = null)
+        public async Task<ActionResult> UploadFlightImage(int idFlight = -1, string txtAuthToken = null, string txtComment = null)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 string szUser = ProcessForImageUpload(txtAuthToken);
 
@@ -263,7 +263,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     string szLon = Request["txtLon"];
                     if (!String.IsNullOrEmpty(szLat) && !String.IsNullOrEmpty(szLon))
                         ll = LatLong.TryParse(szLat, szLon, CultureInfo.InvariantCulture);
-                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture), mfbpf, txtComment ?? string.Empty, ll);
+                    MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture)).InitWithFile(mfbpf, txtComment ?? string.Empty, ll);
                     mfbii.IdempotencyCheck();
                 }
 
@@ -272,9 +272,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadAircraftImage(string txtAircraft = null, string txtAuthToken = null, string txtComment = null, int id = 0)
+        public async Task<ActionResult> UploadAircraftImage(string txtAircraft = null, string txtAuthToken = null, string txtComment = null, int id = 0)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 string szUser = ProcessForImageUpload(txtAuthToken);
 
@@ -322,7 +322,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     if (MFBImageInfo.ImageTypeFromFile(mfbpf) == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
                         throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
 
-                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture), mfbpf, txtComment ?? string.Empty, null);
+                    MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture)).InitWithFile(mfbpf, txtComment ?? string.Empty, null);
                     mfbii.IdempotencyCheck();
                 }
 
@@ -330,9 +330,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
-        public ActionResult UploadEndorsement(string txtAuthToken = null, string txtComment = null)
+        public async Task<ActionResult> UploadEndorsement(string txtAuthToken = null, string txtComment = null)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 string szUser = ProcessForImageUpload(txtAuthToken);
 
@@ -340,7 +340,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
 
-                    MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser, mfbpf, txtComment ?? string.Empty, null);
+                    MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser).InitWithFile(mfbpf, txtComment ?? string.Empty, null);
                     mfbii.IdempotencyCheck();
                 }
 
@@ -391,7 +391,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public async Task<ActionResult> AWSSNSListener()
         {
-            await SNSUtility.ProcessAWSSNSMessage(Request.InputStream, Request.Headers["x-amz-sns-message-type"]);
+            _  = await SNSUtility.ProcessAWSSNSMessage(Request.InputStream, Request.Headers["x-amz-sns-message-type"]);
             return Content("OK");
         }
         #endregion

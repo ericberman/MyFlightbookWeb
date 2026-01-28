@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -400,7 +401,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [ActionName("New")]
         [ValidateAntiForgeryToken]
-        public ActionResult CommitNewAircraft(int aircraftID)
+        public async Task<ActionResult> CommitNewAircraft(int aircraftID)
         {
             // idAircraft in this scenario can only mean that the user auto-completed to an existing aircraft ID.
             Aircraft ac = aircraftID > 0 ? new Aircraft(aircraftID) : AircraftFromForm();
@@ -420,7 +421,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                 {
                     if (pendingImage.ImageType != MFBImageInfoBase.ImageFileType.S3VideoMP4)
-                        pendingImage.Commit(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+                        _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
                     pendingImage.DeleteImage();     // clean it up!
                 }
                 AircraftUtility.LastTail = ac.AircraftID;

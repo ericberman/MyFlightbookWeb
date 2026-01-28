@@ -1,8 +1,8 @@
 ﻿using Amazon;
-using Amazon.S3;
-using Amazon.S3.Model;
 using Amazon.MediaConvert;
 using Amazon.MediaConvert.Model;
+using Amazon.S3;
+using Amazon.S3.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -106,15 +106,10 @@ namespace MyFlightbook.Image
     /// <summary>
     /// Manages movement of images/videos to/from the S3 server.
     /// </summary>
-    public class AWSS3ImageManager
+    public static class AWSS3ImageManager
     {
         private const string ContentTypeJPEG = "image/jpeg";
         private const string ContentTypePDF = "application/pdf";
-        private readonly object lockObject = new object();
-
-        #region Constructors
-        public AWSS3ImageManager() { }
-        #endregion
 
         /// <summary>
         /// Serialize an AmazonS3 exception, including the data dictionary
@@ -133,41 +128,39 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Moves an image (well, any object, really) from one key to another
+        /// Moves an image (well, any object, really) from one key to another.  FIRE AND FORGET - THE MOVE HAPPENS ASYNCHRONOUSLY.
         /// </summary>
         /// <param name="szSrc">Source path (key)</param>
         /// <param name="szDst">Destination path (key)</param>
         public static void MoveImageOnS3(string szSrc, string szDst)
         {
-            try
+            _ = Task.Run(async () =>
             {
-                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                try
                 {
-                    CopyObjectRequest cor = new CopyObjectRequest();
-                    DeleteObjectRequest dor = new DeleteObjectRequest();
-                    cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
-                    cor.DestinationKey = szDst;
-                    cor.SourceKey = dor.Key = szSrc;
-                    cor.CannedACL = S3CannedACL.PublicRead;
-                    cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
+                    using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                    {
+                        CopyObjectRequest cor = new CopyObjectRequest();
+                        DeleteObjectRequest dor = new DeleteObjectRequest();
+                        cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
+                        cor.DestinationKey = szDst;
+                        cor.SourceKey = dor.Key = szSrc;
+                        cor.CannedACL = S3CannedACL.PublicRead;
+                        cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
 
-                    s3.CopyObject(cor);
-                    s3.DeleteObject(dor);
+                        _ = await s3.CopyObjectAsync(cor);
+                        _ = await s3.DeleteObjectAsync(dor);
+                    }
                 }
-            }
-            catch (AmazonS3Exception ex)
-            {
-                util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0}to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error moving file on S3: Request address:{0}, Message:{1}", WrapAmazonS3Exception(ex), ex.Message));
-            }
-            catch (Exception ex)
-            {
-                throw new MyFlightbookException("Unknown error moving image on S3: " + ex.Message);
-            }
+                catch (AmazonS3Exception ex)
+                {
+                    util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0}to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
+                }
+            });
         }
 
         /// <summary>
-        /// Deletes the image from S3.  The actual operation happens asynchronously; the result is not captured.
+        /// Deletes the image from S3.  The actual operation happens asynchronously; the result is not captured, and we return immediately.
         /// </summary>
         /// <param name="mfbii">The image to delete</param>
         public static void DeleteImageOnS3(MFBImageInfo mfbii)
@@ -175,120 +168,43 @@ namespace MyFlightbook.Image
             if (mfbii == null)
                 return;
 
-            try
-            {
-                DeleteObjectRequest dor = new DeleteObjectRequest()
-                {
-                    BucketName = AWSConfiguration.CurrentS3Bucket,
-                    Key = mfbii.S3Key
-                };
-
-                new Thread(new ThreadStart(() =>
-                {
-                    try
-                    {
-                        using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                        {
-                            s3.DeleteObject(dor);
-                            if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
-                            {
-                                // Delete the thumbnail too.
-                                string szs3Key = mfbii.S3Key;
-                                dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
-                                s3.DeleteObject(dor);
-                            }
-                        }
-                    }
-                    catch (Exception ex) when (ex is AmazonS3Exception) { }
-                }
-                )).Start();
-            }
-            catch (AmazonS3Exception ex)
-            {
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting file on S3: {0}", WrapAmazonS3Exception(ex)), ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                throw new MyFlightbookException("Unknown error deleting image on S3: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Moves the image to Amazon
-        /// </summary>
-        /// <param name="por"></param>
-        /// <param name="mfbii">The object to move.</param>
-        public void MoveByRequest(PutObjectRequest por, MFBImageInfo mfbii)
-        {
-            if (mfbii == null)
-                throw new ArgumentNullException(nameof(mfbii));
-            if (por == null)
-                throw new ArgumentNullException(nameof(por));
-            lock (lockObject)
+            _ = Task.Run(async () =>
             {
                 try
                 {
+                    DeleteObjectRequest dor = new DeleteObjectRequest()
+                    {
+                        BucketName = AWSConfiguration.CurrentS3Bucket,
+                        Key = mfbii.S3Key
+                    };
+
                     using (IAmazonS3 s3 = AWSConfiguration.S3Client())
                     {
-                        PutObjectResponse s3r = null;
-                        using (por.InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read))
+                        _ = await s3.DeleteObjectAsync(dor);
+                        if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
                         {
-                            s3r = s3.PutObject(por);
-                        }
-                        if (s3r != null)
-                        {
-                            switch (mfbii.ImageType)
-                            {
-                                case MFBImageInfo.ImageFileType.JPEG:
-                                    File.Delete(mfbii.PhysicalPathFull);
-                                    break;
-                                case MFBImageInfo.ImageFileType.PDF:
-                                    {
-                                        try
-                                        {
-                                            if (String.IsNullOrEmpty(mfbii.Comment))
-                                                mfbii.Comment = mfbii.ThumbnailFile;
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.S3PDF;
-                                            mfbii.RenameLocalFile(mfbii.ThumbnailFile.Replace(FileExtensions.PDF, FileExtensions.S3PDF));
-
-                                            // Write the comment to the resulting file.
-                                            using (FileStream fs = File.OpenWrite(mfbii.PhysicalPathThumbnail))
-                                            {
-                                                fs.SetLength(0);
-                                                byte[] rgBytes = Encoding.UTF8.GetBytes(mfbii.Comment.ToCharArray());
-                                                fs.Write(rgBytes, 0, rgBytes.Length);
-                                            }
-                                        }
-                                        catch (Exception ex) when (ex is UnauthorizedAccessException || ex is FileNotFoundException || ex is IOException)
-                                        {
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            // ALWAYS update the db
-                            mfbii.UpdateDBLocation(false);
+                            // Delete the thumbnail too.
+                            string szs3Key = mfbii.S3Key;
+                            dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
+                            _ = await s3.DeleteObjectAsync(dor);
                         }
                     }
                 }
                 catch (AmazonS3Exception ex)
                 {
-                    throw new MyFlightbookException(WrapAmazonS3Exception(ex), ex);
+                    util.NotifyAdminEvent("Error moving image on S3", $"Error dleting {mfbii.PathThumbnail} from S3\r\n\r\n{WrapAmazonS3Exception(ex)}", ProfileRoles.maskSiteAdminOnly);
                 }
-            }
+            });
         }
 
         /// <summary>
-        /// Moves the full-size image to the current bucket.  Actual move is done on a background thread, and the local file is deleted IF the operation is successful.
-        /// <param name="fSynchronous">true if the call should be made synchronously; otherwise, the call returns immediately and the move is done on a background thread</param>
+        /// Moves the full-size image to the current bucket.
         /// <param name="mfbii">The image to move</param>
         /// </summary>
-        public void MoveImageToS3(bool fSynchronous, MFBImageInfo mfbii)
+        public async static Task<bool> MoveImageToS3(MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                return;
+                throw new ArgumentNullException(nameof(mfbii));
 
             try
             {
@@ -302,10 +218,51 @@ namespace MyFlightbook.Image
                     StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 
-                if (fSynchronous)
-                    MoveByRequest(por, mfbii);
-                else
-                    new Thread(new ThreadStart(() => { MoveByRequest(por, mfbii); })).Start();
+                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                {
+                    PutObjectResponse s3r = null;
+                    using (por.InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read))
+                    {
+                        s3r = await s3.PutObjectAsync(por);
+                    }
+                    if (s3r != null)
+                    {
+                        switch (mfbii.ImageType)
+                        {
+                            case MFBImageInfo.ImageFileType.JPEG:
+                                File.Delete(mfbii.PhysicalPathFull);
+                                break;
+                            case MFBImageInfo.ImageFileType.PDF:
+                                {
+                                    try
+                                    {
+                                        if (String.IsNullOrEmpty(mfbii.Comment))
+                                            mfbii.Comment = mfbii.ThumbnailFile;
+                                        mfbii.ImageType = MFBImageInfo.ImageFileType.S3PDF;
+                                        mfbii.RenameLocalFile(mfbii.ThumbnailFile.Replace(FileExtensions.PDF, FileExtensions.S3PDF));
+
+                                        // Write the comment to the resulting file.
+                                        using (FileStream fs = File.OpenWrite(mfbii.PhysicalPathThumbnail))
+                                        {
+                                            fs.SetLength(0);
+                                            byte[] rgBytes = Encoding.UTF8.GetBytes(mfbii.Comment.ToCharArray());
+                                            fs.Write(rgBytes, 0, rgBytes.Length);
+                                        }
+                                    }
+                                    catch (Exception ex) when (ex is UnauthorizedAccessException || ex is FileNotFoundException || ex is IOException)
+                                    {
+                                        mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        // ALWAYS update the db
+                        mfbii.UpdateDBLocation(false);
+                    }
+                }
+                return true;
             }
             catch (AmazonS3Exception ex)
             {
@@ -318,6 +275,26 @@ namespace MyFlightbook.Image
         }
 
         #region Video Support
+        private static JobSettings SettingsForBucketAndKey(MFBImageInfo mfbii, string szBasePath, string szBucket, string key)
+        {
+            return new JobSettings()
+            {
+                Inputs = new List<Input> { AWSConfiguration.InputForBucketKey(szBucket, key) },
+                OutputGroups = new List<OutputGroup>
+                {
+                    new OutputGroup
+                    {
+                        OutputGroupSettings = new OutputGroupSettings()
+                        {
+                            Type = OutputGroupType.FILE_GROUP_SETTINGS,
+                            FileGroupSettings = new FileGroupSettings() { Destination = $"s3://{szBucket}/{szBasePath}"}
+                        },
+                        Outputs = AWSConfiguration.DefaultVideoOutputs
+                    }
+                }
+            };
+        }
+
         /// <summary>
         /// Uploads a video for transcoding.  Deletes the source file named in szFileName
         /// </summary>
@@ -326,7 +303,7 @@ namespace MyFlightbook.Image
         /// <param name="szBucket">Bucket to use.  Specified as a parameter because CurrentBucket might return the wrong value when called on a background thread</param>
         /// <param name="mfbii">The MFBImageInfo that encapsulates the video</param>
         /// <param name="fDelete">True to delete the file after upload</param>
-        public void UploadVideo(string szFileName, string szContentType, string szBucket, MFBImageInfo mfbii, bool fDelete)
+        public static async Task<bool> UploadVideo(string szFileName, string szContentType, string szBucket, MFBImageInfo mfbii, bool fDelete)
         {
             if (mfbii == null)
                 throw new ArgumentNullException(nameof(mfbii));
@@ -347,51 +324,34 @@ namespace MyFlightbook.Image
                     StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 
-                lock (lockObject)
+                try
                 {
-                    try
+                    using (por.InputStream = new FileStream(szFileName, FileMode.Open, FileAccess.Read))
                     {
-                        using (por.InputStream = new FileStream(szFileName, FileMode.Open, FileAccess.Read))
-                        {
-                            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                                s3.PutObject(por);
-                            File.Delete(szFileName);
-                        }
+                        using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                            _ = await s3.PutObjectAsync(por);
+                        File.Delete(szFileName);
                     }
-                    catch (Exception ex)
-                    {
-                        util.NotifyAdminEvent("Error putting video file", ex.Message, ProfileRoles.maskSiteAdminOnly);
-                        throw;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    util.NotifyAdminEvent("Error putting video file", ex.Message, ProfileRoles.maskSiteAdminOnly);
+                    throw;
                 }
 
                 var job = mcClient.CreateJob(new CreateJobRequest()
                 {
                     Role = LocalConfig.SettingForKey("AWSMediaConvertRoleArn"),
                     UserMetadata = new Dictionary<string, string> { { "Debug", (szBucket.CompareCurrentCultureIgnoreCase(AWSConfiguration.S3BucketNameDebug) == 0).ToString() } },
-                    Settings = new JobSettings()
-                    {
-                       
-                        Inputs = new List<Input>  { AWSConfiguration.InputForBucketKey(szBucket, por.Key) },
-                        OutputGroups = new List<OutputGroup>
-                        {
-                            new OutputGroup
-                            {
-                                OutputGroupSettings = new OutputGroupSettings()
-                                {
-                                    Type = OutputGroupType.FILE_GROUP_SETTINGS,
-                                    FileGroupSettings = new FileGroupSettings() { Destination = $"s3://{szBucket}/{szBasePath}"}
-                                },
-                                Outputs = AWSConfiguration.DefaultVideoOutputs
-                            }
-                        }
-                    }
+                    Settings = SettingsForBucketAndKey(mfbii, szBasePath, szBucket, por.Key)
                 });
                 if (job != null)
                     new PendingVideo(szGuid, job.Job.Id, mfbii.Comment, mfbii.Class, mfbii.Key, szBucket).Commit();
 
                 if (fDelete && File.Exists(szFileName))
                     File.Delete(szFileName);
+
+                return true;
             }
         }
         #endregion
@@ -400,14 +360,14 @@ namespace MyFlightbook.Image
     /// <summary>
     /// Utility Admin functions for AWS S3 images
     /// </summary>
-    public class AWSImageManagerAdmin : AWSS3ImageManager
+    public static class AWSImageManagerAdmin
     {
         /// <summary>
         /// ADMIN ONLY - Remove images from S3 LIVE BUCKET that are orphaned (no reference from live site)
         /// </summary>
         /// <param name="ic"></param>
         /// <param name="handleS3Object"></param>
-        public static void ADMINDeleteS3Orphans(MFBImageInfo.ImageClass ic, Action<long, long, long, long> onSummary, Action onS3EnumDone, Func<string, int, bool> onDelete)
+        public static async Task<bool> ADMINDeleteS3Orphans(MFBImageInfo.ImageClass ic, Action<long, long, long, long> onSummary, Action onS3EnumDone, Func<string, int, bool> onDelete)
         {
             string szBasePath = MFBImageInfo.BasePathFromClass(ic);
             if (szBasePath.StartsWith("/", StringComparison.InvariantCultureIgnoreCase))
@@ -437,7 +397,7 @@ namespace MyFlightbook.Image
                 // Get the list of S3 objects
                 do
                 {
-                    ListObjectsResponse response = s3.ListObjects(request);
+                    ListObjectsResponse response = await s3.ListObjectsAsync(request);
 
                     cFilesOnS3 += response.S3Objects.Count;
                     foreach (S3Object o in response.S3Objects)
@@ -501,22 +461,19 @@ namespace MyFlightbook.Image
                         cOrphansFound++;
                         cBytesToFree += o.Size ?? 0;
                         if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
-                        {
-                            // Make sure that the item 
-                            DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key };
-                            s3.DeleteObject(dor);
-                        }
+                            _ = s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key });  // no need to await the result
                     }
                 });
 
                 onSummary?.Invoke(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
+                return true;
             }
         }
 
         /// <summary>
         /// ADMIN ONLY - Removes images from the debug bucket
         /// </summary>
-        public static void ADMINCleanUpDebug()
+        public static async Task<bool> ADMINCleanUpDebug()
         {
             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
             {
@@ -524,12 +481,12 @@ namespace MyFlightbook.Image
 
                 do
                 {
-                    ListObjectsResponse response = s3.ListObjects(request);
+                    ListObjectsResponse response = await s3.ListObjectsAsync(request);
 
                     foreach (S3Object o in response.S3Objects)
                     {
                         DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketNameDebug, Key = o.Key };
-                        s3.DeleteObject(dor);
+                        _ = s3.DeleteObjectAsync(dor);
                     }
 
                     // If response is truncated, set the marker to get the next 
@@ -543,6 +500,7 @@ namespace MyFlightbook.Image
                         request = null;
                     }
                 } while (request != null);
+                return true;
             }
         }
 
@@ -551,7 +509,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="mfbii">The image to move</param>
         /// <returns>The # of bytes moved, if any, -1 for failure</returns>
-        public int ADMINMigrateToS3(MFBImageInfo mfbii)
+        public static async Task<int> ADMINMigrateToS3(MFBImageInfo mfbii)
         {
             int cBytes = 0;
 
@@ -566,7 +524,7 @@ namespace MyFlightbook.Image
 
                 FileInfo fi = new FileInfo(szPathFull);
                 cBytes += (Int32)fi.Length;
-                MoveImageToS3(true, mfbii);
+                _ = await AWSS3ImageManager.MoveImageToS3(mfbii);
 
                 return cBytes;
             }
@@ -581,7 +539,7 @@ namespace MyFlightbook.Image
         /// <param name="cFilesLimit">Maximum files to move</param>
         /// <param name="imageClass">Image class on which to perform the operation.</param>
         /// <returns></returns>
-        public static string MigrateImages(int cMBytesLimit, int cFilesLimit, MFBImageInfoBase.ImageClass imageClass)
+        public static async Task<string> MigrateImages(int cMBytesLimit, int cFilesLimit, MFBImageInfoBase.ImageClass imageClass)
         {
             int cBytesDone = 0;
             int cFilesDone = 0;
@@ -601,10 +559,9 @@ namespace MyFlightbook.Image
             {
                 if (cBytesDone > cBytesLimit || cFilesDone >= cFilesLimit)
                     break;
-                AWSImageManagerAdmin im = new AWSImageManagerAdmin();
                 foreach (MFBImageInfo mfbii in images[szKey])
                 {
-                    int cBytes = im.ADMINMigrateToS3(mfbii);
+                    int cBytes = await ADMINMigrateToS3(mfbii);
                     if (cBytes >= 0)  // migration occured
                     {
                         cBytesDone += cBytes;

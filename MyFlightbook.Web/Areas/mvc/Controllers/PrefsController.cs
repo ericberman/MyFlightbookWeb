@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -850,9 +851,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult AddBasicMedEvent(string basicMedDate, BasicMedEvent.BasicMedEventType basicMedType, string basicMedDesc)
+        public async Task<ActionResult> AddBasicMedEvent(string basicMedDate, BasicMedEvent.BasicMedEventType basicMedType, string basicMedDesc)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 BasicMedEvent bme = new BasicMedEvent(basicMedType, User.Identity.Name)
                 {
@@ -868,7 +869,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     if (pendingImage.ImageType == MFBImageInfoBase.ImageFileType.JPEG || pendingImage.ImageType == MFBImageInfoBase.ImageFileType.PDF)
                     {
-                        pendingImage.Commit(MFBImageInfoBase.ImageClass.BasicMed, bme.ID.ToString(CultureInfo.InvariantCulture));
+                        _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.BasicMed, bme.ID.ToString(CultureInfo.InvariantCulture));
                         pendingImage.DeleteImage();
                     }
                 }

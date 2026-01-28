@@ -401,22 +401,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string DeleteDebugS3Images()
+        public async Task<ActionResult> DeleteDebugS3Images()
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 string key = Guid.NewGuid().ToString();
 
                 StringBuilder sb = new StringBuilder();
                 CacheProgress(key, sb);
-
-                new Thread(new ThreadStart(() =>
-                {
-                    sb.AppendLine("Starting to clean S3 debug images...");
-                    AWSImageManagerAdmin.ADMINCleanUpDebug();
-                    util.GlobalCache.Remove(key);
-                })).Start();
-                return key;
+               
+                sb.AppendLine("Starting to clean S3 debug images...");
+                _ = await AWSImageManagerAdmin.ADMINCleanUpDebug();
+                util.GlobalCache.Remove(key);
+                return Content(key);
             });
         }
 
@@ -445,25 +442,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string DeleteS3Orphans(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
+        public async Task<ActionResult> DeleteS3Orphans(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
-                return SafeOp(ProfileRoles.maskCanManageData, () =>
-                {
-                    string key = Guid.NewGuid().ToString();
+                string key = Guid.NewGuid().ToString();
 
-                    MFBImageAdmin imageAdmin = new MFBImageAdmin(ic);
-                    CacheProgress(key, imageAdmin.Status);
+                MFBImageAdmin imageAdmin = new MFBImageAdmin(ic);
+                CacheProgress(key, imageAdmin.Status);
 
-                    new Thread(new ThreadStart(() =>
-                    {
-                        imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to delete S3 orphans for image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
-                        imageAdmin.DeleteS3Orphans(fPreviewOnly, fIsLiveSite: Branding.CurrentBrand.MatchesHost(Request.Url.Host));
-                        util.GlobalCache.Remove(key);
-                    })).Start();
-                    return key;
-                });
+                imageAdmin.Status.AppendFormat(CultureInfo.InvariantCulture, "Starting to delete S3 orphans for image class {0} (preview = {1})...\r\n", ic.ToString(), fPreviewOnly.ToString().ToUpperInvariant());
+                _ = await imageAdmin.DeleteS3Orphans(fPreviewOnly, fIsLiveSite: Branding.CurrentBrand.MatchesHost(Request.Url.Host));
+                util.GlobalCache.Remove(key);
+                return Content(key);
             });
         }
 
@@ -513,11 +504,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string MigrateImages(MFBImageInfoBase.ImageClass imageClass, int maxFiles, int maxMB)
+        public async Task<ActionResult> MigrateImages(MFBImageInfoBase.ImageClass imageClass, int maxFiles, int maxMB)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
-                return AWSImageManagerAdmin.MigrateImages(maxMB, maxFiles, imageClass);
+                return Content(await AWSImageManagerAdmin.MigrateImages(maxMB, maxFiles, imageClass));
             });
         }
 

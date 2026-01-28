@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -305,19 +306,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Aircraft Images
         [HttpPost]
         [Authorize]
-        public ActionResult UploadAircraftImages(int szKey)
+        public async Task<ActionResult> UploadAircraftImages(int szKey)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                return Content(MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Flight, (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, false); },
+                return Content(await MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Aircraft, szKey > 0 ? szKey.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                    (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, false); }, 
                     (pi, szID) =>
                     {
-                        if (szKey > 0)
-                            pi?.Commit(MFBImageInfoBase.ImageClass.Aircraft, szKey.ToString(CultureInfo.InvariantCulture));
-                        else if (pi?.IsValid ?? false)
+                        if (pi?.IsValid ?? false)
                             Session[szID] = pi;
                     }));
             });

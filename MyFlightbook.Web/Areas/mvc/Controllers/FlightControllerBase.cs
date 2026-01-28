@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 
@@ -336,7 +337,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return le;
         }
 
-        protected bool CommitFlight(LogbookEntry le)
+        protected async Task<bool> CommitFlight(LogbookEntry le)
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
@@ -378,7 +379,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                             // process pending images, if this was a new flight
                             foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                             {
-                                pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                                _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
                                 pendingImage.DeleteImage();     // clean it up!
                             }
                         }

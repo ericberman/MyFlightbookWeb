@@ -806,40 +806,37 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Deletes this image file
+        /// Deletes this image file.  If it has been moved to S3, the image on S3 also gets deleted ASYNCHRONOUSLY.  
         /// </summary>
         public virtual void DeleteImage()
         {
-            lock (lockObject)   // Don't delete the object if it is still being migrated to S3 (which can happen asynchronously)
+            try
             {
-                try
-                {
-                    // Delete the thumbnail, if it exists
-                    string szThumb = PhysicalPathThumbnail;
-                    if (szThumb.Length > 0 && File.Exists(szThumb))
-                        File.Delete(szThumb);
+                // Delete the thumbnail, if it exists
+                string szThumb = PhysicalPathThumbnail;
+                if (szThumb.Length > 0 && File.Exists(szThumb))
+                    File.Delete(szThumb);
 
-                    if (!String.IsNullOrEmpty(PathFullImage))
-                    {
-                        string szLocalPath = PhysicalPathFull;
-                        if (IsLocal)
-                            File.Delete(szLocalPath);
-                        else
-                            AWSS3ImageManager.DeleteImageOnS3(this);
-                    }
-                }
-                catch (Exception ex)
+                if (!String.IsNullOrEmpty(PathFullImage))
                 {
-                    util.NotifyAdminEvent("Exception Deleting image", String.Format(CultureInfo.InvariantCulture, "{0}: {1}\r\n\r\n{2}\r\n\r\n at {3}", this.PhysicalPathThumbnail, ex.Message, ex.StackTrace, Environment.StackTrace), ProfileRoles.maskSiteAdminOnly);
-                    throw;
+                    string szLocalPath = PhysicalPathFull;
+                    if (IsLocal)
+                        File.Delete(szLocalPath);
+                    else
+                        AWSS3ImageManager.DeleteImageOnS3(this);    // fire and forget.  Note that this could fail, or even happen before the original move to S3 completes...
                 }
-                finally
-                {
-                    UnCache();
+            }
+            catch (Exception ex)
+            {
+                util.NotifyAdminEvent("Exception Deleting image", String.Format(CultureInfo.InvariantCulture, "{0}: {1}\r\n\r\n{2}\r\n\r\n at {3}", this.PhysicalPathThumbnail, ex.Message, ex.StackTrace, Environment.StackTrace), ProfileRoles.maskSiteAdminOnly);
+                throw;
+            }
+            finally
+            {
+                UnCache();
 
-                    // ALWAYS delete from the DB to avoid orphans; this is no-op if it doesn't exist.
-                    DeleteFromDB();
-                }
+                // ALWAYS delete from the DB to avoid orphans; this is no-op if it doesn't exist.
+                DeleteFromDB();
             }
         }
 
@@ -875,7 +872,7 @@ namespace MyFlightbook.Image
                     rgfi[0].MoveTo(szDirDest + FullImageFile);
             }
             else
-                AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);
+               AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);   // Fire and forget.
 
             rgfi = diSrc.GetFiles(ThumbnailFile);
             if (rgfi != null && rgfi.Length > 0)
@@ -1252,7 +1249,7 @@ namespace MyFlightbook.Image
         #region Constructors
         public MFBImageInfo() : this(ImageClass.Unknown, string.Empty) { }
 
-        private MFBImageInfo(ImageClass ic, string szKey)
+        public MFBImageInfo(ImageClass ic, string szKey)
         {
             Comment = VirtualPath = ThumbnailFile = String.Empty;
             Class = ic;
@@ -1279,17 +1276,6 @@ namespace MyFlightbook.Image
                 ImageType = ImageFileType.PDF;
             else if (Path.GetExtension(szThumbnail).CompareCurrentCultureIgnoreCase(FileExtensions.S3PDF) == 0)
                 ImageType = ImageFileType.S3PDF;
-        }
-
-        /// <summary>
-        /// Uploads a picture into the specified directory/subdirectory ("key").
-        /// </summary>
-        /// <param name="myFile">The uploaded file object</param>
-        /// <param name="szVirtPath">The virtual path to use for this image</param>
-        /// <param name="szComment">Any comment that the user may have typed</param>
-        public MFBImageInfo(ImageClass ic, string szKey, MFBPostedFile myFile, string szComment, LatLong ll) : this(ic, szKey)
-        {
-            InitWithFile(myFile, szComment, ll);
         }
 
         /// <summary>
@@ -1606,10 +1592,10 @@ namespace MyFlightbook.Image
         }
 
         #region InitfileHelpers
-        private void InitFileS3Mp4(MFBPostedFile myFile)
+        private async Task<bool> InitFileS3Mp4(MFBPostedFile myFile)
         {
             if (String.IsNullOrEmpty(myFile.TempFileName) || !File.Exists(myFile.TempFileName))
-                return;
+                return false;
 
             // Issue #1391: copy the temp file before upload.
             string fileName = Path.GetTempFileName();
@@ -1620,10 +1606,11 @@ namespace MyFlightbook.Image
             }
 
             string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
-            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(fileName, myFile.ContentType, szBucket, this, true); })).Start();
+            _ = await AWSS3ImageManager.UploadVideo(fileName, myFile.ContentType, szBucket, this, true); 
+            return true;
         }
 
-        private void InitFileJPG(MFBPostedFile myFile, string szComment, LatLong ll)
+        private async Task<bool> InitFileJPG(MFBPostedFile myFile, string szComment, LatLong ll)
         {
             string szTempFile = null;
             try
@@ -1698,7 +1685,7 @@ namespace MyFlightbook.Image
 
                         // Move this up to S3.  Note that if we're debugging, it will go into the debug bucket.
                         if (AWSConfiguration.UseS3)
-                            new AWSS3ImageManager().MoveImageToS3(false, this);
+                            _ = await AWSS3ImageManager.MoveImageToS3(this);
                     }
                 }
             }
@@ -1711,9 +1698,10 @@ namespace MyFlightbook.Image
 
                 myFile.CleanUp();
             }
+            return true;
         }
 
-        private void InitFilePDF(MFBPostedFile myFile)
+        private async Task<bool> InitFilePDF(MFBPostedFile myFile)
         {
             // just save the file as-is; we virtualize the thumbnail.
             string szBase = RegexUtility.NonAlphaNumeric.Replace(Path.GetFileNameWithoutExtension(myFile.FileName), string.Empty);
@@ -1759,20 +1747,29 @@ namespace MyFlightbook.Image
             // Save it in the DB - do this BEFORE moving to S3 to avoid a race condition (see above).
             ToDB();
 
-            // We do this SYNCHRONOUSLY because the name of the thumbnail will change in the process.
             if (AWSConfiguration.UseS3)
-                new AWSS3ImageManager().MoveImageToS3(true, this);
+                _ = await AWSS3ImageManager.MoveImageToS3(this);
+
+            return true;
         }
         #endregion
 
-        private void InitWithFile(MFBPostedFile myFile, string szComment, LatLong ll)
+        /// <summary>
+        /// Initializes the object with the specified file, comment, latitude/longitude
+        /// </summary>
+        /// <param name="myFile"></param>
+        /// <param name="szComment"></param>
+        /// <param name="ll"></param>
+        /// <returns>This object</returns>
+        /// <exception cref="MyFlightbookException"></exception>
+        public async Task<MFBImageInfo> InitWithFile(MFBPostedFile myFile, string szComment, LatLong ll)
         {
             if (myFile == null || myFile.ContentLength == 0 || String.IsNullOrEmpty(Key) || Class == ImageClass.Unknown || VirtualPath.Length <= 1)
-                return;
+                return this;
 
             // Trust image/ content type over filename; otherwise, use filename.
             if ((ImageType = ImageTypeFromFile(myFile)) == ImageFileType.Unknown)
-                return;
+                return this;
 
             Comment = szComment.LimitTo(254);
 
@@ -1784,19 +1781,20 @@ namespace MyFlightbook.Image
             switch (ImageType)
             {
                 case ImageFileType.S3VideoMP4:
-                    InitFileS3Mp4(myFile);
+                    _ = await InitFileS3Mp4(myFile);
                     break;
                 case ImageFileType.JPEG:
-                    InitFileJPG(myFile, szComment, ll);
+                    _ = await InitFileJPG(myFile, szComment, ll);
                     break;
                 case ImageFileType.PDF:
-                    InitFilePDF(myFile);
+                    _ = await InitFilePDF(myFile);
                     break;
                 case ImageFileType.S3PDF:
                     throw new MyFlightbookException("Cannot upload an S3PDF file; this should never happen.  S3PDF files are created from uploaded PDF files");
                 default:
                     break;
             }
+            return this;
         }
 
         #region Misc
@@ -1868,10 +1866,7 @@ namespace MyFlightbook.Image
     }
 
     [Serializable]
-    public class MFBImageCollection : List<MFBImageInfo>
-    {
-
-    }
+    public class MFBImageCollection : List<MFBImageInfo> { }
 
     /// <summary>
     /// Class for implementing admin functions on images.
@@ -1906,13 +1901,13 @@ namespace MyFlightbook.Image
             return cImageRows;
         }
 
-        public void DeleteS3Orphans(bool fIsPreview, bool fIsLiveSite)
+        public async Task<bool> DeleteS3Orphans(bool fIsPreview, bool fIsLiveSite)
         {
             Status.Clear();
             // Get a list of all of the images in the DB for this category:
             UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from S3", CurrentSource.ToString()));
 
-            AWSImageManagerAdmin.ADMINDeleteS3Orphans(CurrentSource,
+            return await AWSImageManagerAdmin.ADMINDeleteS3Orphans(CurrentSource,
                 (cFiles, cBytesTotal, cOrphans, cBytesToFree) =>
                 { UpdateProgress(4, 100, String.Format(CultureInfo.CurrentCulture, "{0} orphaned files ({1:#,##0} bytes) found out of {2} files ({3:#,##0} bytes).", cOrphans, cBytesToFree, cFiles, cBytesTotal)); },
                 () => { UpdateProgress(2, 0, "S3 Enumeration done, getting files from DB"); },

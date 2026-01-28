@@ -21,7 +21,7 @@
                 error: function (xhr, status, error) { alert(xhr.responseText); },
                 complete: function (response) { },
                 success: function (response) {
-                    $("#divMigrateResults")[0].text(response);
+                    $("#divMigrateResults").text(response);
                 }
             });
     }

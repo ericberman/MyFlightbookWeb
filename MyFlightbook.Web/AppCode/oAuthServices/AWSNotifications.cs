@@ -158,7 +158,7 @@ namespace AWSNotifications
                     SNSNotification snsNotification = ReadJSONObject<SNSNotification>(stream);
                     if (String.IsNullOrEmpty(snsNotification.Signature) || snsNotification.VerifySignature())
                     {
-                        await new MFBImageInfo().InitFromSNSNotification(snsNotification);
+                        _ = await new MFBImageInfo().InitFromSNSNotification(snsNotification);
                     }
                     break;
                 case "SUBSCRIPTIONCONFIRMATION":
