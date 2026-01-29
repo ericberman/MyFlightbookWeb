@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-@using System.Configuration
 @{
     Layout = null;
     string fbID = LocalConfig.SettingForKey("facebookAppId");
@@ -15,7 +14,7 @@
     <div>
         <a href="@("~/mvc/pub".ToAbsolute())"><img src="@("~/Images/mfblogonew.png".ToAbsolute())" /></a>
         <h1>@Resources.LocalizedText.ShuntHeader</h1>
-        <p>@Branding.ReBrand((string)ConfigurationManager.AppSettings["ShuntMessage"])</p>
+        <p>@Branding.ReBrand(LocalConfig.SettingForKey("ShuntMessage"))</p>
         @if (!String.IsNullOrEmpty(fbID))
         {
             <script>
