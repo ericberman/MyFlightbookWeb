@@ -97,6 +97,8 @@ and the application should be called "logbook" and point to the /logbook branch.
  * recaptchaKey - ID for using Google's recaptcha
  * recaptchValidateEndpoint - the url for validating recaptcha
  * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
+ * ShuntState - "shunted" to shunt the site, otherwise empty
+ * ShuntMessage - the message to display while the site is shunted.
  * StripeLiveKey - key for interacting with stripe in the live environment
  * StripeLiveWebhook - webhook for receiving notifications in the live environment from Stripe
  * StripeTestKey - key for interacting with stripe in the development environment
@@ -104,9 +106,17 @@ and the application should be called "logbook" and point to the /logbook branch.
  * TwitterAccessID - oAuth ID for Twitter (obsolete)
  * TwitterClientSecret - Secret for Twitter (Obsolete)
  * UseAWSS3 - Set to "yes" to migrate images to S3. Best to leave this "no" for local debugging
+ * UseOOF - set to "yes" to auto-respond to contact-me requests with an out-of-office message.
  * UserAccessEncryptorKey - Used to share flights
  * UserPasswordHashKey - Hash key used when storing hashed passwords in the database
  * WebAccessEncryptorKey - key to encrypt/decrypt authorizations on the web service
+The following are for directories where images/pdfs/videos are stored:
+ * AircraftPixDir - app-relative (e.g., "~/...") path for aircraft pictures.
+ * FlightsPixDir - app-relative (e.g., "~/...") path for flight pictures.
+ * BasicMedDir - app-relative (e.g., "~/...") path for basicmed pictures.
+ * TelemetryDir - app-relative (e.g., "~/...") path for telemetry.
+ * EndorsementsPixDir - app-relative (e.g., "~/...") path for endorsement pictures.
+ * OfflineEndorsementsPixDir - app-relative (e.g., "~/...") path for offline endorsements.
 
  ### Additional items
 * Install [WKHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs. Download link is [here](https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox-0.12.6-1.msvc2015-win64.exe)
