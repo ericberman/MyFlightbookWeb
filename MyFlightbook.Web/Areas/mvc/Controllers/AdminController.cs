@@ -224,6 +224,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return new EmptyResult();
             });
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ToggleOOF(bool useOOF)
+        {
+            return SafeOp(ProfileRoles.maskCanSupport, () =>
+            {
+                DBHelper dbh = new DBHelper("UPDATE localconfig SET keyValue=?val WHERE keyName='UseOOF'");
+                dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("val", useOOF ? "yes" : "no"); });
+                LocalConfig.Flush();
+                return new EmptyResult();
+            });
+        }
         #endregion
 
         #region Misc - Nightly run

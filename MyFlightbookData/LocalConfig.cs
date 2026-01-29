@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,6 +16,11 @@ namespace MyFlightbook
     public static class LocalConfig
     {
         static readonly private Dictionary<string, string> dictConfig = new Dictionary<string, string>();
+
+        public static void Flush()
+        {
+            dictConfig.Clear();
+        }
 
         public static string SettingForKey(string szKey)
         {

@@ -26,17 +26,17 @@ namespace MyFlightbook.Web
             // Dependency Injection
             Geography.Geography.Init();
             DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
-            ShuntState.Init(ConfigurationManager.AppSettings[ShuntState.keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0, ConfigurationManager.AppSettings[ShuntState.keyShuntMsg]);
+            ShuntState.Init(LocalConfig.SettingForKey(ShuntState.keyShuntState).CompareOrdinalIgnoreCase("Shunted") == 0, LocalConfig.SettingForKey(ShuntState.keyShuntMsg));
             util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());
             Branding.InitBrands(ConcreteBrand.KnownBrands, MFBConstants.BaseStylesheet);
 
-            MFBImageInfo.SetStorage(ConfigurationManager.AppSettings["UseImageDB"].CompareCurrentCultureIgnoreCase("yes") == 0,
+            MFBImageInfo.SetStorage(LocalConfig.SettingForKey("UseImageDB").CompareCurrentCultureIgnoreCase("yes") == 0,
                 new Dictionary<MFBImageInfoBase.ImageClass, string>() {
-                    { MFBImageInfoBase.ImageClass.Aircraft, ConfigurationManager.AppSettings["AircraftPixDir"].ToAbsolute() },
-                    { MFBImageInfoBase.ImageClass.Endorsement, ConfigurationManager.AppSettings["EndorsementsPixDir"].ToAbsolute() },
-                    { MFBImageInfoBase.ImageClass.OfflineEndorsement, ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToAbsolute() },
-                    { MFBImageInfoBase.ImageClass.Flight, ConfigurationManager.AppSettings["FlightsPixDir"].ToAbsolute() },
-                    { MFBImageInfoBase.ImageClass.BasicMed, ConfigurationManager.AppSettings["BasicMedDir"].ToAbsolute() }
+                    { MFBImageInfoBase.ImageClass.Aircraft, LocalConfig.SettingForKey("AircraftPixDir").ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.Endorsement, LocalConfig.SettingForKey("EndorsementsPixDir").ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.OfflineEndorsement, LocalConfig.SettingForKey("OfflineEndorsementsPixDir").ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.Flight, LocalConfig.SettingForKey("FlightsPixDir").ToAbsolute() },
+                    { MFBImageInfoBase.ImageClass.BasicMed, LocalConfig.SettingForKey("BasicMedDir").ToAbsolute() }
                 });
         }
 

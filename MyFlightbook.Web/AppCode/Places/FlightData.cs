@@ -1265,7 +1265,7 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         private static string FileDir
         {
-            get { return ConfigurationManager.AppSettings["TelemetryDir"].ToString(CultureInfo.InvariantCulture) + "/"; }
+            get { return LocalConfig.SettingForKey("TelemetryDir").ToString(CultureInfo.InvariantCulture) + "/"; }
         }
 
         /// <summary>
