@@ -1763,7 +1763,7 @@
     <Compile Include="AppCode\Images\PendingVideo.cs" />
     <Compile Include="AppCode\Images\ScribbleImage.cs" />
     <Compile Include="AppCode\Images\Video.cs" />
-    <Compile Include="AppCode\oAuthServices\AWSNotifications.cs" />
+    <Compile Include="AppCode\Images\AWSNotifications.cs" />
     <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
     <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
     <Compile Include="AppCode\oAuthServices\FlightCrewViewClient.cs" />
