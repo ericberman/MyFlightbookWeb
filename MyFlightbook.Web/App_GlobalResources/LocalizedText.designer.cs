@@ -5796,33 +5796,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please supply a URL reference to a video..
-        /// </summary>
-        internal static string videoErrNoURL {
-            get {
-                return ResourceManager.GetString("videoErrNoURL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Video source is not supported.
-        /// </summary>
-        internal static string videoErrUnsupportedFormat {
-            get {
-                return ResourceManager.GetString("videoErrUnsupportedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to YouTube URL format is not recognized..
-        /// </summary>
-        internal static string videoErrURLNotParseable {
-            get {
-                return ResourceManager.GetString("videoErrURLNotParseable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add links to videos for this flight.
         /// </summary>
         internal static string videoHeader {

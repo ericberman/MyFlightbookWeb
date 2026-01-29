@@ -810,15 +810,6 @@
   <data name="videoDisclaimer" xml:space="preserve">
     <value>You may only attach videos for which you have all the necessary rights to do so.</value>
   </data>
-  <data name="videoErrNoURL" xml:space="preserve">
-    <value>Please supply a URL reference to a video.</value>
-  </data>
-  <data name="videoErrUnsupportedFormat" xml:space="preserve">
-    <value>Video source is not supported</value>
-  </data>
-  <data name="videoErrURLNotParseable" xml:space="preserve">
-    <value>YouTube URL format is not recognized.</value>
-  </data>
   <data name="videoHeader" xml:space="preserve">
     <value>Add links to videos for this flight</value>
   </data>

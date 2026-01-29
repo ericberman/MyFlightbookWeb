@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 /******************************************************
@@ -280,6 +283,62 @@ namespace MyFlightbook.Geography
         public LatLong Antipode()
         {
             return new LatLong(-Latitude, Longitude > 0 ? Longitude - 180.0 : Longitude + 180.0);
+        }
+    }
+
+    /// <summary>
+    /// Interface for anything that can be mapped.
+    /// </summary>
+    public interface IMapMarker
+    {
+        double latitude { get; }
+        double longitude { get; }
+
+        LatLong latlong { get; }
+    }
+
+    /// <summary>
+    /// Concreate IMapMarker along with some helper utilities
+    /// </summary>
+    [Serializable]
+    public class MFBGMapLatLon : IMapMarker
+    {
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+
+        [JsonIgnore]
+        public LatLong latlong
+        {
+            get { return new LatLong(latitude, longitude); }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                latitude = value.Latitude;
+                longitude = value.Longitude;
+            }
+        }
+
+        public static IEnumerable<IMapMarker> FromLatlongs(IEnumerable<LatLong> rgll)
+        {
+            if (rgll == null || !rgll.Any())
+                return Array.Empty<IMapMarker>();
+
+            List<IMapMarker> lst = new List<IMapMarker>();
+            foreach (LatLong ll in rgll)
+                lst.Add(new MFBGMapLatLon() { latlong = ll });
+
+            return lst;
+        }
+
+        public static IEnumerable<double[]> AsArrayOfArrays(IEnumerable<IMapMarker> rg)
+        {
+            if (rg == null)
+                return null;
+            List<double[]> lst = new List<double[]>();
+            foreach (IMapMarker ll in rg)
+                lst.Add(new double[] { ll.latitude, ll.longitude });
+            return lst;
         }
     }
 }

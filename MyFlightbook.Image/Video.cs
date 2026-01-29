@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Image.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -55,7 +56,7 @@ namespace MyFlightbook.Image
         public VideoRef()
         {
             ID = idVideoUnknown;
-            FlightID = LogbookEntry.idFlightNone;
+            FlightID = -1;
             VideoReference = Comment = string.Empty;
             Source = VideoSource.Unknown;
 
@@ -136,19 +137,19 @@ namespace MyFlightbook.Image
                 try
                 {
                     if (String.IsNullOrEmpty(VideoReference))
-                        throw new InvalidOperationException(Resources.LocalizedText.videoErrNoURL);
+                        throw new InvalidOperationException(ImageResources.videoErrNoURL);
 
                     switch (Source)
                     {
                         case VideoSource.YouTube:
                             if (!IsValidYoutubeURL())
-                                throw new InvalidOperationException(Resources.LocalizedText.videoErrURLNotParseable);
+                                throw new InvalidOperationException(ImageResources.videoErrURLNotParseable);
                             break;
                         case VideoSource.Vimeo:
                             break;
                         case VideoSource.Unknown:
                         default:
-                            throw new InvalidOperationException(Resources.LocalizedText.videoErrUnsupportedFormat);
+                            throw new InvalidOperationException(ImageResources.videoErrUnsupportedFormat);
                     }
                 }
                 catch (InvalidOperationException ex)
@@ -166,7 +167,7 @@ namespace MyFlightbook.Image
             if (ID != idVideoUnknown)
                 return;
 
-            if (FlightID == LogbookEntry.idFlightNone)
+            if (FlightID <= 0)
                 throw new MyFlightbookException("Video: Can't commit - No flight specified");
 
             if (IsValid)

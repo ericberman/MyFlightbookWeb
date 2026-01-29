@@ -3,7 +3,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.CSV;
 using MyFlightbook.Currency;
 using MyFlightbook.Instruction;
-using MyFlightbook.Mapping;
+using MyFlightbook.Geography;
 using MyFlightbook.Payments;
 using MyFlightbook.Schedule;
 using MyFlightbook.Telemetry;

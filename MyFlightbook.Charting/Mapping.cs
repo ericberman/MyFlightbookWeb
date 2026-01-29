@@ -439,57 +439,6 @@ namespace MyFlightbook.Mapping
         }
     }
 
-    /// <summary>
-    /// Interface for anything that can be mapped.
-    /// </summary>
-    public interface IMapMarker
-    {
-        double latitude { get; }
-        double longitude { get; }
-
-        LatLong latlong { get; }
-    }
-
-    [Serializable]
-    public class MFBGMapLatLon : IMapMarker {
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-
-        [JsonIgnore]
-        public LatLong latlong { 
-            get { return new LatLong(latitude, longitude); }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
-                latitude = value.Latitude;
-                longitude = value.Longitude;
-            }
-        }
-
-        public static IEnumerable<IMapMarker> FromLatlongs(IEnumerable<LatLong> rgll)
-        {
-            if (rgll == null || !rgll.Any())
-                return Array.Empty<IMapMarker>();
-
-            List<IMapMarker> lst = new List<IMapMarker>();
-            foreach (LatLong ll in rgll)
-                lst.Add(new MFBGMapLatLon() { latlong = ll });
-
-            return lst;
-        }
-
-        public static IEnumerable<double[]> AsArrayOfArrays(IEnumerable<IMapMarker> rg)
-        {
-            if (rg == null)
-                return null;
-            List<double[]> lst = new List<double[]>();
-            foreach (IMapMarker ll in rg)
-                lst.Add(new double[] { ll.latitude, ll.longitude });
-            return lst;
-        }
-    }
-
     [Serializable]
     public class MFBAirportMarker : MFBGMapLatLon
     {

@@ -2,7 +2,6 @@
 using gma.Drawing.ImageInfo;
 using ImageMagick;
 using MyFlightbook.Geography;
-using MyFlightbook.Mapping;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

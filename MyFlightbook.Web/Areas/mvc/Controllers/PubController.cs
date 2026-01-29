@@ -2,15 +2,14 @@
 using MyFlightbook.Charting;
 using MyFlightbook.Clubs;
 using MyFlightbook.Encryptors;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
