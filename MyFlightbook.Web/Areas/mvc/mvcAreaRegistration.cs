@@ -62,6 +62,16 @@ namespace MyFlightbook.Web.Areas.mvc
                 "default.aspx",
                 new { controller = "Pub", action = "Index" }
             );
+            context.MapRoute(
+                "oldPlaypen",
+                "playpen/{0}",
+                new { controller = "Playpen", action = "Index" }
+            );
+            context.MapRoute(
+                "oldLogon",
+                "Logon/resetpass.aspx",
+                new { controller = "Auth", action = "ResetPass" }
+            );
             // Remaining MVC routes
             context.MapRoute(
                 "mvc_allmakes",

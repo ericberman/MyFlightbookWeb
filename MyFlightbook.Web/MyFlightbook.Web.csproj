@@ -1315,7 +1315,7 @@
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
     <Content Include="NavLinks.xml" />
-    <Content Include="Private\SetupNotes.txt" />
+    <Content Include="Support\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
     <Content Include="Public\AndroidImages\Android3.png" />
@@ -1584,7 +1584,6 @@
     <Content Include="Areas\mvc\Views\Playpen\dutyPeriodAnalyzer.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\checklist.cshtml" />
     <Content Include="Areas\mvc\Views\Playpen\_checklistContainerRow.cshtml" />
-    <Content Include="PlayPen\Web.config" />
     <Content Include="Areas\mvc\Views\oAuth\leonmanage.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\contact.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\homemini.cshtml" />
@@ -1951,13 +1950,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Content.en\Email\Web.config" />
-    <Content Include="Logon\Web.config" />
     <Content Include="Member\Web.Config" />
     <Content Include="app.config" />
     <Content Include="appsettings.config" />
     <Content Include="App_Data\debug.config" />
     <Content Include="App_Data\email.config" />
-    <Content Include="Private\Web.Config" />
     <Content Include="Public\CSS\Web.config" />
     <Content Include="Public\Fonts\open-sans.bold.ttf" />
     <Content Include="Public\Fonts\open-sans.regular.ttf" />
