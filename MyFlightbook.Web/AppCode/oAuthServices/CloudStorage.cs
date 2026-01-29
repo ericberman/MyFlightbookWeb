@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
 using Newtonsoft.Json;
@@ -1709,6 +1710,39 @@ namespace MyFlightbook.CloudStorage
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Process the result from the google photo picker, producing pending images
+        /// </summary>
+        /// <param name="pf">The user profile for whom to import</param>
+        /// <param name="szJSONResponse">A JSON string representing a GPickerMediaResponse</param>
+        /// <param name="onGeoTag">lambda to call for geotagging, if needed.  Passes a timestamp annd returns a latitude longitude.</param>
+        /// <param name="onCreate">async lambda to call on creation.  Passes back the pending image and its session key for storage, if needed in the session</param>
+        /// <returns>true if no errors were encountered</returns>
+        public async static Task<bool> ProcessGooglePhotos(Profile pf, string szJSONResponse, Func<DateTime?, LatLong> onGeoTag, Func<MFBPendingImage, string, Task<MFBImageInfo>> onCreate)
+        {
+            string accessToken = new GooglePhoto(pf).AuthState.AccessToken;
+            if (String.IsNullOrEmpty(accessToken))
+                throw new UnauthorizedAccessException("Attempt to fetch Google photo without an access token!");
+
+            GPickerMediaResponse gmr = JsonConvert.DeserializeObject<GPickerMediaResponse>(szJSONResponse);
+
+            int i = 0;
+            foreach (GPickerMediaItem item in gmr.mediaItems)
+            {
+                string szKey = String.Format(CultureInfo.InvariantCulture, "googlePhoto_{0}_{1}", i++, DateTime.Now.Ticks);
+
+                MFBPostedFile file = await item?.ImportImage(accessToken) ?? throw new InvalidOperationException("Unable to import image");
+                MFBPendingImage pi = new MFBPendingImage(file, szKey);
+
+                // Geo tag, if  possible
+                pi.Location = onGeoTag?.Invoke(item.createTime) ?? pi.Location;
+
+                _ = await onCreate?.Invoke(pi, szKey);
+            }
+
+            return true;
         }
     }
     #endregion

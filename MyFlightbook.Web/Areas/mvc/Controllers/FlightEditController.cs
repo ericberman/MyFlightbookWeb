@@ -1,4 +1,6 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook.CloudStorage;
+using MyFlightbook.Geography;
+using MyFlightbook.Image;
 using MyFlightbook.Lint;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -212,14 +214,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!le.IsNewFlight && String.IsNullOrEmpty(le.FlightData))
                     le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
 
-                await MFBPendingImage.ProcessSelectedPhotosResult(User.Identity.Name, Request["gmrJSON"], le.FlightData, MFBImageInfoBase.ImageClass.Flight, le.IsNewFlight ? null : le.FlightID.ToString(CultureInfo.InvariantCulture), (pi, szKey) =>
-                {
-                    Session[szKey] = pi;
-                });
-                le.PopulateImages();
-
                 Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);
                 Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+
+                await GooglePhoto.ProcessGooglePhotos(pfViewer, Request["gmrJSON"],
+                    (timestamp) => { return le.GeoTagForTimestamp(timestamp); },
+                    async (pi, szKey) =>
+                    {
+                        if (le.IsNewFlight)
+                            Session[szKey] = pi;
+                        else
+                            _ = await pi.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
+                        return pi;
+                    }
+                    );
+
+                le.PopulateImages();
 
                 return FlightEditorBody(pfTarget, pfViewer, le, le as PendingFlight);
             });

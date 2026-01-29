@@ -1,7 +1,4 @@
-﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Geography;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -150,74 +147,7 @@ namespace MyFlightbook.Image
         {
             Comment = szText;
         }
-
-        /// <summary>
-        /// Pull in an image from google photos, usin the user's accesstoken, and optionally geo-tagging it
-        /// </summary>
-        /// <param name="flightData">Optional data for the flight for geotagging</param>
-        /// <param name="accessToken">Required - the user's access token</param>
-        /// <param name="item">The item to import.</param>
-        /// <param name="key">A unique key for the image</param>
-        /// <returns>The imported image as a pending image</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static async Task<MFBPendingImage> FromGooglePhoto(string flightData, string accessToken, GPickerMediaItem item, string key)
-        {
-            MFBPostedFile pf = await item?.ImportImage(accessToken) ?? throw new InvalidOperationException("Unable to import image");
-            MFBPendingImage pi = new MFBPendingImage(pf, key);
-
-            // Geo tag, if  possible
-            if (item.createTime.HasValue && !String.IsNullOrEmpty(flightData))
-            {
-                using (Telemetry.FlightData fd = new Telemetry.FlightData())
-                {
-                    if (fd.ParseFlightData(flightData) && fd.HasDateTime && fd.HasLatLongInfo)
-                        pi.Location = Position.Interpolate(item.createTime.Value, fd.GetTrajectory());
-                }
-            }
-
-            return pi;
-        }
-
-        /// <summary>
-        /// Process the result from the google photo picker, producing pending images
-        /// </summary>
-        /// <param name="szJSONResponse">A JSON string representing a GPickerMediaResponse</param>
-        /// <param name="flightData">Any flight data (for geotagging)</param>
-        /// <param name="userName">user for whom this is being called</param>
-        /// <param name="ic">The image class to commit the image</param>
-        /// <param name="imageKey">The image key to use to commit the pending image.  If null or empty, no commit will be attempted</param>
-        /// <param name="onNoSave">An action called on each pending image that was NOT saved (e.g., to store in a session or cache or database)</param>
-        /// <returns>true if no errors were encountered</returns>
-        public static async Task<bool> ProcessSelectedPhotosResult(string userName, string szJSONResponse, string flightData, ImageClass ic, string imageKey, Action<MFBPendingImage, string> onNoSave)
-        {
-            if (String.IsNullOrEmpty(szJSONResponse))
-                return false;
-            if (String.IsNullOrEmpty(userName))
-                throw new ArgumentNullException(nameof(userName));
-            if (onNoSave == null)
-                throw new ArgumentNullException(nameof(onNoSave));
-
-            Profile pf = Profile.GetUser(userName);
-            string accessToken = new GooglePhoto(pf).AuthState.AccessToken;
-            if (String.IsNullOrEmpty(accessToken))
-                throw new UnauthorizedAccessException("Attempt to fetch Google photo without an access token!");
-
-            GPickerMediaResponse gmr = JsonConvert.DeserializeObject<GPickerMediaResponse>(szJSONResponse);
-
-            int i = 0;
-            foreach (GPickerMediaItem item in gmr.mediaItems)
-            {
-                string szKey = String.Format(CultureInfo.InvariantCulture, "googlePhoto_{0}_{1}", i++, DateTime.Now.Ticks);
-                MFBPendingImage pi = await FromGooglePhoto(flightData, accessToken, item, szKey);
-                if (!String.IsNullOrEmpty(imageKey))
-                    _ = await pi.Commit(ic, imageKey);
-                else
-                    onNoSave(pi, szKey);
-            }
-
-            return true;
-        }
-
+                
         /// <summary>
         /// Processes the uploaded file for the specified imageclass and key.  Commits if the key is non-empty
         /// </summary>

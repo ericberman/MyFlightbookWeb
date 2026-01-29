@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Encryptors;
 using MyFlightbook.FlightStatistics;
+using MyFlightbook.Geography;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -2645,6 +2646,26 @@ WHERE f1.username = ?uName ");
                 tr.RecalcGoogleData(fd);
                 tr.Commit();
             }
+        }
+        #endregion
+
+        #region Geotagging
+        /// <summary>
+        /// Estimates the latitude/longitude at a specified point in time by interpolating the flight data.
+        /// </summary>
+        /// <param name="timestamp">Requested timestamp</param>
+        /// <returns>The latitude/longitude at that time, if it can be determined; else null</returns>
+        public LatLong GeoTagForTimestamp(DateTime? timestamp)
+        {
+            if (timestamp != null && !String.IsNullOrEmpty(this.FlightData))
+            {
+                using (FlightData fd = new FlightData())
+                {
+                    if (fd.ParseFlightData(this.FlightData) && fd.HasDateTime && fd.HasLatLongInfo)
+                        return Position.Interpolate(timestamp.Value, fd.GetTrajectory());
+                }
+            }
+            return null;
         }
         #endregion
         #endregion
