@@ -339,7 +339,7 @@ namespace MyFlightbook.Image
                     throw;
                 }
 
-                var job = mcClient.CreateJob(new CreateJobRequest()
+                var job = await mcClient.CreateJobAsync(new CreateJobRequest()
                 {
                     Role = LocalConfig.SettingForKey("AWSMediaConvertRoleArn"),
                     UserMetadata = new Dictionary<string, string> { { "Debug", (szBucket.CompareCurrentCultureIgnoreCase(AWSConfiguration.S3BucketNameDebug) == 0).ToString() } },
