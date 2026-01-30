@@ -1052,7 +1052,7 @@ namespace MyFlightbook.Printing
 
             string szArgs = pdfOptions.WKHtmlToPDFArguments(szOutputHtm, szOutputPDF);
 
-            const string szWkTextApp = "c:\\program files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe";  // TODO: this needs to be in a config file
+            string szWkTextApp = LocalConfig.SettingForKey("wkhtmlpath");
 
             using (Process p = new Process())
             {
