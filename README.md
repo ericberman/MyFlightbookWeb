@@ -110,6 +110,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * UserAccessEncryptorKey - Used to share flights
  * UserPasswordHashKey - Hash key used when storing hashed passwords in the database
  * WebAccessEncryptorKey - key to encrypt/decrypt authorizations on the web service
+ * wkhtmlpath - file system full ppatname to where wkhtmltopdf.exe
 
 
 The following are for directories where images/pdfs/videos are stored:
