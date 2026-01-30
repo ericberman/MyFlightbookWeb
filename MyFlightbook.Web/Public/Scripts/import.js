@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -14,12 +14,10 @@
 */
 class aircraftImportEditor {
     constructor(aircraftImportEndpoint, options) {
-        this.aircraftParseContext = null;
         this.dictModelMapping = null;
 
         this.renderSummary = function () {
             var params = new Object();
-            params.contextJSON = this.aircraftParseContext;
             var d = JSON.stringify(params);
             $.ajax({
                 url: aircraftImportEndpoint + "/ImportSummary",
@@ -33,7 +31,6 @@ class aircraftImportEditor {
 
         this.renderUnmatched = function () {
             var params = new Object();
-            params.contextJSON = this.aircraftParseContext;
             var d = JSON.stringify(params);
             $.ajax({
                 url: aircraftImportEndpoint + "/ReviewNewAircraft",
@@ -67,13 +64,11 @@ class aircraftImportEditor {
             var prg = $("#" + progress).dialog({ modal: true, resizable: false, draggable: false });
             $(".ui-dialog-titlebar").hide();
             var params = new Object();
-            params.contextJSON = this.aircraftParseContext;
-            var pthis = this;
             var d = JSON.stringify(params);
             $.ajax({
                 url: aircraftImportEndpoint + "/AddAllExisting",
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                error: function (xhr) { window.alert(xhr.responseText); },
                 complete: function () { prg.dialog('close'); },
                 success: function (response) {
 
@@ -92,7 +87,7 @@ class aircraftImportEditor {
             $.ajax({
                 url: aircraftImportEndpoint + "/AddNewAircraft",
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
-                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                error: function (xhr) { window.alert(xhr.responseText); },
                 success: function (response) {
                     pthis.dictModelMapping = response;
                     onSuccess(sender);

@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,6 +69,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Import Aircraft
+        private const string keyAircraftImportParseContext = "keyAircraftImportParseContext";
+        private AircraftImportParseContext CurrentAircraftImportParseContext()
+        {
+            return (AircraftImportParseContext) Session[keyAircraftImportParseContext] ?? throw new InvalidOperationException(Resources.LogbookEntry.ImportSessionExpired);
+        }
+
         [Authorize]
         [HttpPost]
         public ActionResult UploadAircraftCSV()
@@ -90,36 +96,31 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                     aipc.ProcessParseResultsForUser(User.Identity.Name);
 
-                    // Issue #1311 This can be large - use overridden JSON result; it will be treated as an opaque string at the client.
-                    return Content(JsonConvert.SerializeObject(aipc));
+                    Session[keyAircraftImportParseContext] = aipc;
+                    // Issue #1311 This can be large to serialize, so we keep it up here in the Session object and just pass the key; it will be treated as an opaque string at the client.
+                    return new EmptyResult();
                 }
             });
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult ImportSummary(string contextJSON)
+        public ActionResult ImportSummary()
         {
             return SafeOp(() =>
             {
-                if (contextJSON == null)
-                    throw new ArgumentNullException(nameof(contextJSON));
-
-                ViewBag.context = JsonConvert.DeserializeObject<AircraftImportParseContext>(contextJSON);
+                ViewBag.context = CurrentAircraftImportParseContext();
                 return PartialView("_aircraftImportReviewExisting");
             });
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult ReviewNewAircraft(string contextJSON)
+        public ActionResult ReviewNewAircraft()
         {
             return SafeOp(() =>
             {
-                if (contextJSON == null)
-                    throw new ArgumentNullException(nameof(contextJSON));
-
-                return AircraftReview(JsonConvert.DeserializeObject<AircraftImportParseContext>(contextJSON).AllUnmatched);
+                return AircraftReview(CurrentAircraftImportParseContext().AllUnmatched);
             });
         }
 
@@ -133,14 +134,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult AddAllExisting(string contextJSON)
+        public ActionResult AddAllExisting()
         {
             return SafeOp(() =>
             {
-                if (contextJSON == null)
-                    throw new ArgumentNullException(nameof(contextJSON));
-
-                AircraftImportParseContext aipc = JsonConvert.DeserializeObject<AircraftImportParseContext>(contextJSON);
+                AircraftImportParseContext aipc = CurrentAircraftImportParseContext();
                 aipc.AddAllExistingAircraftForUser(User.Identity.Name);
                 return new EmptyResult();
             });
@@ -228,7 +226,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private object GetImportResult(string key)
         {
             Dictionary<string, object> d = (Dictionary<string, object>)Session[keyResults];
-            return (d?.TryGetValue(key, out object o) ?? false) ? o : throw new InvalidOperationException(Resources.LogbookEntry.ImportFlightSessionExpired);
+            return (d?.TryGetValue(key, out object o) ?? false) ? o : throw new InvalidOperationException(Resources.LogbookEntry.ImportSessionExpired);
         }
 
         private void ClearImportResult()

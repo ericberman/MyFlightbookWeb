@@ -1978,7 +1978,7 @@ Proceed with import?</value>
   <data name="StartingTotalsPreviewLegend" xml:space="preserve">
     <value>Totals that will change based on your selection are highlighted below</value>
   </data>
-  <data name="ImportFlightSessionExpired" xml:space="preserve">
+  <data name="ImportSessionExpired" xml:space="preserve">
     <value>Your import session has expired; please reload the page and upload a file again.</value>
   </data>
   <data name="ImportIconErrorFlight" xml:space="preserve">

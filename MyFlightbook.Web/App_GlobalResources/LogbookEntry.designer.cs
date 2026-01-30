@@ -2126,15 +2126,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your import session has expired; please reload the page and upload a file again..
-        /// </summary>
-        internal static string ImportFlightSessionExpired {
-            get {
-                return ResourceManager.GetString("ImportFlightSessionExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Flights.
         /// </summary>
         internal static string ImportFlightsPageTitle {
@@ -2309,6 +2300,15 @@ namespace Resources {
         internal static string ImportRowUpdated {
             get {
                 return ResourceManager.GetString("ImportRowUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your import session has expired; please reload the page and upload a file again..
+        /// </summary>
+        internal static string ImportSessionExpired {
+            get {
+                return ResourceManager.GetString("ImportSessionExpired", resourceCulture);
             }
         }
         
