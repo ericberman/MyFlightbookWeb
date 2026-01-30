@@ -1315,7 +1315,6 @@
     <Content Include="Public\tmap\src\world-states.svg" />
     <Content Include="Public\tmap\stylesheets\demo.css" />
     <Content Include="NavLinks.xml" />
-    <Content Include="Support\SetupNotes.txt" />
     <Content Include="Public\AndroidImages\Android1.png" />
     <Content Include="Public\AndroidImages\Android2.png" />
     <Content Include="Public\AndroidImages\Android3.png" />
@@ -1659,8 +1658,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Support\2024-06-14 - AddFlysto.sql" />
-    <Content Include="Support\2025-07-28 - query to sharekey.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
