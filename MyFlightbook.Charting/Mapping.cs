@@ -86,6 +86,11 @@ namespace MyFlightbook.Mapping
         /// Normally, the airportlist is normalized; set this to "true" to use the raw (including duplicate) list.
         /// </summary>
         public Boolean AllowDupeMarkers { get; set; }
+
+        /// <summary>
+        /// Returns the API key for google maps
+        /// </summary>
+        public static string MapsKey { get { return LocalConfig.SettingForKey("GoogleMapsKey"); } }
         #endregion
 
         #region Static Map

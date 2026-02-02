@@ -7,7 +7,6 @@ using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Printing;
-using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -2675,10 +2674,13 @@ WHERE f1.username = ?uName ");
     /// Main Logbook entry class, first level that is concrete. 
     /// </summary>
     [Serializable]
-    public class LogbookEntry : LogbookEntryBase, IPostable
+    public class LogbookEntry : LogbookEntryBase
     {
         #region IPostable
-        [Newtonsoft.Json.JsonIgnore]
+        /// <summary>
+        /// The comment for the post
+        /// </summary>
+        [JsonIgnore]
         public string SocialMediaComment
         {
             get
@@ -2689,16 +2691,29 @@ WHERE f1.username = ?uName ");
             }
         }
 
-        public Uri SocialMediaItemUri(string szHost = null)
+        /// <summary>
+        /// The Uri, if any, for the post.  MUST BE FULLY QUALIFIED ABSOLUTE URI; can use current branding, if needed.
+        /// </summary>
+        public Uri SocialMediaItemUri()
         {
-            return SocialMediaLinks.ShareFlightUri(this, szHost);
+            return String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}?v={1}", FlightID, (new Random()).Next(10000)).ToAbsoluteBrandedUri();
         }
 
+        /// <summary>
+        /// Returns a Uri to send a flight (i.e., to another pilot)
+        /// </summary>
+        /// <param name="szEncodedShareKey">Encoded key that can be decrypted to share the flight</param>
+        /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
+        /// <param name="szTarget">Target, if provided; otherwises, uses LogbookNew</param>
+        /// <returns>The Uri to the flight for adding</returns>
         public Uri SendFlightUri(string szHost = null, string szTarget = null)
         {
-            return SocialMediaLinks.SendFlightUri(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User)), szHost, szTarget);
+            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/mvc/flightedit/flight", HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", FlightID, User)))).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
         }
 
+        /// <summary>
+        /// The image, if any, for the post.
+        /// </summary>
         public MFBImageInfo SocialMediaImage(string szHost = null)
         {
             PopulateImages();
@@ -2716,7 +2731,10 @@ WHERE f1.username = ?uName ");
             return null;
         }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
+        /// <summary>
+        /// Indicates if the item can be posted.
+        /// </summary>
         public bool CanPost
         {
             get { return (fIsPublic || Route.Length > 0); }

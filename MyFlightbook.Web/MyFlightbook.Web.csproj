@@ -1754,7 +1754,6 @@
     <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
     <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />
     <Compile Include="AppCode\oAuthServices\RosterBusterClient.cs" />
-    <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
     <Compile Include="AppCode\OAuthWebService.cs" />
     <Compile Include="AppCode\Places\FlightData.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
