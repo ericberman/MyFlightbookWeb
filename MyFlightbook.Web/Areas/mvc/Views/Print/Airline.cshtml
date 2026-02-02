@@ -84,60 +84,64 @@ lpp.Flights);
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@pl.ModelDisplay(led) @led.CatClassDisplay</td>
-                    <td>@led.TailNumOrSimDisplay</td>
-                    <td>@led.PICName</td>
-                    <td>@led.Departure</td>
-                    <td>@Html.Raw(led.DepartureTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
-                    <td>@Html.Raw(led.ArrivalTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
-                    <td>@led.Destination</td>
-                    <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</td>
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMultiPilotTime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@pl.ModelDisplay(led) @led.CatClassDisplay</div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                    <td><div class="fhd">@led.PICName</div></td>
+                    <td><div class="fhd">@led.Departure</div></td>
+                    <td><div class="fhd">@Html.Raw(led.DepartureTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</div></td>
+                    <td><div class="fhd">@Html.Raw(led.ArrivalTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</div></td>
+                    <td><div class="fhd">@led.Destination</div></td>
+                    <td><div class="fhd">@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropFlightNumber)</div></td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropMultiPilotTime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
 
-                    <td class="numericColumn">@led.DayTakeoffs.FormatInt()</td>
-                    <td class="numericColumn">@led.NightTakeoffs.FormatInt()</td>
-                    <td class="numericColumn">@led.NetDayLandings.FormatInt()</td>
-                    <td class="numericColumn">@led.NetNightLandings.FormatInt()</td>
+                    <td class="numericColumn"><div class="fhd">@led.DayTakeoffs.FormatInt()</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.NightTakeoffs.FormatInt()</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.NetDayLandings.FormatInt()</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.NetNightLandings.FormatInt()</div></td>
 
-                    <td class="numericColumn">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.SoloTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn"><div class="fhd">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.SoloTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
-                    <td class="numericColumn">@led.Approaches.FormatInt()</td>
+                    <td class="numericColumn"><div class="fhd">@led.Approaches.FormatInt()</div></td>
                     <td class="numericColumn">
-                        @if (led.fHoldingProcedures)
-                        {
-                            <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
-                        }
+                        <div class="fhd">
+                            @if (led.fHoldingProcedures)
+                            {
+                                <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
+                            }
+                        </div>
                     </td>
 
-                    <td class="numericColumn">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn"><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
-                    <td class="numericColumn">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.FlightEngineerTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.PICUSTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.CoPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.ReliefPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn"><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.FlightEngineerTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.PICUSTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.CoPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.ReliefPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     <td>
-                        <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
-                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        <div>
-                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                            {
-                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                            }
+                        <div class="fhd">
+                            <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
+                            <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            <div>
+                                @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                                {
+                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                                }
+                            </div>
                         </div>
                     </td>
                 </tr>

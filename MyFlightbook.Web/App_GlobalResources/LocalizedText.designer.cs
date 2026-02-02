@@ -4131,9 +4131,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;p&gt;This is an approximate number of flights per page because the height of each row cannot be determined with accuracy before rendering of the entire page.&lt;/p&gt;
-        ///&lt;p&gt;The system does try to adjust the row height based on the data a given flight contains - more data is assumed to require more height, reducing the number of flights on the containing page,
-        ///    but this is just an approximation.  Things that contribute to &quot;more height&quot; include: long comments, lots of properties, images (if images are included in  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  &lt;p&gt;This is an approximate number of flights per page because the height of each row cannot be determined with accuracy before rendering of the entire page.  By default, the row height will grow or shrink to fit its data (though you can override this).&lt;/p&gt;
+        ///&lt;p&gt;In this case, the system does try to adjust the row height based on the data a given flight contains - more data is assumed to require more height, reducing the number of flights on the containing page,
+        ///    but this is just an approximation.  Things t [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PrintOptionsEntriesPerPageDescription {
             get {
@@ -4484,6 +4484,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pagination.
+        /// </summary>
+        internal static string PrintViewPagination {
+            get {
+                return ResourceManager.GetString("PrintViewPagination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can adjust pagination manually below.  Click a flight to designate it to be the first flight on a new page; you will see a red top border to indicate that this has been so designated (the red will not print or show in the PDF).  Click it again to remove the designation and the flight will resume its position in regular pagination..
         /// </summary>
         internal static string PrintViewPaginationNote {
@@ -4592,6 +4601,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatic (fit to data).
+        /// </summary>
+        internal static string PrintViewRowHeightAutomatic {
+            get {
+                return ResourceManager.GetString("PrintViewRowHeightAutomatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Row height (lines of text):.
+        /// </summary>
+        internal static string PrintViewRowHeightPrompt {
+            get {
+                return ResourceManager.GetString("PrintViewRowHeightPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flights matching the following criteria:.
         /// </summary>
         internal static string PrintViewSelectedFlightsLabel {
@@ -4655,6 +4682,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group subtotals by:.
+        /// </summary>
+        internal static string PrintViewSubTotalGroupPrompt {
+            get {
+                return ResourceManager.GetString("PrintViewSubTotalGroupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string PrintViewSubtotalNone {
@@ -4664,11 +4700,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group subtotals by:.
+        ///   Looks up a localized string similar to Subtotals.
         /// </summary>
-        internal static string PrintViewSubTotalPrompt {
+        internal static string PrintViewSubtotals {
             get {
-                return ResourceManager.GetString("PrintViewSubTotalPrompt", resourceCulture);
+                return ResourceManager.GetString("PrintViewSubtotals", resourceCulture);
             }
         }
         

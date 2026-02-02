@@ -55,10 +55,10 @@
             {
                 string directColor = pl.ColorForFlight(led);
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)">
-                    <td class="row1" @Html.Raw(directColor)><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)<span class="b">@led.Date.ToShortDateString()</span></td>
-                    <td class="row1" @Html.Raw(directColor)>@pl.ModelDisplay(led)</td>
-                    <td class="row1" @Html.Raw(directColor)>@led.CatClassDisplay</td>
-                    <td class="row1" @Html.Raw(directColor)>@led.TailNumOrSimDisplay</td>
+                    <td class="row1" @Html.Raw(directColor)><div><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)<span class="b">@led.Date.ToShortDateString()</span></div></td>
+                    <td class="row1" @Html.Raw(directColor)><div>@pl.ModelDisplay(led)</div></td>
+                    <td class="row1" @Html.Raw(directColor)><div>@led.CatClassDisplay</div></td>
+                    <td class="row1" @Html.Raw(directColor)><div>@led.TailNumOrSimDisplay</div></td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
                         <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
@@ -91,33 +91,35 @@
                     </td>
                 </tr>
                 <tr class="bordered">
-                    <td colspan="@colCount">                        
-                        <span>@led.Route</span>
-                        <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
-                        @if (pl.CurrentUser.DisplayTimesByDefault)
-                        {
-                            <div>@led.EngineTimeDisplay</div>
-                            <div>@led.FlightTimeDisplay</div>
-                            <div>@led.HobbsDisplay</div>
-                        }
-                        <div class="wsprel">@led.CustPropertyDisplay.ToString()</div>
-                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                        {
-                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                        }
-                        @if (pl.Options.IncludeImages)
-                        {
-                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
-                            il.Refresh(false, null, false);
-                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                    <td colspan="@colCount"> 
+                        <div class="fhd">
+                            <span>@led.Route</span>
+                            <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                            @if (pl.CurrentUser.DisplayTimesByDefault)
                             {
-                                MFBImageInfo img = il.ImageArray[i];
-                                <div class="ilItem">
-                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
-                                    <div>@img.Comment</div>
-                                </div>
+                                <div>@led.EngineTimeDisplay</div>
+                                <div>@led.FlightTimeDisplay</div>
+                                <div>@led.HobbsDisplay</div>
                             }
-                        }
+                            <div class="wsprel">@led.CustPropertyDisplay.ToString()</div>
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                            }
+                            @if (pl.Options.IncludeImages)
+                            {
+                                ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                                il.Refresh(false, null, false);
+                                for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                                {
+                                    MFBImageInfo img = il.ImageArray[i];
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </td>
                 </tr>
                 <tr class="spacerMargin">

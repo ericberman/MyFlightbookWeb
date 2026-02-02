@@ -91,7 +91,7 @@
             <option value="Airline" @((po.Layout == PrintLayoutType.Airline).ToSelected())>@Resources.LogbookEntry.PrintFormatAirline</option>
             <option value="HongKong" @((po.Layout == PrintLayoutType.HongKong).ToSelected())>@Resources.LogbookEntry.PrintFormatHongKong</option>
         </select>
-        <div class="@(pl.SupportsImages ? string.Empty : "dn")" ><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poImages" @((po.IncludeImages && pl.SupportsImages).ToChecked()) />@Resources.LocalizedText.PrintViewIncludeImages</label></div>
+        <div class="@(pl.SupportsImages ? string.Empty : "dn")"><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poImages" @((po.IncludeImages && pl.SupportsImages).ToChecked()) />@Resources.LocalizedText.PrintViewIncludeImages</label></div>
         <div><label><input type="checkbox" onchange="javascript:@(onChange)();" name="poSigs" @po.IncludeSignatures.ToChecked() />@Resources.LocalizedText.PrintViewIncludeSignatures</label></div>
         <div>
             <label><input type="checkbox" onchange="javascript:@(onChange)();" name="poColors" @po.UseFlightColoring.ToChecked() />@Resources.LocalizedText.PrintViewFlightColoring</label>
@@ -103,36 +103,54 @@
             <label style="font-size: 11pt;"><input type="radio" value="Large" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Large).ToChecked())>@Resources.LocalizedText.PrintFontSizeLarge</label>
         </div>
     </div>
+    <h3 class="b">@Resources.LocalizedText.PrintViewPagination</h3>
+    <div class="fineprint"><span class="b">@Resources.LocalizedText.Note</span> @Resources.LocalizedText.PrintViewPaginationNote</div>
+    <table cellpadding="4">
+        <tr>
+            <td>@Resources.LocalizedText.PrintViewFlightsPerPage@{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); }</td>
+            <td>
+                <select name="poFlightsPerPage" onchange="javascript:@(onChange)();">
+                    <option value="-1" @((po.FlightsPerPage <= 0).ToSelected())>@Resources.LocalizedText.PrintViewAsFit</option>
+                    @for (int i = 3; i <= 40; i++)
+                    {
+                        <option value="@i.ToString(CultureInfo.InvariantCulture)" @((i == po.FlightsPerPage).ToSelected())>@i.ToString(CultureInfo.CurrentCulture)</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>@Resources.LocalizedText.PrintViewRowHeightPrompt</td>
+            <td>
+                <select name="poRowHeight" onchange="javascript:@(onChange)();">
+                    <option value="0" @((po.FixedRowHeight == 0).ToSelected())>@Resources.LocalizedText.PrintViewRowHeightAutomatic</option>
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <option value="@i.ToString(CultureInfo.InvariantCulture)" @((po.FixedRowHeight == i).ToSelected())>@i.ToString(CultureInfo.CurrentCulture)</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)">
+            <td>@Resources.LocalizedText.PrintViewBreakPeriodPrompt</td>
+            <td>
+                <label><input type="radio" onchange="javascript:@(onChange)();" value="None" name="poForcedBreak" @((!po.BreakAtMonthBoundary && !po.BreakAtYearBoundary).ToChecked()) />@Resources.LocalizedText.PrintViewBreakNone</label>
+                <label><input type="radio" onchange="javascript:@(onChange)();" value="Month" name="poForcedBreak" @po.BreakAtMonthBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakMonth</label>
+                <label><input type="radio" onchange="javascript:@(onChange)();" value="Year" name="poForcedBreak" @po.BreakAtYearBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakYear</label>
+            </td>
+        </tr>
+    </table>
+    <div id="flightsPerPageTip" class="callout dn">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
+    <h3 class="b">@Resources.LocalizedText.PrintViewSubtotals</h3>
+    <div><label><input type="checkbox" onchange="javascript: @(onChange)();" name="poIncludeColumn" @po.IncludeColumnTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludeColumnTotals</label></div>
+    <div class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)"><label><input type="checkbox" @(po.IncludeColumnTotals ? string.Empty : "disabled") onchange="javascript:@(onChange)();" name="poIncludePreviousPage" @po.IncludePullForwardTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludePreviousPageTotals</label></div>
     <div>
-        <div>
-            <h3 class="dib b">@Resources.LocalizedText.PrintViewFlightsPerPage</h3>
-            @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); }
-        </div>
-        <div id="flightsPerPageTip" class="callout dn">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
-        <select name="poFlightsPerPage" onchange="javascript:@(onChange)();">
-            <option value="-1" @((po.FlightsPerPage <= 0).ToSelected())>@Resources.LocalizedText.PrintViewAsFit</option>
-            @for (int i = 3; i <= 40; i++)
-            {
-                <option value="@i.ToString(CultureInfo.InvariantCulture)" @((i == po.FlightsPerPage).ToSelected())>@i.ToString(CultureInfo.CurrentCulture)</option>
-            }
+        @Resources.LocalizedText.PrintViewSubTotalGroupPrompt
+        <select name="poSubtotalsRules" onchange="javascript:@(onChange)();">
+            <option value="@PrintingOptions.SubtotalStripe.None" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.None).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalNone</option>
+            <option value="@PrintingOptions.SubtotalStripe.CatClass" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClass).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalsByCategoryClass</option>
+            <option value="@PrintingOptions.SubtotalStripe.CatClassTurbine" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClassTurbine).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalTurbine</option>
+            <option value="@PrintingOptions.SubtotalStripe.EASA" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.EASA).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalEASA</option>
         </select>
-        <div><label><input type="checkbox" onchange="javascript: @(onChange)();" name="poIncludeColumn" @po.IncludeColumnTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludeColumnTotals</label></div>
-        <div class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)"><label><input type="checkbox" @(po.IncludeColumnTotals ? string.Empty : "disabled") onchange="javascript:@(onChange)();" name="poIncludePreviousPage" @po.IncludePullForwardTotals.ToChecked() />@Resources.LocalizedText.PrintViewIncludePreviousPageTotals</label></div>
-        <div>@Resources.LocalizedText.PrintViewSubTotalPrompt
-            <select name="poSubtotalsRules" onchange="javascript:@(onChange)();">
-                <option value="@PrintingOptions.SubtotalStripe.None" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.None).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalNone</option>
-                <option value="@PrintingOptions.SubtotalStripe.CatClass" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClass).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalsByCategoryClass</option>
-                <option value="@PrintingOptions.SubtotalStripe.CatClassTurbine" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.CatClassTurbine).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalTurbine</option>
-                <option value="@PrintingOptions.SubtotalStripe.EASA" @((po.SubtotalStripeRules == PrintingOptions.SubtotalStripe.EASA).ToSelected())>@Resources.LocalizedText.PrintViewSubtotalEASA</option>
-            </select>
-        </div>
-        <div class="@(po.FlightsPerPage <= 0 ? "dn" : string.Empty)">
-            @Resources.LocalizedText.PrintViewBreakPeriodPrompt
-            <label><input type="radio" onchange="javascript:@(onChange)();" value="None" name="poForcedBreak" @((!po.BreakAtMonthBoundary && !po.BreakAtYearBoundary).ToChecked()) />@Resources.LocalizedText.PrintViewBreakNone</label>
-            <label><input type="radio" onchange="javascript:@(onChange)();" value="Month" name="poForcedBreak" @po.BreakAtMonthBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakMonth</label>
-            <label><input type="radio" onchange="javascript:@(onChange)();" value="Year" name="poForcedBreak" @po.BreakAtYearBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakYear</label>
-        </div>
-        <div><br /><span class="b">@Resources.LocalizedText.Note</span> @Resources.LocalizedText.PrintViewPaginationNote</div>
     </div>
     <div>
         <h3>@Resources.LocalizedText.PrintViewModelDisplay</h3>

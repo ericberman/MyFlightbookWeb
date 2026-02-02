@@ -65,51 +65,53 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@pl.ModelDisplay(led)</td>
-                    <td>@led.TailNumOrSimDisplay</td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
 
-                    <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryKindOfFlightCode)</td>
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.MilitaryFirstPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@((led.SIC + led.CoPilotTime).FormatDecimal(pl.CurrentUser.UsesHHMM))</td>
-                    <td>@led.MilitaryACCommanderTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SpecialCrewTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.CarrierArrests.FormatInt()</td>
-                    <td>@led.CarrierTandG.FormatInt()</td>
-                    <td>@led.CarrierBolts.FormatInt()</td>
-                    <td>@led.FCLP.FormatInt()</td>
-                    <td class="numericColumn">@led.LandingDisplay</td>
-                    <td>@led.Catapults.FormatInt()</td>
-                    <td>@led.Approaches.FormatInt()</td>
+                    <td><div class="fhd">@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryKindOfFlightCode)</div></td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.MilitaryFirstPilotTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@((led.SIC + led.CoPilotTime).FormatDecimal(pl.CurrentUser.UsesHHMM))</div></td>
+                    <td><div class="fhd">@led.MilitaryACCommanderTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SpecialCrewTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.CarrierArrests.FormatInt()</div></td>
+                    <td><div class="fhd">@led.CarrierTandG.FormatInt()</div></td>
+                    <td><div class="fhd">@led.CarrierBolts.FormatInt()</div></td>
+                    <td><div class="fhd">@led.FCLP.FormatInt()</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.LandingDisplay</div></td>
+                    <td><div class="fhd">@led.Catapults.FormatInt()</div></td>
+                    <td><div class="fhd">@led.Approaches.FormatInt()</div></td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
                     <td>
-                        <div>@((led.Airports.Any() ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route) : String.Empty))</div>
-                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                        {
-                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                        }
-                        @if (pl.Options.IncludeImages)
-                        {
-                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
-                            il.Refresh(false, null, false);
-                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                        <div class="fhd">
+                            <div>@((led.Airports.Any() ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route) : String.Empty))</div>
+                            <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                             {
-                                MFBImageInfo img = il.ImageArray[i];
-                                <div class="ilItem">
-                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
-                                    <div>@img.Comment</div>
-                                </div>
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
                             }
-                        }
+                            @if (pl.Options.IncludeImages)
+                            {
+                                ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                                il.Refresh(false, null, false);
+                                for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                                {
+                                    MFBImageInfo img = il.ImageArray[i];
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </td>
                 </tr>
             }

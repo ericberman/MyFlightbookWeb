@@ -77,37 +77,37 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked())  />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@pl.ModelDisplay(led)</td>
-                    <td>@led.CatClassDisplay</td>
-                    <td>@led.TailNumOrSimDisplay</td>
-                    <td>@led.PICName</td>
-                    <td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked())  />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
+                    <td><div class="fhd">@led.CatClassDisplay</div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                    <td><div class="fhd">@led.PICName</div></td>
+                    <td><div class="fhd">
                         <div class="b">@led.Route</div>
                         <div class="wsprel">@led.CustPropertyDisplay</div>
-                    </td>
-                    <td>@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName)</td>
-                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@(led.IsFSTD ? led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</td>
-                    <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.Dual - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.PIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.PICUSTime - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.SIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.PIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.PICUSTime, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.SIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.NetDayLandings.FormatInt()</td>
-                    <td>@led.NetNightLandings.FormatInt()</td>
-                    <td>
+                    </div></td>
+                    <td><div class="fhd">@led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName)</div></td>
+                    <td><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@(led.IsFSTD ? led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</div></td>
+                    <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.Dual - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.PIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.PICUSTime - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.SIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.PIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.PICUSTime, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.SIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.NetDayLandings.FormatInt()</div></td>
+                    <td><div class="fhd">@led.NetNightLandings.FormatInt()</div></td>
+                    <td><div class="fhd">
                         <div class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
                         @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                         {
                             Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
                         }
-                    </td>
+                    </div></td>
                 </tr>
             }
             @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)

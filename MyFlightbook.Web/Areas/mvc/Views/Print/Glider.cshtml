@@ -55,43 +55,45 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td>@led.Index</td>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@pl.ModelDisplay(led)</td>
-                    <td>@led.TailNumOrSimDisplay</td>
-                    <td>@led.Route</td>
+                    <td><div class="fhd">@led.Index</div></td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                    <td><div class="fhd">@led.Route</div></td>
 
-                    <td>@led.ReleaseAltitude.FormatInt()</td>
-                    <td>@led.MaxAltitude.FormatInt()</td>
+                    <td><div class="fhd">@led.ReleaseAltitude.FormatInt()</div></td>
+                    <td><div class="fhd">@led.MaxAltitude.FormatInt()</div></td>
 
-                    <td>@led.AeroLaunches.FormatInt()</td>
-                    <td>@led.GroundLaunches.FormatInt()</td>
-                    <td>@led.SelfLaunches.FormatInt()</td>
+                    <td><div class="fhd">@led.AeroLaunches.FormatInt()</div></td>
+                    <td><div class="fhd">@led.GroundLaunches.FormatInt()</div></td>
+                    <td><div class="fhd">@led.SelfLaunches.FormatInt()</div></td>
 
-                    <td>@led.Landings.FormatInt()</td>
-                    <td>@led.GroundInstruction.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.Landings.FormatInt()</div></td>
+                    <td><div class="fhd">@led.GroundInstruction.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
 
-                    <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SoloTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SoloTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     @if (pl.CurrentUser.IsInstructor)
                     {
-                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     }
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     <td>
-                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        <div>
-                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                            {
-                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                            }
+                        <div class="fhd">
+                            <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            <div>
+                                @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                                {
+                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                                }
+                            </div>
                         </div>
                     </td>
                 </tr>

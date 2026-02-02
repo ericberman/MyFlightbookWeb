@@ -131,6 +131,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 UseFlightColoring = Request["poColors"] != null,
                 Size = Enum.TryParse(Request["poFontSize"], true, out PrintingOptions.FontSize fontSize) ? fontSize : PrintingOptions.FontSize.Normal,
                 FlightsPerPage = int.TryParse(Request["poFlightsPerPage"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fpp) ? fpp : 0,
+                FixedRowHeight = int.TryParse(Request["poRowHeight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fixedRowHeight) ? fixedRowHeight : 0,
                 IncludeColumnTotals = Request["poIncludeColumn"] != null,
                 IncludePullForwardTotals = Request["poIncludePreviousPage"] != null,
                 SubtotalStripeRules = Enum.TryParse(Request["poSubtotalsRules"], true, out PrintingOptions.SubtotalStripe stripeRules) ? stripeRules : PrintingOptions.SubtotalStripe.CatClass,

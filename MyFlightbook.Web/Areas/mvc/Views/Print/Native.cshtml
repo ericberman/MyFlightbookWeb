@@ -45,68 +45,74 @@
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
                     <td colspan="2">
-                        <div>
-                            <input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)<span class="largeBold">@led.Date.ToShortDateString()</span>
-                            <span class="b">@led.Route</span>
-                            <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
-                        </div>
-                        @if (pl.CurrentUser.DisplayTimesByDefault)
-                        {
-                            <div>@led.EngineTimeDisplay</div>
-                            <div>@led.FlightTimeDisplay</div>
-                            <div>@led.HobbsDisplay</div>
-                        }
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                        {
-                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                        }
-                        @if (pl.Options.IncludeImages)
-                        {
-                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
-                            il.Refresh(false, null, false);
-                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                        <div class="fhd">
+                            <div>
+                                <input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)<span class="largeBold">@led.Date.ToShortDateString()</span>
+                                <span class="b">@led.Route</span>
+                                <span class="wsprel" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                            </div>
+                            @if (pl.CurrentUser.DisplayTimesByDefault)
                             {
-                                MFBImageInfo img = il.ImageArray[i];
-                                <div class="ilItem">
-                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
-                                    <div>@img.Comment</div>
-                                </div>
+                                <div>@led.EngineTimeDisplay</div>
+                                <div>@led.FlightTimeDisplay</div>
+                                <div>@led.HobbsDisplay</div>
                             }
-                        }
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                            }
+                            @if (pl.Options.IncludeImages)
+                            {
+                                ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                                il.Refresh(false, null, false);
+                                for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                                {
+                                    MFBImageInfo img = il.ImageArray[i];
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </td>
                     <td class="w3cm">
-                        <div class="b">@led.TailNumOrSimDisplay</div>
-                        <div class="sm">@pl.ModelDisplay(led) @led.CatClassDisplay</div>
+                        <div class="fhd">
+                            <div class="b">@led.TailNumOrSimDisplay</div>
+                            <div class="sm">@pl.ModelDisplay(led) @led.CatClassDisplay</div>
+                        </div>
                     </td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
-                    <td class="numericColumn">@led.Approaches.FormatInt()</td>
+                    <td class="numericColumn"><div class="fhd">@led.Approaches.FormatInt()</div></td>
                     <td class="numericColumn">
-                        @if (led.fHoldingProcedures)
-                        {
-                            <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
-                        }
+                        <div class="fhd">
+                            @if (led.fHoldingProcedures)
+                            {
+                                <img src="@("~/images/checkmark.png".ToAbsolute())" class="ckmrk" />
+                            }
+                        </div>
                     </td>
-                    <td class="numericColumn">@led.LandingDisplay</td>
-                    <td class="numericColumn">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn"><div class="fhd">@led.LandingDisplay</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     @if (pl.CurrentUser.IsInstructor)
                     {
-                        <td class="numericColumn">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     }
                     @if (pl.CurrentUser.TracksSecondInCommandTime)
                     {
-                        <td class="numericColumn">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     }
-                    <td class="numericColumn">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td class="numericColumn">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td class="numericColumn"><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td class="numericColumn"><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                 </tr>
             }
             @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)

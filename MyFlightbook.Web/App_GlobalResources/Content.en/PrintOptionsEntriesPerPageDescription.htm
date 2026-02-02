@@ -1,12 +1,12 @@
-﻿<p>This is an approximate number of flights per page because the height of each row cannot be determined with accuracy before rendering of the entire page.</p>
-<p>The system does try to adjust the row height based on the data a given flight contains - more data is assumed to require more height, reducing the number of flights on the containing page,
-    but this is just an approximation.  Things that contribute to "more height" include: long comments, lots of properties, images (if images are included in the print view) and signatures 
-    (if signatures are included)
-</p>
-<p>Please read <a href="https://myflightbookblog.blogspot.com/2019/01/printing-from-electronic-logbook-and.html" target="_blank">this blog post</a> for some fascinating insights into why. 
-    That said, I encourage the use of "continuous" mode because it avoids all of the approximation issues while sacrificing no functionality that has any actual (vs. perceived) value.</p>
+﻿<p>This is an approximate number of flights per page because (by default) the height of each row grows or shrinks to fit its data.</p>
+<p>More data is assumed to requires height, reducing the number of flights on the containing page, but this is just an approximation.</p>
+<p>Things that contribute to "more height" include: long comments, lots of properties, images (if images are included in the print view) and signatures (if signatures are included).</p>
+<p>On the other hand, you can specify a specific row height.  This forces the tradeoff in the other direction: each entry is allocated a fixed height on the page (and thus flights-per-page is exact), but any data that does not fit does not get displayed</p>
+<p>Please read <a href="https://myflightbookblog.blogspot.com/2019/01/printing-from-electronic-logbook-and.html" target="_blank">this blog post</a> for some more fascinating insights here. 
+    "Continuous" mode has the advantage of avoiding all of the approximation issues while sacrificing no functionality that has any actual (vs. perceived) value.</p>
 <p>If you want per-page subtotals and a reasonably consistent number of flights per page, there are some things that you can do to ensure that each flight takes a similar height:</p>
 <ul>
+    <li>Specify a row height, making the tradeoff described above.  Then flights-per-page becomes exact, but you may not display all data.</li>
     <li>Exclude images from the print view (and signatures too)</li>
     <li>Exclude properties that aren't typically needed in a print layout (such as fuel price, for example)</li>
     <li>In comments, if you use "///", everything after that will be excluded from printing.  E.g., "First Solo /// Winds 090@10G15" will print out simply as "First Solo"</li>

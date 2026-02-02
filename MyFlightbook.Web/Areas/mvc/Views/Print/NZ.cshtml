@@ -55,61 +55,63 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td class="b"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></td>
-                    <td>@led.TailNumOrSimDisplay</td>
-                    <td>@led.PICName</td>
-                    <td>@led.SICName @led.StudentName</td>
+                    <td class="b"><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd"><div>@pl.ModelDisplay(led) (@led.CatClassDisplay)</div></div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                    <td><div class="fhd">@led.PICName</div></td>
+                    <td><div class="fhd">@led.SICName @led.StudentName</div></td>
                     <td>
-                        <div>
-                            <span class="b">@led.Route</span>
-                            <span dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
-                        </div>
-                        @if (pl.CurrentUser.DisplayTimesByDefault)
-                        {
-                            <div>@led.EngineTimeDisplay</div>
-                            <div>@led.FlightTimeDisplay</div>
-                            <div>@led.HobbsDisplay</div>
-                        }
-                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                        {
-                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                        }
-                        @if (pl.Options.IncludeImages)
-                        {
-                            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
-                            il.Refresh(false, null, false);
-                            for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                        <div class="fhd">
+                            <div>
+                                <span class="b">@led.Route</span>
+                                <span dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</span>
+                            </div>
+                            @if (pl.CurrentUser.DisplayTimesByDefault)
                             {
-                                MFBImageInfo img = il.ImageArray[i];
-                                <div class="ilItem">
-                                    <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
-                                    <div>@img.Comment</div>
-                                </div>
+                                <div>@led.EngineTimeDisplay</div>
+                                <div>@led.FlightTimeDisplay</div>
+                                <div>@led.HobbsDisplay</div>
                             }
-                        }
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                            }
+                            @if (pl.Options.IncludeImages)
+                            {
+                                ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Flight, led.FlightID.ToString(CultureInfo.InvariantCulture));
+                                il.Refresh(false, null, false);
+                                for (int i = 0; i < il.ImageArray.Count && i < 3; i++)
+                                {
+                                    MFBImageInfo img = il.ImageArray[i];
+                                    <div class="ilItem">
+                                        <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" />
+                                        <div>@img.Comment</div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </td>
-                    <td>@Math.Max(led.Dual - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.SIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Max(led.PIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.SIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@Math.Min(led.PIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@Math.Max(led.Dual - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.SIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Max(led.PIC - led.Nighttime, 0.0M).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.Dual, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.SIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@Math.Min(led.PIC, led.Nighttime).FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
-                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
 
                     @if (pl.CurrentUser.IsInstructor)
                     {
-                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     }
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td>@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
 
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                 </tr>
             }
             @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
@@ -139,7 +141,7 @@
 
                         @if (pl.CurrentUser.IsInstructor)
                         {
-                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                         }
                         @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                         {

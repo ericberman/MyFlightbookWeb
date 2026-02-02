@@ -2028,7 +2028,7 @@
   <data name="PrintViewSubtotalNone" xml:space="preserve">
     <value>None</value>
   </data>
-  <data name="PrintViewSubTotalPrompt" xml:space="preserve">
+  <data name="PrintViewSubTotalGroupPrompt" xml:space="preserve">
     <value>Group subtotals by:</value>
   </data>
   <data name="PrintViewTurbineSubtotalSuffix" xml:space="preserve">
@@ -2093,5 +2093,17 @@
   </data>
   <data name="AttestationFileNameSuffix" xml:space="preserve">
     <value>-Attestation</value>
+  </data>
+  <data name="PrintViewRowHeightAutomatic" xml:space="preserve">
+    <value>Automatic (fit to data)</value>
+  </data>
+  <data name="PrintViewRowHeightPrompt" xml:space="preserve">
+    <value>Row height (lines of text):</value>
+  </data>
+  <data name="PrintViewPagination" xml:space="preserve">
+    <value>Pagination</value>
+  </data>
+  <data name="PrintViewSubtotals" xml:space="preserve">
+    <value>Subtotals</value>
   </data>
 </root>

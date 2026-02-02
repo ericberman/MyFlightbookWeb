@@ -27,18 +27,27 @@
 }
 <style type="text/css">
     @@media screen {
-        tbody tr.bordered.breakable:hover td {
+        tbody tr.bordered.breakable:hover > td {
             border-top: 18pt double black;
         }
 
-        tbody tr.bordered.breakable.breakBefore td {
+        tbody tr.bordered.breakable.breakBefore > td {
             border-top: 2pt solid red;
         }
 
-        tbody tr.bordered.breakable.breakBefore:hover td {
+        tbody tr.bordered.breakable.breakBefore:hover > td {
             background-color: var(--menu-background-selected);
             color: var(--menu-color-selected);
         }
+    }
+
+    div.fhd {
+        @if (po.FixedRowHeight > 0)
+            {
+            @:height: @($"{(po.FixedRowHeight * 1.2).ToString(CultureInfo.InvariantCulture)}em") !important;
+            @:line-height: 1.2em !important;
+            @:overflow: hidden;
+            }
     }
 </style>
 <script type="text/javascript">

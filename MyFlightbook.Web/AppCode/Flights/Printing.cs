@@ -301,7 +301,7 @@ namespace MyFlightbook.Printing
             return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
-        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css?v=3"; } }
+        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css?v=4"; } }
     }
 
     public class PrintLayoutGlider : PrintLayout
@@ -718,6 +718,12 @@ namespace MyFlightbook.Printing
         /// This is 0-based.  I.e., 0 = start numbering at "1", 1 = start numbering at "2", etc.
         /// </summary>
         public int StartingPageNumberOffset { get; set; }
+
+        /// <summary>
+        /// If non-zero, this specifies the fixed number of rows (lineheight) for each row of data.  Otherwise, the rows shrink/grow to fit
+        /// </summary>
+        [System.ComponentModel.DefaultValue(0)]
+        public int FixedRowHeight { get; set; } = 0;
         #endregion
 
         public PrintingOptions() { }
@@ -1498,7 +1504,7 @@ namespace MyFlightbook.Printing
                 if (printingOptions.IncludeImages)
                     led.PopulateImages(true);
 
-                led.RowHeight = pl.RowHeight(led);
+                led.RowHeight = printingOptions.FixedRowHeight > 0 ? 1 : pl.RowHeight(led);
             }
 
             // Condense the flights, if the template supports condensing

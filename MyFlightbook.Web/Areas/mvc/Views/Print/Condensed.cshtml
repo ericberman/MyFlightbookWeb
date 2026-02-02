@@ -39,25 +39,25 @@
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@led.FlightCount.FormatInt()</td>
-                    <td class="clipped">@pl.ModelDisplay(led)</td>
-                    <td class="clipped"><span class="b">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@led.FlightCount.FormatInt()</div></td>
+                    <td class="clipped"><div class="fhd">@pl.ModelDisplay(led)</div></td>
+                    <td class="clipped"><div class="fhd"><span class="b">@led.Route</span> @Html.Raw(led.RedactedCommentWithReplacedApproaches)</div></td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
-                    <td>@led.Landings.FormatInt()</td>
-                    <td>@led.Approaches.FormatInt()</td>
-                    <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.Landings.FormatInt()</div></td>
+                    <td><div class="fhd">@led.Approaches.FormatInt()</div></td>
+                    <td><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                 </tr>
             }
             @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)

@@ -70,43 +70,45 @@
         <tbody>
             @foreach (LogbookEntryDisplay led in lpp.Flights)
             {
-                string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassificationForCatClass((CategoryClass.CatClassID) led.EffectiveCatClass);
+                string EASACatClass = MakeModel.GetModel(led.ModelID).EASAClassificationForCatClass((CategoryClass.CatClassID)led.EffectiveCatClass);
                 string catClassDisplay = EASACatClass == null ? led.CatClassDisplay : $"{EASACatClass} / {led.CatClassDisplay}";
                 <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
-                    <td>@led.Index</td>
-                    <td><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</td>
-                    <td>@led.Departure</td>
-                    <td>@Html.Raw(led.DepartureTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
-                    <td>@led.Destination</td>
-                    <td>@Html.Raw(led.ArrivalTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</td>
-                    <td>@pl.ModelDisplay(led)</td>
-                    <td>@led.TailNumOrSimDisplay</td>
-                    <td>@catClassDisplay</td>
+                    <td><div class="fhd">@led.Index</div></td>
+                    <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                    <td><div class="fhd">@led.Departure</div></td>
+                    <td><div class="fhd">@Html.Raw(led.DepartureTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</div></td>
+                    <td><div class="fhd">@led.Destination</div></td>
+                    <td><div class="fhd">@Html.Raw(led.ArrivalTime.UTCFormattedStringOrEmpty(pl.CurrentUser.UsesUTCDateOfFlight).Replace(" ", "<br />"))</div></td>
+                    <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
+                    <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                    <td><div class="fhd">@catClassDisplay</div></td>
                     @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                     {
-                        <td class="numericColumn">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                     }
-                    <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.PICName</td>
-                    <td>@led.NetDayLandings.FormatInt()</td>
-                    <td>@led.NetNightLandings.FormatInt()</td>
-                    <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.IFRTime.FormatDecimal(pl.CurrentUser.UsesHHMM)<div>@led.InstrumentTimeDisplay</div></td>
-                    <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                    <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.PICName</div></td>
+                    <td><div class="fhd">@led.NetDayLandings.FormatInt()</div></td>
+                    <td><div class="fhd">@led.NetNightLandings.FormatInt()</div></td>
+                    <td><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.IFRTime.FormatDecimal(pl.CurrentUser.UsesHHMM)<div>@led.InstrumentTimeDisplay</div></div></td>
+                    <td><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                     <td>
-                        <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
-                        <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)) : string.Empty)</div>
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        <div>
-                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                            {
-                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                            }
+                        <div class="fhd">
+                            <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
+                            <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                            <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)) : string.Empty)</div>
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            <div>
+                                @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                                {
+                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                                }
+                            </div>
                         </div>
                     </td>
                 </tr>
