@@ -10,7 +10,6 @@ using NodaTime;
 using NodaTime.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -799,6 +798,10 @@ namespace MyFlightbook.Telemetry
                 if (!String.IsNullOrEmpty(szNewRoute))
                     ActiveFlight.Route = szNewRoute;
                 ActiveFlight.Nighttime = Convert.ToDecimal(Math.Round(TotalNight, opt.RoundToTenth ? 1 : 2));
+
+                // Issue #1492: ending times with autofill might have an extra few seconds on them; strip them off.
+                ActiveFlight.EngineEnd = ActiveFlight.EngineEnd.StripSeconds();
+                ActiveFlight.FlightEnd = ActiveFlight.FlightEnd.StripSeconds();
             }
         }
 
