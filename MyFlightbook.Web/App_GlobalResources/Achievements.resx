@@ -503,4 +503,7 @@
   <data name="RecentAchievementsInstructorHours" xml:space="preserve">
     <value>Hours of instruction given</value>
   </data>
+  <data name="nameAltonBay" xml:space="preserve">
+    <value>"Slick Flier" - landed at Alton Bay Ice Runway</value>
+  </data>
 </root>

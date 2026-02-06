@@ -361,6 +361,7 @@ namespace MyFlightbook.Achievements
             NumberOfStatesAustralia,
             NumberOfStatesMexico,
             NumberOfVisitsOSH,
+            AltonBay,
 
             Antarctica = BadgeCategory.Miscellaneous,
             FlightsInJanuary,
@@ -728,7 +729,7 @@ namespace MyFlightbook.Achievements
         /// <returns>An array of all possible Badges</returns>
         public static List<Badge> AvailableBadgesForUser(string szUser)
         {
-            Badge[] rgAchievements = 
+            Badge[] rgAchievements =
                 {
                     // First-time events
                     new TrainingBadgeBegan(),
@@ -753,6 +754,7 @@ namespace MyFlightbook.Achievements
                     // Miscellaneous
                     new FlightOfThePenguin(),
                     new EclipseChaser2024(),
+                    new AltonBay(),
                     // Flights-in-month
                     new FlightsInMonth(1),
                     new FlightsInMonth(2),
@@ -1139,6 +1141,34 @@ namespace MyFlightbook.Achievements
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    [Serializable]
+    public class AltonBay : Badge
+    {
+        public override string BadgeImageOverlay { get { return "~/Images/BadgeOverlays/casinochip.svg".ToAbsolute(); } }
+
+        public AltonBay() : base (BadgeID.AltonBay, Resources.Achievements.nameAltonBay) { }
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            if (cfr.dtFlight.Date.Month == 12 || cfr.dtFlight.Month < 4 && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL) && cfr.cLandingsThisFlight > 0)
+            {
+                AirportList al = new AirportList(cfr.Route);
+                foreach (airport ap in al.UniqueAirports)
+                {
+                    if (ap.Code.CompareCurrentCultureIgnoreCase("B18") == 0)
+                    {
+                        Level = AchievementLevel.Achieved;
+                        DateEarned = cfr.dtFlight;
+                        IDFlightEarned = cfr.flightID;
+                        break;
+                    }
+                }
+
             }
         }
     }

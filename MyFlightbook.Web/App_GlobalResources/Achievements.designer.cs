@@ -367,6 +367,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Slick Flier&quot; - landed at Alton Bay Ice Runway.
+        /// </summary>
+        internal static string nameAltonBay {
+            get {
+                return ResourceManager.GetString("nameAltonBay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You flew in Antarctica.  (Seriously?  Wow!).
         /// </summary>
         internal static string nameAntarctica {
