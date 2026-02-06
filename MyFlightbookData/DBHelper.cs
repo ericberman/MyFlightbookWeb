@@ -251,7 +251,7 @@ namespace MyFlightbook
                     }
                     catch (MySqlException ex)
                     {
-                        throw new MyFlightbookException("MySQL error thrown in ReadRows; Query = " + CommandText ?? string.Empty, ex, string.Empty);
+                        throw new MyFlightbookException($"MySQL error thrown in ReadRows; {ex.Message}, Query = {CommandText}", ex, string.Empty);
                     }
                     catch (MyFlightbookException ex)
                     {
