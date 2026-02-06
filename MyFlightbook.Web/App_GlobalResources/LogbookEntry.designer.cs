@@ -4146,7 +4146,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logbook format according to EASA Part FCL.050.
+        ///   Looks up a localized string similar to Logbook format according to EASA Part FCL.050.  Time co-pilot column displayed in parenthesis indicates that it was logged as SIC time..
         /// </summary>
         internal static string PrintLabelEASA {
             get {

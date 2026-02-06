@@ -4,6 +4,9 @@
 @{
     PrintLayout pl = ViewBag.pl;
     IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+    bool fUseHHMM = pl.CurrentUser.UsesHHMM;
+    bool fShowSingleMulti = pl.Options.OptionalColumns.Count == 3;  // 0 and 1 will be single/multi
+    int iColCoPilot = fShowSingleMulti ? 2 : 0;
 }
 @foreach (LogbookPrintedPage lpp in pages)
 {
@@ -13,7 +16,7 @@
                 (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC,
                 (int) CustomPropertyType.KnownProperties.IDPropIFRTime
             }, lpp.Flights);
-
+    
     <table class="pageTable">
         <thead>
             <tr class="bordered">
@@ -22,7 +25,7 @@
                 <th class="headerSmall" colspan="2">2</th>
                 <th class="headerSmall" colspan="2">3</th>
                 <th class="headerSmall" colspan="2">4</th>
-                <th class="headerSmall" colspan='@(pl.Options.OptionalColumns.Count > 0 ? 3 : 1)'>5</th>
+                <th class="headerSmall" colspan='@(fShowSingleMulti ? 3 : 1)'>5</th>
                 <th class="headerSmall">6</th>
                 <th class="headerSmall">7</th>
                 <th class="headerSmall" colspan="2">8</th>
@@ -37,9 +40,10 @@
                 <th colspan="2" class="headerBig">@Resources.LogbookEntry.PrintHeaderArrival</th>
                 <th colspan="2" class="headerBig">@Resources.LogbookEntry.PrintHeaderAircraft</th>
                 <th rowspan="2" class="headerBig">@Resources.LogbookEntry.PrintHeaderCategory</th>
-                @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                @if (fShowSingleMulti)
                 {
-                    <th rowspan="2" class="custColumn">@pl.Options.OptionalColumns[i].Title</th>
+                    <th rowspan="2" class="custColumn">@pl.Options.OptionalColumns[0].Title</th>
+                    <th rowspan="2" class="custColumn">@pl.Options.OptionalColumns[1].Title</th>
                 }
                 <th rowspan="2" class="headerBig">@Resources.LogbookEntry.PrintHeaderTotalTime</th>
                 <th rowspan="2" class="headerBig">@Resources.LogbookEntry.PrintHeaderPICName</th>
@@ -82,31 +86,32 @@
                     <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
                     <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
                     <td><div class="fhd">@catClassDisplay</div></td>
-                    @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                    @if (fShowSingleMulti)
                     {
-                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(0, fUseHHMM)</div></td>
+                        <td class="numericColumn"><div class="fhd">@led.OptionalColumnDisplayValue(1, fUseHHMM)</div></td>
                     }
-                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.TotalFlightTime.FormatDecimal(fUseHHMM)</div></td>
                     <td><div class="fhd">@led.PICName</div></td>
                     <td><div class="fhd">@led.NetDayLandings.FormatInt()</div></td>
                     <td><div class="fhd">@led.NetNightLandings.FormatInt()</div></td>
-                    <td><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
-                    <td><div class="fhd">@led.IFRTime.FormatDecimal(pl.CurrentUser.UsesHHMM)<div>@led.InstrumentTimeDisplay</div></div></td>
-                    <td><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
-                    <td><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
-                    <td><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
-                    <td><div class="fhd">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
-                    <td><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                    <td><div class="fhd">@led.Nighttime.FormatDecimal(fUseHHMM)</div></td>
+                    <td><div class="fhd">@led.IFRTime.FormatDecimal(fUseHHMM)<div>@led.InstrumentTimeDisplay</div></div></td>
+                    <td><div class="fhd">@led.PIC.FormatDecimal(fUseHHMM)</div></td>
+                    <td><div class="fhd">@led.OptionalColumnDisplayValue(iColCoPilot, fUseHHMM) @(led.SIC > 0 ? $"({led.SIC.FormatDecimal(fUseHHMM)})" : string.Empty)</div></td>
+                    <td><div class="fhd">@led.Dual.FormatDecimal(fUseHHMM)</div></td>
+                    <td><div class="fhd">@led.CFI.FormatDecimal(fUseHHMM)</div></td>
+                    <td><div class="fhd">@led.GroundSim.FormatDecimal(fUseHHMM)</div></td>
                     <td>
                         <div class="fhd">
                             <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
                             <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                            <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)) : string.Empty)</div>
+                            <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(fUseHHMM)) : string.Empty)</div>
                             <div class="wsprel">@led.CustPropertyDisplay</div>
                             <div>
                                 @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
                                 {
-                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                                    Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = fUseHHMM, fInteractive = false });
                                 }
                             </div>
                         </div>
@@ -118,7 +123,7 @@
                 int itemIndex = 0;
                 foreach (LogbookEntryDisplay led in stc.Subtotals)
                 {
-                    led.UseHHMM = pl.CurrentUser.UsesHHMM;
+                    led.UseHHMM = fUseHHMM;
                     <tr class="subtotal">
                         @if (itemIndex++ == 0)
                         {
@@ -127,21 +132,22 @@
                         }
                         <td>@led.CatClassDisplay</td>
                         <td>@led.FlightCount.FormatInt()</td>
-                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        @if (fShowSingleMulti)
                         {
-                            <td>@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                            <td>@led.OptionalColumnTotalDisplayValue(0, fUseHHMM)</td>
+                            <td>@led.OptionalColumnTotalDisplayValue(1, fUseHHMM)</td>
                         }
-                        <td>@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.TotalFlightTime.FormatDecimal(fUseHHMM)</td>
                         <td></td>
                         <td>@led.NetDayLandings.FormatInt()</td>
                         <td>@led.NetNightLandings.FormatInt()</td>
-                        <td>@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.IFRTimeTotal.FormatDecimal(pl.CurrentUser.UsesHHMM) @led.InstrumentTimeDisplay</td>
-                        <td>@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
-                        <td>@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                        <td>@led.Nighttime.FormatDecimal(fUseHHMM)</td>
+                        <td>@led.IFRTimeTotal.FormatDecimal(fUseHHMM) @led.InstrumentTimeDisplay</td>
+                        <td>@led.PIC.FormatDecimal(fUseHHMM)</td>
+                        <td>@led.OptionalColumnTotalDisplayValue(iColCoPilot, fUseHHMM) @(led.SIC > 0 ? $"({led.SIC.FormatDecimal(fUseHHMM)})" : string.Empty)</td>
+                        <td>@led.Dual.FormatDecimal(fUseHHMM)</td>
+                        <td>@led.CFI.FormatDecimal(fUseHHMM)</td>
+                        <td>@led.GroundSim.FormatDecimal(fUseHHMM)</td>
                         <td class="subtotalLabel"></td>
                     </tr>
                 }

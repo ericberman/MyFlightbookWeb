@@ -341,6 +341,9 @@ namespace MyFlightbook.Printing
                     po.OptionalColumns.Add(new OptionalColumn((int) CustomPropertyType.KnownProperties.IDPropMultiPilotTime));
                     break;
                 }
+
+            // Issue #1496 - need to show copilot time - use an optional column for that too
+            po.OptionalColumns.Add(new OptionalColumn((int)CustomPropertyType.KnownProperties.IDPropCoPilotTime));
         }
 
         public override int RowHeight(LogbookEntryDisplay le)

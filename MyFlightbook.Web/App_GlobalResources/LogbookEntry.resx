@@ -602,7 +602,7 @@
     <value>Total Time of Flight</value>
   </data>
   <data name="PrintLabelEASA" xml:space="preserve">
-    <value>Logbook format according to EASA Part FCL.050</value>
+    <value>Logbook format according to EASA Part FCL.050.  Time co-pilot column displayed in parenthesis indicates that it was logged as SIC time.</value>
   </data>
   <data name="PrintLabelLocalDates" xml:space="preserve">
     <value>Column 1 in local time, all others in UTC.</value>
