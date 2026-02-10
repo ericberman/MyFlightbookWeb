@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.Admin;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -87,7 +88,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                IDictionary<string, object> dResult = AircraftUtility.MigrateSim(idOriginal, idNew, deviceID);
+                IDictionary<string, object> dResult = AdminAircraft.MigrateSim(idOriginal, idNew, deviceID);
                 IEnumerable<int> flights = (IEnumerable<int>)dResult["SignedFlightIDs"];
                 List<string> lstFlightsToReview = new List<string>();
                 foreach (int flight in flights)
@@ -207,8 +208,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (ac.AircraftID <= 0)
                     throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Invalid aircraft ID: {0}", aircraftID));
 
-                AircraftUtility.UpdateVersionForAircraft(ac, newVersion);
-                ViewBag.rgac = AircraftUtility.AdminDupeAircraft();
+                AdminAircraft.UpdateVersionForAircraft(ac, newVersion);
+                ViewBag.rgac = AdminAircraft.AdminDupeAircraft();
                 return PartialView("_dupeAircraft");
             });
         }
@@ -219,7 +220,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.AdminDupeAircraft();
+                ViewBag.rgac = AdminAircraft.AdminDupeAircraft();
                 return PartialView("_dupeAircraft");
             });
         }
@@ -230,7 +231,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.ResolveDupeSim(idAircraft);
+                ViewBag.rgac = AdminAircraft.ResolveDupeSim(idAircraft);
                 return PartialView("_dupeSims");
             });
         }
@@ -241,7 +242,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.AdminDupeSims();
+                ViewBag.rgac = AdminAircraft.AdminDupeSims();
                 return PartialView("_dupeSims");
             });
         }
@@ -289,7 +290,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.AdminAllInvalidAircraft();
+                ViewBag.rgac = AdminAircraft.AdminAllInvalidAircraft();
                 return PartialView("_invalidAircraft");
             });
         }
@@ -300,7 +301,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.OrphanedAircraft();
+                ViewBag.rgac = AdminAircraft.OrphanedAircraft();
                 return PartialView("_orphanedAircraft");
             });
         }
@@ -312,11 +313,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
 
-                List<Aircraft> lst = new List<Aircraft>(AircraftUtility.OrphanedAircraft());
+                List<Aircraft> lst = new List<Aircraft>(AdminAircraft.OrphanedAircraft());
                 foreach (Aircraft aircraft in lst)
                 {
                     if (idAircraft < 0 || idAircraft == aircraft.AircraftID)
-                        AircraftUtility.DeleteOrphanAircraft(aircraft.AircraftID);
+                        AdminAircraft.DeleteOrphanAircraft(aircraft.AircraftID);
                 }
 
                 lst.RemoveAll(ac => idAircraft < 0 || ac.AircraftID == idAircraft);
@@ -332,7 +333,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                List<Aircraft> lst = new List<Aircraft>(AircraftUtility.PseudoGenericAircraft());
+                List<Aircraft> lst = new List<Aircraft>(AdminAircraft.PseudoGenericAircraft());
                 ViewBag.rgac = lst;
                 return PartialView("_pseudoGeneric");
             });
@@ -344,7 +345,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                ViewBag.rgac = AircraftUtility.AircraftMatchingPattern(tailToFind);
+                ViewBag.rgac = AdminAircraft.AircraftMatchingPattern(tailToFind);
                 return PartialView("_aircraftList");
             });
         }
@@ -355,7 +356,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                return AircraftUtility.CleanUpMaintenance();
+                return AdminAircraft.CleanUpMaintenance();
             });
         }
 
@@ -426,7 +427,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                     throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
 
-                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
+                AdminAircraft.AdminRenameAircraft(ac, ac.TailNumber.ToUpper(CultureInfo.CurrentCulture).Replace('O', '0').Replace('I', '1'));
                 return new EmptyResult();
             });
 
@@ -446,7 +447,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!ac.TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase))
                     return new EmptyResult();
 
-                Aircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
+                AdminAircraft.AdminRenameAircraft(ac, ac.TailNumber.Replace("-", string.Empty).Substring(1));
                 return new EmptyResult();
             });
         }
@@ -467,7 +468,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!szTail.StartsWith("N0", StringComparison.CurrentCultureIgnoreCase) || szTail.Length <= 2)
                     return new EmptyResult();
 
-                Aircraft.AdminRenameAircraft(ac, "N" + szTail.Substring(2));
+                AdminAircraft.AdminRenameAircraft(ac, "N" + szTail.Substring(2));
                 return new EmptyResult();
             });
         }
@@ -517,7 +518,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     acGeneric.Commit();
                 }
 
-                AircraftUtility.AdminMergeDupeAircraft(acGeneric, acOriginal);
+                AdminAircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
                 return new EmptyResult();
             });
         }
@@ -533,7 +534,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                     throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
 
-                if (AircraftUtility.MapToSim(ac) < 0)
+                if (AdminAircraft.MapToSim(ac) < 0)
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to map aircraft {0}", ac.TailNumber));
                 return new EmptyResult();
             });
@@ -626,7 +627,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!acClone.IsValid())
                     throw new InvalidOperationException("Invalid source aircraft for merge");
 
-                AircraftUtility.AdminMergeDupeAircraft(acMaster, acClone);
+                AdminAircraft.AdminMergeDupeAircraft(acMaster, acClone);
                 return new EmptyResult();
             });
         }

@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Charting;
+﻿using MyFlightbook.Admin;
+using MyFlightbook.Charting;
 using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Payments;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -385,7 +386,7 @@ ORDER BY f2.numflights ASC;", creationDate == null ? string.Empty : "WHERE u.cre
                 Task.Run(() => { UserTransactions = UserTransactionSummary.Refresh(); }),
                 Task.Run(() => { AmountTransactions = AmountTransactionSummary.Refresh(); }),
                 Task.Run(() => { LogStats.Refresh(); }),
-                Task.Run(() => { AircraftInstances = AircraftInstance.AdminInstanceTypeCounts(); }),
+                Task.Run(() => { AircraftInstances = AdminAircraft.AdminInstanceTypeCounts(); }),
                 Task.Run(() => { NewUserStatsMonthly = ProfileAdmin.ADMINUserStatsByTime(); }),
                 Task.Run(() => { NewUserStatsDaily = ProfileAdmin.ADMINDailyNewUsers(); }),
                 Task.Run(() => { UserActivity =  UserActivityStats.Refresh(); }),

@@ -254,7 +254,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             Aircraft acTarg = ua.GetUserAircraftByID(idTarget);
             if (acSrc != null && acTarg != null)
             {
-                Aircraft.AdminMigrateFlights(User.Identity.Name, acSrc, acTarg);
+                AircraftUtility.MigrateFlightsForUser(User.Identity.Name, acSrc, acTarg);
                 if (Request["fDeleteAfterMigrate"] != null)
                     ua.FDeleteAircraftforUser(acSrc.AircraftID);
             }

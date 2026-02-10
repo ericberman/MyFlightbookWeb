@@ -1,4 +1,5 @@
 ﻿@using MyFlightbook
+@using MyFlightbook.Admin
 @using System.Globalization
 @{
     IEnumerable<Aircraft> rgac = ViewBag.rgac;
@@ -21,7 +22,7 @@ else
         <tbody>
             @foreach (Aircraft ac in ViewBag.rgac)
             {
-                string szTailFixed = AircraftUtility.FixedPsuedoTail(ac.TailNumber);
+                string szTailFixed = AdminAircraft.FixedPsuedoTail(ac.TailNumber);
                 string szRegRef = Aircraft.LinkForTailnumberRegistry(szTailFixed);
                 string szdummyID = String.Format(CultureInfo.InvariantCulture, "spn{0}", ac.AircraftID);
                 string szNumFlights = (ac.Stats?.Flights ?? 0).ToString(CultureInfo.CurrentCulture);
@@ -40,7 +41,7 @@ else
                             {
                                 <a style="cursor:pointer" id="lnkRemoveLeadingN" class="admItem" onclick="javascript:trimLeadingN('@szdummyID',@ac.AircraftID);">Remove Leading N</a>
                             }
-                            @if (AircraftUtility.HasMixedOorI(ac.TailNumber))
+                            @if (AdminAircraft.HasMixedOorI(ac.TailNumber))
                             {
                                 <a style="cursor:pointer" id="lnkConvertOandI" class="admItem" onclick="javascript: convertOandI('@szdummyID',@ac.AircraftID);">Convert O/I to 0/1</a>
                             }

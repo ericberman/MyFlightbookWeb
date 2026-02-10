@@ -2,6 +2,7 @@
   <Import Project="..\packages\Microsoft.CodeAnalysis.CSharp.CodeStyle.4.14.0\build\Microsoft.CodeAnalysis.CSharp.CodeStyle.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.CSharp.CodeStyle.4.14.0\build\Microsoft.CodeAnalysis.CSharp.CodeStyle.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MvcBuildViews>true</MvcBuildViews>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>
@@ -1662,7 +1663,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCode\Admin\AdminAircraft.cs" />
+    <Compile Include="AppCode\Admin\AdminMakeModel.cs" />
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
+    <Compile Include="AppCode\Aircraft\AircraftImport.cs" />
+    <Compile Include="AppCode\Aircraft\AircraftStats.cs" />
+    <Compile Include="AppCode\Aircraft\AircraftTombstone.cs" />
+    <Compile Include="AppCode\Aircraft\AircraftUtility.cs" />
     <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
     <Compile Include="AppCode\Aircraft\Checklist.cs" />
     <Compile Include="AppCode\Aircraft\CountryCodes.cs" />
@@ -2281,4 +2288,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
 </Project>
