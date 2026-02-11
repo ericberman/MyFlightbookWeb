@@ -1676,6 +1676,8 @@
     <Compile Include="AppCode\Aircraft\Maintenance.cs" />
     <Compile Include="AppCode\Aircraft\Makes.cs" />
     <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
+    <Compile Include="AppCode\Aircraft\ModelQuery.cs" />
+    <Compile Include="AppCode\Aircraft\SimpleMakeModel.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />

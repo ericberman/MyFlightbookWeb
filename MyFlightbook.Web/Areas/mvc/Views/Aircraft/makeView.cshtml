@@ -15,7 +15,7 @@
     <span style="font-size: larger; font-weight: bold;">@mm.DisplayName</span>
     <a href="@VirtualPathUtility.ToAbsolute(String.Format("~/mvc/Aircraft/EditModel/{0}", mm.MakeModelID))"><img src="@VirtualPathUtility.ToAbsolute("~/images/pencilsm.png")" title="@Resources.Makes.editModelPrompt" /></a>
 </div>
-@{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = mm.AttributeListForUser(ViewBag.userAircraft, User.Identity.Name, stats, null) }); }
+@{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = AircraftStats.AttributeListForUser(null, ViewBag.userAircraft, User.Identity.Name, stats, mm) }); }
 @if (fAdmin)
 {
     <div><a target="_blank" href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft?a=1&m={0}", idModel))">ADMIN - View Aircraft</a></div>

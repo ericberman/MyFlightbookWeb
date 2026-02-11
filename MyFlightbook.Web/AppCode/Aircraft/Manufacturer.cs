@@ -104,7 +104,8 @@ namespace MyFlightbook
         /// <summary>
         /// Saves the make/model to the DB, creating it if necessary
         /// </summary>
-        public Boolean FCommit()
+        /// <param name="onCommit">Optional lambda to call when commit has succeeded</param>
+        public Boolean FCommit(Action<Manufacturer> onCommit = null)
         {
             Boolean fResult = false;
 
@@ -132,7 +133,7 @@ namespace MyFlightbook
             if (fIsNew)
             {
                 ManufacturerID = dbh.LastInsertedRowId;
-                util.NotifyAdminEvent("New manufacturer added", String.Format(CultureInfo.CurrentCulture, "New manufacturer '{0}' added by user {1}.", ManufacturerName, Profile.GetUser(util.RequestContext.CurrentUserName).DetailedName), ProfileRoles.maskCanManageData);
+                onCommit?.Invoke(this);               
             }
 
             return true;

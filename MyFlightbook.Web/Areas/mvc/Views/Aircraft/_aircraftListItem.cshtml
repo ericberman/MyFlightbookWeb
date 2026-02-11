@@ -7,6 +7,7 @@
 <table style="width: 100%" cellpadding="5" cellspacing="5">
     @foreach (Aircraft ac in rgac)
     {
+        MakeModel mm = MakeModel.GetModel(ac.ModelID);
         <tr>
             <td class="gvAcImage">
                 @{ Html.RenderAction("HoverImageList", "Image", new { rgmfbii = ac.AircraftImages, imageClasses = ac.HideFromSelection ? "inactiveRow" : "activeRow" }); }
@@ -20,7 +21,7 @@
                 <div class="@(ac.HideFromSelection ? "inactiveRow" : "activeRow")">
                     <div class="wsprel">@Html.Raw(ac.PublicNotes.Linkify())</div>
                     <div class="wsprel">@Html.Raw(ac.PrivateNotes.Linkify())</div>
-                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = MakeModel.GetModel(ac.ModelID).AttributeListForUser(null, User.Identity.Name, null, ac.Stats, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate) }); }
+                    @{ Html.RenderAction("RenderLinkedStringList", "MFBTemplate", new { lst = AircraftStats.AttributeListForUser(ac.Stats, null, User.Identity.Name, null, mm, ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate) }); }
                 </div>
             </td>
             <td class="gvAcInactive">
@@ -47,7 +48,7 @@
                             <div class="indent"><a href="#" onclick="javascript:@(ViewBag.migrateFunc)(@ac.AircraftID); return false;">@Resources.Aircraft.editAircraftMigrate</a></div>
                         }
                     </div>
-                </div>                
+                </div>
             </td>
             <td class="gvDelete">
                 @if (!String.IsNullOrEmpty(deleteFunc))

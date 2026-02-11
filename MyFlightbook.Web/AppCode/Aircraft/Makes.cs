@@ -1,7 +1,6 @@
 ﻿using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,97 +17,6 @@ using System.Linq;
 
 namespace MyFlightbook
 {
-    /// <summary>
-    /// A very simple version of make model for sending to mobile devices - just a display name + ID.  Other than the ID, unrelated to MakeModel
-    /// </summary>
-    [Serializable]
-    public class SimpleMakeModel
-    {
-        /// <summary>
-        /// The ID of the model
-        /// </summary>
-        public int ModelID { get; set; }
-
-        /// <summary>
-        /// The human-readable description of the model
-        /// </summary>
-        public string Description { get; set; }
-
-        public SimpleMakeModel()
-        {
-            ModelID = -1;
-            Description = string.Empty;
-        }
-
-        public static SimpleMakeModel[] GetAllMakeModels()
-        {
-            List<SimpleMakeModel> al = new List<SimpleMakeModel>();
-            DBHelper dbh = new DBHelper(@"SELECT models.idmodel AS idmodel,
-CONCAT(manufacturers.manufacturer, ' (', TRIM(CONCAT(models.model, IF(models.modelname='', '', CONCAT(' &quot;', models.modelname, '&quot;')))), ') - ', categoryclass.Catclass) AS MakeName
-FROM models INNER JOIN manufacturers ON models.idmanufacturer = manufacturers.idManufacturer INNER JOIN categoryclass ON models.idcategoryclass=categoryclass.idcatclass
-ORDER BY MakeName");
-            if (!dbh.ReadRows(
-                (comm) => { },
-                (dr) =>
-                {
-                    SimpleMakeModel smm = new SimpleMakeModel() { Description = dr["MakeName"].ToString(), ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture) };
-                    al.Add(smm);
-                }))
-                throw new MyFlightbookException("Error in GetAllMakeModels: " + dbh.LastError);
-
-            return al.ToArray();
-        }
-
-
-        /// <summary>
-        /// Returns a very simple list of models that are similar to the specified model.  ONLY WORKS FOR SIM-ONLY MODELS
-        /// </summary>
-        /// <param name="idModel"></param>
-        /// <returns></returns>
-        public static IEnumerable<SimpleMakeModel> ADMINModelsSimilarToSIM(int idModel)
-        {
-            List<SimpleMakeModel> lst = new List<SimpleMakeModel>();
-            DBHelper dbh = new DBHelper(@"SELECT 
-    m1.idmodel,
-    m1.model,
-    m1.typename,
-    m1.family,
-    man.manufacturer
-FROM
-    models m1
-        INNER JOIN
-    manufacturers man on m1.idmanufacturer = man.idmanufacturer
-        LEFT JOIN
-    models m2 on m2.idmodel = ?targetID
-WHERE
-    m1.idmodel <> m2.idmodel
-		AND m1.family=m2.family
-        AND m1.fSimOnly = 1
-        AND m1.idcategoryclass = m2.idcategoryclass
-        AND m1.fComplex = m2.fComplex
-        AND m1.fhighperf = m2.fHighPerf
-        AND m1.f200HP = m2.f200HP
-        AND m1.fTailwheel = m2.fTailwheel
-        AND m1.fConstantProp = m2.fConstantProp
-        AND m1.fturbine = m2.fturbine
-        AND m1.fretract = m2.fretract
-        AND m1.fcertifiedsinglepilot = m2.fcertifiedsinglepilot
-        AND m1.fcowlflaps = m2.fCowlFlaps
-        AND m1.armymissiondesignseries = m2.armymissiondesignseries
-        AND m1.fTAA = m2.fTAA 
-        AND m1.fMotorGlider = m2.fMotorGlider
-        AND m1.fMultiHelicopter = m2.fMultiHelicopter
-ORDER BY man.manufacturer ASC, m1.model ASC");
-
-            dbh.ReadRows(
-                (comm) => { comm.Parameters.AddWithValue("targetID", idModel); },
-                (dr) => {
-                    lst.Add(new SimpleMakeModel() { Description = $"{dr["manufacturer"]} - {dr["model"]}/{dr["family"]} Type: {dr["typename"]}", ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture) });
-            });
-            return lst;
-        }
-    }
-
     /// <summary>
     /// Stats for the user in this model
     /// </summary>
@@ -274,30 +182,6 @@ ORDER BY man.manufacturer ASC, m1.model ASC");
                 default:
                     return null;
             }
-        }
-
-        /// <summary>
-        /// ID's of sample aircraft which that are of this make (read-only)
-        /// This is generally the result of a group_concat when retrieving multiple models at once;
-        /// the aircraft can then be scanned to find sample images.
-        /// Use SampleImages to directly query the database for images for a single aircraft
-        /// </summary>
-        public int[] SampleAircraft()
-        {
-            if (szSampleAircraftIDs.Length == 0)
-                return Array.Empty<int>();
-
-            string[] rgSz = szSampleAircraftIDs.Split(',');
-            // discard the last 2, which could be bogus (if sample list got truncated)
-
-            int cSamples = rgSz.Length;
-            if (cSamples > 2) // can't be cut off if this short.
-                cSamples = rgSz.Length - 2;
-
-            int[] rgIds = new int[cSamples];
-            for (int i = cSamples - 1; i >= 0; i--)
-                rgIds[i] = Convert.ToInt32(rgSz[i], CultureInfo.InvariantCulture);
-            return rgIds;
         }
 
         /// <summary>
@@ -998,21 +882,21 @@ WHERE {1}";
         /// <summary>
         /// Returns a set of models for the specified aircraft, drawing from the cache if possible else doing a SINGLE database query
         /// </summary>
-        /// <param name="rgac">An enumerable set of aircraft</param>
+        /// <param name="rgmodelid">An enumerable set of make/model IDs</param>
         /// <returns>A sorted (by model) enumerable list of matching models</returns>
-        public static IEnumerable<MakeModel> ModelsForAircraft(IEnumerable<Aircraft> rgac)
+        public static IEnumerable<MakeModel> ModelsForAircraftIds(IEnumerable<int> rgmodelid)
         {
-            if (rgac == null)
-                throw new ArgumentNullException(nameof(rgac));
+            if (rgmodelid == null)
+                throw new ArgumentNullException(nameof(rgmodelid));
             Dictionary<int, MakeModel> dModels = new Dictionary<int, MakeModel>();
             List<int> lstIdsToGet = new List<int>();
-            foreach (Aircraft ac in rgac)
-                if (!dModels.ContainsKey(ac.ModelID))
+            foreach (int mmid in rgmodelid)
+                if (!dModels.ContainsKey(mmid))
                 {
-                    MakeModel m = CachedModel(ac.ModelID);
-                    dModels[ac.ModelID] = m ?? new MakeModel(); // if null, put in a placeholder so that we know we've seen it; we'll fill it in below.
+                    MakeModel m = CachedModel(mmid);
+                    dModels[mmid] = m ?? new MakeModel(); // if null, put in a placeholder so that we know we've seen it; we'll fill it in below.
                     if (m == null)
-                        lstIdsToGet.Add(ac.ModelID);
+                        lstIdsToGet.Add(mmid);
                 }
 
             // Now get each of the models that didn't hit the cache
@@ -1105,274 +989,5 @@ WHERE {1}";
                 return !col.Any() ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
         }
-
-        public LinkedString UserFlightsTotal(string szUser, MakeModelStats userStats)
-        {
-            if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException(nameof(szUser));
-            if (userStats == null)
-                throw new ArgumentNullException(nameof(userStats));
-
-            FlightQuery fq = new FlightQuery(szUser);
-            fq.MakeList.Add(this);
-            string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue ?
-            String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value) : string.Empty);
-            return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", fq.ToBase64CompressedJSONString()));
-        }
-
-        public IEnumerable<LinkedString> AttributeListForUser(IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, AircraftStats acStats, AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)
-        {
-            if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException(nameof(szUser));
-
-            List<LinkedString> lstAttribs = new List<LinkedString>();
-            if (acStats != null)
-                lstAttribs.Add(acStats.UserStatsDisplay);
-
-            if (!String.IsNullOrEmpty(FamilyName))
-                lstAttribs.Add(new LinkedString(ModelQuery.ICAOPrefix + FamilyName));
-            foreach (string sz in AttributeList(upgradeType, upgradeDate))
-                lstAttribs.Add(new LinkedString(sz));
-            if (rgac?.Any() ?? false)
-            {
-                lstAttribs.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsAircraftCount, rgac.Count())));
-                MakeModelStats stats = userStats ?? StatsForUser(szUser);
-                lstAttribs.Add(UserFlightsTotal(szUser, stats));
-            }
-            return lstAttribs;
-        }
-    }
-    
-    /// <summary>
-    /// Structured search for a model
-    /// </summary>
-    [Serializable]
-    public class ModelQuery
-    {
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum ModelSortMode { ModelName, CatClass, Manufacturer };
-
-        static readonly LazyRegex rNormalizeModel = new LazyRegex("[- ]+");
-
-        /// <summary>
-        /// Prefix to use for modelname to force to Family.
-        /// </summary>
-        public const string ICAOPrefix = "ICAO:";
-
-        #region properties
-        /// <summary>
-        /// Text to find anywhere in the search string
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string FullText { get; set; }
-
-        /// <summary>
-        /// Text to find in the manufacturer name
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string ManufacturerName { get; set; }
-
-        /// <summary>
-        /// Manufacturer ID (i.e., deterministic)
-        /// </summary>
-        [System.ComponentModel.DefaultValue(-1)]
-        public int ManufacturerID { get; set; }
-
-        /// <summary>
-        /// Text to find in the model (e.g., "C-172")
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string Model { get; set; }
-
-        /// <summary>
-        /// Text to find in the model marketing name (e.g., "Skyhawk")
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string ModelName { get; set; }
-
-        /// <summary>
-        /// Text to find in the category/class
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string CatClass { get; set; }
-
-        /// <summary>
-        /// Text to find in the type name.
-        /// </summary>
-        [System.ComponentModel.DefaultValue("")]
-        public string TypeName { get; set; }
-
-        /// <summary>
-        /// Maximum # of results to return; -1 for no limit
-        /// </summary>
-        public int Limit { get; set; }
-
-        /// <summary>
-        /// # of results to skip, -1 for no skip
-        /// </summary>
-        public int Skip { get; set; }
-
-        /// <summary>
-        /// True to get images.  Images are a bit slower, so this is off by default.
-        /// </summary>
-        public bool IncludeSampleImages { get; set; }
-
-        /// <summary>
-        /// On which field should the results be sorted?
-        /// </summary>
-        [System.ComponentModel.DefaultValue(ModelSortMode.ModelName)]
-        public ModelSortMode SortMode { get; set; }
-
-        /// <summary>
-        /// Should the sort be ascending or descending?
-        /// </summary>
-        [System.ComponentModel.DefaultValue(SortDirection.Ascending)]
-        public SortDirection SortDir { get; set; }
-
-        /// <summary>
-        /// Should we give a boost to models where the model itself matches?
-        /// </summary>
-        public bool PreferModelNameMatch { get; set; }
-
-        /// <summary>
-        /// Is this an empty query?
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return (FullText?.Length ?? 0) + (ManufacturerName?.Length ?? 0) + (ModelName?.Length ?? 0) + (CatClass?.Length ?? 0) + (TypeName?.Length ?? 0) == 0; }
-        }
-
-        /// <summary>
-        /// Is this an advanced query?
-        /// </summary>
-        public bool IsAdvanced
-        {
-            get { return (FullText?.Length ?? 0) == 0 && !IsEmpty; }
-        }
-
-        private static readonly char[] searchSeparator = new char[] { ' ' };
-        #endregion
-
-        #region Query utilities
-        /// <summary>
-        /// The MySqlCommand initialized for this query, including any and all parameters.
-        /// </summary>
-        public DBHelperCommandArgs ModelQueryCommand()
-        {
-            List<string> lstWhereTerms = new List<string>();
-            List<MySqlParameter> lstParams = new List<MySqlParameter>();
-
-            // Add each of the terms
-            string[] rgTerms = FullText.Replace("-", string.Empty).Split(searchSeparator, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < rgTerms.Length; i++)
-                AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "REPLACE(Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass), '-', '')", lstWhereTerms, lstParams);
-
-            string szPreferred = "0";
-            if (PreferModelNameMatch)
-            {
-                string szModelMatch = String.Format(CultureInfo.InvariantCulture, "%{0}%", FullText.EscapeMySQLWildcards().ConvertToMySQLWildcards());
-                szPreferred = "IF(model LIKE ?modelMatch, 1, 0)";
-                lstParams.Add(new MySqlParameter("modelMatch", szModelMatch));
-            }
-
-            AddQueryTerm(CatClass, "qCatClass", "catclass", lstWhereTerms, lstParams);
-            AddQueryTerm(rNormalizeModel.Replace(Model, string.Empty), "qModel", "REPLACE(REPLACE(model, ' ', ''), '-', '')", lstWhereTerms, lstParams);
-            if (ModelName.StartsWith(ICAOPrefix, StringComparison.CurrentCultureIgnoreCase))
-                AddQueryTerm(ModelName.Substring(ICAOPrefix.Length), "qFamilyName", "family", lstWhereTerms, lstParams);
-            else
-                AddQueryTerm(ModelName, "qModelName", "modelname", lstWhereTerms, lstParams);
-            AddQueryTerm(ManufacturerName, "qMan", "manufacturer", lstWhereTerms, lstParams);
-            AddQueryTerm(TypeName, "qType", "typename", lstWhereTerms, lstParams);
-
-            if (ManufacturerID != Manufacturer.UnsavedID)
-            {
-                lstWhereTerms.Add(" (models.idManufacturer = ?manID) ");
-                lstParams.Add(new MySqlParameter("manID", ManufacturerID));
-            }
-
-            string szHavingPredicate = String.Join(" AND ", lstWhereTerms.ToArray());
-
-            const string szQTemplate = @"SELECT
-models.*,
-manufacturers.manufacturer,
-categoryclass.CatClass as 'Category/Class',
-{0} AS AircraftIDs,
-{1} AS preferred
-FROM models
-  INNER JOIN manufacturers on manufacturers.idManufacturer = models.idmanufacturer
-  INNER JOIN categoryclass on categoryclass.idCatClass = models.idcategoryclass
-{2}
-{3}
-{4}
-{5}";
-            const string szQSamplesTemplate = @"LEFT OUTER JOIN (SELECT ac.idmodel, group_concat(DISTINCT img.imageKey separator ',') AS AircraftIDs
-                    FROM Images img
-                    INNER JOIN aircraft ac ON CAST(img.imageKey AS Unsigned)=ac.idaircraft
-                    WHERE img.VirtPathID=1
-                    GROUP BY ac.idmodel) Samples
-       ON models.idmodel=Samples.idmodel";
-
-            string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate,
-                IncludeSampleImages ? "Samples.AircraftIDs" : "NULL",
-                szPreferred,
-                IncludeSampleImages ? szQSamplesTemplate : string.Empty,
-                szHavingPredicate.Length == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " WHERE {0} ", szHavingPredicate),
-                SortOrderFromSortModeAndDirection(SortMode, SortDir),
-                (Limit > 0 && Skip >= 0) ? String.Format(CultureInfo.InvariantCulture, " LIMIT {0},{1} ", Skip, Limit) : string.Empty);
-
-            DBHelperCommandArgs args = new DBHelperCommandArgs(szQ, lstParams);
-            return args;
-        }
-
-        /// <summary>
-        /// Adds a query term
-        /// </summary>
-        /// <param name="szQ">The search text</param>
-        /// <param name="szParamName">Parameter name for this search term</param>
-        /// <param name="szMatchField">The DB query field against which to match</param>
-        /// <param name="lstTerms">The list of WHERE terms to which to add</param>
-        /// <param name="lstParams">The list of MySQLParameters to which to add</param>
-        private static void AddQueryTerm(string szQ, string szParamName, string szMatchField, List<string> lstTerms, List<MySqlParameter> lstParams)
-        {
-            if (String.IsNullOrEmpty(szQ))
-                return;
-
-            lstTerms.Add(String.Format(CultureInfo.InvariantCulture, " ({0} LIKE ?{1}) ", szMatchField, szParamName));
-            lstParams.Add(new MySqlParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", szQ.EscapeMySQLWildcards().ConvertToMySQLWildcards())));
-        }
-
-        private static string SortOrderFromSortModeAndDirection(ModelSortMode sortmode, SortDirection sortDirection)
-        {
-            string szOrderString;
-            string szDirString = sortDirection.ToMySQLSort();
-
-            switch (sortmode)
-            {
-                case ModelSortMode.CatClass:
-                    szOrderString = String.Format(CultureInfo.InvariantCulture, "categoryclass.CatClass {0}, manufacturer {0}, model {0}", szDirString);
-                    break;
-                case ModelSortMode.Manufacturer:
-                    szOrderString = String.Format(CultureInfo.InvariantCulture, "manufacturer {0}, model {0}", szDirString);
-                    break;
-                default:
-                case ModelSortMode.ModelName:
-                    szOrderString = String.Format(CultureInfo.InvariantCulture, "Model {0}, modelname {0}, typename {0}", szDirString);
-                    break;
-            }
-            return String.Format(CultureInfo.InvariantCulture, " ORDER BY Preferred DESC, {0}", szOrderString);
-        }
-        #endregion
-
-        public ModelQuery()
-        {
-            FullText = ManufacturerName = Model = ModelName = CatClass = TypeName = string.Empty;
-            Limit = -1;
-            Skip = -1;
-            ManufacturerID = Manufacturer.UnsavedID;
-            SortMode = ModelSortMode.Manufacturer;
-            SortDir = SortDirection.Ascending;
-            IncludeSampleImages = false;
-        }
     }
 }
-

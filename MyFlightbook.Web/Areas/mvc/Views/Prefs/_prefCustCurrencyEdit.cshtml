@@ -30,7 +30,7 @@
     }
     UserAircraft ua = new UserAircraft(User.Identity.Name);
     IEnumerable<Aircraft> lstAc = ua.GetAircraftForUser();
-    IEnumerable<MakeModel> lstMakes = MakeModel.ModelsForAircraft(lstAc);
+    IEnumerable<MakeModel> lstMakes = MakeModel.ModelsForAircraftIds(lstAc.Select(ac => ac.ModelID));
     IEnumerable<CategoryClass> rgCatClass = CategoryClass.CategoryClasses();
     // Get the categories (as opposed to catclass); this is something of a hack, but it avoids an extra DB call
     Dictionary<string, string> dictCategories = new Dictionary<string, string>();

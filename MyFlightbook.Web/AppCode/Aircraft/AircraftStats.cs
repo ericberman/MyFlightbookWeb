@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 
 /******************************************************
  * 
@@ -225,6 +226,65 @@ WHERE
 
             return lst;
         }
-    }
 
+        /// <summary>
+        /// Computes the set of flights that you have flown in this aircraft or model
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="mm"></param>
+        /// <param name="userStats"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static LinkedString UserFlightsTotal(string szUser, MakeModel mm, MakeModelStats userStats)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (userStats == null)
+                throw new ArgumentNullException(nameof(userStats));
+            if (mm == null)
+                throw new ArgumentNullException(nameof(mm));
+
+            FlightQuery fq = new FlightQuery(szUser);
+            fq.MakeList.Add(mm);
+            string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue ?
+            String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value) : string.Empty);
+            return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", fq.ToBase64CompressedJSONString()));
+        }
+
+        /// <summary>
+        /// Returns a coalesced list of attributes for a user in an aircraft, including stats for the aircraft, the family name of the make/model, and any attributes of the make/model. If a list of aircraft is provided, also includes the number of flights for the user in that make/model and the total number of flights for that make/model.
+        /// </summary>
+        /// <param name="acs">Any aircraft stats (can be null, which is why this is static)</param>
+        /// <param name="rgac">An array of aircraft; really only needs to be a count of aircraft</param>
+        /// <param name="szUser">The user for whom stats are computed.  Must not be null</param>
+        /// <param name="userStats">MakeModelStats</param>
+        /// <param name="mm">The model.  Must not be null</param>
+        /// <param name="upgradeType">Any avionics upgrade type</param>
+        /// <param name="upgradeDate">Date of that upgrade, if any</param>
+        /// <returns>An enumerable of linked strings with the stats</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<LinkedString> AttributeListForUser(AircraftStats acs, IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, MakeModel mm, MakeModel.AvionicsTechnologyType upgradeType = MakeModel.AvionicsTechnologyType.None, DateTime? upgradeDate = null)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (mm == null)
+                throw new ArgumentNullException(nameof(mm));
+
+            List<LinkedString> lstAttribs = new List<LinkedString>();
+            if (acs != null)
+                lstAttribs.Add(acs.UserStatsDisplay);
+
+            if (!String.IsNullOrEmpty(mm.FamilyName))
+                lstAttribs.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
+            foreach (string sz in mm.AttributeList(upgradeType, upgradeDate))
+                lstAttribs.Add(new LinkedString(sz));
+            if (rgac?.Any() ?? false)
+            {
+                lstAttribs.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsAircraftCount, rgac.Count())));
+                MakeModelStats stats = userStats ?? mm.StatsForUser(szUser);
+                lstAttribs.Add(UserFlightsTotal(szUser, mm, stats));
+            }
+            return lstAttribs;
+        }
+    }
 }

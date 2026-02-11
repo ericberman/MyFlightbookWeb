@@ -150,7 +150,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 Manufacturer m = new Manufacturer(name);
                 if (m.IsNew)
-                    m.FCommit();
+                    m.FCommit((man) =>
+                    {
+                        util.NotifyAdminEvent("New manufacturer added", $"New manufacturer '{man.ManufacturerName}' added by user {MyFlightbook.Profile.GetUser(User.Identity.Name).DetailedName}.", ProfileRoles.maskCanManageData);
+                    });
                 return Json(m);
             });
         }
@@ -382,9 +385,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 string szResult = string.Empty;
 
-                if (hwTach == 0)
-                    szResult = hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs);
-                else szResult = hwHobbs == 0
+                szResult = hwTach == 0
+                    ? hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs)
+                    : hwHobbs == 0
                     ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach)
                     : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
                 return Content(szResult);
@@ -447,7 +450,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private Aircraft CheckValidUserAircraft(int idAircraft, out UserAircraft ua)
         {
             if (idAircraft <= 0)
-                throw new ArgumentOutOfRangeException("Invalid aircraft ID");
+                throw new ArgumentOutOfRangeException(nameof(idAircraft), "Invalid aircraft ID");
 
             ua = new UserAircraft(User.Identity.Name);
             Aircraft ac = ua[idAircraft];

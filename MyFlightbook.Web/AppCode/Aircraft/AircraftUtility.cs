@@ -302,6 +302,9 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
             }
             return lst;
         }
+        #endregion
+
+        #region Autocomplete
 
         private static string[] DoSuggestion(string szQ, string prefixText, int count)
         {

@@ -163,7 +163,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.userStats = stats;
             ViewBag.useArmyCurrency = pf.UsesArmyCurrency;
             if (fEditMode)
-                ViewBag.userFlights = model.UserFlightsTotal(User.Identity.Name, stats);
+                ViewBag.userFlights = AircraftStats.UserFlightsTotal(User.Identity.Name, model, stats);
             else
             {
                 IEnumerable<Aircraft> rgac = (new UserAircraft(User.Identity.Name)).FindMatching(ac => ac.ModelID == idModel);

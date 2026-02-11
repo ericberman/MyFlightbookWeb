@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 /******************************************************
     * 
-    * Copyright (c) 2022-2024 MyFlightbook LLC
+    * Copyright (c) 2022-2026 MyFlightbook LLC
     * Contact myflightbook-at-gmail.com for more information
     *
    *******************************************************/
@@ -94,7 +95,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
             ViewBag.aircraft = lstAc;
 
-            ViewBag.models = MakeModel.ModelsForAircraft(lstAc);
+            ViewBag.models = MakeModel.ModelsForAircraftIds(lstAc.Select(ac => ac.ModelID));
             ViewBag.categoryClasses = CategoryClass.CategoryClasses();
             ViewBag.properties = CustomPropertyType.AllPreviouslyUsedPropsForUser(fq.UserName);
             ViewBag.cannedQueries = CannedQuery.QueriesForUser(fq.UserName);
