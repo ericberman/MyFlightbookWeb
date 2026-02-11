@@ -193,12 +193,6 @@ namespace MyFlightbook
     }
 
     /// <summary>
-    /// Can a given aircraft model or manufacturer be a real aircraft, or must it be a sim, or can it be a sim or anonymous?
-    /// E.g., a Frasca can only be a Sim, but "Generic" can be a sim or anonymous (but not real).
-    /// </summary>
-    public enum AllowedAircraftTypes { Any = 0, SimulatorOnly = 1, SimOrAnonymous = 2 };
-
-    /// <summary>
     /// Represents a specific aircraft in the system.
     /// </summary>
     [Serializable]
