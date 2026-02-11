@@ -685,7 +685,15 @@ WHERE {1}";
             return true;
         }
 
-        public void CommitForUser(string szUser)
+        /// <summary>
+        /// Commits the the model to the database.
+        /// </summary>
+        /// <param name="szUser">The user who is making the edit</param>
+        /// <param name="fAsAdmin">True if we should perform this as an admin</param>
+        /// <param name="onCommit">Lambda to be called after the edit</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public void CommitForUser(string szUser, bool fAsAdmin, Action<MakeModel> onCommit)
         {
             if (string.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -699,30 +707,12 @@ WHERE {1}";
             {
                 mmExisting = new MakeModel(MakeModelID);
                 // otherwise, if the user isn't an admin, restore the existing allowed types
-                if (!Profile.GetUser(szUser).CanManageData)
+                if (!fAsAdmin)
                     AllowedTypes = mmExisting.AllowedTypes;
             }
 
-            Commit(szUser, IsNew ? string.Empty : mmExisting.ToString());
-
-        }
-
-        /// <summary>
-        /// Saves the make/model to the DB, creating it if necessary
-        /// <paramref name="szChangingUser">User making the change</paramref>
-        /// <paramref name="szOriginalDesc">Description of the original version; empty for new</paramref>
-        /// </summary>
-        public void Commit(string szChangingUser, string szOriginalDesc)
-        {
             if (!FIsValid())
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errSaveMakeFailed, ErrorString));
-
-            if (szChangingUser == null)
-                throw new UnauthorizedAccessException("MUST be authenticated to change a model");
-            if (szOriginalDesc == null && !IsNew)
-                throw new InvalidOperationException("Model updates MUST provide an original description");
-
-            bool fWasNew = IsNew;   // need this for below, since IsNew will change state after commit
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errSaveMakeFailed, ErrorString));
 
             // Inherit the allowed aircraft types from the manufacturer if this is new or if it otherwise is unrestricted.
             if (IsNew || AllowedTypes == AllowedAircraftTypes.Any)
@@ -737,29 +727,29 @@ WHERE {1}";
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("Model", Model.LimitTo(44));
-                    comm.Parameters.AddWithValue("modelName", ModelName.LimitTo(44));
-                    comm.Parameters.AddWithValue("typeName", TypeName.LimitTo(44));
-                    comm.Parameters.AddWithValue("familyname", FamilyName);
-                    comm.Parameters.AddWithValue("idCatClass", (int)CategoryClassID);
-                    comm.Parameters.AddWithValue("idManufacturer", ManufacturerID);
-                    comm.Parameters.AddWithValue("IsComplex", IsComplex);
-                    comm.Parameters.AddWithValue("IsHighPerf", IsHighPerf);
-                    comm.Parameters.AddWithValue("Is200hp", Is200HP);
-                    comm.Parameters.AddWithValue("IsTailWheel", IsTailWheel);
-                    comm.Parameters.AddWithValue("engineType", EngineType);
-                    comm.Parameters.AddWithValue("IsGlassOnly", IsAllGlass);
-                    comm.Parameters.AddWithValue("IsTaa", IsAllTAA);
-                    comm.Parameters.AddWithValue("IsRetract", IsRetract);
-                    comm.Parameters.AddWithValue("HasFlaps", HasFlaps);
-                    comm.Parameters.AddWithValue("IsConstantProp", IsConstantProp);
-                    comm.Parameters.AddWithValue("armyMDS", ArmyMDS.LimitTo(44));
-                    comm.Parameters.AddWithValue("simOnly", (int)AllowedTypes);
-                    comm.Parameters.AddWithValue("motorglider", IsMotorGlider);
-                    comm.Parameters.AddWithValue("multiHeli", IsMultiEngineHelicopter);
-                    comm.Parameters.AddWithValue("singlePilot", IsCertifiedSinglePilot);
-                });
+            {
+                comm.Parameters.AddWithValue("Model", Model.LimitTo(44));
+                comm.Parameters.AddWithValue("modelName", ModelName.LimitTo(44));
+                comm.Parameters.AddWithValue("typeName", TypeName.LimitTo(44));
+                comm.Parameters.AddWithValue("familyname", FamilyName);
+                comm.Parameters.AddWithValue("idCatClass", (int)CategoryClassID);
+                comm.Parameters.AddWithValue("idManufacturer", ManufacturerID);
+                comm.Parameters.AddWithValue("IsComplex", IsComplex);
+                comm.Parameters.AddWithValue("IsHighPerf", IsHighPerf);
+                comm.Parameters.AddWithValue("Is200hp", Is200HP);
+                comm.Parameters.AddWithValue("IsTailWheel", IsTailWheel);
+                comm.Parameters.AddWithValue("engineType", EngineType);
+                comm.Parameters.AddWithValue("IsGlassOnly", IsAllGlass);
+                comm.Parameters.AddWithValue("IsTaa", IsAllTAA);
+                comm.Parameters.AddWithValue("IsRetract", IsRetract);
+                comm.Parameters.AddWithValue("HasFlaps", HasFlaps);
+                comm.Parameters.AddWithValue("IsConstantProp", IsConstantProp);
+                comm.Parameters.AddWithValue("armyMDS", ArmyMDS.LimitTo(44));
+                comm.Parameters.AddWithValue("simOnly", (int)AllowedTypes);
+                comm.Parameters.AddWithValue("motorglider", IsMotorGlider);
+                comm.Parameters.AddWithValue("multiHeli", IsMultiEngineHelicopter);
+                comm.Parameters.AddWithValue("singlePilot", IsCertifiedSinglePilot);
+            });
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, Resources.Makes.errSaveMakeFailed, szQ + "\r\n" + dbh.LastError));
 
@@ -775,20 +765,8 @@ WHERE {1}";
             if (MakeModelID != -1)
                 util.GlobalCache.Set(CacheKey(MakeModelID), this, DateTimeOffset.UtcNow.AddHours(1));
 
-            // use fIsNew because Model.IsNew may have been true and not now.
-            string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl), MakeModelID);
-            string szNewDesc = this.ToString();
-            if (fWasNew)
-                util.NotifyAdminEvent("New Model created", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\n{1}\r\n{2}", Profile.GetUser(szChangingUser).DetailedName, szNewDesc, szLinkEditModel), ProfileRoles.maskCanManageData);
-            else
-            {
-                if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
-                    util.NotifyAdminEvent("Model updated", String.Format(CultureInfo.InvariantCulture, "User: {0}\r\n\r\nWas:\r\n{1}\r\n\r\nIs Now: \r\n{2}\r\n \r\nID: {3}, {4}",
-                        Profile.GetUser(szChangingUser).DetailedName,
-                        szOriginalDesc,
-                        szNewDesc,
-                        MakeModelID, szLinkEditModel), ProfileRoles.maskCanManageData);
-            }
+            onCommit?.Invoke(this);
+
         }
 
         private void InitFromDataReader(MySqlDataReader dr)

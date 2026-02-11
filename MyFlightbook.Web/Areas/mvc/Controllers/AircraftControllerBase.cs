@@ -192,8 +192,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 MakeModel model = ModelFromRequest();
-                model.CommitForUser(User.Identity.Name);
-                MakeModel m = new MakeModel(model.MakeModelID); // reload from the database to pick up everything
+                string szOriginalDesc = model.IsNew ? string.Empty : MakeModel.GetModel(model.MakeModelID).ToString(); // do GetModel on the original to pull from cache and get the original description for comparison/logging purposes
+                bool fWasNew = model.IsNew;
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                bool fAsAdmin = pf.CanManageData;
+                model.CommitForUser(User.Identity.Name, fAsAdmin, (mm) =>
+                {
+                    string szNewDesc = mm.ToString();
+                    string szLinkEditModel = String.Format(CultureInfo.InvariantCulture, "{0}/{1}", "~/mvc/Aircraft/ViewModel".ToAbsoluteURL(util.RequestContext.CurrentRequestUrl), mm.MakeModelID);
+
+                    if (fWasNew)
+                        util.NotifyAdminEvent("New Model created", $"User: {pf.DetailedName}\r\n\r\n{szNewDesc}\r\n{szLinkEditModel}", ProfileRoles.maskCanManageData);
+                    else
+                    {
+                        if (String.Compare(szNewDesc, szOriginalDesc, StringComparison.Ordinal) != 0)
+                            util.NotifyAdminEvent("Model updated", $"User: {pf.DetailedName}\r\n\r\nWas:\r\n{szOriginalDesc}\r\n\r\nIs Now: \r\n{szNewDesc}\r\n \r\nID: {mm.MakeModelID}, {szLinkEditModel}", ProfileRoles.maskCanManageData);
+                    }
+                });
+
+                MakeModel m = new MakeModel(model.MakeModelID); // reload from the database (or cache) to pick up everything
                 return Json(m);
             });
         }
