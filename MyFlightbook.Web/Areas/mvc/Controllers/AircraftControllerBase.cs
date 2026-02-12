@@ -283,7 +283,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 if (string.IsNullOrEmpty(oldTail))
                     return Content(prefix);
-                return Content(CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(string.Empty, prefix), oldTail));
+                return Content(CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(string.Empty, prefix), Aircraft.NormalizeTail(oldTail), Aircraft.maxTailLength));
             });
         }
 

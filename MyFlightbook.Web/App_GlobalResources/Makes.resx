@@ -117,24 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DisplayTemplateWithType" xml:space="preserve">
-    <value>{0} (Type: {1})</value>
-    <comment>E.g., "B737 (Type: B737-300)"</comment>
-  </data>
   <data name="editMakeHeader" xml:space="preserve">
     <value>Edit Make: {0}</value>
-  </data>
-  <data name="errMDSTooLong" xml:space="preserve">
-    <value>Mission/Design/Series '{0}' is too long; please provide one that is fewer than 40 characters in length</value>
-  </data>
-  <data name="errSaveMakeFailed" xml:space="preserve">
-    <value>Error saving make/model: {0}</value>
-  </data>
-  <data name="errSaveManufacturerFailed" xml:space="preserve">
-    <value>Error saving manufacturer - {0}\r\n{1}</value>
-  </data>
-  <data name="HasFlaps" xml:space="preserve">
-    <value>Flaps</value>
   </data>
   <data name="IsComplex" xml:space="preserve">
     <value>Complex</value>
@@ -192,9 +176,6 @@
   <data name="IsGlass" xml:space="preserve">
     <value>Glass Cockpit</value>
   </data>
-  <data name="errSinglePilotButNotTypeRated" xml:space="preserve">
-    <value>Model is certified for single-pilot operations, but it isn't turbine or doesn't require a type rating</value>
-  </data>
   <data name="IsCertifiedSinglePilot" xml:space="preserve">
     <value>Certified for Single Pilot Operations</value>
   </data>
@@ -209,9 +190,6 @@
   </data>
   <data name="searchTip" xml:space="preserve">
     <value>Search for models</value>
-  </data>
-  <data name="ICAOTemplate" xml:space="preserve">
-    <value> (ICAO: {0})</value>
   </data>
   <data name="AllTAA" xml:space="preserve">
     <value>All aircraft of this model are TAAs</value>
@@ -474,12 +452,6 @@
   </data>
   <data name="errManufacturerNameRequired" xml:space="preserve">
     <value>Please provide a name for the manufacturer</value>
-  </data>
-  <data name="errManufacturerRequired" xml:space="preserve">
-    <value>Please select a manufacturer from the list.  You can add one if needed.</value>
-  </data>
-  <data name="errInvalidICAO" xml:space="preserve">
-    <value>ICAO/FAA codes may only be up to 4 alphanumeric characters</value>
   </data>
   <data name="editMakeKeepSimsHighLevel" xml:space="preserve">
     <value>&lt;div&gt;

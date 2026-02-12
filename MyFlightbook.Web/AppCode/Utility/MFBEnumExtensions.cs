@@ -13,20 +13,11 @@ namespace MyFlightbook
     {
         #region Enum Extensions
         /// <summary>
-        /// Determines if the specified turbinelevel is turbine (vs. piston or electric)
-        /// </summary>
-        /// <param name="tl"></param>
-        /// <returns></returns>
-        public static bool IsTurbine(this MakeModel.TurbineLevel tl) { return tl == MakeModel.TurbineLevel.Jet || tl == MakeModel.TurbineLevel.UnspecifiedTurbine || tl == MakeModel.TurbineLevel.TurboProp; }
-
-        /// <summary>
         /// Determines if the currency state is any of the current states.
         /// </summary>
         /// <param name="cs"></param>
         /// <returns></returns>
         public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
-
-        public static string ToMySQLSort(this SortDirection sd) { return sd == SortDirection.Ascending ? "ASC" : "DESC"; }
 
         /// <summary>
         /// Format a signature state

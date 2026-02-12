@@ -1668,16 +1668,8 @@
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
     <Compile Include="AppCode\Aircraft\AircraftImport.cs" />
     <Compile Include="AppCode\Aircraft\AircraftStats.cs" />
-    <Compile Include="AppCode\Aircraft\AircraftTombstone.cs" />
     <Compile Include="AppCode\Aircraft\AircraftUtility.cs" />
-    <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
-    <Compile Include="AppCode\Aircraft\Checklist.cs" />
-    <Compile Include="AppCode\Aircraft\CountryCodes.cs" />
     <Compile Include="AppCode\Aircraft\Maintenance.cs" />
-    <Compile Include="AppCode\Aircraft\Makes.cs" />
-    <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
-    <Compile Include="AppCode\Aircraft\ModelQuery.cs" />
-    <Compile Include="AppCode\Aircraft\SimpleMakeModel.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
@@ -2207,6 +2199,10 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AircraftSupport\AircraftSupport.csproj">
+      <Project>{6dba78b7-571d-412b-a5d0-d61592c3f15e}</Project>
+      <Name>AircraftSupport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj">
       <Project>{0878c055-b690-40ab-a1df-6a7a076fa0f5}</Project>
       <Name>MyFlightbook.Airports</Name>

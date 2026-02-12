@@ -217,9 +217,10 @@ namespace MyFlightbook
         /// Returns a tailnumber that replaces the country code prefix with the supplied one
         /// </summary>
         /// <param name="ccNew">The desired country code prefix</param>
-        /// <param name="szTail">The original tailnumber</param>
+        /// <param name="szTail">The original NORMALIZED tailnumber</param>
+        /// <param name="maxTailLength">Maximum allowed length for a tailnumber</param>
         /// <returns>A modified tailnumber</returns>
-        public static string SetCountryCodeForTail(CountryCodePrefix ccNew, string szTail)
+        public static string SetCountryCodeForTail(CountryCodePrefix ccNew, string szTail, int maxTailLength)
         {
             if (ccNew == null)
                 throw new ArgumentNullException(nameof(ccNew));
@@ -233,9 +234,9 @@ namespace MyFlightbook
             string szTailNew = szTail;
             if (ccOld.Prefix.CompareCurrentCulture(ccNew.Prefix) != 0)
             {
-                szTailNew = ccNew.HyphenatedPrefix + Aircraft.NormalizeTail(szTail).Substring(ccOld.NormalizedPrefix.Length);
-                if (szTailNew.Length > Aircraft.maxTailLength)
-                    szTailNew = szTailNew.Substring(0, Aircraft.maxTailLength);
+                szTailNew = ccNew.HyphenatedPrefix + szTail.Substring(ccOld.NormalizedPrefix.Length);
+                if (szTailNew.Length > maxTailLength)
+                    szTailNew = szTailNew.Substring(0, maxTailLength);
             }
 
             return szTailNew.ToUpper(CultureInfo.InvariantCulture);
@@ -244,8 +245,9 @@ namespace MyFlightbook
         /// <summary>
         /// Sets hyphenation for all aircraft to match this country code's hyphenation conventions.  No-op for "None".  Does NOT affect children.
         /// </summary>
+        /// <param name="maxTailLength">Maximum allowed length for a tailnumber</param>
         /// <returns>Number of aircraft that are affected</returns>
-        public int ADMINNormalizeMatchingAircraft()
+        public int ADMINNormalizeMatchingAircraft(int maxTailLength)
         {
             // Nothing to do.
             if (HyphenPref == HyphenPreference.None)
@@ -259,7 +261,7 @@ namespace MyFlightbook
                         LENGTH(?NormalizedPrefix) + 1))
                 WHERE
                     tailnormal LIKE ?NormalizedPrefixWildcard 
-                        AND (length(tailnumber) < {0}) ", Aircraft.maxTailLength - ((HyphenPref == HyphenPreference.Hyphenate) ? 1 : 0)));
+                        AND (length(tailnumber) < {0}) ", maxTailLength - ((HyphenPref == HyphenPreference.Hyphenate) ? 1 : 0)));
 
             List<MySqlParameter> lstParams = new List<MySqlParameter>() {
                 new MySqlParameter("hyphenatedPrefix", HyphenatedPrefix),

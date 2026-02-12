@@ -1148,6 +1148,11 @@ namespace MyFlightbook
             return sb.ToString();
         }
         #endregion
+
+        #region Misc
+        public static string ToMySQLSort(this SortDirection sd) { return sd == SortDirection.Ascending ? "ASC" : "DESC"; }
+
+        #endregion
     }
 
     /// <summary>

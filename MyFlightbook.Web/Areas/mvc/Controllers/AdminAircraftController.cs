@@ -400,7 +400,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 List<CountryCodePrefix> lst = new List<CountryCodePrefix>(CountryCodePrefix.CountryCodes());
                 CountryCodePrefix ccp = lst.Find(c => c.ID == id);
-                return String.Format(CultureInfo.CurrentCulture, "{0} aircraft updated", ccp.ADMINNormalizeMatchingAircraft());
+                return String.Format(CultureInfo.CurrentCulture, "{0} aircraft updated", ccp.ADMINNormalizeMatchingAircraft(Aircraft.maxTailLength));
             });
         }
 

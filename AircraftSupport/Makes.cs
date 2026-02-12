@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Image;
+﻿using AircraftSupport.Properties;
+using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
@@ -47,6 +48,16 @@ namespace MyFlightbook
             EarliestFlight = LatestFlight = null;
         }
         #endregion
+    }
+
+    public static class MakeModelExtension
+    {
+        /// <summary>
+        /// Determines if the specified turbinelevel is turbine (vs. piston or electric)
+        /// </summary>
+        /// <param name="tl"></param>
+        /// <returns></returns>
+        public static bool IsTurbine(this MakeModel.TurbineLevel tl) { return tl == MakeModel.TurbineLevel.Jet || tl == MakeModel.TurbineLevel.UnspecifiedTurbine || tl == MakeModel.TurbineLevel.TurboProp; }
     }
 
     /// <summary>
@@ -119,7 +130,7 @@ namespace MyFlightbook
             get
             {
                 if (!String.IsNullOrEmpty(ManufacturerDisplay))
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ManufacturerDisplay, ModelDisplayName).Trim();
+                    return $"{ManufacturerDisplay} {ModelDisplayName}".Trim();
                 else
                     return string.Empty;
             }
@@ -150,7 +161,7 @@ namespace MyFlightbook
             {
                 if (!String.IsNullOrEmpty(ManufacturerDisplay) && TypeName != null && ModelName != null && CategoryClassDisplay != null)
                     return String.Format(CultureInfo.CurrentCulture, "{0}{1}",
-                        TypeName.Length > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Makes.DisplayTemplateWithType, Model, TypeName) : Model,
+                        TypeName.Length > 0 ? String.Format(CultureInfo.CurrentCulture, AircraftResources.DisplayTemplateWithType, Model, TypeName) : Model,
                         ModelName.Length > 0 ? String.Format(CultureInfo.CurrentCulture, " \"{0}\"", ModelName) : string.Empty).Trim();
                 else
                     return string.Empty;
@@ -160,7 +171,7 @@ namespace MyFlightbook
         [Newtonsoft.Json.JsonIgnore]
         public string ICAODisplay
         {
-            get { return String.IsNullOrEmpty(FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Makes.ICAOTemplate, FamilyName); }
+            get { return String.IsNullOrEmpty(FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, AircraftResources.ICAOTemplate, FamilyName); }
         }
 
         public string EASAClassificationForCatClass(CategoryClass.CatClassID categoryClass)
@@ -168,17 +179,17 @@ namespace MyFlightbook
             switch (categoryClass)
             {
                 case CategoryClass.CatClassID.ASEL:
-                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassASELT : Resources.Aircraft.EASACategoryClassASELP;
+                    return EngineType.IsTurbine() ? AircraftResources.EASACategoryClassASELT : AircraftResources.EASACategoryClassASELP;
                 case CategoryClass.CatClassID.ASES:
-                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassASEST : Resources.Aircraft.EASACategoryClassASESP;
+                    return EngineType.IsTurbine() ? AircraftResources.EASACategoryClassASEST : AircraftResources.EASACategoryClassASESP;
                 case CategoryClass.CatClassID.AMEL:
-                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassAMELT : Resources.Aircraft.EASACategoryClassAMELP;
+                    return EngineType.IsTurbine() ? AircraftResources.EASACategoryClassAMELT : AircraftResources.EASACategoryClassAMELP;
                 case CategoryClass.CatClassID.AMES:
-                    return EngineType.IsTurbine() ? Resources.Aircraft.EASACategoryClassAMEST : Resources.Aircraft.EASACategoryClassAMESP;
+                    return EngineType.IsTurbine() ? AircraftResources.EASACategoryClassAMEST : AircraftResources.EASACategoryClassAMESP;
                 case CategoryClass.CatClassID.Glider:
-                    return IsMotorGlider ? Resources.Aircraft.EASACategoryClassMotorGlider : Resources.Aircraft.EASACategoryClassGlider;
+                    return IsMotorGlider ? AircraftResources.EASACategoryClassMotorGlider : AircraftResources.EASACategoryClassGlider;
                 case CategoryClass.CatClassID.PoweredLift:
-                    return Resources.Aircraft.EASACategoryClassPoweredLift;
+                    return AircraftResources.EASACategoryClassPoweredLift;
                 default:
                     return null;
             }
@@ -538,27 +549,27 @@ WHERE {1}";
             try
             {
                 if (ManufacturerID <= 0)
-                    throw new MyFlightbookValidationException(Resources.Makes.errManufacturerRequired);
+                    throw new MyFlightbookValidationException(AircraftResources.errManufacturerRequired);
 
                 if (String.IsNullOrEmpty(Model))
-                    throw new MyFlightbookValidationException(Resources.Makes.editMakeValModelNameRequired);
+                    throw new MyFlightbookValidationException(AircraftResources.editMakeValModelNameRequired);
 
                 // Category class and manufacturer will throw exceptions if there is an issue.
                 if (CategoryClass.CategoryClassFromID(CategoryClassID) == null || new Manufacturer(ManufacturerID) == null)
                     return false;
 
                 if (ArmyMDS.Length > 40)
-                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errMDSTooLong, ArmyMDS));
+                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, AircraftResources.errMDSTooLong, ArmyMDS));
 
                 if (IsCertifiedSinglePilot && (!EngineType.IsTurbine() || String.IsNullOrEmpty(TypeName)))
-                    throw new MyFlightbookValidationException(Resources.Makes.errSinglePilotButNotTypeRated);
+                    throw new MyFlightbookValidationException(AircraftResources.errSinglePilotButNotTypeRated);
 
                 FamilyName = FamilyName.ToUpperInvariant();
                 if (!RegexUtility.ICAO.IsMatch(FamilyName))
-                    throw new MyFlightbookValidationException(Resources.Makes.errInvalidICAO);
+                    throw new MyFlightbookValidationException(AircraftResources.errInvalidICAO);
 
                 if (TypeName.CompareCurrentCultureIgnoreCase("yes") == 0)
-                    throw new MyFlightbookValidationException(Resources.Makes.errYesNotValidType);
+                    throw new MyFlightbookValidationException(AircraftResources.errYesNotValidType);
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
@@ -596,7 +607,7 @@ WHERE {1}";
             }
 
             if (!FIsValid())
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errSaveMakeFailed, ErrorString));
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AircraftResources.errSaveMakeFailed, ErrorString));
 
             // Inherit the allowed aircraft types from the manufacturer if this is new or if it otherwise is unrestricted.
             if (IsNew || AllowedTypes == AllowedAircraftTypes.Any)
@@ -635,7 +646,7 @@ WHERE {1}";
                 comm.Parameters.AddWithValue("singlePilot", IsCertifiedSinglePilot);
             });
             if (dbh.LastError.Length > 0)
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, Resources.Makes.errSaveMakeFailed, szQ + "\r\n" + dbh.LastError));
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, AircraftResources.errSaveMakeFailed, szQ + "\r\n" + dbh.LastError));
 
             if (MakeModelID == -1)
                 MakeModelID = dbh.LastInsertedRowId;
@@ -930,25 +941,25 @@ WHERE {1}";
             switch (EngineType)
             {
                 case MakeModel.TurbineLevel.Jet:
-                    lstAttributes.Add(Resources.Makes.IsJet);
+                    lstAttributes.Add(AircraftResources.IsJet);
                     break;
                 case MakeModel.TurbineLevel.TurboProp:
-                    lstAttributes.Add(Resources.Makes.IsTurboprop);
+                    lstAttributes.Add(AircraftResources.IsTurboprop);
                     break;
                 case MakeModel.TurbineLevel.UnspecifiedTurbine:
-                    lstAttributes.Add(Resources.Makes.IsTurbine);
+                    lstAttributes.Add(AircraftResources.IsTurbine);
                     break;
                 case MakeModel.TurbineLevel.Electric:
-                    lstAttributes.Add(Resources.Makes.IsElectric);
+                    lstAttributes.Add(AircraftResources.IsElectric);
                     break;
                 default:
                     break;
             }
-            if (IsTailWheel) lstAttributes.Add(Resources.Makes.IsTailwheel);
-            if (IsHighPerf) lstAttributes.Add(Resources.Makes.IsHighPerf);
-            if (Is200HP) lstAttributes.Add(Resources.Makes.IsLegacyHighPerf);
-            if (IsMotorGlider) lstAttributes.Add(Resources.Makes.IsTMG);
-            if (IsMultiEngineHelicopter) lstAttributes.Add(Resources.Makes.IsMultiHelicopter);
+            if (IsTailWheel) lstAttributes.Add(AircraftResources.IsTailwheel);
+            if (IsHighPerf) lstAttributes.Add(AircraftResources.IsHighPerf);
+            if (Is200HP) lstAttributes.Add(AircraftResources.IsLegacyHighPerf);
+            if (IsMotorGlider) lstAttributes.Add(AircraftResources.IsTMG);
+            if (IsMultiEngineHelicopter) lstAttributes.Add(AircraftResources.IsMultiHelicopter);
 
             AvionicsTechnologyType avionicsTechnologyType = (AvionicsTechnologyType)Math.Max((int)AvionicsTechnology, (int)upgradeType);
             switch (avionicsTechnologyType)
@@ -956,23 +967,23 @@ WHERE {1}";
                 case AvionicsTechnologyType.None:
                     break;
                 case AvionicsTechnologyType.Glass:
-                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Resources.Makes.IsGlass, upgradeDate.Value.ToShortDateString()) : Resources.Makes.IsGlass);
+                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", AircraftResources.IsGlass, upgradeDate.Value.ToShortDateString()) : AircraftResources.IsGlass);
                     break;
                 case AvionicsTechnologyType.TAA:
-                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Resources.Makes.IsTAA, upgradeDate.Value.ToShortDateString()) : Resources.Makes.IsTAA);
+                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", AircraftResources.IsTAA, upgradeDate.Value.ToShortDateString()) : AircraftResources.IsTAA);
                     break;
             }
-            if (IsCertifiedSinglePilot) lstAttributes.Add(Resources.Makes.IsCertifiedSinglePilot);
+            if (IsCertifiedSinglePilot) lstAttributes.Add(AircraftResources.IsCertifiedSinglePilot);
             if (IsComplex)
-                lstAttributes.Add(Resources.Makes.IsComplex);
+                lstAttributes.Add(AircraftResources.IsComplex);
             else
             {
                 if (IsRetract)
-                    lstAttributes.Add(Resources.Makes.IsRetract);
+                    lstAttributes.Add(AircraftResources.IsRetract);
                 if (IsConstantProp)
-                    lstAttributes.Add(Resources.Makes.IsConstantProp);
+                    lstAttributes.Add(AircraftResources.IsConstantProp);
                 if (HasFlaps)
-                    lstAttributes.Add(Resources.Makes.HasFlaps);
+                    lstAttributes.Add(AircraftResources.HasFlaps);
             }
 
             return new ReadOnlyCollection<string>(lstAttributes);

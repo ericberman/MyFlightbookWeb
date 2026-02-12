@@ -142,15 +142,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} (Type: {1}).
-        /// </summary>
-        internal static string DisplayTemplateWithType {
-            get {
-                return ResourceManager.GetString("DisplayTemplateWithType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         internal static string editMakeAddMake {
@@ -650,15 +641,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ICAO/FAA codes may only be up to 4 alphanumeric characters.
-        /// </summary>
-        internal static string errInvalidICAO {
-            get {
-                return ResourceManager.GetString("errInvalidICAO", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please provide a name for the manufacturer.
         /// </summary>
         internal static string errManufacturerNameRequired {
@@ -668,74 +650,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select a manufacturer from the list.  You can add one if needed..
-        /// </summary>
-        internal static string errManufacturerRequired {
-            get {
-                return ResourceManager.GetString("errManufacturerRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mission/Design/Series &apos;{0}&apos; is too long; please provide one that is fewer than 40 characters in length.
-        /// </summary>
-        internal static string errMDSTooLong {
-            get {
-                return ResourceManager.GetString("errMDSTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error saving make/model: {0}.
-        /// </summary>
-        internal static string errSaveMakeFailed {
-            get {
-                return ResourceManager.GetString("errSaveMakeFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error saving manufacturer - {0}\r\n{1}.
-        /// </summary>
-        internal static string errSaveManufacturerFailed {
-            get {
-                return ResourceManager.GetString("errSaveManufacturerFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Model is certified for single-pilot operations, but it isn&apos;t turbine or doesn&apos;t require a type rating.
-        /// </summary>
-        internal static string errSinglePilotButNotTypeRated {
-            get {
-                return ResourceManager.GetString("errSinglePilotButNotTypeRated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This is not a yes/no field.  If a type rating is required to fly aircraft of this model, please enter it here.  You can use the provided link to find FAA-specified type designators, or look up other similar models to find the correct type rating requirement to use..
         /// </summary>
         internal static string errYesNotValidType {
             get {
                 return ResourceManager.GetString("errYesNotValidType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Flaps.
-        /// </summary>
-        internal static string HasFlaps {
-            get {
-                return ResourceManager.GetString("HasFlaps", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  (ICAO: {0}).
-        /// </summary>
-        internal static string ICAOTemplate {
-            get {
-                return ResourceManager.GetString("ICAOTemplate", resourceCulture);
             }
         }
         

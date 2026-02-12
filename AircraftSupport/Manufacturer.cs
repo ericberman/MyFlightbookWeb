@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using AircraftSupport.Properties;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -126,7 +127,7 @@ namespace MyFlightbook
             });
 
             if (dbh.LastError.Length > 0)
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, Resources.Makes.errSaveManufacturerFailed, szQ, dbh.LastError));
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, AircraftResources.errSaveManufacturerFailed, szQ, dbh.LastError));
 
             FlushCache();
 
