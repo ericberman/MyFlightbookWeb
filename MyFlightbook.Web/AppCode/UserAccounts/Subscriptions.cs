@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using MyFlightbook.Payments;
+using MyFlightbook.SharedUtility.EventRecorder;
 using System;
 using System.IO;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.CSV;
+using MyFlightbook.SharedUtility.EventRecorder;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections;

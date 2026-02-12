@@ -3,6 +3,7 @@ using MyFlightbook.Charting;
 using MyFlightbook.FlightStatistics;
 using MyFlightbook.Histogram;
 using MyFlightbook.Payments;
+using MyFlightbook.SharedUtility.EventRecorder;
 using System;
 using System.Collections.Generic;
 using System.Data;

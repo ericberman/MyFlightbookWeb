@@ -329,7 +329,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fOtherUsers = fChangedModel && new AircraftStats(User.Identity.Name, aircraftID).Users + addToUserCount > 1;
 
             // Check for model change without tail number change on an existing aircraft
-            if (!fAdminMode && fChangedModel && fOtherUsers && acInDatabase.HandlePotentialClone(acNew.ModelID, User.Identity.Name))
+            if (!fAdminMode && fChangedModel && fOtherUsers && acInDatabase.HandlePotentialClone(acNew.ModelID, User.Identity.Name, (mmOld, mmNew) =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                util.NotifyAdminEvent($"Aircraft {acInDatabase.DisplayTailnumber} cloned",
+                    $"User: {pf.DetailedName}\r\n\r\n{$"~/mvc/aircraft/edit/{acInDatabase.AircraftID}?a=1".ToAbsoluteBrandedUri()}\r\n\r\nOld Model: {mmOld.DisplayName + " " + mmOld.ICAODisplay}, (modelID: {mmOld.MakeModelID})\r\n\r\nNew Model: {mmNew.DisplayName + " " + mmNew.ICAODisplay}, (modelID: {mmNew.MakeModelID})", ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport);
+
+            }))
                 return RedirectToAction("Index");
 
             // Issue #1427 - not preserving locked state for aircraft NOT in the admin's profile

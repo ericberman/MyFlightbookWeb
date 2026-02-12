@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Image;
+using MyFlightbook.SharedUtility.EventRecorder;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -962,8 +963,9 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="idProposedModel">The ID of the proposed new model</param>
         /// <param name="szUser">The user making the change (who will be migrated if necessary)</param>
+        /// <param name="onClone">If the aircraft is in fact cloned, this lambda is called, passing in the old and the new model</param>
         /// <returns>True if the aircraft was cloned and any further processing should be stopped</returns>
-        public bool HandlePotentialClone(int idProposedModel, string szUser)
+        public bool HandlePotentialClone(int idProposedModel, string szUser, Action<MakeModel, MakeModel> onClone)
         {
             if (String.IsNullOrEmpty(szUser))
                 return false;   // error condition or admin - don't do any cloning, allow this to go through, admin will review
@@ -1015,9 +1017,7 @@ namespace MyFlightbook
 
             // If we are here, this is not a minor change - go ahead and clone and notify the admin.
             Clone(idProposedModel, new string[] { szUser });
-            Profile pf = Profile.GetUser(szUser);
-            util.NotifyAdminEvent($"Aircraft {DisplayTailnumber} cloned",
-                $"User: {pf.UserName} ({pf.UserFullName} <{pf.Email}>)\r\n\r\n{$"~/mvc/aircraft/edit/{AircraftID}?a=1".ToAbsoluteBrandedUri()}\r\n\r\nOld Model: {mmOld.DisplayName + " " + mmOld.ICAODisplay}, (modelID: {mmOld.MakeModelID})\r\n\r\nNew Model: {mmNew.DisplayName + " " + mmNew.ICAODisplay}, (modelID: {mmNew.MakeModelID})", ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport);
+            onClone?.Invoke(mmOld, mmNew);
             return true;
         }
 

@@ -2,6 +2,7 @@
 using MyFlightbook.Currency;
 using MyFlightbook.ImportFlights;
 using MyFlightbook.OAuth;
+using MyFlightbook.SharedUtility.EventRecorder;
 using MyFlightbook.StartingFlights;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;

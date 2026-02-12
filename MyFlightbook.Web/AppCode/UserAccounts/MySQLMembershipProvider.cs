@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.SharedUtility.EventRecorder;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Specialized;

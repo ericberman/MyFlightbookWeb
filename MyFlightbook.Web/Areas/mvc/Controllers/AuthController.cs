@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyFlightbook.SharedUtility.EventRecorder;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
