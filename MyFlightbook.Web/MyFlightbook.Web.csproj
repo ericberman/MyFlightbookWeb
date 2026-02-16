@@ -2200,9 +2200,9 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AircraftSupport\AircraftSupport.csproj">
+    <ProjectReference Include="..\AircraftSupport\MyFlightbook.AircraftSupport.csproj">
       <Project>{6dba78b7-571d-412b-a5d0-d61592c3f15e}</Project>
-      <Name>AircraftSupport</Name>
+      <Name>MyFlightbook.AircraftSupport</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj">
       <Project>{0878c055-b690-40ab-a1df-6a7a076fa0f5}</Project>

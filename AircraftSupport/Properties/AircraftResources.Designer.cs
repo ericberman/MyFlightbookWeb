@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AircraftSupport.Properties {
+namespace MyFlightbook.AircraftSupport.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace AircraftSupport.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AircraftSupport.Properties.AircraftResources", typeof(AircraftResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MyFlightbook.AircraftSupport.Properties.AircraftResources", typeof(AircraftResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
