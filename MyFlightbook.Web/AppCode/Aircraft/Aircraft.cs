@@ -38,6 +38,113 @@ namespace MyFlightbook
     };
 
     /// <summary>
+    /// Public interface for user or overall stats for an aircraft.
+    /// </summary>
+    public interface IStatsForAircraft
+    {
+        /// <summary>
+        /// The ID of the aircraft for which stats are desired
+        /// </summary>
+        int AircraftID { get; }
+
+        /// <summary>
+        /// The name of the user for which stats are desired.  If null/empty, this is across all users
+        /// </summary>
+        string User { get; }
+
+        /// <summary>
+        /// The number of users who have flights with this aircraft
+        /// </summary>
+        int Users { get; }
+
+        /// <summary>
+        /// The number of flights for the specified aircraft by the specified user
+        /// </summary>
+        int UserFlights { get; }
+
+        /// <summary>
+        /// The number of flights for the specified aircraft, period.
+        /// </summary>
+        int Flights { get; }
+
+        /// <summary>
+        /// Date of the latest date for the user in this aircraft, if known (Only if there is a specified user)
+        /// </summary>
+        DateTime? LatestDate { get; }
+
+        /// <summary>
+        /// Date of the earliest date for the user in this aircraft, if known (only if there is a specified user)
+        /// </summary>
+        DateTime? EarliestDate { get; }
+
+        /// <summary>
+        /// Hours (total) in the aircraft by the specified user, if known (only if there is a specified user)
+        /// </summary>
+        decimal Hours { get; }
+
+        /// <summary>
+        /// Names of all users who have this aircraft in their account
+        /// </summary>
+        IEnumerable<string> UserNames { get; }
+
+        /// <summary>
+        /// Linked display for the stats for the flight.
+        /// </summary>
+        LinkedString UserStatsDisplay { get; }
+    }
+
+    public interface IAircraftDataChangeNotifier
+    {
+        /// <summary>
+        /// Notifies admins that an aircraft has been cloned
+        /// </summary>
+        /// <param name="szUser">The user making the change</param>
+        /// <param name="ac">The aircraft</param>
+        /// <param name="mmOld">The old model</param>
+        /// <param name="mmNew">The new model</param>
+        void NotifyAdminAircraftCloned(string szUser, Aircraft ac, MakeModel mmOld, MakeModel mmNew);
+
+        /// <summary>
+        /// Notifies users of an aircraft that an aircraft has been cloned
+        /// </summary>
+        /// <param name="ac">The aircraft</param>
+        /// <param name="idAircraftOriginal">The ID of the original aircraft</param>
+        /// <param name="mmOld">The old model</param>
+        /// <param name="mmNew">The new model</param>
+        /// <param name="szAlternatives">A string listing alternative versions of the aircraft</param>
+        /// <param name="migratedUsers">List of users that have been migrated to the new version</param>
+        void NotifyUsersAircraftCloned(Aircraft ac, int idAircraftOriginal, MakeModel mmOld, MakeModel mmNew, string szAlternatives, IEnumerable<string> migratedUsers);
+
+        /// <summary>
+        /// Notifies a user that the model that they specified for an aircraft is ignored in favor of what's in the database
+        /// </summary>
+        /// <param name="szUser">The user making the change</param>
+        /// <param name="ac">The aircraft</param>
+        /// <param name="idMatchedModel">The ID of the model that was ultimately used</param>
+        /// <param name="versionList">A human readable list of alternative versions of the aircraft</param>
+        void NotifyAircraftSpecificationIgnored(string szUser, Aircraft ac, int idMatchedModel, string versionList);
+
+        /// <summary>
+        /// If this is an existing aircraft and its model is being changed, notifies any other users of that aircraft that the model has changed.
+        /// No mail is sent if:
+        /// a) the models match
+        /// b) there are no flights in the aircraft
+        /// c) there is only one user of the aircraft, and that is the calling user
+        /// </summary>
+        /// <param name="acMatch">The aircraft in the system that was matched</param>
+        /// <param name="ac">The original aircraft</param>
+        /// <param name="szUser">The name of the user; no notification is sent if this is null or empty</param>
+        void NotifyModelChanged(string szUser, Aircraft ac, Aircraft acMatch);
+
+        /// <summary>
+        /// Returns true if the specified aircraft has any users, which can determine both notifications and whether an aircraft is edited or cloned.
+        /// </summary>
+        /// <param name="idAircraft">The ID of the aircraft</param>
+        /// <returns>True if it has ANY users</returns>
+        bool AircraftHasUsers(int  idAircraft);
+    }
+
+    /// <summary>
     /// An instance of an aircraft - one of the AircraftInstanceTypes along with the attributes of that instance (e.g., certification level, ATD vs. FTD, etc.)
     /// </summary>
     [Serializable]
@@ -199,6 +306,13 @@ namespace MyFlightbook
     [Serializable]
     public class Aircraft
     {
+        private static IAircraftDataChangeNotifier _dataNotifier = null;
+
+        public static void SetDataChangeNotifier(IAircraftDataChangeNotifier notifier)
+        {
+            _dataNotifier = notifier;
+        }
+
         public const int idAircraftUnknown = -1;
         public const int maxTailLength = 10;
 
@@ -268,12 +382,12 @@ namespace MyFlightbook
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Xml.Serialization.XmlIgnore]
-        public AircraftStats Stats { get; set; }
+        public IStatsForAircraft Stats { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public bool HasBeenFlown
         {
-            get { return (Stats != null && Stats.EarliestDate.HasValue); }
+            get { return Stats?.EarliestDate.HasValue ?? false; }
         }
         #endregion
 
@@ -963,9 +1077,8 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="idProposedModel">The ID of the proposed new model</param>
         /// <param name="szUser">The user making the change (who will be migrated if necessary)</param>
-        /// <param name="onClone">If the aircraft is in fact cloned, this lambda is called, passing in the old and the new model</param>
         /// <returns>True if the aircraft was cloned and any further processing should be stopped</returns>
-        public bool HandlePotentialClone(int idProposedModel, string szUser, Action<MakeModel, MakeModel> onClone)
+        public bool HandlePotentialClone(int idProposedModel, string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
                 return false;   // error condition or admin - don't do any cloning, allow this to go through, admin will review
@@ -1017,7 +1130,7 @@ namespace MyFlightbook
 
             // If we are here, this is not a minor change - go ahead and clone and notify the admin.
             Clone(idProposedModel, new string[] { szUser });
-            onClone?.Invoke(mmOld, mmNew);
+            _dataNotifier?.NotifyAdminAircraftCloned(szUser, this, mmOld, mmNew);
             return true;
         }
 
@@ -1081,7 +1194,7 @@ namespace MyFlightbook
                         InitFromAircraft(acMatchingClone);
                         return;
                     }
-                    NotifyIfModelChanged(acThis, szUser);
+                    _dataNotifier.NotifyModelChanged(szUser, this, acThis);
                 }
             }
 
@@ -1345,7 +1458,7 @@ namespace MyFlightbook
             }
 
             // We can redefine the existing aircraft if it has no users
-            if (new AircraftStats(String.Empty, acMatch.AircraftID).Users == 0)
+            if (!_dataNotifier.AircraftHasUsers(acMatch.AircraftID))
             {
                 ModelID = modelIDRequested;
                 AircraftID = acMatch.AircraftID;
@@ -1357,73 +1470,8 @@ namespace MyFlightbook
             else
             {
                 // otherwise, re-use the underlying aircraft as-is
-                if (!String.IsNullOrEmpty(szUser))
-                {
-                    Profile pf = Profile.GetUser(szUser);
-                    string szNotification = String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Aircraft.AircraftModelNewModelIgnored),
-                        pf.UserFullName,
-                        this.TailNumber,
-                        new MakeModel(this.ModelID).DisplayName,
-                        new MakeModel(acMatch.ModelID).DisplayName,
-                        ListAlternativeVersions());
-
-                    string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
-                    util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(szNotification, false), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
-                }
+                _dataNotifier?.NotifyAircraftSpecificationIgnored(szUser, this, acMatch.ModelID, ListAlternativeVersions());
                 return acMatch;
-            }
-        }
-
-        /// <summary>
-        /// If this is an existing aircraft and its model is being changed, notifies any other users of that aircraft that the model has changed.
-        /// No mail is sent if:
-        /// a) the models match
-        /// b) there are no flights in the aircraft
-        /// c) there is only one user of the aircraft, and that is the calling user
-        /// </summary>
-        /// <param name="acMatch">The aircraft in the system that was matched</param>
-        /// <param name="szUser">The name of the user; no notification is sent if this is null or empty</param>
-        private void NotifyIfModelChanged(Aircraft acMatch, string szUser)
-        {
-            if (this.ModelID == acMatch.ModelID)
-                return;
-
-            // See if there's even an issue
-            // If it's not used in any flights, or there's exactly one user (the owner), no problem.
-            AircraftStats acs = new AircraftStats(String.Empty, acMatch.AircraftID);
-            if (acs.Flights == 0 || (acs.Users == 1 && String.Compare(szUser, acs.UserNames.ElementAt(0), StringComparison.CurrentCultureIgnoreCase) == 0))
-                return;
-
-            // Notify the admin here - model changed, I want to see it.
-            string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
-            MakeModel mmMatch = MakeModel.GetModel(acMatch.ModelID);
-            MakeModel mmThis = MakeModel.GetModel(this.ModelID);
-            string szMakeMatch = mmMatch.DisplayName + mmMatch.ICAODisplay;
-            string szMakeThis = mmThis.DisplayName + mmThis.ICAODisplay;
-
-            string szRegLink = Aircraft.LinkForTailnumberRegistry(acMatch.TailNumber);
-            string szReg = String.IsNullOrWhiteSpace(szRegLink) ? string.Empty : "\r\n" + String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.RegistrationLinkForAircraft, szRegLink) + "\r\n";
-
-            // Admin events can merge duplicate models, so detect that
-            if (String.Compare(szMakeMatch, szMakeThis, StringComparison.CurrentCultureIgnoreCase) == 0)
-                return;
-
-            util.NotifyAdminEvent(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, "User: {0}\r\n\r\n{1}\r\n\r\nMessage that was sent to other users:\r\n\r\n{2}", Profile.GetUser(szUser).DetailedName.Replace("_", "__"),
-                String.Format(CultureInfo.InvariantCulture, "https://{0}{1}{2}?a=1", Branding.CurrentBrand.HostName, "~/mvc/aircraft/edit/".ToAbsolute(), AircraftID),
-                String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, "(username)", this.TailNumber, szMakeMatch, szMakeThis, szReg)), false), ProfileRoles.maskCanManageData);
-
-            // If we're here, then there are other users - need to notify all of them of the change.
-            if (!String.IsNullOrEmpty(szUser))
-            {
-                foreach (string szName in acs.UserNames)
-                {
-                    // Don't send to the person initiating the change
-                    if (String.Compare(szName, szUser, StringComparison.CurrentCultureIgnoreCase) == 0)
-                        continue;
-
-                    Profile pf = Profile.GetUser(szName);
-                    util.NotifyUser(szSubject, util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftModelChangedNotification, pf.UserFullName, this.TailNumber, szMakeMatch, szMakeThis, szReg), false), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
-                }
             }
         }
 
@@ -1480,7 +1528,6 @@ namespace MyFlightbook
             if (idModelTarget == acOriginal.ModelID)
                 throw new MyFlightbookException("Can't clone to same model");
 
-            AircraftStats acsOriginal = new AircraftStats(string.Empty, AircraftID);
             MakeModel mmOriginal = MakeModel.GetModel(acOriginal.ModelID);
             MakeModel mmNew = MakeModel.GetModel(idModelTarget);
 
@@ -1498,23 +1545,7 @@ namespace MyFlightbook
                 ua.ReplaceAircraftForUser(this, acOriginal, true);
             }
 
-            string szAlternatives = ListAlternativeVersions();
-
-            // Notify all users of the aircraft about the change
-            foreach (string sz in acsOriginal.UserNames)
-            {
-                Profile pf = Profile.GetUser(sz);
-                string szEmailNotification =
-                    util.ApplyHtmlEmailTemplate(String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.AircraftTailSplit),
-                    pf.UserFullName,
-                    acOriginal.TailNumber,
-                    mmOriginal.DisplayName,
-                    mmNew.DisplayName,
-                    lstUsersToMigrate.Contains(sz) ? mmNew.DisplayName : mmOriginal.DisplayName,
-                    szAlternatives), false);
-
-                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName), szEmailNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, true);
-            }
+            _dataNotifier?.NotifyUsersAircraftCloned(this, acOriginal.AircraftID, mmOriginal, mmNew, ListAlternativeVersions(), lstUsersToMigrate);
         }
 
         /// <summary>

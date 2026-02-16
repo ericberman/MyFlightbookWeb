@@ -1664,6 +1664,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCode\Admin\AdminAircraft.cs" />
+    <Compile Include="AppCode\Admin\AdminAircraftDataChangeNotifier.cs" />
     <Compile Include="AppCode\Admin\AdminMakeModel.cs" />
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
     <Compile Include="AppCode\Aircraft\AircraftImport.cs" />

@@ -17,54 +17,27 @@ namespace MyFlightbook
     /// Provides stats for an aircraft: how many people fly it, how many flights are recorded, and, if for a specified user, the dates of the first/last flight in it.
     /// </summary>
     [Serializable]
-    public class AircraftStats
+    public class AircraftStats : IStatsForAircraft
     {
-        #region Properties
-        /// <summary>
-        /// The ID of the aircraft for which stats are desired
-        /// </summary>
+        #region properties
         public int AircraftID { get; set; }
 
-        /// <summary>
-        /// The name of the user for which stats are desired
-        /// </summary>
         public string User { get; set; }
 
-        /// <summary>
-        /// The number of flights for the specified airplane by the specified user
-        /// </summary>
         public int UserFlights { get; private set; }
 
-        /// <summary>
-        /// The number of users who have flights with this aircraft
-        /// </summary>
         public int Users { get; private set; }
+
+        public int Flights { get; private set; }
+
+        public decimal Hours { get; private set; }
+
+        public DateTime? EarliestDate { get; set; }
+
+        public DateTime? LatestDate { get; set; }
 
         public IEnumerable<string> UserNames { get; private set; }
 
-        /// <summary>
-        /// The number of flights for the specified airplane, period.
-        /// </summary>
-        public int Flights { get; private set; }
-
-        /// <summary>
-        /// Hours (total) in the aircraft
-        /// </summary>
-        public decimal Hours { get; private set; }
-
-        /// <summary>
-        /// Date of the earliest date for the user in this aircraft, if known
-        /// </summary>
-        public DateTime? EarliestDate { get; set; }
-
-        /// <summary>
-        /// Date of the latest date for the user in this aircraft, if known
-        /// </summary>
-        public DateTime? LatestDate { get; set; }
-
-        /// <summary>
-        /// Linked display for the stats for the flight.
-        /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         public LinkedString UserStatsDisplay
         {
@@ -91,9 +64,9 @@ namespace MyFlightbook
                 }
             }
         }
+        #endregion
 
         private static readonly char[] usernameSeparator = new char[] { ';' };
-        #endregion
 
         #region Constructors
         private void InitFromDataReader(IDataReader dr)
@@ -263,7 +236,7 @@ WHERE
         /// <param name="upgradeDate">Date of that upgrade, if any</param>
         /// <returns>An enumerable of linked strings with the stats</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<LinkedString> AttributeListForUser(AircraftStats acs, IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, MakeModel mm, MakeModel.AvionicsTechnologyType upgradeType = MakeModel.AvionicsTechnologyType.None, DateTime? upgradeDate = null)
+        public static IEnumerable<LinkedString> AttributeListForUser(IStatsForAircraft acs, IEnumerable<Aircraft> rgac, string szUser, MakeModelStats userStats, MakeModel mm, MakeModel.AvionicsTechnologyType upgradeType = MakeModel.AvionicsTechnologyType.None, DateTime? upgradeDate = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));

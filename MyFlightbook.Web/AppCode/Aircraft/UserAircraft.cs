@@ -217,7 +217,7 @@ namespace MyFlightbook
                     // We add the aircraft to the dictionary if it's (a) not there, or (b) there but the existing one is inactive.
                     // I.e., if the existing aircraft in the dictionary is present and active, then we don't overwrite it.
                     string szKey = Aircraft.NormalizeTail(ac.TailNumber);
-                    if (!dictReturn.ContainsKey(szKey) || dictReturn[szKey].HideFromSelection)
+                    if (!dictReturn.TryGetValue(szKey, out Aircraft a) || a.HideFromSelection)
                         dictReturn[szKey] = ac;
 
                     // To support broken systems like crewtrac, which don't use standard naming, allow for "#ALTxxx#" in the private notes

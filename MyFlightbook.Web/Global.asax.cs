@@ -1,5 +1,6 @@
 using MyFlightbook.Image;
 using MyFlightbook.Injection;
+using MyFlightbook.Web.AppCode.Admin;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -29,6 +30,7 @@ namespace MyFlightbook.Web
             ShuntState.Init(LocalConfig.SettingForKey(ShuntState.keyShuntState).CompareOrdinalIgnoreCase("Shunted") == 0, LocalConfig.SettingForKey(ShuntState.keyShuntMsg));
             util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());
             Branding.InitBrands(ConcreteBrand.KnownBrands, MFBConstants.BaseStylesheet);
+            Aircraft.SetDataChangeNotifier(new AdminAircraftDataChangeNotifier());
 
             MFBImageInfo.SetStorage(LocalConfig.SettingForKey("UseImageDB").CompareCurrentCultureIgnoreCase("yes") == 0,
                 new Dictionary<MFBImageInfoBase.ImageClass, string>() {
