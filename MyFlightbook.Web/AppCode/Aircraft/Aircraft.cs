@@ -1454,6 +1454,14 @@ namespace MyFlightbook
             {
                 ModelID = modelIDRequested;
                 Version = GetNewVersion(rgac);
+                // Issue #1393 - This will result in a clone, so we need to send a notification.  Arbitrarily treat this as a clone of the first (presumably default) aircraft in the list.
+                Aircraft acFirst = rgac.FirstOrDefault();
+                if (acFirst != null)
+                {
+                    MakeModel mOriginal = MakeModel.GetModel(acFirst.ModelID);
+                    _dataNotifier?.NotifyAdminAircraftCloned(szUser, this, mOriginal, mmThis);
+                    _dataNotifier?.NotifyUsersAircraftCloned(this, acFirst.AircraftID, mOriginal, mmThis, ListAlternativeVersions(), Array.Empty<string>());
+                }
                 return null;
             }
 
