@@ -2106,4 +2106,8 @@
   <data name="PrintViewSubtotals" xml:space="preserve">
     <value>Subtotals</value>
   </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+    <comment>Prompt for "Today" button on date picker</comment>
+  </data>
 </root>

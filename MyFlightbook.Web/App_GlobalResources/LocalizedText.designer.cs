@@ -4131,9 +4131,10 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;p&gt;This is an approximate number of flights per page because the height of each row cannot be determined with accuracy before rendering of the entire page.  By default, the row height will grow or shrink to fit its data (though you can override this).&lt;/p&gt;
-        ///&lt;p&gt;In this case, the system does try to adjust the row height based on the data a given flight contains - more data is assumed to require more height, reducing the number of flights on the containing page,
-        ///    but this is just an approximation.  Things t [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to  &lt;p&gt;This is an approximate number of flights per page because (by default) the height of each row grows or shrinks to fit its data.&lt;/p&gt;
+        ///&lt;p&gt;More data is assumed to requires height, reducing the number of flights on the containing page, but this is just an approximation.&lt;/p&gt;
+        ///&lt;p&gt;Things that contribute to &quot;more height&quot; include: long comments, lots of properties, images (if images are included in the print view) and signatures (if signatures are included).&lt;/p&gt;
+        ///&lt;p&gt;On the other hand, you can specify a specific r [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PrintOptionsEntriesPerPageDescription {
             get {
@@ -5720,6 +5721,15 @@ namespace Resources {
         internal static string TitleTraining {
             get {
                 return ResourceManager.GetString("TitleTraining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        internal static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
             }
         }
         

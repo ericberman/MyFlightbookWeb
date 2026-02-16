@@ -11,7 +11,7 @@
 }
 else
 {
-    <input type="text" name="@name" id="@id" @requiredAttr pattern="^@RegexUtility.RegexPatternForShortDate$" value="@(fHasValue ? dt.ToShortDateString() : string.Empty)" placeholder="@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" />
+    <input type="text" name="@name" id="@id" @requiredAttr autocomplete="off" pattern="^@RegexUtility.RegexPatternForShortDate$" value="@(fHasValue ? dt.ToShortDateString() : string.Empty)" placeholder="@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern" />
     <script>
         $(() => {
             $("#@id").datepicker({
@@ -21,8 +21,14 @@ else
                 selectOtherMonths: true,
                 yearRange: "-90:+10",
                 showButtonPanel: true,
+                currentText: "@Html.Raw(Resources.LocalizedText.Today)",
+                closeText: "@Resources.LocalizedText.Close",
                 dateFormat: '@RegexUtility.ShortDatePatternToHtmlFormatString'
             });
+
+            $.datepicker._gotoToday = function(id) {
+                $(id).datepicker('setDate', new Date()).datepicker('hide').blur();
+            };
         });
     </script>
 }

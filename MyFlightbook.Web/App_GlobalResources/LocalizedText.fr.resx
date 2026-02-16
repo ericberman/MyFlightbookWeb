@@ -163,4 +163,7 @@
   <data name="RSSTitle" xml:space="preserve">
     <value>Flux RSS</value>
   </data>
+  <data name="Today" xml:space="preserve">
+    <value>Aujourd'hui</value>
+  </data>
 </root>
