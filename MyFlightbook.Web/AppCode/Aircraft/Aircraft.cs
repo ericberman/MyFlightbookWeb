@@ -334,6 +334,11 @@ namespace MyFlightbook
         public enum PilotRole { None = 0, PIC, SIC, CFI };
         #endregion
 
+        // Per https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/forming_nnumber, N1-N99 are allowed but reserved by FAA.  Explicitly allow these.
+        public static readonly LazyRegex rValidTail = new LazyRegex(RegexValidTail, RegexOptions.IgnoreCase);
+        public const string RegexValidTail = "^([a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+)|(N[1-9]\\d?)$";
+        public static readonly LazyRegex rValidNNumber = new LazyRegex("^(N[^inoINO0][^ioIO]+)|(N[1-9]\\d?)$", RegexOptions.IgnoreCase);
+
         #region Properties
         /// <summary>
         /// The maintenance record for the aircraft
@@ -1245,7 +1250,7 @@ namespace MyFlightbook
                 return false;
             }
 
-            if (TailNumber.Length <= 2 && !AircraftUtility.rValidTail.IsMatch(TailNumber))
+            if (TailNumber.Length <= 2 && !rValidTail.IsMatch(TailNumber))
             {
                 ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errInvalidTailShort, TailNumber);
                 return false;
@@ -1265,11 +1270,11 @@ namespace MyFlightbook
             }
             else
             {
-                Match mt = AircraftUtility.rValidTail.Match(TailNumber);
+                Match mt = rValidTail.Match(TailNumber);
                 if (mt.Captures.Count != 1 || String.Compare(TailNumber, mt.Captures[0].Value, StringComparison.OrdinalIgnoreCase) != 0)
                     ErrorString = Resources.Aircraft.errInvalidChars;
 
-                if (TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase) && !AircraftUtility.rValidNNumber.IsMatch(TailNumber))
+                if (TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase) && !rValidNNumber.IsMatch(TailNumber))
                     ErrorString = Resources.Aircraft.errInvalidNNumber;
             }
 
@@ -1459,7 +1464,7 @@ namespace MyFlightbook
                 if (acFirst != null)
                 {
                     MakeModel mOriginal = MakeModel.GetModel(acFirst.ModelID);
-                    _dataNotifier?.NotifyAdminAircraftCloned(szUser, this, mOriginal, mmThis);
+                    _dataNotifier?.NotifyAdminAircraftCloned(szUser, acFirst, mOriginal, mmThis);
                     _dataNotifier?.NotifyUsersAircraftCloned(this, acFirst.AircraftID, mOriginal, mmThis, ListAlternativeVersions(), Array.Empty<string>());
                 }
                 return null;

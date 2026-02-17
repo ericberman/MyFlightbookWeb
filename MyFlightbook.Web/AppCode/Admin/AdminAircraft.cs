@@ -48,7 +48,7 @@ OR (aircraft.tailnormal IN ('{5}'))";
 
             string szQInvalid = String.Format(CultureInfo.InvariantCulture, szQInvalidAircraftRestriction,
                 Aircraft.maxTailLength,
-                AircraftUtility.RegexValidTail,
+                Aircraft.RegexValidTail,
                 CountryCodePrefix.szAnonPrefix,
                 CountryCodePrefix.szSimPrefix,
                 (int)AircraftInstanceTypes.RealAircraft,
@@ -708,7 +708,7 @@ ORDER BY ac.instancetype ASC");
                 throw new MyFlightbookValidationException("Invalid aircraft");
             if (szTailNew == null)
                 throw new ArgumentNullException(nameof(szTailNew));
-            if (!AircraftUtility.rValidTail.IsMatch(szTailNew))
+            if (!Aircraft.rValidTail.IsMatch(szTailNew))
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "{0} is not a valid tail", szTailNew));
             if (ac.TailNumber.CompareCurrentCultureIgnoreCase(szTailNew) == 0)
                 return; // nothing to do - nothing changed.

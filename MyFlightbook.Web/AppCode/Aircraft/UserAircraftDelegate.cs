@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Currency;
+﻿using Google.Protobuf.WellKnownTypes;
+using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +12,7 @@ using System.Collections.Generic;
 
 namespace MyFlightbook.AircraftSupport
 {
-    public class UserAircraftChangeUtility : IUserAircraftChanged
+    public class UserAircraftDelegate : IUserAircraftDelegate
     {
         public void AircraftDeleted(string szUser, int idAircraft)
         {
@@ -67,6 +68,52 @@ namespace MyFlightbook.AircraftSupport
                 dc.FCommit();
             }
 
+        }
+
+        private const string szCacheKey = "userAircraftKey";
+        private const string szCachedDictionary = "userAircraftDictionaryKey";
+
+        public IList<Aircraft> GetCachedAircraftForUser(string szUser)
+        {
+            return String.IsNullOrEmpty(szUser) ? null : (List<Aircraft>)Profile.GetUser(szUser).CachedObject(szCacheKey);
+        }
+
+        public void CacheAircraftForUser(string szUser, IList<Aircraft> lst)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
+        }
+
+        public void Invalidate(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            Profile pf = Profile.GetUser(szUser);
+            pf.AssociatedData.Remove(szCacheKey);
+            pf.AssociatedData.Remove(szCachedDictionary);
+        }
+
+        public IDictionary<string, Aircraft> GetCachedDictionaryForUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Profile pf = Profile.GetUser(szUser);
+            return pf.AssociatedData.TryGetValue(szCachedDictionary, out object value) ? (IDictionary<string, Aircraft>) value : null;
+        }
+
+        public void CacheDictionaryForUser(string szUser, IDictionary<string, Aircraft> dict)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            Profile pf = Profile.GetUser(szUser);
+            pf.AssociatedData[szCachedDictionary] = dict;
+        }
+
+        public string CoalescedDeadlinesForAircraft(string szUser, int aircraftID)
+        {
+            return DeadlineCurrency.CoalescedDeadlinesForAircraft(szUser, aircraftID);
         }
     }
 }

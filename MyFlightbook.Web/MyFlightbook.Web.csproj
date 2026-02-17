@@ -1672,7 +1672,7 @@
     <Compile Include="AppCode\Aircraft\AircraftUtility.cs" />
     <Compile Include="AppCode\Aircraft\Maintenance.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
-    <Compile Include="AppCode\Aircraft\UserAircraftChangeUtility.cs" />
+    <Compile Include="AppCode\Aircraft\UserAircraftDelegate.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />

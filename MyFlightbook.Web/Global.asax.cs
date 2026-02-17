@@ -31,7 +31,7 @@ namespace MyFlightbook.Web
             util.Init(new MemCache(), new MVCRequestContext(), new SmtpSupport());
             Branding.InitBrands(ConcreteBrand.KnownBrands, MFBConstants.BaseStylesheet);
             Aircraft.Init(new AdminAircraftDataChangeNotifier());
-            UserAircraft.Init(new MyFlightbook.AircraftSupport.UserAircraftChangeUtility());
+            UserAircraft.Init(new MyFlightbook.AircraftSupport.UserAircraftDelegate());
 
             MFBImageInfo.SetStorage(LocalConfig.SettingForKey("UseImageDB").CompareCurrentCultureIgnoreCase("yes") == 0,
                 new Dictionary<MFBImageInfoBase.ImageClass, string>() {

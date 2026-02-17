@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 namespace MyFlightbook
 {
-    public interface IUserAircraftChanged
+    public interface IUserAircraftDelegate
     {
         /// <summary>
         /// Indicates that the specified aircraft has been deleted from the user's list.
@@ -30,6 +30,48 @@ namespace MyFlightbook
         /// <param name="idOldAircraft">The id of the source aircraft</param>
         /// <param name="idNewAircraft">The id of the replacement aircraft</param>
         void AircraftMigrated(string szUser, int idOldAircraft, int idNewAircraft);
+
+        /// <summary>
+        /// Retrieve a set of cached aircraft for the specified user
+        /// </summary>
+        /// <param name="szUser">The user</param>
+        /// <returns>An IList of cached aircraft</returns>
+        IList<Aircraft> GetCachedAircraftForUser(string szUser);
+
+        /// <summary>
+        /// Caches a list of aircraft for the specified user.
+        /// </summary>
+        /// <param name="szUser">The user identifier.</param>
+        /// <param name="lst">The list of aircraft to cache.</param>
+        void CacheAircraftForUser(string szUser, IList<Aircraft> lst);
+
+        /// <summary>
+        /// Returns a string-indexable dictionary of tails to aircraft for the specified user.  
+        /// </summary>
+        /// <param name="szUser">The user</param>
+        /// <returns>A cached dictionary, if present</returns>
+        IDictionary<string, Aircraft> GetCachedDictionaryForUser(string szUser);
+
+        /// <summary>
+        /// Caches a string-indexable dictionary of tails to aircraft for the specified user.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="dict"></param>
+        void CacheDictionaryForUser(string szUser, IDictionary<string, Aircraft> dict);
+
+        /// <summary>
+        /// Invalidates cached data for the specified user
+        /// </summary>
+        /// <param name="szUser"></param>
+        void Invalidate(string szUser);
+
+        /// <summary>
+        /// Returns a coalesced string of deadlines for the aircraft, for use in export.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="aircraftID"></param>
+        /// <returns></returns>
+        string CoalescedDeadlinesForAircraft(string szUser, int aircraftID);
     }
 
     [Serializable]
@@ -38,11 +80,11 @@ namespace MyFlightbook
     /// </summary>
     public class UserAircraft
     {
-        private static IUserAircraftChanged _userAircraftChanged;
+        private static IUserAircraftDelegate _userAircraftDelegate;
 
-        public static void Init(IUserAircraftChanged userAircraftChanged)
+        public static void Init(IUserAircraftDelegate userAircraftChanged)
         {
-            _userAircraftChanged = userAircraftChanged;
+            _userAircraftDelegate = userAircraftChanged;
         }
 
         public string User { get; set; }
@@ -52,30 +94,18 @@ namespace MyFlightbook
             User = szUser;
         }
 
-        private const string szCacheKey = "userAircraftKey";
-        private const string szCachedDictionary = "userAircraftDictionaryKey";
-
         /// <summary>
         /// Internally, we can assume this is a list.
         /// </summary>
-        private List<Aircraft> CachedAircraft
+        private IList<Aircraft> CachedAircraft
         {
-            get { return String.IsNullOrEmpty(User) ? null : (List<Aircraft>) Profile.GetUser(User).CachedObject(szCacheKey); }
-            set
-            {
-                if (!String.IsNullOrEmpty(User))
-                    Profile.GetUser(User).AssociatedData[szCacheKey] = value;
-            }
+            get { return _userAircraftDelegate?.GetCachedAircraftForUser(User); }
+            set { _userAircraftDelegate?.CacheAircraftForUser(User, value); }
         }
 
         public void InvalidateCache()
         {
-            if (!String.IsNullOrEmpty(User))
-            {
-                Profile pf = Profile.GetUser(User);
-                pf.AssociatedData.Remove(szCacheKey);
-                pf.AssociatedData.Remove(szCachedDictionary);
-            }
+            _userAircraftDelegate?.Invalidate(User);
         }
 
         public enum AircraftRestriction { UserAircraft, AllMakeModel, AllAircraft, AllSims };
@@ -95,7 +125,7 @@ namespace MyFlightbook
 
             List<Aircraft> rgAircraft = null;
 
-            if (restriction == AircraftRestriction.UserAircraft && (rgAircraft = CachedAircraft) != null) // don't cache in admin mode
+            if (restriction == AircraftRestriction.UserAircraft && (rgAircraft = (List<Aircraft>) CachedAircraft) != null) // don't cache in admin mode
                 return rgAircraft;
 
             string szRestrict = "";
@@ -225,9 +255,9 @@ namespace MyFlightbook
         /// <returns></returns>
         public IDictionary<string, Aircraft> DictAircraftForUser()
         {
-            Profile pf = Profile.GetUser(User);
-            if (pf.AssociatedData.TryGetValue(szCachedDictionary, out object value))
-                return (IDictionary<string, Aircraft>)value;
+            IDictionary<string, Aircraft> d = _userAircraftDelegate?.GetCachedDictionaryForUser(User);
+            if (d != null)
+                return d;
 
             Dictionary<string, Aircraft> dictReturn = new Dictionary<string, Aircraft>();
 
@@ -268,7 +298,7 @@ namespace MyFlightbook
                 }
             });
 
-            pf.AssociatedData[szCachedDictionary] = dictReturn;
+            _userAircraftDelegate?.CacheDictionaryForUser(User, dictReturn);
 
             return dictReturn;
         }
@@ -386,7 +416,7 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
 
                 FlushStatsForUser();
 
-                _userAircraftChanged?.AircraftMigrated(User, acOld.AircraftID, acNew.AircraftID);
+                _userAircraftDelegate?.AircraftMigrated(User, acOld.AircraftID, acNew.AircraftID);
 
                 try
                 {
@@ -428,7 +458,7 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 throw new MyFlightbookException(Resources.Aircraft.errAircraftInUse);
             }
 
-            _userAircraftChanged?.AircraftDeleted(User, AircraftID);
+            _userAircraftDelegate?.AircraftDeleted(User, AircraftID);
 
             // we don't actually delete the aircraft; no need to do so, even if it's not used by anybody because
             // (a) we can't force caches of aircraft lists to be invalid and, 
@@ -525,7 +555,7 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 dr[26] = (lastOil > 0 ? lastOil + 100 : 0.0M).FormatDecimal(false);
                 dr[27] = ac.LastNewEngine.FormatDecimal(false);
                 dr[28] = ac.RegistrationDue.YMDString();
-                dr[29] = Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(User, ac.AircraftID);
+                dr[29] = _userAircraftDelegate?.CoalescedDeadlinesForAircraft(User, ac.AircraftID) ?? string.Empty;
                 dr[30] = (!ac.HideFromSelection).FormatBooleanInt();
                 dr[31] = ac.PublicNotes;
                 dr[32] = ac.PrivateNotes;

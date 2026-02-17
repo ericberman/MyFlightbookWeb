@@ -36,11 +36,6 @@ namespace MyFlightbook
             }
         }
 
-        // Per https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/forming_nnumber, N1-N99 are allowed but reserved by FAA.  Explicitly allow these.
-        public const string RegexValidTail = "^([a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+)|(N[1-9]\\d?)$";
-        public static readonly LazyRegex rValidTail = new LazyRegex(RegexValidTail, RegexOptions.IgnoreCase);
-        public static readonly LazyRegex rValidNNumber = new LazyRegex("^(N[^inoINO0][^ioIO]+)|(N[1-9]\\d?)$", RegexOptions.IgnoreCase);
-
         /// <summary>
         /// Return the link to edit an aircraft, optionally including an admin link.
         /// </summary>
