@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Currency;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -271,7 +272,6 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
                 comm.Parameters.AddWithValue("targ", acTarget.AircraftID);
                 comm.Parameters.AddWithValue("src", acSrc.AircraftID);
             });
-            FlightResultManager.InvalidateForUser(szUser);
             return dbh.AffectedRowCount;
         }
 
@@ -325,6 +325,70 @@ ORDER BY f.date DESC LIMIT 10) meter", (int)CustomPropertyType.KnownProperties.I
         }
         #endregion
 
+        #region Aircraft (Maintanance) currency
+        private static IEnumerable<Aircraft> AircraftMaintainedByUser(string szUser)
+        {
+            // short-circuit a call to the database if szUser is empty - we know there will be no result.
+            if (String.IsNullOrEmpty(szUser))
+                return Array.Empty<Aircraft>();
+
+            string szRestrict = @"INNER JOIN useraircraft ON aircraft.idAircraft = useraircraft.idAircraft 
+INNER JOIN maintenancelog ON maintenancelog.user = useraircraft.userName AND maintenancelog.idaircraft = aircraft.idaircraft
+WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
+            string szQ = String.Format(CultureInfo.InvariantCulture, Aircraft.szAircraftForUserCore, "useraircraft.flags", "''", "''", "''", szRestrict);
+            List<Aircraft> rgac = new List<Aircraft>();
+
+            DBHelper dbh = new DBHelper(szQ);
+            if (!dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
+                (dr) => { rgac.Add(new Aircraft(dr)); }))
+                throw new MyFlightbookException("Error getting aircraft maintained by user " + szUser + " " + szQ + "\r\n" + dbh.LastError);
+
+            return rgac;
+        }
+
+        public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser, IEnumerable<DeadlineCurrency> aircraftDeadlines)
+        {
+            IEnumerable<Aircraft> rgar = AircraftMaintainedByUser(szUser);
+            List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
+
+            List<DeadlineCurrency> lstDeadlines = new List<DeadlineCurrency>(aircraftDeadlines ?? Array.Empty<DeadlineCurrency>());
+
+            if (rgar != null)
+            {
+                int maxWindow = Profile.GetUser(szUser).GetPreferenceForKey(MFBConstants.keyWindowAircraftMaintenance, MFBConstants.DefaultMaintenanceWindow);
+                foreach (Aircraft ar in rgar)
+                {
+                    MaintenanceRecord mr = ar.Maintenance;
+
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAltimeter, mr.NextAltimeter, ar.AircraftID, 30, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAnnual, mr.NextAnnual, ar.AircraftID, 30, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyELT, mr.NextELT, ar.AircraftID, 30, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyPitot, mr.NextStatic, ar.AircraftID, 30, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder, ar.AircraftID, 30, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyVOR, mr.NextVOR, ar.AircraftID, 4, maxWindow);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, ar.AircraftID, 30, maxWindow);
+
+                    arcs.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstDeadlines.FindAll(dc => ar.AircraftID == dc.AircraftID && (maxWindow < 0 || dc.Expiration.Subtract(DateTime.Now).TotalDays <= maxWindow))));
+                }
+            }
+
+            return arcs;
+        }
+
+        private static void AddPendingInspection(List<CurrencyStatusItem> arcs, string szLabel, DateTime dt, int idAircraft, int warningThreshold, int window)
+        {
+            if (!dt.HasValue())
+                return;
+
+            int daysUntilDue = (int)Math.Ceiling(dt.Subtract(DateTime.Now).TotalDays);
+
+            if (daysUntilDue < 0)
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture))) { AssociatedResourceID = idAircraft, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Aircraft });
+            else if (daysUntilDue <= window || window < 0)
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < warningThreshold ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue)) { AssociatedResourceID = idAircraft, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Aircraft });
+        }
+        #endregion
     }
 
 }

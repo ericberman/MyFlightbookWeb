@@ -1,4 +1,4 @@
-﻿using AircraftSupport.Properties;
+﻿using MyFlightbook.AircraftSupport.Properties;
 using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;

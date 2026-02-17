@@ -308,7 +308,7 @@ namespace MyFlightbook
     {
         private static IAircraftDataChangeNotifier _dataNotifier = null;
 
-        public static void SetDataChangeNotifier(IAircraftDataChangeNotifier notifier)
+        public static void Init(IAircraftDataChangeNotifier notifier)
         {
             _dataNotifier = notifier;
         }

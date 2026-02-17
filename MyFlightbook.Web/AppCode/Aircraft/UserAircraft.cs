@@ -1,5 +1,4 @@
-﻿using MyFlightbook.Currency;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,19 +7,44 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook
 {
+    public interface IUserAircraftChanged
+    {
+        /// <summary>
+        /// Indicates that the specified aircraft has been deleted from the user's list.
+        /// </summary>
+        /// <param name="idAircraft">The id of the deleted aircraft</param>
+        /// <param name="szUser">The user for whom the aircraft is deleted</param>
+        void AircraftDeleted(string szUser, int idAircraft);
+
+        /// <summary>
+        /// Indicates that an aircraft has been migrated from one to another. 
+        /// </summary>
+        /// <param name="szUser">The user for whom the aircraft is migrated</param>
+        /// <param name="idOldAircraft">The id of the source aircraft</param>
+        /// <param name="idNewAircraft">The id of the replacement aircraft</param>
+        void AircraftMigrated(string szUser, int idOldAircraft, int idNewAircraft);
+    }
+
     [Serializable]
     /// <summary>
     /// Maintains a mapping of which aircraft are used by which users
     /// </summary>
     public class UserAircraft
     {
+        private static IUserAircraftChanged _userAircraftChanged;
+
+        public static void Init(IUserAircraftChanged userAircraftChanged)
+        {
+            _userAircraftChanged = userAircraftChanged;
+        }
+
         public string User { get; set; }
 
         public UserAircraft(string szUser)
@@ -350,7 +374,7 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
             if (fMigrateFlights)
             {
                 List<Aircraft> lstAc = new List<Aircraft>(GetAircraftForUser());
-                
+
                 // make sure we are populated with both old and new so that UpdateFlightAircraftForUser works.
                 // (This can happen if you have one version of an aircraft and you go to add another version of it; 
                 // they won't both be there, but the query used in UpdateFlightAircraftForUser wants them both present.
@@ -359,33 +383,10 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 if (!lstAc.Exists(ac => ac.AircraftID == acOld.AircraftID))
                     lstAc.Add(acOld);
                 CachedAircraft = lstAc;   // we'll nullify the cache below.
-                
-                LogbookEntryBase.UpdateFlightAircraftForUser(User, acOld.AircraftID, acNew.AircraftID);
+
                 FlushStatsForUser();
 
-                // Migrate any custom currencies associated with the aircraft
-                foreach (CustomCurrency cc in CustomCurrency.CustomCurrenciesForUser(User))
-                {
-                    List<int> lst = new List<int>(cc.AircraftRestriction);
-
-                    for (int i = 0; i < lst.Count; i++)
-                    {
-                        if (lst[i] == acOld.AircraftID)
-                        {
-                            lst[i] = acNew.AircraftID;
-                            cc.AircraftRestriction = lst;
-                            cc.FCommit();
-                            break;
-                        }
-                    }
-                }
-
-                // And migrate any deadlines associated with the aircraft
-                foreach (DeadlineCurrency dc in DeadlineCurrency.DeadlinesForUser(User, acOld.AircraftID))
-                {
-                    dc.AircraftID = acNew.AircraftID;
-                    dc.FCommit();
-                }
+                _userAircraftChanged?.AircraftMigrated(User, acOld.AircraftID, acNew.AircraftID);
 
                 try
                 {
@@ -409,14 +410,10 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
             if (String.IsNullOrEmpty(User))
                 throw new MyFlightbookException("No user specified for Deleteaircraft");
 
-            AircraftStats acs = new AircraftStats(User, AircraftID);
-
-            // if the user has no flights with this aircraft, simply remove it from their list and be done
-            if (acs.UserFlights != 0)
-                throw new MyFlightbookException(Resources.Aircraft.errAircraftInUse);
-            else
+            DBHelper dbh = new DBHelper("DELETE FROM useraircraft WHERE userName=?username AND idAircraft=?aircraftID");
+            try
             {
-                new DBHelper().DoNonQuery("DELETE FROM useraircraft WHERE userName=?username AND idAircraft=?aircraftID",
+                dbh.DoNonQuery("DELETE FROM useraircraft WHERE userName=?username AND idAircraft=?aircraftID",
                     (comm) =>
                     {
                         comm.Parameters.AddWithValue("username", User);
@@ -425,23 +422,13 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 );
                 InvalidateCache();
             }
-
-            // Delete any deadlines associated with this aircraft
-            foreach (DeadlineCurrency dc in DeadlineCurrency.DeadlinesForUser(User, AircraftID))
-                dc.FDelete();
-
-            // And delete any custom currencies associated with the aircraft
-            foreach (CustomCurrency cc in CustomCurrency.CustomCurrenciesForUser(User))
+            catch
             {
-                List<int> ids = new List<int>(cc.AircraftRestriction);
-
-                if (ids.Contains(AircraftID))
-                {
-                    ids.Remove(AircraftID);
-                    cc.AircraftRestriction = ids;
-                    cc.FCommit();
-                }
+                // main reason delete would fail is if there are flights associated with the aircraft.  Database constraint will handle that, so just get a better message
+                throw new MyFlightbookException(Resources.Aircraft.errAircraftInUse);
             }
+
+            _userAircraftChanged?.AircraftDeleted(User, AircraftID);
 
             // we don't actually delete the aircraft; no need to do so, even if it's not used by anybody because
             // (a) we can't force caches of aircraft lists to be invalid and, 
@@ -455,16 +442,13 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
         /// Datatable is all string or int to ensure proper formatting for user's culture
         /// </summary>
         /// <param name="dt">The data table</param>
-        /// <param name="fRefreshStats">True to refresh stats for the user</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void ToDataTable(DataTable dt, bool fRefreshStats)
+        public void ToDataTable(DataTable dt)
         {
             if (dt == null)
                 throw new ArgumentNullException(nameof(dt));
 
             List<Aircraft> lst = GetAircraftForUserInternal(AircraftRestriction.UserAircraft);
-            if (fRefreshStats)
-                AircraftStats.PopulateStatsForAircraft(lst, User);  // in case not already done.
 
             dt.Columns.Add(new DataColumn("Aircraft ID", typeof(int)));
             dt.Columns.Add(new DataColumn("Tail Number", typeof(string)));
@@ -545,10 +529,10 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
                 dr[30] = (!ac.HideFromSelection).FormatBooleanInt();
                 dr[31] = ac.PublicNotes;
                 dr[32] = ac.PrivateNotes;
-                dr[33] = ac.Stats.UserFlights;
-                dr[34] = ac.Stats.Hours.FormatDecimal(false);
-                dr[35] = ac.Stats.EarliestDate.HasValue ? ac.Stats.EarliestDate.Value.YMDString() : string.Empty;
-                dr[36] = ac.Stats.LatestDate.HasValue ? ac.Stats.LatestDate.Value.YMDString() : string.Empty;
+                dr[33] = ac.Stats?.UserFlights ?? 0;
+                dr[34] = ac.Stats?.Hours.FormatDecimal(false) ?? string.Empty;
+                dr[35] = ac.Stats?.EarliestDate.HasValue ?? false ? ac.Stats.EarliestDate.Value.YMDString() : string.Empty;
+                dr[36] = ac.Stats?.LatestDate.HasValue ?? false ? ac.Stats.LatestDate.Value.YMDString() : string.Empty;
                 dr[37] = ac.RoleForPilot.ToString();
                 dr[38] = ac.CopyPICNameWithCrossfill.FormatBooleanInt();
                 dt.Rows.Add(dr);

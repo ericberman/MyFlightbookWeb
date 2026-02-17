@@ -236,10 +236,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult DownloadAircraft()
         {
             UserAircraft ua = new UserAircraft(User.Identity.Name);
+
+            // Refresh stats for the user's aircraft to get the latest stats
+            AircraftStats.PopulateStatsForAircraft(ua.GetAircraftForUser(), User.Identity.Name);
+
             using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture }) 
             {
                 string szFilename = RegexUtility.UnSafeFileChars.Replace(String.Format(CultureInfo.InvariantCulture, "Aircraft-{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName, DateTime.Now.YMDString()), string.Empty) + ".csv";
-                ua.ToDataTable(dt, true);
+                ua.ToDataTable(dt);
                 return File(CsvWriter.WriteToBytes(dt, true, true), "text/csv", szFilename);
             }
         }
@@ -255,6 +259,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (acSrc != null && acTarg != null)
             {
                 AircraftUtility.MigrateFlightsForUser(User.Identity.Name, acSrc, acTarg);
+                FlightResultManager.InvalidateForUser(User.Identity.Name);
                 if (Request["fDeleteAfterMigrate"] != null)
                     ua.FDeleteAircraftforUser(acSrc.AircraftID);
             }
