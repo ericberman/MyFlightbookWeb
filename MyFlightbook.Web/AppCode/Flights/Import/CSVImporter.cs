@@ -81,11 +81,11 @@ namespace MyFlightbook.ImportFlights
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
         private readonly static string[] colFlightID = { "Flight ID" };
-        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime", "fcv_tail_number", "tail_number" };
+        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local", "FlightDate" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime", "fcv_tail_number", "tail_number", "TailNum" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight", "TotalTime" };
-        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr" };
+        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr", "Approaches.Count" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold", "HLD" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD", "Lnd", "AllLandings" };
         private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night", "ldgs_night", "Ldg Night", "nightLandings", "night_landings", "Night Landing", "Night Land", "LNight", "LDG_NIGHT", "NightLandingsFullStop" };
@@ -93,7 +93,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X-C", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country" };
         private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime", "Night Time", "Night Hrs" };
         private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Instr.", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument", "ActualInstrument" };
-        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)", "SimulatedInstrument" };
+        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)", "SimulatedInstrument", "SimInstrument" };
         private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time", "Flight Simulator", "Ground Sim", "FTD", "ATD", "SimulatedFlight" };
         private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)", "Dual Rec'd", "Dual Rcvd" };
         private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "As Instr.", "IP", "Instructor (PIC)" };
