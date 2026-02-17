@@ -22,7 +22,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AircraftResources {
+    public class AircraftResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MyFlightbook.AircraftSupport.Properties.AircraftResources", typeof(AircraftResources).Assembly);
@@ -51,7 +51,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,72 @@ namespace MyFlightbook.AircraftSupport.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Frequently Used Aircraft.
+        /// </summary>
+        public static string AircraftGroupActive {
+            get {
+                return ResourceManager.GetString("AircraftGroupActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flown aircraft.
+        /// </summary>
+        public static string AircraftGroupFlown {
+            get {
+                return ResourceManager.GetString("AircraftGroupFlown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other Aircraft.
+        /// </summary>
+        public static string AircraftGroupInactive {
+            get {
+                return ResourceManager.GetString("AircraftGroupInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unflown aircraft.
+        /// </summary>
+        public static string AircraftGroupUnflown {
+            get {
+                return ResourceManager.GetString("AircraftGroupUnflown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The available versions for this aircraft are currently:.
+        /// </summary>
+        public static string alternateVersionsList {
+            get {
+                return ResourceManager.GetString("alternateVersionsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Anonymous {0}).
+        /// </summary>
+        public static string AnonymousTemplate {
+            get {
+                return ResourceManager.GetString("AnonymousTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deadlines.
+        /// </summary>
+        public static string DeadlineHeader {
+            get {
+                return ResourceManager.GetString("DeadlineHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} (Type: {1}).
         /// </summary>
-        internal static string DisplayTemplateWithType {
+        public static string DisplayTemplateWithType {
             get {
                 return ResourceManager.GetString("DisplayTemplateWithType", resourceCulture);
             }
@@ -72,7 +135,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to MEP (Land).
         /// </summary>
-        internal static string EASACategoryClassAMELP {
+        public static string EASACategoryClassAMELP {
             get {
                 return ResourceManager.GetString("EASACategoryClassAMELP", resourceCulture);
             }
@@ -81,7 +144,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to MET (Land).
         /// </summary>
-        internal static string EASACategoryClassAMELT {
+        public static string EASACategoryClassAMELT {
             get {
                 return ResourceManager.GetString("EASACategoryClassAMELT", resourceCulture);
             }
@@ -90,7 +153,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to MEP (Sea).
         /// </summary>
-        internal static string EASACategoryClassAMESP {
+        public static string EASACategoryClassAMESP {
             get {
                 return ResourceManager.GetString("EASACategoryClassAMESP", resourceCulture);
             }
@@ -99,7 +162,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to MET (Sea).
         /// </summary>
-        internal static string EASACategoryClassAMEST {
+        public static string EASACategoryClassAMEST {
             get {
                 return ResourceManager.GetString("EASACategoryClassAMEST", resourceCulture);
             }
@@ -108,7 +171,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to SEP (Land).
         /// </summary>
-        internal static string EASACategoryClassASELP {
+        public static string EASACategoryClassASELP {
             get {
                 return ResourceManager.GetString("EASACategoryClassASELP", resourceCulture);
             }
@@ -117,7 +180,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to SET (Land).
         /// </summary>
-        internal static string EASACategoryClassASELT {
+        public static string EASACategoryClassASELT {
             get {
                 return ResourceManager.GetString("EASACategoryClassASELT", resourceCulture);
             }
@@ -126,7 +189,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to SEP (Sea).
         /// </summary>
-        internal static string EASACategoryClassASESP {
+        public static string EASACategoryClassASESP {
             get {
                 return ResourceManager.GetString("EASACategoryClassASESP", resourceCulture);
             }
@@ -135,7 +198,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to SET (Sea).
         /// </summary>
-        internal static string EASACategoryClassASEST {
+        public static string EASACategoryClassASEST {
             get {
                 return ResourceManager.GetString("EASACategoryClassASEST", resourceCulture);
             }
@@ -144,7 +207,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Sailplane.
         /// </summary>
-        internal static string EASACategoryClassGlider {
+        public static string EASACategoryClassGlider {
             get {
                 return ResourceManager.GetString("EASACategoryClassGlider", resourceCulture);
             }
@@ -153,7 +216,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Motor Glider.
         /// </summary>
-        internal static string EASACategoryClassMotorGlider {
+        public static string EASACategoryClassMotorGlider {
             get {
                 return ResourceManager.GetString("EASACategoryClassMotorGlider", resourceCulture);
             }
@@ -162,7 +225,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Tilt Rotor.
         /// </summary>
-        internal static string EASACategoryClassPoweredLift {
+        public static string EASACategoryClassPoweredLift {
             get {
                 return ResourceManager.GetString("EASACategoryClassPoweredLift", resourceCulture);
             }
@@ -171,25 +234,115 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Please enter a model name.
         /// </summary>
-        internal static string editMakeValModelNameRequired {
+        public static string editMakeValModelNameRequired {
             get {
                 return ResourceManager.GetString("editMakeValModelNameRequired", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This aircraft is used in some of your flights and cannot be removed..
+        /// </summary>
+        public static string errAircraftInUse {
+            get {
+                return ResourceManager.GetString("errAircraftInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid tailnumber for anonymous aircraft.
+        /// </summary>
+        public static string errBadAnonymousName {
+            get {
+                return ResourceManager.GetString("errBadAnonymousName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid tail number - nothing after the country prefix &apos;{0}&apos;.
+        /// </summary>
+        public static string errInvalidAfterCountryCode {
+            get {
+                return ResourceManager.GetString("errInvalidAfterCountryCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tail number can only contain numbers, letters, or a dash..
+        /// </summary>
+        public static string errInvalidChars {
+            get {
+                return ResourceManager.GetString("errInvalidChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ICAO/FAA codes may only be up to 4 alphanumeric characters.
         /// </summary>
-        internal static string errInvalidICAO {
+        public static string errInvalidICAO {
             get {
                 return ResourceManager.GetString("errInvalidICAO", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The requested model (ID {0}) does not exist!.
+        /// </summary>
+        public static string errInvalidMake {
+            get {
+                return ResourceManager.GetString("errInvalidMake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to US Registrations (&quot;N&quot; numbers) cannot start with &quot;NN&quot; or &quot;N0&quot;, nor contain the letters &quot;O&quot; or &quot;I&quot; because of potential confusion with &quot;0&quot; and &quot;1&quot;..
+        /// </summary>
+        public static string errInvalidNNumber {
+            get {
+                return ResourceManager.GetString("errInvalidNNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid tail number -- too long..
+        /// </summary>
+        public static string errInvalidTailLong {
+            get {
+                return ResourceManager.GetString("errInvalidTailLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid tail number - too short.
+        /// </summary>
+        public static string errInvalidTailShort {
+            get {
+                return ResourceManager.GetString("errInvalidTailShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This model of aircraft is meant to represent a generic kind of aircraft and therefore cannot be assigned a tailnumber..
+        /// </summary>
+        public static string errMakeIsAnonOnly {
+            get {
+                return ResourceManager.GetString("errMakeIsAnonOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} does not represent a real aircraft, only a training device/simulator.  Please change the aircraft to be a simulator/ATD/FTD, or use a different make/model, or contact us if you believe this is in error..
+        /// </summary>
+        public static string errMakeIsSimOnly {
+            get {
+                return ResourceManager.GetString("errMakeIsSimOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a manufacturer from the list.  You can add one if needed..
         /// </summary>
-        internal static string errManufacturerRequired {
+        public static string errManufacturerRequired {
             get {
                 return ResourceManager.GetString("errManufacturerRequired", resourceCulture);
             }
@@ -198,16 +351,52 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Mission/Design/Series &apos;{0}&apos; is too long; please provide one that is fewer than 40 characters in length.
         /// </summary>
-        internal static string errMDSTooLong {
+        public static string errMDSTooLong {
             get {
                 return ResourceManager.GetString("errMDSTooLong", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Simulators/FTDs/ATDs/etc. MUST begin with the prefix &apos;{0}&apos;.
+        /// </summary>
+        public static string errMissingSimPrefix {
+            get {
+                return ResourceManager.GetString("errMissingSimPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No model found for aircraft.
+        /// </summary>
+        public static string errNoMakeModel {
+            get {
+                return ResourceManager.GetString("errNoMakeModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No tail number supplied..
+        /// </summary>
+        public static string errNoTail {
+            get {
+                return ResourceManager.GetString("errNoTail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save failed - you are not editing the most up-to-date version of this aircraft.  Please reload this page and try again..
+        /// </summary>
+        public static string errNotEditingMostRecentVersion {
+            get {
+                return ResourceManager.GetString("errNotEditingMostRecentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error saving make/model: {0}.
         /// </summary>
-        internal static string errSaveMakeFailed {
+        public static string errSaveMakeFailed {
             get {
                 return ResourceManager.GetString("errSaveMakeFailed", resourceCulture);
             }
@@ -216,16 +405,25 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error saving manufacturer - {0}\r\n{1}.
         /// </summary>
-        internal static string errSaveManufacturerFailed {
+        public static string errSaveManufacturerFailed {
             get {
                 return ResourceManager.GetString("errSaveManufacturerFailed", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} prefix is reserved for simulators/ATDs/FTDs, etc..
+        /// </summary>
+        public static string errSimPrefixReserved {
+            get {
+                return ResourceManager.GetString("errSimPrefixReserved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Model is certified for single-pilot operations, but it isn&apos;t turbine or doesn&apos;t require a type rating.
         /// </summary>
-        internal static string errSinglePilotButNotTypeRated {
+        public static string errSinglePilotButNotTypeRated {
             get {
                 return ResourceManager.GetString("errSinglePilotButNotTypeRated", resourceCulture);
             }
@@ -234,7 +432,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to This is not a yes/no field.  If a type rating is required to fly aircraft of this model, please enter it here.  You can use the provided link to find FAA-specified type designators, or look up other similar models to find the correct type rating requirement to use..
         /// </summary>
-        internal static string errYesNotValidType {
+        public static string errYesNotValidType {
             get {
                 return ResourceManager.GetString("errYesNotValidType", resourceCulture);
             }
@@ -243,7 +441,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Flaps.
         /// </summary>
-        internal static string HasFlaps {
+        public static string HasFlaps {
             get {
                 return ResourceManager.GetString("HasFlaps", resourceCulture);
             }
@@ -252,16 +450,160 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to  (ICAO: {0}).
         /// </summary>
-        internal static string ICAOTemplate {
+        public static string ICAOTemplate {
             get {
                 return ResourceManager.GetString("ICAOTemplate", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No data column titled &quot;Model&quot; was found.
+        /// </summary>
+        public static string ImportNoModelColumnFound {
+            get {
+                return ResourceManager.GetString("ImportNoModelColumnFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No data column titled &quot;Tail Number&quot; was found.
+        /// </summary>
+        public static string ImportNoTailNumberColumnFound {
+            get {
+                return ResourceManager.GetString("ImportNoTailNumberColumnFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft import requires both a tailnumber and model designation for each row.  Please fill in any missing data..
+        /// </summary>
+        public static string ImportNotValidCSV {
+            get {
+                return ResourceManager.GetString("ImportNotValidCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100hr inspection.
+        /// </summary>
+        public static string InspectionLog100hr {
+            get {
+                return ResourceManager.GetString("InspectionLog100hr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to altimeter inspection.
+        /// </summary>
+        public static string InspectionLogAltimeter {
+            get {
+                return ResourceManager.GetString("InspectionLogAltimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to annual inspection.
+        /// </summary>
+        public static string InspectionLogAnnual {
+            get {
+                return ResourceManager.GetString("InspectionLogAnnual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ELT inspection.
+        /// </summary>
+        public static string InspectionLogELT {
+            get {
+                return ResourceManager.GetString("InspectionLogELT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to engine hours.
+        /// </summary>
+        public static string InspectionLogEngine {
+            get {
+                return ResourceManager.GetString("InspectionLogEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to engine hours of last oil change.
+        /// </summary>
+        public static string InspectionLogOil {
+            get {
+                return ResourceManager.GetString("InspectionLogOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pitot/static inspection.
+        /// </summary>
+        public static string InspectionLogPitotStatic {
+            get {
+                return ResourceManager.GetString("InspectionLogPitotStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to transponder inspection.
+        /// </summary>
+        public static string InspectionLogTransponder {
+            get {
+                return ResourceManager.GetString("InspectionLogTransponder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VOR Check or inspection.
+        /// </summary>
+        public static string InspectionLogVOR {
+            get {
+                return ResourceManager.GetString("InspectionLogVOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ATD.
+        /// </summary>
+        public static string InstanceTypeATD {
+            get {
+                return ResourceManager.GetString("InstanceTypeATD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Flight Sim..
+        /// </summary>
+        public static string InstanceTypeFFS {
+            get {
+                return ResourceManager.GetString("InstanceTypeFFS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FTD/Sim.
+        /// </summary>
+        public static string InstanceTypeFTD {
+            get {
+                return ResourceManager.GetString("InstanceTypeFTD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uncertified Sim.
+        /// </summary>
+        public static string InstanceTypeUncertified {
+            get {
+                return ResourceManager.GetString("InstanceTypeUncertified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certified for Single Pilot Operations.
         /// </summary>
-        internal static string IsCertifiedSinglePilot {
+        public static string IsCertifiedSinglePilot {
             get {
                 return ResourceManager.GetString("IsCertifiedSinglePilot", resourceCulture);
             }
@@ -270,7 +612,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Complex.
         /// </summary>
-        internal static string IsComplex {
+        public static string IsComplex {
             get {
                 return ResourceManager.GetString("IsComplex", resourceCulture);
             }
@@ -279,7 +621,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Controllable Pitch Prop.
         /// </summary>
-        internal static string IsConstantProp {
+        public static string IsConstantProp {
             get {
                 return ResourceManager.GetString("IsConstantProp", resourceCulture);
             }
@@ -288,7 +630,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Electric.
         /// </summary>
-        internal static string IsElectric {
+        public static string IsElectric {
             get {
                 return ResourceManager.GetString("IsElectric", resourceCulture);
             }
@@ -297,7 +639,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Glass Cockpit.
         /// </summary>
-        internal static string IsGlass {
+        public static string IsGlass {
             get {
                 return ResourceManager.GetString("IsGlass", resourceCulture);
             }
@@ -306,7 +648,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to High Performance.
         /// </summary>
-        internal static string IsHighPerf {
+        public static string IsHighPerf {
             get {
                 return ResourceManager.GetString("IsHighPerf", resourceCulture);
             }
@@ -315,7 +657,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Jet.
         /// </summary>
-        internal static string IsJet {
+        public static string IsJet {
             get {
                 return ResourceManager.GetString("IsJet", resourceCulture);
             }
@@ -324,7 +666,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to High Performance Until Aug 1997.
         /// </summary>
-        internal static string IsLegacyHighPerf {
+        public static string IsLegacyHighPerf {
             get {
                 return ResourceManager.GetString("IsLegacyHighPerf", resourceCulture);
             }
@@ -333,7 +675,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Multi-engine Helicopter.
         /// </summary>
-        internal static string IsMultiHelicopter {
+        public static string IsMultiHelicopter {
             get {
                 return ResourceManager.GetString("IsMultiHelicopter", resourceCulture);
             }
@@ -342,7 +684,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Retractable Gear.
         /// </summary>
-        internal static string IsRetract {
+        public static string IsRetract {
             get {
                 return ResourceManager.GetString("IsRetract", resourceCulture);
             }
@@ -351,7 +693,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Technically Advanced Airplane (TAA).
         /// </summary>
-        internal static string IsTAA {
+        public static string IsTAA {
             get {
                 return ResourceManager.GetString("IsTAA", resourceCulture);
             }
@@ -360,7 +702,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Tailwheel.
         /// </summary>
-        internal static string IsTailwheel {
+        public static string IsTailwheel {
             get {
                 return ResourceManager.GetString("IsTailwheel", resourceCulture);
             }
@@ -369,7 +711,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Motor Glider/TMG.
         /// </summary>
-        internal static string IsTMG {
+        public static string IsTMG {
             get {
                 return ResourceManager.GetString("IsTMG", resourceCulture);
             }
@@ -378,7 +720,7 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Turbine.
         /// </summary>
-        internal static string IsTurbine {
+        public static string IsTurbine {
             get {
                 return ResourceManager.GetString("IsTurbine", resourceCulture);
             }
@@ -387,9 +729,378 @@ namespace MyFlightbook.AircraftSupport.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Turboprop.
         /// </summary>
-        internal static string IsTurboprop {
+        public static string IsTurboprop {
             get {
                 return ResourceManager.GetString("IsTurboprop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 100-hour.
+        /// </summary>
+        public static string Maintenance100 {
+            get {
+                return ResourceManager.GetString("Maintenance100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next 100hr.
+        /// </summary>
+        public static string Maintenance100Due {
+            get {
+                return ResourceManager.GetString("Maintenance100Due", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100-hour (Hours):.
+        /// </summary>
+        public static string Maintenance100HrPrompt {
+            get {
+                return ResourceManager.GetString("Maintenance100HrPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Altimeter.
+        /// </summary>
+        public static string MaintenanceAltimeter {
+            get {
+                return ResourceManager.GetString("MaintenanceAltimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Altimeter.
+        /// </summary>
+        public static string MaintenanceAltimeterDue {
+            get {
+                return ResourceManager.GetString("MaintenanceAltimeterDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Altimeter:.
+        /// </summary>
+        public static string MaintenanceAltimeterPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceAltimeterPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Annual.
+        /// </summary>
+        public static string MaintenanceAnnual {
+            get {
+                return ResourceManager.GetString("MaintenanceAnnual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Annual.
+        /// </summary>
+        public static string MaintenanceAnnualDue {
+            get {
+                return ResourceManager.GetString("MaintenanceAnnualDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annual:.
+        /// </summary>
+        public static string MaintenanceAnnualPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceAnnualPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete - .
+        /// </summary>
+        public static string MaintenanceDelete {
+            get {
+                return ResourceManager.GetString("MaintenanceDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last ELT.
+        /// </summary>
+        public static string MaintenanceELT {
+            get {
+                return ResourceManager.GetString("MaintenanceELT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next ELT.
+        /// </summary>
+        public static string MaintenanceELTDue {
+            get {
+                return ResourceManager.GetString("MaintenanceELTDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ELT:.
+        /// </summary>
+        public static string MaintenanceELTPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceELTPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Engine.
+        /// </summary>
+        public static string MaintenanceEngine {
+            get {
+                return ResourceManager.GetString("MaintenanceEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine (Hours):.
+        /// </summary>
+        public static string MaintenanceEnginePrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceEnginePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Done:.
+        /// </summary>
+        public static string MaintenanceLastDone {
+            get {
+                return ResourceManager.GetString("MaintenanceLastDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Due:.
+        /// </summary>
+        public static string MaintenanceNextDue {
+            get {
+                return ResourceManager.GetString("MaintenanceNextDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Oil.
+        /// </summary>
+        public static string MaintenanceOil {
+            get {
+                return ResourceManager.GetString("MaintenanceOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Oil (100hrs).
+        /// </summary>
+        public static string MaintenanceOilDue100 {
+            get {
+                return ResourceManager.GetString("MaintenanceOilDue100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Oil (25hrs).
+        /// </summary>
+        public static string MaintenanceOilDue25 {
+            get {
+                return ResourceManager.GetString("MaintenanceOilDue25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Oil (50hrs).
+        /// </summary>
+        public static string MaintenanceOilDue50 {
+            get {
+                return ResourceManager.GetString("MaintenanceOilDue50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oil Change (Hours):.
+        /// </summary>
+        public static string MaintenanceOilPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceOilPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pitot/Static:.
+        /// </summary>
+        public static string MaintenancePitotPrompt {
+            get {
+                return ResourceManager.GetString("MaintenancePitotPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Pitot/Static.
+        /// </summary>
+        public static string MaintenancePitotStatic {
+            get {
+                return ResourceManager.GetString("MaintenancePitotStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Pitot/Static.
+        /// </summary>
+        public static string MaintenancePitotStaticDue {
+            get {
+                return ResourceManager.GetString("MaintenancePitotStaticDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration Due.
+        /// </summary>
+        public static string MaintenanceRegistration {
+            get {
+                return ResourceManager.GetString("MaintenanceRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration Renewal Due:.
+        /// </summary>
+        public static string MaintenanceRegistrationPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceRegistrationPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Transponder.
+        /// </summary>
+        public static string MaintenanceTransponder {
+            get {
+                return ResourceManager.GetString("MaintenanceTransponder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Transponder.
+        /// </summary>
+        public static string MaintenanceTransponderDue {
+            get {
+                return ResourceManager.GetString("MaintenanceTransponderDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update - .
+        /// </summary>
+        public static string MaintenanceUpdate {
+            get {
+                return ResourceManager.GetString("MaintenanceUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last VOR.
+        /// </summary>
+        public static string MaintenanceVOR {
+            get {
+                return ResourceManager.GetString("MaintenanceVOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next VOR.
+        /// </summary>
+        public static string MaintenanceVORDue {
+            get {
+                return ResourceManager.GetString("MaintenanceVORDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VOR:.
+        /// </summary>
+        public static string MaintenanceVORPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceVORPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active (Show this aircraft for new flights).
+        /// </summary>
+        public static string optionHideFromMainList {
+            get {
+                return ResourceManager.GetString("optionHideFromMainList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instructor Time (and PIC), if empty.
+        /// </summary>
+        public static string optionRoleCFI {
+            get {
+                return ResourceManager.GetString("optionRoleCFI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing.
+        /// </summary>
+        public static string optionRoleNone {
+            get {
+                return ResourceManager.GetString("optionRoleNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIC Time, if empty.
+        /// </summary>
+        public static string optionRolePIC {
+            get {
+                return ResourceManager.GetString("optionRolePIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add my name as PIC.
+        /// </summary>
+        public static string optionRolePICName {
+            get {
+                return ResourceManager.GetString("optionRolePICName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross-fill total time to....
+        /// </summary>
+        public static string optionRolePrompt {
+            get {
+                return ResourceManager.GetString("optionRolePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SIC Time, if empty.
+        /// </summary>
+        public static string optionRoleSIC {
+            get {
+                return ResourceManager.GetString("optionRoleSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to registration renewal.
+        /// </summary>
+        public static string RegistrationRenewal {
+            get {
+                return ResourceManager.GetString("RegistrationRenewal", resourceCulture);
             }
         }
     }

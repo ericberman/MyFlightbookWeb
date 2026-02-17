@@ -1987,26 +1987,26 @@ ORDER BY f.DATE ASC";
                 // add the header columns from the gridview
                 dt.Columns.Add(new DataColumn(Resources.Aircraft.AircraftHeader, typeof(string)));
                 dt.Columns.Add(new DataColumn(Resources.Club.ClubAircraftTime, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnual, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnualDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponder, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponderDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStatic, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStaticDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeter, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeterDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELT, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELTDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVOR, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVORDue, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100Due, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOil, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue25, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue50, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue100, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceEngine, typeof(string)));
-                dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceRegistration, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceAnnual, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceAnnualDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceTransponder, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceTransponderDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenancePitotStatic, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenancePitotStaticDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceAltimeter, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceAltimeterDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceELT, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceELTDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceVOR, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceVORDue, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.Maintenance100, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.Maintenance100Due, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceOil, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceOilDue25, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceOilDue50, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceOilDue100, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceEngine, typeof(string)));
+                dt.Columns.Add(new DataColumn(AircraftSupport.Properties.AircraftResources.MaintenanceRegistration, typeof(string)));
                 dt.Columns.Add(new DataColumn(Resources.Currency.deadlinesHeaderDeadlines, typeof(string)));
                 dt.Columns.Add(new DataColumn(Resources.Club.ReportHeaderNotes, typeof(string)));
 
@@ -2146,7 +2146,7 @@ ORDER BY f.DATE ASC";
                 else
                 {
                     FlightQuery fq = new FlightQuery();
-                    if (lstIds.Any())
+                    if (lstIds.Count != 0)
                         fq.EnumeratedFlights = new HashSet<int>(lstIds);
                     FlightData.AllFlightsAsKML(fq, new AirportList(LogbookEntryDisplay.AllRoutesAsOne(fq)), ms, out string szErr);
                     if (!String.IsNullOrEmpty(szErr))

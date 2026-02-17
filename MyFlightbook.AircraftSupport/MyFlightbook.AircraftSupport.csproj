@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj" />
     <ProjectReference Include="..\MyFlightbook.Image\MyFlightbook.Image.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
     <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj" />
@@ -24,7 +25,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\AircraftResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AircraftResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.AircraftSupport.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -455,7 +456,7 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
             catch
             {
                 // main reason delete would fail is if there are flights associated with the aircraft.  Database constraint will handle that, so just get a better message
-                throw new MyFlightbookException(Resources.Aircraft.errAircraftInUse);
+                throw new MyFlightbookException(AircraftResources.errAircraftInUse);
             }
 
             _userAircraftDelegate?.AircraftDeleted(User, AircraftID);
@@ -489,27 +490,27 @@ ON DUPLICATE KEY UPDATE flags=?acFlags, privatenotes=?userNotes, defaultimage=?d
             dt.Columns.Add(new DataColumn("Model", typeof(string)));
             dt.Columns.Add(new DataColumn("Type designation", typeof(string)));
             dt.Columns.Add(new DataColumn("Model full name", typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnual, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAnnualDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponder, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceTransponderDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStatic, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenancePitotStaticDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeter, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceAltimeterDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELT, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceELTDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVOR, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceVORDue, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.Maintenance100Due, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOil, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue25, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue50, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceOilDue100, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceEngine, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Aircraft.MaintenanceRegistration, typeof(string)));
-            dt.Columns.Add(new DataColumn(Resources.Currency.deadlinesHeaderDeadlines, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceAnnual, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceAnnualDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceTransponder, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceTransponderDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenancePitotStatic, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenancePitotStaticDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceAltimeter, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceAltimeterDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceELT, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceELTDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceVOR, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceVORDue, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.Maintenance100, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.Maintenance100Due, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceOil, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceOilDue25, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceOilDue50, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceOilDue100, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceEngine, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.MaintenanceRegistration, typeof(string)));
+            dt.Columns.Add(new DataColumn(AircraftResources.DeadlineHeader, typeof(string)));
             dt.Columns.Add(new DataColumn("Frequently Used", typeof(string)));
             dt.Columns.Add(new DataColumn("Public Notes", typeof(string)));
             dt.Columns.Add(new DataColumn("Private Notes", typeof(string)));

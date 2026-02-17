@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook.AircraftSupport.Properties;
+using MyFlightbook.Image;
 using MyFlightbook.SharedUtility.EventRecorder;
 using Newtonsoft.Json;
 using System;
@@ -7,9 +8,9 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml.Serialization;
 
 /******************************************************
@@ -166,13 +167,13 @@ namespace MyFlightbook
             switch (ait)
             {
                 case AircraftInstanceTypes.CertifiedATD:
-                    return Resources.Aircraft.InstanceTypeATD;
+                    return AircraftResources.InstanceTypeATD;
                 case AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator:
-                    return Resources.Aircraft.InstanceTypeFFS;
+                    return AircraftResources.InstanceTypeFFS;
                 case AircraftInstanceTypes.CertifiedIFRSimulator:
-                    return Resources.Aircraft.InstanceTypeFTD;
+                    return AircraftResources.InstanceTypeFTD;
                 case AircraftInstanceTypes.UncertifiedSimulator:
-                    return Resources.Aircraft.InstanceTypeUncertified;
+                    return AircraftResources.InstanceTypeUncertified;
                 case AircraftInstanceTypes.RealAircraft:
                 default:
                     return string.Empty;
@@ -631,7 +632,7 @@ namespace MyFlightbook
         [Newtonsoft.Json.JsonIgnore]
         public string DisplayTailnumber
         {
-            get { return IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AnonymousTemplate, ModelDescription) : TailNumber; }
+            get { return IsAnonymous ? String.Format(CultureInfo.CurrentCulture, AircraftResources.AnonymousTemplate, ModelDescription) : TailNumber; }
         }
 
         /// <summary>
@@ -834,7 +835,7 @@ namespace MyFlightbook
             DefaultTemplates = new HashSet<int>();
         }
 
-        internal protected Aircraft(IDataReader dr) : this()
+        public Aircraft(IDataReader dr) : this()
         {
             InitFromDataReader(dr);
         }
@@ -1010,7 +1011,7 @@ namespace MyFlightbook
                     oldPublicNotes = util.ReadNullableString(dr, "PublicNotes");
                 });
                 if (currVer != Revision)
-                    throw new MyFlightbookException(Resources.Aircraft.errNotEditingMostRecentVersion);
+                    throw new MyFlightbookException(AircraftResources.errNotEditingMostRecentVersion);
             }
 
             // Issue #855 - log changes to shared notes in case of abuse.
@@ -1246,19 +1247,19 @@ namespace MyFlightbook
 
             if (String.IsNullOrEmpty(TailNumber))
             {
-                ErrorString = Resources.Aircraft.errNoTail;
+                ErrorString = AircraftResources.errNoTail;
                 return false;
             }
 
             if (TailNumber.Length <= 2 && !rValidTail.IsMatch(TailNumber))
             {
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errInvalidTailShort, TailNumber);
+                ErrorString = String.Format(CultureInfo.CurrentCulture, AircraftResources.errInvalidTailShort, TailNumber);
                 return false;
             }
 
             if (TailNumber.Length > maxTailLength)
             {
-                ErrorString = Resources.Aircraft.errInvalidTailLong;
+                ErrorString = AircraftResources.errInvalidTailLong;
                 return false;
             }
 
@@ -1266,21 +1267,21 @@ namespace MyFlightbook
             if (IsAnonymous)
             {
                 if (String.Compare(TailNumber, AnonymousTailnumberForModel(ModelID), StringComparison.OrdinalIgnoreCase) != 0)
-                    ErrorString = Resources.Aircraft.errBadAnonymousName;
+                    ErrorString = AircraftResources.errBadAnonymousName;
             }
             else
             {
                 Match mt = rValidTail.Match(TailNumber);
                 if (mt.Captures.Count != 1 || String.Compare(TailNumber, mt.Captures[0].Value, StringComparison.OrdinalIgnoreCase) != 0)
-                    ErrorString = Resources.Aircraft.errInvalidChars;
+                    ErrorString = AircraftResources.errInvalidChars;
 
                 if (TailNumber.StartsWith("N", StringComparison.CurrentCultureIgnoreCase) && !rValidNNumber.IsMatch(TailNumber))
-                    ErrorString = Resources.Aircraft.errInvalidNNumber;
+                    ErrorString = AircraftResources.errInvalidNNumber;
             }
 
             CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(TailNumber);
             if (cc != null && TailNumber.Length <= cc.Prefix.Length)
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errInvalidAfterCountryCode, cc.Prefix);
+                ErrorString = String.Format(CultureInfo.CurrentCulture, AircraftResources.errInvalidAfterCountryCode, cc.Prefix);
 
             /*
             // we allow aircraft with no country code tailnumber
@@ -1290,26 +1291,26 @@ namespace MyFlightbook
 
             if (ModelID < 0)
             {
-                ErrorString = Resources.Aircraft.errNoMakeModel;
+                ErrorString = AircraftResources.errNoMakeModel;
                 return false;
             }
 
             bool fIsRealAircraft = InstanceType == AircraftInstanceTypes.RealAircraft;
 
             if (fIsRealAircraft && cc.IsSim)
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errSimPrefixReserved, cc.Prefix);
+                ErrorString = String.Format(CultureInfo.CurrentCulture, AircraftResources.errSimPrefixReserved, cc.Prefix);
 
             if (!fIsRealAircraft && !cc.IsSim)
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errMissingSimPrefix, CountryCodePrefix.szSimPrefix);
+                ErrorString = String.Format(CultureInfo.CurrentCulture, AircraftResources.errMissingSimPrefix, CountryCodePrefix.szSimPrefix);
 
             // validate the model by loading the make model; a bad modelID will throw an exception.
             if (fCheckMake)
             {
                 try
                 {
-                    MakeModel m = MakeModel.GetModel(this.ModelID);
+                    MakeModel m = MakeModel.GetModel(ModelID);
                     if (m.MakeModelID == MakeModel.UnknownModel)
-                        throw new MyFlightbookException("Bad Model");
+                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AircraftResources.errInvalidMake, ModelID));
 
                     // Check for allowed aircraft type
                     if (fIsRealAircraft)
@@ -1319,18 +1320,18 @@ namespace MyFlightbook
                             case AllowedAircraftTypes.Any:
                                 break;
                             case AllowedAircraftTypes.SimulatorOnly:
-                                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errMakeIsSimOnly, m.DisplayName);
+                                ErrorString = String.Format(CultureInfo.CurrentCulture, AircraftResources.errMakeIsSimOnly, m.DisplayName);
                                 break;
                             case AllowedAircraftTypes.SimOrAnonymous:
                                 if (!IsAnonymous)
-                                    ErrorString = Resources.Aircraft.errMakeIsAnonOnly;
+                                    ErrorString = AircraftResources.errMakeIsAnonOnly;
                                 break;
                         }
                     }
                 }
-                catch (Exception ex) when (ex is MyFlightbookException)
+                catch (Exception ex) when (ex is InvalidOperationException)
                 {
-                    ErrorString = String.Format(CultureInfo.CurrentCulture, "Invalid model ID {0}", this.ModelID);
+                    ErrorString = ex.Message;
                 }
             }
 
@@ -1418,7 +1419,7 @@ namespace MyFlightbook
             if (lst.Count < 2)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder("\r\n" + Resources.Aircraft.alternateVersionsList + "\r\n");
+            StringBuilder sb = new StringBuilder("\r\n" + AircraftResources.alternateVersionsList + "\r\n");
             lst.ForEach((ac) => sb.AppendFormat(CultureInfo.CurrentCulture, "\r\n - {0}", ac.LongDescription));
             sb.Append("\r\n");
 
@@ -1664,7 +1665,7 @@ namespace MyFlightbook
             {
                 AircraftID = AircraftID,
                 ChangeDate = DateTime.Now,
-                Description = fDelete ? Resources.Aircraft.MaintenanceDelete + szMessage : Resources.Aircraft.MaintenanceUpdate + szMessage + " (" + szNew + ")",
+                Description = fDelete ? AircraftResources.MaintenanceDelete + szMessage : AircraftResources.MaintenanceUpdate + szMessage + " (" + szNew + ")",
                 Comment = szComment,
                 User = szUser
             };
@@ -1688,23 +1689,23 @@ namespace MyFlightbook
 
             List<MaintenanceLog> rgml = new List<MaintenanceLog>();
 
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastAltimeter, mr.LastAltimeter, Resources.Aircraft.InspectionLogAltimeter, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastAnnual, mr.LastAnnual, Resources.Aircraft.InspectionLogAnnual, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastELT, mr.LastELT, Resources.Aircraft.InspectionLogELT, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastStatic, mr.LastStatic, Resources.Aircraft.InspectionLogPitotStatic, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastTransponder, mr.LastTransponder, Resources.Aircraft.InspectionLogTransponder, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastVOR, mr.LastVOR, Resources.Aircraft.InspectionLogVOR, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastNewEngine, mr.LastNewEngine, Resources.Aircraft.InspectionLogEngine, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(Last100, mr.Last100, Resources.Aircraft.InspectionLog100hr, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastOilChange, mr.LastOilChange, Resources.Aircraft.InspectionLogOil, string.Empty, szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(RegistrationDue, mr.RegistrationExpiration, Resources.Aircraft.RegistrationRenewal, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastAltimeter, mr.LastAltimeter, AircraftResources.InspectionLogAltimeter, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastAnnual, mr.LastAnnual, AircraftResources.InspectionLogAnnual, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastELT, mr.LastELT, AircraftResources.InspectionLogELT, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastStatic, mr.LastStatic, AircraftResources.InspectionLogPitotStatic, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastTransponder, mr.LastTransponder, AircraftResources.InspectionLogTransponder, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastVOR, mr.LastVOR, AircraftResources.InspectionLogVOR, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastNewEngine, mr.LastNewEngine, AircraftResources.InspectionLogEngine, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(Last100, mr.Last100, AircraftResources.InspectionLog100hr, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastOilChange, mr.LastOilChange, AircraftResources.InspectionLogOil, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(RegistrationDue, mr.RegistrationExpiration, AircraftResources.RegistrationRenewal, string.Empty, szUser));
 
             // If notes have been provided, put them into the first item; add a new item if needed
             if (!String.IsNullOrEmpty(mr.Notes))
             {
                 MaintenanceLog ml = rgml.FirstOrDefault(ml2 => String.IsNullOrEmpty(ml2.Comment));
                 if (ml == null)
-                    rgml.Add(new MaintenanceLog() { AircraftID = this.AircraftID, ChangeDate = DateTime.Now, Description = Resources.Aircraft.MaintenanceUpdate + mr.Notes, Comment = string.Empty, User = szUser });
+                    rgml.Add(new MaintenanceLog() { AircraftID = this.AircraftID, ChangeDate = DateTime.Now, Description = AircraftResources.MaintenanceUpdate + mr.Notes, Comment = string.Empty, User = szUser });
                 else
                     ml.Comment = mr.Notes;
             }
@@ -1960,17 +1961,17 @@ namespace MyFlightbook
 
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleFavorite({1}, this.checked)\" />{2}</label></div><hr />", HideFromSelection ? string.Empty : "checked", AircraftID, HttpUtility.HtmlEncode(Resources.Aircraft.optionHideFromMainList));
-            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"font-weight:bold;\">{0}</div>", HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePrompt));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleFavorite({1}, this.checked)\" />{2}</label></div><hr />", HideFromSelection ? string.Empty : "checked", AircraftID, WebUtility.HtmlEncode(AircraftResources.optionHideFromMainList));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"font-weight:bold;\">{0}</div>", WebUtility.HtmlEncode(AircraftResources.optionRolePrompt));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
-                rblGroup, RoleForPilot == PilotRole.None ? "checked" : string.Empty, AircraftID, PilotRole.None, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleNone));
+                rblGroup, RoleForPilot == PilotRole.None ? "checked" : string.Empty, AircraftID, PilotRole.None, idCKAddName, WebUtility.HtmlEncode(AircraftResources.optionRoleNone));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
-                rblGroup, RoleForPilot == PilotRole.CFI ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleCFI));
+                rblGroup, RoleForPilot == PilotRole.CFI ? "checked" : string.Empty, AircraftID, PilotRole.CFI, idCKAddName, WebUtility.HtmlEncode(AircraftResources.optionRoleCFI));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" id=\"{1}\" {2} onclick=\"javascript: setRole({3}, '{4}', $('#{5}')[0].checked, $('#{5}')[0])\" />{6}</label></div>",
-                rblGroup, idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePIC));
-            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"margin-left: 2em;\"><label><input type=\"checkbox\" {0} id=\"{1}\" onclick=\"javascript: $('#{2}')[0].click();\" />{3}</label></div>", CopyPICNameWithCrossfill ? "checked" : string.Empty, idCKAddName, idRBPIC, HttpUtility.HtmlEncode(Resources.Aircraft.optionRolePICName));
+                rblGroup, idRBPIC, RoleForPilot == PilotRole.PIC ? "checked" : string.Empty, AircraftID, PilotRole.PIC, idCKAddName, WebUtility.HtmlEncode(AircraftResources.optionRolePIC));
+            sb.AppendFormat(CultureInfo.InvariantCulture, "<div style=\"margin-left: 2em;\"><label><input type=\"checkbox\" {0} id=\"{1}\" onclick=\"javascript: $('#{2}')[0].click();\" />{3}</label></div>", CopyPICNameWithCrossfill ? "checked" : string.Empty, idCKAddName, idRBPIC, WebUtility.HtmlEncode(AircraftResources.optionRolePICName));
             sb.AppendFormat(CultureInfo.InvariantCulture, "<div><label><input type=\"radio\" name=\"{0}\" {1} onclick=\"javascript: setRole({2}, '{3}', false, $('#{4}')[0])\" />{5}</label></div>",
-                rblGroup, RoleForPilot == PilotRole.SIC ? "checked" : string.Empty, AircraftID, PilotRole.SIC, idCKAddName, HttpUtility.HtmlEncode(Resources.Aircraft.optionRoleSIC));
+                rblGroup, RoleForPilot == PilotRole.SIC ? "checked" : string.Empty, AircraftID, PilotRole.SIC, idCKAddName, WebUtility.HtmlEncode(AircraftResources.optionRoleSIC));
 
             return sb.ToString();
         }
@@ -2046,16 +2047,16 @@ namespace MyFlightbook
                             else
                                 return ac2.Stats.LatestDate.Value.CompareTo(ac1.Stats.LatestDate);
                         });
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupFlown, MatchingAircraft = lstActive });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = AircraftResources.AircraftGroupFlown, MatchingAircraft = lstActive });
                     }
                     if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = AircraftResources.AircraftGroupUnflown, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
                     break;
                 case GroupMode.Activity:
                     if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupActive, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = AircraftResources.AircraftGroupActive, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
                     if (d.ContainsKey(true.ToString(CultureInfo.InvariantCulture)))
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupInactive, MatchingAircraft = d[true.ToString(CultureInfo.InvariantCulture)] });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = AircraftResources.AircraftGroupInactive, MatchingAircraft = d[true.ToString(CultureInfo.InvariantCulture)] });
                     break;
                 case GroupMode.Model:
                 case GroupMode.CategoryClass:

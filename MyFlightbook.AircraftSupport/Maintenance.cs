@@ -1,5 +1,4 @@
-﻿using MyFlightbook.Currency;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -216,7 +215,7 @@ namespace MyFlightbook
                 User = dr["User"].ToString();
                 string szFirst = dr["FirstName"].ToString();
                 string szLast = dr["LastName"].ToString();
-                UserFullName = (szFirst + Resources.LocalizedText.LocalizedSpace + szLast).Trim();
+                UserFullName = $"{szFirst} {szLast}".Trim();
                 Comment = dr["Comment"].ToString();
 
             }

@@ -117,6 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AircraftGroupActive" xml:space="preserve">
+    <value>Frequently Used Aircraft</value>
+  </data>
+  <data name="AircraftGroupFlown" xml:space="preserve">
+    <value>Flown aircraft</value>
+  </data>
+  <data name="AircraftGroupInactive" xml:space="preserve">
+    <value>Other Aircraft</value>
+  </data>
+  <data name="AircraftGroupUnflown" xml:space="preserve">
+    <value>Unflown aircraft</value>
+  </data>
+  <data name="alternateVersionsList" xml:space="preserve">
+    <value>The available versions for this aircraft are currently:</value>
+  </data>
+  <data name="AnonymousTemplate" xml:space="preserve">
+    <value>(Anonymous {0})</value>
+    <comment>E.g., (C-172), no tailnumber</comment>
+  </data>
+  <data name="DeadlineHeader" xml:space="preserve">
+    <value>Deadlines</value>
+  </data>
   <data name="DisplayTemplateWithType" xml:space="preserve">
     <value>{0} (Type: {1})</value>
     <comment>E.g., "B737 (Type: B737-300)"</comment>
@@ -157,8 +179,39 @@
   <data name="editMakeValModelNameRequired" xml:space="preserve">
     <value>Please enter a model name</value>
   </data>
+  <data name="errAircraftInUse" xml:space="preserve">
+    <value>This aircraft is used in some of your flights and cannot be removed.</value>
+  </data>
+  <data name="errBadAnonymousName" xml:space="preserve">
+    <value>Invalid tailnumber for anonymous aircraft</value>
+    <comment>Anonymous aircraft must be #xxxxxx, where xxxxxx is the model ID padded to 6 digits.</comment>
+  </data>
+  <data name="errInvalidAfterCountryCode" xml:space="preserve">
+    <value>Invalid tail number - nothing after the country prefix '{0}'</value>
+  </data>
+  <data name="errInvalidChars" xml:space="preserve">
+    <value>Tail number can only contain numbers, letters, or a dash.</value>
+  </data>
   <data name="errInvalidICAO" xml:space="preserve">
     <value>ICAO/FAA codes may only be up to 4 alphanumeric characters</value>
+  </data>
+  <data name="errInvalidMake" xml:space="preserve">
+    <value>The requested model (ID {0}) does not exist!</value>
+  </data>
+  <data name="errInvalidNNumber" xml:space="preserve">
+    <value>US Registrations ("N" numbers) cannot start with "NN" or "N0", nor contain the letters "O" or "I" because of potential confusion with "0" and "1".</value>
+  </data>
+  <data name="errInvalidTailLong" xml:space="preserve">
+    <value>Invalid tail number -- too long.</value>
+  </data>
+  <data name="errInvalidTailShort" xml:space="preserve">
+    <value>'{0}' is not a valid tail number - too short</value>
+  </data>
+  <data name="errMakeIsAnonOnly" xml:space="preserve">
+    <value>This model of aircraft is meant to represent a generic kind of aircraft and therefore cannot be assigned a tailnumber.</value>
+  </data>
+  <data name="errMakeIsSimOnly" xml:space="preserve">
+    <value>{0} does not represent a real aircraft, only a training device/simulator.  Please change the aircraft to be a simulator/ATD/FTD, or use a different make/model, or contact us if you believe this is in error.</value>
   </data>
   <data name="errManufacturerRequired" xml:space="preserve">
     <value>Please select a manufacturer from the list.  You can add one if needed.</value>
@@ -166,11 +219,26 @@
   <data name="errMDSTooLong" xml:space="preserve">
     <value>Mission/Design/Series '{0}' is too long; please provide one that is fewer than 40 characters in length</value>
   </data>
+  <data name="errMissingSimPrefix" xml:space="preserve">
+    <value>Simulators/FTDs/ATDs/etc. MUST begin with the prefix '{0}'</value>
+  </data>
+  <data name="errNoMakeModel" xml:space="preserve">
+    <value>No model found for aircraft</value>
+  </data>
+  <data name="errNoTail" xml:space="preserve">
+    <value>No tail number supplied.</value>
+  </data>
+  <data name="errNotEditingMostRecentVersion" xml:space="preserve">
+    <value>Save failed - you are not editing the most up-to-date version of this aircraft.  Please reload this page and try again.</value>
+  </data>
   <data name="errSaveMakeFailed" xml:space="preserve">
     <value>Error saving make/model: {0}</value>
   </data>
   <data name="errSaveManufacturerFailed" xml:space="preserve">
     <value>Error saving manufacturer - {0}\r\n{1}</value>
+  </data>
+  <data name="errSimPrefixReserved" xml:space="preserve">
+    <value>{0} prefix is reserved for simulators/ATDs/FTDs, etc.</value>
   </data>
   <data name="errSinglePilotButNotTypeRated" xml:space="preserve">
     <value>Model is certified for single-pilot operations, but it isn't turbine or doesn't require a type rating</value>
@@ -183,6 +251,54 @@
   </data>
   <data name="ICAOTemplate" xml:space="preserve">
     <value> (ICAO: {0})</value>
+  </data>
+  <data name="ImportNoModelColumnFound" xml:space="preserve">
+    <value>No data column titled "Model" was found</value>
+  </data>
+  <data name="ImportNoTailNumberColumnFound" xml:space="preserve">
+    <value>No data column titled "Tail Number" was found</value>
+  </data>
+  <data name="ImportNotValidCSV" xml:space="preserve">
+    <value>Aircraft import requires both a tailnumber and model designation for each row.  Please fill in any missing data.</value>
+  </data>
+  <data name="InspectionLog100hr" xml:space="preserve">
+    <value>100hr inspection</value>
+  </data>
+  <data name="InspectionLogAltimeter" xml:space="preserve">
+    <value>altimeter inspection</value>
+  </data>
+  <data name="InspectionLogAnnual" xml:space="preserve">
+    <value>annual inspection</value>
+  </data>
+  <data name="InspectionLogELT" xml:space="preserve">
+    <value>ELT inspection</value>
+  </data>
+  <data name="InspectionLogEngine" xml:space="preserve">
+    <value>engine hours</value>
+  </data>
+  <data name="InspectionLogOil" xml:space="preserve">
+    <value>engine hours of last oil change</value>
+  </data>
+  <data name="InspectionLogPitotStatic" xml:space="preserve">
+    <value>pitot/static inspection</value>
+  </data>
+  <data name="InspectionLogTransponder" xml:space="preserve">
+    <value>transponder inspection</value>
+  </data>
+  <data name="InspectionLogVOR" xml:space="preserve">
+    <value>VOR Check or inspection</value>
+  </data>
+  <data name="InstanceTypeATD" xml:space="preserve">
+    <value>ATD</value>
+  </data>
+  <data name="InstanceTypeFFS" xml:space="preserve">
+    <value>Full Flight Sim.</value>
+  </data>
+  <data name="InstanceTypeFTD" xml:space="preserve">
+    <value>FTD/Sim</value>
+  </data>
+  <data name="InstanceTypeUncertified" xml:space="preserve">
+    <value>Uncertified Sim</value>
   </data>
   <data name="IsCertifiedSinglePilot" xml:space="preserve">
     <value>Certified for Single Pilot Operations</value>
@@ -228,5 +344,130 @@
   </data>
   <data name="IsTurboprop" xml:space="preserve">
     <value>Turboprop</value>
+  </data>
+  <data name="Maintenance100" xml:space="preserve">
+    <value>Last 100-hour</value>
+  </data>
+  <data name="Maintenance100Due" xml:space="preserve">
+    <value>Next 100hr</value>
+  </data>
+  <data name="Maintenance100HrPrompt" xml:space="preserve">
+    <value>100-hour (Hours):</value>
+  </data>
+  <data name="MaintenanceAltimeter" xml:space="preserve">
+    <value>Last Altimeter</value>
+  </data>
+  <data name="MaintenanceAltimeterDue" xml:space="preserve">
+    <value>Next Altimeter</value>
+  </data>
+  <data name="MaintenanceAltimeterPrompt" xml:space="preserve">
+    <value>Altimeter:</value>
+  </data>
+  <data name="MaintenanceAnnual" xml:space="preserve">
+    <value>Last Annual</value>
+  </data>
+  <data name="MaintenanceAnnualDue" xml:space="preserve">
+    <value>Next Annual</value>
+  </data>
+  <data name="MaintenanceAnnualPrompt" xml:space="preserve">
+    <value>Annual:</value>
+  </data>
+  <data name="MaintenanceDelete" xml:space="preserve">
+    <value>Delete - </value>
+    <comment>Inspection deletion</comment>
+  </data>
+  <data name="MaintenanceELT" xml:space="preserve">
+    <value>Last ELT</value>
+  </data>
+  <data name="MaintenanceELTDue" xml:space="preserve">
+    <value>Next ELT</value>
+  </data>
+  <data name="MaintenanceELTPrompt" xml:space="preserve">
+    <value>ELT:</value>
+  </data>
+  <data name="MaintenanceEngine" xml:space="preserve">
+    <value>Last Engine</value>
+  </data>
+  <data name="MaintenanceEnginePrompt" xml:space="preserve">
+    <value>Engine (Hours):</value>
+  </data>
+  <data name="MaintenanceLastDone" xml:space="preserve">
+    <value>Last Done:</value>
+  </data>
+  <data name="MaintenanceNextDue" xml:space="preserve">
+    <value>Next Due:</value>
+  </data>
+  <data name="MaintenanceOil" xml:space="preserve">
+    <value>Last Oil</value>
+  </data>
+  <data name="MaintenanceOilDue25" xml:space="preserve">
+    <value>Next Oil (25hrs)</value>
+  </data>
+  <data name="MaintenanceOilDue50" xml:space="preserve">
+    <value>Next Oil (50hrs)</value>
+  </data>
+  <data name="MaintenanceOilDue100" xml:space="preserve">
+    <value>Next Oil (100hrs)</value>
+  </data>
+  <data name="MaintenanceOilPrompt" xml:space="preserve">
+    <value>Oil Change (Hours):</value>
+  </data>
+  <data name="MaintenancePitotPrompt" xml:space="preserve">
+    <value>Pitot/Static:</value>
+  </data>
+  <data name="MaintenancePitotStatic" xml:space="preserve">
+    <value>Last Pitot/Static</value>
+  </data>
+  <data name="MaintenancePitotStaticDue" xml:space="preserve">
+    <value>Next Pitot/Static</value>
+  </data>
+  <data name="MaintenanceRegistration" xml:space="preserve">
+    <value>Registration Due</value>
+  </data>
+  <data name="MaintenanceRegistrationPrompt" xml:space="preserve">
+    <value>Registration Renewal Due:</value>
+  </data>
+  <data name="MaintenanceTransponder" xml:space="preserve">
+    <value>Last Transponder</value>
+  </data>
+  <data name="MaintenanceTransponderDue" xml:space="preserve">
+    <value>Next Transponder</value>
+  </data>
+  <data name="MaintenanceUpdate" xml:space="preserve">
+    <value>Update - </value>
+    <comment>Inspection update</comment>
+  </data>
+  <data name="MaintenanceVOR" xml:space="preserve">
+    <value>Last VOR</value>
+  </data>
+  <data name="MaintenanceVORDue" xml:space="preserve">
+    <value>Next VOR</value>
+  </data>
+  <data name="MaintenanceVORPrompt" xml:space="preserve">
+    <value>VOR:</value>
+  </data>
+  <data name="optionHideFromMainList" xml:space="preserve">
+    <value>Active (Show this aircraft for new flights)</value>
+  </data>
+  <data name="optionRoleCFI" xml:space="preserve">
+    <value>Instructor Time (and PIC), if empty</value>
+  </data>
+  <data name="optionRoleNone" xml:space="preserve">
+    <value>Nothing</value>
+  </data>
+  <data name="optionRolePIC" xml:space="preserve">
+    <value>PIC Time, if empty</value>
+  </data>
+  <data name="optionRolePICName" xml:space="preserve">
+    <value>Add my name as PIC</value>
+  </data>
+  <data name="optionRolePrompt" xml:space="preserve">
+    <value>Cross-fill total time to...</value>
+  </data>
+  <data name="optionRoleSIC" xml:space="preserve">
+    <value>SIC Time, if empty</value>
+  </data>
+  <data name="RegistrationRenewal" xml:space="preserve">
+    <value>registration renewal</value>
   </data>
 </root>

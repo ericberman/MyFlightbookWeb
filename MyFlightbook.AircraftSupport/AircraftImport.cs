@@ -1,4 +1,5 @@
-﻿using MyFlightbook.CSV;
+﻿using MyFlightbook.AircraftSupport.Properties;
+using MyFlightbook.CSV;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -354,7 +355,7 @@ namespace MyFlightbook
 
             // But if only one is empty, that's a problem.
             if (String.IsNullOrEmpty(szTail) || (fRequireModel && String.IsNullOrEmpty(szModelGiven)))
-                throw new MyFlightbookException(Resources.Aircraft.ImportNotValidCSV);
+                throw new MyFlightbookException(AircraftResources.ImportNotValidCSV);
 
             string szTailNormal = RegexUtility.NonAlphaNumeric.Replace(szTail, string.Empty);
 
@@ -390,13 +391,13 @@ namespace MyFlightbook
                 return;
 
             if (rgszRow.Length < 2)
-                throw new MyFlightbookException(Resources.Aircraft.ImportNotValidCSV);
+                throw new MyFlightbookException(AircraftResources.ImportNotValidCSV);
 
             for (int i = 0; i < rgszRow.Length; i++)
             {
-                if (rgszRow[i].CompareCurrentCultureIgnoreCase(ImportFlights.CSVImporter.TailNumberColumnName) == 0)
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Tail Number") == 0)
                     iColTail = i;
-                if (rgszRow[i].CompareCurrentCultureIgnoreCase(ImportFlights.CSVImporter.ModelColumnName) == 0)
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Model") == 0)
                     iColModel = i;
                 if (rgszRow[i].CompareCurrentCultureIgnoreCase("Private Notes") == 0)
                     iColPrivatenotes = i;
@@ -411,9 +412,9 @@ namespace MyFlightbook
             }
 
             if (iColTail < 0)
-                throw new MyFlightbookException(Resources.Aircraft.ImportNoTailNumberColumnFound);
+                throw new MyFlightbookException(AircraftResources.ImportNoTailNumberColumnFound);
             if (iColModel < 0)
-                throw new MyFlightbookException(Resources.Aircraft.ImportNoModelColumnFound);
+                throw new MyFlightbookException(AircraftResources.ImportNoModelColumnFound);
         }
 
         private void InitFromCSV(Stream CSVToParse)

@@ -1,5 +1,6 @@
 ﻿@using MyFlightbook.Clubs
 @using MyFlightbook.Currency
+@using MyFlightbook.AircraftSupport.Properties;
 @if (ViewBag.items.Count == 0)
 {
     <p>@Resources.Club.ReportNoData</p>
@@ -11,27 +12,27 @@ else
             <tr style="vertical-align:top">
                 <th class="PaddedCell">@Resources.Aircraft.AircraftHeader</th>
                 <th class="PaddedCell">@Resources.Club.ClubAircraftTime</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAnnual</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAnnualDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceTransponder</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceTransponderDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenancePitotStatic</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenancePitotStaticDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAltimeter</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceAltimeterDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceELT</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceELTDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceVOR</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceVORDue</th>
-                <th class="PaddedCell">@Resources.Aircraft.Maintenance100</th>
-                <th class="PaddedCell">@Resources.Aircraft.Maintenance100Due</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOil</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue25</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue50</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceOilDue100</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceEngine</th>
-                <th class="PaddedCell">@Resources.Aircraft.MaintenanceRegistration</th>
-                <th class="PaddedCell">@Resources.Currency.deadlinesHeaderDeadlines</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceAnnual</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceAnnualDue</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceTransponder</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceTransponderDue</th>
+                <th class="PaddedCell">@AircraftResources.MaintenancePitotStatic</th>
+                <th class="PaddedCell">@AircraftResources.MaintenancePitotStaticDue</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceAltimeter</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceAltimeterDue</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceELT</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceELTDue</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceVOR</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceVORDue</th>
+                <th class="PaddedCell">@AircraftResources.Maintenance100</th>
+                <th class="PaddedCell">@AircraftResources.Maintenance100Due</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceOil</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceOilDue25</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceOilDue50</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceOilDue100</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceEngine</th>
+                <th class="PaddedCell">@AircraftResources.MaintenanceRegistration</th>
+                <th class="PaddedCell">@AircraftResources.DeadlineHeader</th>
                 <th class="PaddedCell">@Resources.Club.ReportHeaderNotes</th>
             </tr>
         </thead>
