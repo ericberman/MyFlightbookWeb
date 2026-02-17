@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MyFlightbook.Currency;
+﻿using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
 
