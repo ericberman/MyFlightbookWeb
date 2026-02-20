@@ -897,7 +897,13 @@ namespace MyFlightbook.Telemetry
                             dtEnd = le.BestEndDateTime();
                         }
 
-                        IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
+                        // Issue #1500: BestStartDateTime/BestEndDateTime favor FLIGHT time, so exclude block/engine times.  So we should figure out padding minutes for taxi time.
+                        DateTime dtBlockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut]?.DateValue ?? le.EngineStart;
+                        DateTime dtBlockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn]?.DateValue ?? le.EngineEnd;
+                        int padStart = dtBlockOut.HasValue() && dtBlockOut.CompareTo(dtStart) < 0 ? (int) Math.Round((dtStart - dtBlockOut).TotalMinutes) : 0;
+                        int padEnd = dtBlockIn.HasValue() && dtBlockIn.CompareTo(dtEnd) > 0 ? (int) Math.Round((dtBlockIn - dtEnd).TotalMinutes) : 0;
+
+                        IEnumerable <Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd, padStart, padEnd);
                         SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
 
                         using (MemoryStream ms = new MemoryStream())

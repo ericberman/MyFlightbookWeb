@@ -344,13 +344,19 @@ namespace MyFlightbook.Geography
         /// <param name="dtStart">Starting date, in UTC</param>
         /// <param name="llEnd">Ending Position</param>
         /// <param name="dtEnd">Ending date, in UTC</param>
+        /// <param name="padStart">Time (in minutes) to pad at the start before great-circle begins</param>
+        /// <param name="padEnd">Time (in minutes) to pad at the end after great-circle ends.</param>
         /// <returns>Intermediate time-stamped points, with 1-minute resolution  Speed is derived.</returns>
-        public static IEnumerable<Position> SynthesizePath(LatLong llStart, DateTime dtStart, LatLong llEnd, DateTime dtEnd)
+        public static IEnumerable<Position> SynthesizePath(LatLong llStart, DateTime dtStart, LatLong llEnd, DateTime dtEnd, int padStart, int padEnd)
         {
             if (llStart == null)
                 throw new ArgumentNullException(nameof(llStart));
             if (llEnd == null)
                 throw new ArgumentNullException(nameof(llEnd));
+            if (padStart < 0)
+                throw new ArgumentOutOfRangeException(nameof(padStart), "padStart must be non-negative");
+            if (padEnd < 0)
+                throw new ArgumentOutOfRangeException(nameof(padEnd), "padEnd must be non-negative");
 
             List<Position> lst = new List<Position>();
 
@@ -383,6 +389,10 @@ namespace MyFlightbook.Geography
                 new Position(llEnd, 0, dtEnd.AddSeconds(9), 0)
             };
 
+            // Create a few samples of padding at the start.  Note that we need to go backwards from dtStart!
+            for (int t = 0; t < padStart; t++)
+                lst.Add(new Position(llStart, 0, dtStart.AddMinutes(-padStart + t), 0));
+
             // We need to derive an average speed.  But no need to compute - just assume constant speed.
             double distance = llStart.DistanceFrom(llEnd);
 
@@ -414,6 +424,11 @@ namespace MyFlightbook.Geography
             }
 
             lst.AddRange(rgPadding);
+
+            // finally add any padding at the end
+            // Create a few samples of padding at the start.  Since we're doing minutes, it will go past the rgpadding time.
+            for (int t = 1; t <= padEnd; t++)
+                lst.Add(new Position(llEnd, 0, dtEnd.AddMinutes(t), 0));
 
             return lst;
         }
