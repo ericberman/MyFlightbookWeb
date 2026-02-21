@@ -70,7 +70,11 @@
             updateStatus("touch start");
             evt.preventDefault();
             ctx.beginPath();
-            ctx.moveTo(evt.offsetX, evt.offsetY);
+            var touch = evt.changedTouches[0];
+            var rect = canvas.getBoundingClientRect();
+            var x = touch.clientX - rect.left;
+            var y = touch.clientY - rect.top;
+            ctx.moveTo(x, y);
             canvas.addEventListener("touchmove", paintTouch, false);
         }
 
@@ -89,11 +93,10 @@
 
         function paintTouch(evt) {
             evt.preventDefault();
-            var touches = evt.changedTouches;
-            var lastTouch = touches[touches.length - 1];
-            var x = lastTouch.pageX - canvas.offsetLeft;
-            var y = lastTouch.pageY - canvas.offsetTop;
-            updateStatus("paintTouch: " + x + ", " + y);
+            var touch = evt.changedTouches[0];
+            var rect = canvas.getBoundingClientRect();
+            var x = touch.clientX - rect.left;
+            var y = touch.clientY - rect.top;
             ctx.lineTo(x, y);
             ctx.stroke();
         }
