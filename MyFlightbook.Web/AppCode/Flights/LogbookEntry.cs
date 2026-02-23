@@ -4253,7 +4253,7 @@ WHERE f1.username = ?uName ");
         public static IEnumerable<IAirportVisitor> GetPotentialVisitsForQuery(string szUser, FlightQuery fq = null)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException(nameof(szUser));
+                throw new UnauthorizedAccessException("Query MUST have a username provided.");
             fq = fq ?? new FlightQuery(szUser); // if no query provided, create a default one.
 
             if (fq.UserName.CompareCurrentCultureIgnoreCase(szUser) != 0)
