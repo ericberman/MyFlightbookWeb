@@ -1004,6 +1004,10 @@ namespace MyFlightbook.Telemetry
 
             le.TotalFlightTime = Math.Round(le.TotalFlightTime, opt.RoundToTenth ? 1 : 2);
 
+            // Issue #1502 - if the whole flight was night, make sure it matches.  Avoid things like 0.98 night and 0.99 hours of total, or - weirder - 0.98 hours total and 0.99 hours of night!
+            if (le.Nighttime > 0 && le.Nighttime > 0 && Math.Abs(le.TotalFlightTime - le.Nighttime) < 0.02m)
+                le.Nighttime = le.TotalFlightTime;
+
             le.AutoFillFinish(opt);
 
             if (fSyntheticPath) // no point in saving a bogus flight path that simply mimics the point-to-point.
