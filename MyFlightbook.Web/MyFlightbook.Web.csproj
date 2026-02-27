@@ -2091,6 +2091,7 @@
     <Content Include="App_GlobalResources\LocalizedText.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LocalizedText.fr.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\LocalizedText.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
