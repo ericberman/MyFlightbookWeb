@@ -57,6 +57,10 @@
                 </td>
                 <td>@{ Html.RenderAction("RenderDatefield", "MFBTemplate", new { id = "mfbDateImportTo", name = "endDate", value = DateTime.MinValue }); }</td>
             </tr>
+            <tr>
+                <td><input type="checkbox" id="ckAutofillImport" name="autofillImport" checked /></td>
+                <td><label for="ckAutofillImport">@Resources.LocalizedText.ImportExternalAutofill</label></td>
+            </tr>
         </table>
         <div class="error">@(ViewBag.error ?? string.Empty)</div>
         <div style="text-align:center">

@@ -18,7 +18,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2024 MyFlightbook LLC
+ * Copyright (c) 2019-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -185,9 +185,9 @@ namespace MyFlightbook.OAuth.CloudAhoy
         private string FlightsEndpoint { get; set; }
 
         #region IExternalFlightSource
-        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request)
         {
-            return await ImportCloudAhoyFlights(username, !Branding.CurrentBrand.MatchesHost(request.Url.Host), startDate, endDate);
+            return await ImportCloudAhoyFlights(username, !Branding.CurrentBrand.MatchesHost(request.Url.Host), startDate, endDate, fAutofill);
         }
         #endregion
 
@@ -336,8 +336,9 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// <param name="fSandbox">True to use the sandbox</param>
         /// <param name="dtStart">Optional start date</param>
         /// <param name="dtEnd">Optional end date</param>
+        /// <param name="fAutofill">True to autofill the flights (not used for CloudAhoy)</param>
         /// <returns>Error message if failure, else empty string for success</returns>
-        public async static Task<string> ImportCloudAhoyFlights(string szUsername, bool fSandbox, DateTime? dtStart, DateTime? dtEnd)
+        protected async static Task<string> ImportCloudAhoyFlights(string szUsername, bool fSandbox, DateTime? dtStart, DateTime? dtEnd, bool fAutofill)
         {
             Profile pf = Profile.GetUser(szUsername);
             CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
@@ -347,7 +348,16 @@ namespace MyFlightbook.OAuth.CloudAhoy
                 foreach (CloudAhoyFlight caf in rgcaf)
                 {
                     if (caf.ToLogbookEntry() is PendingFlight pendingflight)
+                    {
+                        if (fAutofill)
+                        {
+                            DateTime dtSave = pendingflight.Date;
+                            using (FlightData fd = new FlightData())
+                                fd.AutoFill(pendingflight, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUsername) ? null : Profile.GetUser(szUsername)));
+                            pendingflight.Date = dtSave;
+                        }
                         pendingflight.Commit();
+                    }
                 }
                 return string.Empty;
             }

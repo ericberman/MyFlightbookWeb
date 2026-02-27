@@ -445,6 +445,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 await source.GetClient(pf, Request).ImportFlights(User.Identity.Name,
                 DateTime.TryParse(startDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtStart) ? dtStart : (DateTime?)null,
                 DateTime.TryParse(endDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtEnd) ? dtEnd : (DateTime?)null,
+                Request["autofillImport"] != null,
                 Request);
 
             if (String.IsNullOrEmpty(result))

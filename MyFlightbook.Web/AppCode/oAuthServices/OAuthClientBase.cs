@@ -18,7 +18,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2025 MyFlightbook LLC
+ * Copyright (c) 2019-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,9 +33,10 @@ namespace MyFlightbook.OAuth
         /// <param name="username">The user</param>
         /// <param name="startDate">Optional starting date</param>
         /// <param name="endDate">Optional ending date</param>
+        /// <param name="fAutofill">True to autofill as best as possible imported flights</param>
         /// <param name="request">(optional) some sources require the current context</param>
         /// <returns>An error string or empty for success.  Any pending flights loaded are a side-effect and are in pending flights</returns>
-        Task<string> ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request = null);
+        Task<string> ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request = null);
     }
 
     /// <summary>

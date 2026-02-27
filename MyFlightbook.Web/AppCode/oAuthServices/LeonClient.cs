@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using MyFlightbook.ImportFlights.Leon;
+using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2022-2025 MyFlightbook LLC
+ * Copyright (c) 2022-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,7 +30,7 @@ namespace MyFlightbook.OAuth.Leon
         public const string SubDomainPrefKey = "LeonSubDomainPrefKey";
 
         #region IExternalFlightSource
-        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -38,7 +39,7 @@ namespace MyFlightbook.OAuth.Leon
                 Profile pf = Profile.GetUser(username);
                 bool fNeedsRefresh = !CheckAccessToken();
 
-                await ImportFlights(username, startDate, endDate);
+                await ImportFlights(username, startDate, endDate, fAutofill);
                 if (fNeedsRefresh)
                     pf.SetPreferenceForKey(TokenPrefKey, AuthState, AuthState == null);
 
@@ -171,14 +172,24 @@ namespace MyFlightbook.OAuth.Leon
         /// <param name="szUserName">Username</param>
         /// <param name="dtStart">Starting date</param>
         /// <param name="dtEnd">Ending date</param>
+        /// <param name="fAutofill">Whether to autofill the flights or not</param>
         /// <returns>True</returns>
-        public async Task<bool> ImportFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd)
+        protected async Task<bool> ImportFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd, bool fAutofill)
         {
             IEnumerable<LeonFlightEntry> result = await GetFlights(szUserName, dtStart, dtEnd);
             foreach (LeonFlightEntry entry in result)
             {
                 if (entry.ToLogbookEntry() is PendingFlight pf)
+                {
+                    if (fAutofill)
+                    {
+                        DateTime dtSave = pf.Date;
+                        using (FlightData fd = new FlightData())
+                            fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUserName) ? null : Profile.GetUser(szUserName)));
+                        pf.Date = dtSave;
+                    }
                     pf.Commit();
+                }
             }
             return true;
         }

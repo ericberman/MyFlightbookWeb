@@ -215,7 +215,7 @@ namespace MyFlightbook.OAuth.RosterBuster
         public const string rbLastToDateKey = "rbLastToDate";
 
         #region IExternalFlightSource
-        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request)
         {
             if (string.IsNullOrEmpty(username))
                 throw new ArgumentNullException(nameof(username));
@@ -239,7 +239,7 @@ namespace MyFlightbook.OAuth.RosterBuster
 
             try
             {
-                bool _ = await GetFlights(username, startDate, endDate);
+                bool _ = await GetFlights(username, startDate, endDate, fAutofill);
                 return string.Empty;
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -279,8 +279,9 @@ namespace MyFlightbook.OAuth.RosterBuster
         /// </summary>
         /// <param name="dtStart"></param>
         /// <param name="dtEnd"></param>
+        /// <param name="fAutofill">True to perform autofill on imported flights</param>
         /// <returns></returns>
-        public async Task<bool> GetFlights(string szUser, DateTime? dtStart, DateTime? dtEnd)
+        protected async Task<bool> GetFlights(string szUser, DateTime? dtStart, DateTime? dtEnd, bool fAutofill)
         {
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
             if (dtStart.HasValue)
@@ -312,13 +313,16 @@ namespace MyFlightbook.OAuth.RosterBuster
                             pf.User = szUser;
                             pf.MapTail();   // Map the display tail to a user aircraft.
 
-                            // Date is likely UTC at this point because it comes from a UTC value like departure time.
-                            // Autofill will reset it to match the first (pseudo) time stamp, using the AutoFillOptions offset, but that's
-                            // generally a bad offset to use because that's global, not based on the departure airport.
-                            DateTime dtSave = pf.Date;
-                            using (FlightData fd = new FlightData())
-                                fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUser) ? null : Profile.GetUser(szUser)));
-                            pf.Date = dtSave;
+                            if (fAutofill)
+                            {
+                                // Date is likely UTC at this point because it comes from a UTC value like departure time.
+                                // Autofill will reset it to match the first (pseudo) time stamp, using the AutoFillOptions offset, but that's
+                                // generally a bad offset to use because that's global, not based on the departure airport.
+                                DateTime dtSave = pf.Date;
+                                using (FlightData fd = new FlightData())
+                                    fd.AutoFill(pf, AutoFillOptions.DefaultOptionsForUser(String.IsNullOrEmpty(szUser) ? null : Profile.GetUser(szUser)));
+                                pf.Date = dtSave;
+                            }
                             pf.Commit();
                         }
                     }

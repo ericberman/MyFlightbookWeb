@@ -2972,6 +2972,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autofill missing data like night, cross-country, etc..
+        /// </summary>
+        internal static string ImportExternalAutofill {
+            get {
+                return ResourceManager.GetString("ImportExternalAutofill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From.
         /// </summary>
         internal static string ImportExternalDateFrom {

@@ -28,7 +28,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
         public const string LastAccessPrefKey = "FlightCrewViewLastDate";
 
         #region IExternalFlightSource
-        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, HttpRequestBase request)
+        async Task<string> IExternalFlightSource.ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
                     }
                 }
 
-                IEnumerable<PendingFlight> _ = await FlightsFromDate(username, startDate, endDate);
+                IEnumerable<PendingFlight> _ = await FlightsFromDate(username, startDate, endDate, fAutofill);
                 return string.Empty;
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))
@@ -69,7 +69,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
             AuthState = authstate;
         }
 
-        public async Task<IEnumerable<PendingFlight>> FlightsFromDate(string szUser, DateTime? dtFrom, DateTime? dtTo)
+        protected async Task<IEnumerable<PendingFlight>> FlightsFromDate(string szUser, DateTime? dtFrom, DateTime? dtTo, bool fAutofill)
         {
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
             if (dtFrom.HasValue && dtFrom.Value.HasValue())
@@ -101,7 +101,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
                         pf.TotalFlightTime = pf.PIC = pf.SIC = pf.Nighttime = 0;
                         pf.Landings = pf.Approaches = pf.FullStopLandings = pf.NightLandings = 0;
                     }
-                    else
+                    else if (fAutofill)
                     {
                         DateTime dtSave = pf.Date;
                         using (FlightData fd = new FlightData())

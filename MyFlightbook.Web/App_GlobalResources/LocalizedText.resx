@@ -2110,4 +2110,7 @@
     <value>Today</value>
     <comment>Prompt for "Today" button on date picker</comment>
   </data>
+  <data name="ImportExternalAutofill" xml:space="preserve">
+    <value>Autofill missing data like night, cross-country, etc.</value>
+  </data>
 </root>
