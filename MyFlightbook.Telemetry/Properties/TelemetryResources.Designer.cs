@@ -70,6 +70,15 @@ namespace MyFlightbook.Telemetry.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Baju CSV file.
+        /// </summary>
+        internal static string dataTypeBaju {
+            get {
+                return ResourceManager.GetString("dataTypeBaju", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CSV File (Units unspecified).
         /// </summary>
         internal static string dataTypeCSV {

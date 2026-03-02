@@ -24,7 +24,7 @@ namespace MyFlightbook.Telemetry
 
     public class DataSourceType
     {
-        public enum FileType { None, CSV, XML, KML, GPX, Text, NMEA, IGC, Airbly };
+        public enum FileType { None, CSV, XML, KML, GPX, Text, NMEA, IGC, Airbly, Baju };
 
         public FileType Type { get; set; }
         public string DefaultExtension { get; set; }
@@ -48,6 +48,8 @@ namespace MyFlightbook.Telemetry
                         return TelemetryResources.dataTypeIGC;
                     case FileType.Airbly:
                         return TelemetryResources.dataTypeAirbly;
+                    case FileType.Baju:
+                        return TelemetryResources.dataTypeBaju;
                     default:
                         return null;
                 }
@@ -82,6 +84,8 @@ namespace MyFlightbook.Telemetry
                         return new IGCParser();
                     case FileType.Airbly:
                         return new Airbly();
+                    case FileType.Baju:
+                        return new Baju();
                     default:
                         return null;
                 }
@@ -96,7 +100,9 @@ namespace MyFlightbook.Telemetry
             new DataSourceType(FileType.XML, "XML", "text/xml"),
             new DataSourceType(FileType.NMEA, "NMEA", "text/plain"),
             new DataSourceType(FileType.Airbly, "JSON", "application/json"),
-            new DataSourceType(FileType.IGC, "IGC", "text/plain") };
+            new DataSourceType(FileType.IGC, "IGC", "text/plain"),
+            new DataSourceType(FileType.Baju, "CSV", "text/csv")
+        };
 
         public static DataSourceType DataSourceTypeFromFileType(FileType ft)
         {
@@ -138,6 +144,9 @@ namespace MyFlightbook.Telemetry
                 if (new Airbly().CanParse(sz))
                     return DataSourceTypeFromFileType(FileType.Airbly);
 
+                if (new Baju().CanParse(sz))
+                    return DataSourceTypeFromFileType(FileType.Baju);
+
                 // Must be CSV or plain text
                 // no good way to distinguish CSV from text, at least that I know of.
                 return DataSourceTypeFromFileType(FileType.CSV);
@@ -153,10 +162,11 @@ namespace MyFlightbook.Telemetry
             {
                 switch (Type)
                 {
-                    case DataSourceType.FileType.GPX:
-                    case DataSourceType.FileType.KML:
-                    case DataSourceType.FileType.NMEA:
-                    case DataSourceType.FileType.IGC:
+                    case FileType.GPX:
+                    case FileType.KML:
+                    case FileType.NMEA:
+                    case FileType.IGC:
+                    case FileType.Baju:
                         return false;
                     default:
                         return true;

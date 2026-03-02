@@ -120,6 +120,9 @@
   <data name="dataTypeAirbly" xml:space="preserve">
     <value>Airbly File</value>
   </data>
+  <data name="dataTypeBaju" xml:space="preserve">
+    <value>Baju CSV file</value>
+  </data>
   <data name="dataTypeCSV" xml:space="preserve">
     <value>CSV File (Units unspecified)</value>
   </data>
