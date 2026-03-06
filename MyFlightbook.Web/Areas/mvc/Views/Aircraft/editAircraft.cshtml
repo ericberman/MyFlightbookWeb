@@ -117,7 +117,10 @@ else
                     </td>
                     @if (fAdminMode)
                     {
-                        <td><button style="vertical-align: middle;" onclick="javascript: mergeMain(this, @acAlt.AircraftID, @ac.AircraftID); return false;">Merge into main (Admin)</button></td>
+                        <td>
+                            <div><button style="vertical-align: middle;" onclick="javascript: mergeMain(this, @acAlt.AircraftID, @ac.AircraftID); return false;">Merge into main (Admin)</button></div>
+                            <div><button onclick="javascript:makeDefault(this, @acAlt.AircraftID);  return false;" @(lstAllVersions[0].AircraftID == acAlt.AircraftID ? "disabled" : string.Empty)>Make Default</button></div>
+                        </td>
                     }
                 </tr>
             }
