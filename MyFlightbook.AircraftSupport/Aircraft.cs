@@ -985,6 +985,8 @@ namespace MyFlightbook
         #endregion
 
         #region Database
+        private static readonly LazyRegex rPsuedoAnonymous = new LazyRegex(@"^(ANON|VARI)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         /// <summary>
         /// Saves the flight into the DB, doing an insert or an update as appropriate.
         /// DO NOT CALL THIS DIRECTLY in general - it does NOT do any of the niceties around looking for collisions with existing aircraft.
@@ -1013,6 +1015,10 @@ namespace MyFlightbook
                 if (currVer != Revision)
                     throw new MyFlightbookException(AircraftResources.errNotEditingMostRecentVersion);
             }
+
+            // Issue #1505 - catch pseudo anonymous and silently map it to anonymous
+            if (IsNew && rPsuedoAnonymous.IsMatch(TailNumber) && InstanceType == AircraftInstanceTypes.RealAircraft)
+                TailNormal = TailNumber = AnonymousTailnumberForModel(ModelID);
 
             // Issue #855 - log changes to shared notes in case of abuse.
             if (!IsNew && oldPublicNotes.CompareCurrentCultureIgnoreCase(PublicNotes) != 0)
@@ -1234,7 +1240,6 @@ namespace MyFlightbook
         #endregion
 
         #region Validation
-
         /// <summary>
         /// Tests the aircraft for validity prior to commitment
         /// KEEP IN SYNC WITH AdminAllInvalidAircraft()
