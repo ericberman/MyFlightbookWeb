@@ -13,17 +13,17 @@
         font-weight: normal;
     }
 </style>
-<div style="display: @(ViewBag.Success ? "block" : "none"); margin-top: 36pt; margin-bottom: 36pt; font-size: larger">
+<div class="l @(ViewBag.Success ? string.Empty : "dn")" style="margin-top: 36pt; margin-bottom: 36pt;">
     <span style="font-weight:bold;" class="success">@Resources.Preferences.PaymentSuccess</span>
 </div>
-<div style="display: @(ViewBag.Cancelled ? "block" : "none"); margin-top: 36pt; margin-bottom: 36pt; font-size: larger">
+<div class="l @(ViewBag.Cancelled ? string.Empty : "dn")" style="margin-top: 36pt; margin-bottom: 36pt;">
     <span class="error">@Resources.Preferences.PaymentCancelled</span>
 </div>
 <h2>@Resources.Preferences.DonateHeader@(useStripe ? string.Empty : " - PAYPAL")</h2>
 
 <div style="float: right; max-width: 180px; margin-top: 10px; margin-bottom: 10px; padding: 5px; border: 1px solid gray; display: @(!String.IsNullOrEmpty(Branding.CurrentBrand.SwagRef) ? "block" : "none")">
     <a href="@Branding.CurrentBrand.SwagRef" target="_blank">
-        <span style="font-weight: bold;">@Branding.ReBrand(Resources.LocalizedText.BuySwag)</span>
+        <span class="b">@Branding.ReBrand(Resources.LocalizedText.BuySwag)</span>
     </a>
 </div>
 <div style="margin-top: 15pt; margin-bottom: 15pt;">
@@ -77,16 +77,16 @@
                     string ttID = "tip" + g.GratuityType.ToString();
                     <tr>
                         <td>@g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }</td>
-                        <td onclick="javascript: selectLevel(0);" style="text-align: center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
-                        <td onclick="javascript: selectLevel(1);" style="text-align: center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
-                        <td onclick="javascript: selectLevel(2);" style="text-align: center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
-                        <td onclick="javascript: selectLevel(3);" style="text-align: center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
-                        <td onclick="javascript: selectLevel(4);" style="text-align: center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
-                        <td onclick="javascript: selectLevel(5);" style="text-align: center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(0);" class="c">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(1);" class="c">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(2);" class="c">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(3);" class="c">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(4);" class="c">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
+                        <td onclick="javascript: selectLevel(5);" class="c">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
                     </tr>
                 }
             </table>
-            <h2 style="text-align: center;" onclick="javascript: submitStripe();"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@Resources.Preferences.DonatePayNow" title="@Resources.Preferences.DonatePayNow" style="vertical-align: middle;" /><a href="#">@Resources.Preferences.DonatePayNow</a></h2>
+            <h2 class="c" onclick="javascript: submitStripe();"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@Resources.Preferences.DonatePayNow" title="@Resources.Preferences.DonatePayNow" class="imgMiddle" /><a href="#">@Resources.Preferences.DonatePayNow</a></h2>
         </form>
         <div style="margin-top: 36pt; margin-bottom: 60pt;">
             @Html.Raw(Branding.ReBrand(Resources.Preferences.DonateCrypto).Linkify())
@@ -132,12 +132,12 @@
                 string ttID = "tip" + g.GratuityType.ToString();
                 <tr>
                     <td>@g.Name&nbsp;@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = ttID, tipTextHTML = g.Description.Linkify() }); }</td>
-                    <td onclick="javascript: selectLevel(0);" style="text-align: center;">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
-                    <td onclick="javascript: selectLevel(1);" style="text-align: center;">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
-                    <td onclick="javascript: selectLevel(2);" style="text-align: center;">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
-                    <td onclick="javascript: selectLevel(3);" style="text-align: center;">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
-                    <td onclick="javascript: selectLevel(4);" style="text-align: center;">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
-                    <td onclick="javascript: selectLevel(5);" style="text-align: center;">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(0);" class="c">@(g.Threshold <= 10 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(1);" class="c">@(g.Threshold <= 15 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(2);" class="c">@(g.Threshold <= 25 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(3);" class="c">@(g.Threshold <= 40 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(4);" class="c">@(g.Threshold <= 75 ? "●" : string.Empty)</td>
+                    <td onclick="javascript: selectLevel(5);" class="c">@(g.Threshold <= 100 ? "●" : string.Empty)</td>
                 </tr>
             }
         </table>
@@ -166,8 +166,9 @@
 </div>
 <h2>@Resources.Preferences.DonationHistoryHeader</h2>
 
-<div class="callout" style="display:@(ViewBag.ShowGratuityHistory ? "block" : "none"); margin-left: auto; margin-right: auto; width: 80%;">
-    <p style="font-weight:bold">@Resources.Preferences.DonateThankYou</p>
+
+<div class="callout @(ViewBag.ShowGratuityHistory ? string.Empty : "dn")" style="width: 80%; margin-left: auto; margin-right: auto;">
+    <p class="b">@Resources.Preferences.DonateThankYou</p>
     <p>@Resources.LocalizedText.GratuityEarnedHeader</p>
     <ul>
         @foreach (MyFlightbook.Payments.EarnedGratuity eg in ViewBag.GratuityHistory)
@@ -179,15 +180,20 @@
 
 @if (ViewBag.PaymentHistory.Count > 0)
 {
-    <table cellpadding="4" cellspacing="0" style="border-collapse: collapse;">
-        @foreach (MyFlightbook.Payments.Payment p in ViewBag.PaymentHistory)
-        {
-            <tr>
-                <td style="font-weight:bold">@(p.Timestamp.ToShortDateString())</td>
-                <td>@String.Format(CultureInfo.CurrentCulture, "US${0}", p.Amount)</td>
-                <td>@p.Notes</td>
-            </tr>
-        }
+    <table class="stickyHeaderTable stickyHeaderAlternate">
+        <thead>
+            <tr><th> </th><th> </th><th> </th></tr>
+        </thead>
+        <tbody>
+            @foreach (MyFlightbook.Payments.Payment p in ViewBag.PaymentHistory)
+            {
+                <tr>
+                    <td class="b">@(p.Timestamp.ToShortDateString())</td>
+                    <td>@String.Format(CultureInfo.CurrentCulture, "US${0}", p.Amount)</td>
+                    <td>@p.Notes</td>
+                </tr>
+            }
+        </tbody>
     </table>
 }
 else
