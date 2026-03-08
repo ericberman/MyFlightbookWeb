@@ -90,6 +90,8 @@ namespace MyFlightbook.ImportFlights
         protected List<string> StudentNames { get; private set; }
         protected List<string> InstructorNames { get; private set; }
         protected List<string> ExaminerNames { get; private set; }
+
+        protected List<string> SafetyPilotNames { get; private set; }
         #endregion
 
         public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict) : base(dr)
@@ -106,7 +108,7 @@ namespace MyFlightbook.ImportFlights
             if (szPerson == null)
                 return string.Empty;
 
-            List<string> lstFields = new List<string>(szPerson.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+            List<string> lstFields = new List<string>(szPerson.Split(roleSeparator, StringSplitOptions.RemoveEmptyEntries));
 
             if (lstFields.Count >= 2)
             {
@@ -126,6 +128,10 @@ namespace MyFlightbook.ImportFlights
                     case "examiner":
                         lstResult = ExaminerNames;
                         break;
+                    case "safety pilot":
+                    case "safetypilot":
+                        lstResult = SafetyPilotNames;
+                        break;
                 }
                 if (lstResult != null)
                 {
@@ -140,7 +146,8 @@ namespace MyFlightbook.ImportFlights
 
         private readonly static LazyRegex rApproachFixed = new LazyRegex(" ?\\(GPS\\)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
         private readonly static LazyRegex rModelFixed = new LazyRegex(" *[([]?SIM[)\\]]?$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        
+        private static readonly char[] roleSeparator = new char[] { ';' };
+
         public override LogbookEntry ToLogbookEntry()
         {
             OnDuty = FixedUTCDateFromTime(Date, OnDuty);
@@ -187,6 +194,7 @@ namespace MyFlightbook.ImportFlights
             InstructorNames = new List<string>();
             ExaminerNames = new List<string>();
             PassengerNames = new List<string>();
+            SafetyPilotNames = new List<string>();
 
             // try to parse people's role on the flight
             Person1 = AddToRole(Person1);
@@ -255,6 +263,7 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSafetyPilotName, JoinStrings(SafetyPilotNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, GroundTrainingGiven),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, GroundTraining),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
