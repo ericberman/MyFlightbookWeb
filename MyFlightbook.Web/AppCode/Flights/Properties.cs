@@ -606,19 +606,16 @@ namespace MyFlightbook
         public CustomPropertyType(int id) : this()
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"
-SELECT cpt.*, COALESCE(l.Text, cpt.Title) AS LocTitle, 
-    COALESCE(l2.Text, cpt.FormatString) AS LocFormatString, 
-    COALESCE(l3.Text, cpt.Description) AS LocDescription,
+SELECT cpt.*, cpt.Title AS LocTitle, 
+    cpt.FormatString AS LocFormatString, 
+    cpt.Description AS LocDescription,
     0 AS IsFavorite,
     '' AS prevValues 
 FROM custompropertytypes cpt 
-LEFT JOIN LocText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID) 
-LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?langID) 
-LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?langID) 
 WHERE idPropType = {0} ORDER BY Title ASC", id));
 
             if (!dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("langID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName); },
+                (comm) => { },
                 (dr) => { InitFromDataReader(dr); }))
                 throw new MyFlightbookException(dbh.LastError);
         }
@@ -851,15 +848,12 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         }
 
         private const string szCustomPropsForUserQuery = @"SELECT cpt.*,
-           COALESCE(l.Text, cpt.Title) AS LocTitle,
-           COALESCE(l2.Text, cpt.FormatString) AS LocFormatString,
-           COALESCE(l3.Text, cpt.Description) AS LocDescription,
+           cpt.Title AS LocTitle,
+           cpt.FormatString AS LocFormatString,
+           cpt.Description AS LocDescription,
            IF (usedProps.numflights IS NULL OR ((cpt.Flags & 0x00100000) <> 0), 0, 1) AS IsFavorite,
            IF (((cpt.flags & 0x02000000) = 0), usedProps.prevValues, null) AS PrevValues
 FROM custompropertytypes cpt 
-LEFT JOIN locText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID)
-LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?LangID)
-LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?LangID)
 LEFT JOIN
   (SELECT fp.idPropType AS idPropType, COUNT(f.idFlight) AS numFlights, GROUP_CONCAT(DISTINCT IF(fp.stringvalue='', NULL, fp.stringvalue) SEPARATOR '\t') AS prevValues
   FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idFlight
@@ -901,15 +895,12 @@ ORDER BY IsFavorite DESC, IF(SortKey='', Title, SortKey) ASC";
             string szQ;
             if (String.IsNullOrEmpty(szUser))
                 szQ = @"SELECT cpt.*,
-COALESCE(l.Text, cpt.Title) AS LocTitle, 
-COALESCE(l2.Text, cpt.FormatString) AS LocFormatString,
-COALESCE(l3.Text, cpt.Description) AS LocDescription,
+cpt.Title AS LocTitle, 
+cpt.FormatString AS LocFormatString,
+cpt.Description AS LocDescription,
 0 AS IsFavorite,
 '' AS prevValues 
 FROM custompropertytypes cpt 
-LEFT JOIN LocText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID) 
-LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?LangID)
-LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?LangID)
 ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
@@ -922,7 +913,6 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (!dbh.ReadRows(
                 (comm) =>
                 {
-                    comm.Parameters.AddWithValue("langID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
                     comm.Parameters.AddWithValue("uname", szUser);
                 },
                 (dr) => { ar.Add(new CustomPropertyType(dr)); }))
@@ -1786,8 +1776,8 @@ SELECT f.date AS DateOfFlight,
     fp.*, 
     cp.*, 
     mo.*,
-    COALESCE(l.Text, cp.Title) AS LocTitle,
-    COALESCE(l2.Text, cp.FormatString) AS LocFormatString,
+    cp.Title AS LocTitle,
+    cp.FormatString AS LocFormatString,
     0 AS IsFavorite,
     '' AS LocDescription, '' AS prevValues
 FROM flights f 
@@ -1797,8 +1787,6 @@ INNER JOIN aircraft ac ON ac.idaircraft = f.idaircraft
 INNER JOIN models mo ON ac.idmodel = mo.idmodel 
 INNER JOIN manufacturers man ON mo.idManufacturer=man.idManufacturer
 INNER JOIN categoryclass cc ON mo.idcategoryclass = cc.idCatClass 
-LEFT JOIN locText l ON (l.idTableID=2 AND l.idItemID=cp.idPropType AND l.LangId=?langID)
-LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cp.idPropType AND l2.LangID=?LangID)
 WHERE f.username=?User AND (cp.Flags & {0}) <> 0 AND ((fp.IntValue <> 0) OR (fp.DecValue <> 0.0) OR (cp.Type=4)) 
 ORDER BY f.Date Desc";
 
@@ -1807,7 +1795,6 @@ ORDER BY f.Date Desc";
                 (comm) =>
                 {
                     comm.Parameters.AddWithValue("User", szUser);
-                    comm.Parameters.AddWithValue("LangID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
                 },
                 (dr) =>
                 {

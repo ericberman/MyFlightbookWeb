@@ -994,7 +994,7 @@ namespace MyFlightbook.Currency
         }
 
         private const string flightsCurrencyQueryTemplate = @"SELECT f.*,
-       Concat(COALESCE(l.Text, categoryclass.CatClass), if(f.typename = '', '', Concat(' (', f.typename, ')'))) as CatClassWithType,
+       CONCAT(categoryclass.CatClass, IF(f.typename = '', '', CONCAT(' (', f.typename, ')'))) as CatClassWithType,
        categoryclass.CatClass AS BaseCatClass,
        f.typename AS TypeName,
        categoryclass.category AS Category
@@ -1053,7 +1053,6 @@ namespace MyFlightbook.Currency
          GROUP BY flights.idflight
          ORDER BY flights.date DESC) f
            INNER JOIN categoryclass on f.CatClassOverride = categoryclass.idCatClass
-           LEFT JOIN LocText l ON (l.idTableID = 1 AND f.CatClassOverride = l.idItemID AND l.langID = ?langID)
          ORDER BY f.date {0}, blockOut {0}, dtEngineStart {0}, dtFlightStart {0}, hobbsStart {0}, f.FlightID {0}";
 
         public static string CurrencyQuery(SortDirection dir)
@@ -1412,11 +1411,7 @@ namespace MyFlightbook.Currency
 
             DBHelper dbh = new DBHelper(CurrencyQuery(SortDirection.Descending));
             dbh.ReadRows(
-                (comm) =>
-                {
-                    comm.Parameters.AddWithValue("UserName", szUser);
-                    comm.Parameters.AddWithValue("langID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
-                },
+                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
                 (dr) => { ExamineFlightInContext(new ExaminerFlightRow(dr), ccc); });
 
             if (dbh.LastError.Length > 0)

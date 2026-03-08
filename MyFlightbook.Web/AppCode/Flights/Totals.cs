@@ -978,7 +978,7 @@ namespace MyFlightbook.Currency
        SUM(IF(YEAR(dtEngineStart) > 1 AND YEAR(dtEngineEnd) > 1 AND dtEngineEnd > dtEngineStart, TIME_TO_SEC(TIMEDIFF(dtEngineEnd, dtEngineStart)) / 3600.0, 0)) AS TotalEngineTime,
        SUM(IF(HobbsEnd > 0 AND HobbsStart > 0 AND HobbsEnd - HobbsStart > 0, HobbsEnd - HobbsStart, 0)) AS TotalHobbs,";
 
-        private const string szTotalsQuery = @"SELECT COALESCE(l.Text, CatClassDisplay) AS CatClassDisplay,
+        private const string szTotalsQuery = @"SELECT CatClassDisplay AS CatClassDisplay,
          cc.idCatClass,
          cc.CatClass,
          f.idmodel,
@@ -1004,7 +1004,6 @@ namespace MyFlightbook.Currency
          SUM(ROUND(groundSim*?qf))/?qf AS GroundSim
          FROM {1} f
          INNER JOIN CategoryClass cc ON f.CatClassOverride=cc.idCatClass
-         LEFT JOIN loctext l ON (l.idTableID=1 AND l.idItemID=cc.idCatClass AND l.LangID=?lang)
          GROUP BY {2}";
 
         private const string szTotalsCustomProperties = @"SELECT
@@ -1165,7 +1164,6 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
                     {
                         // Set up temporary table:
                         comm.Connection.Open();
-                        comm.Parameters.AddWithValue("lang", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
                         comm.Parameters.AddWithValue("qf", pf.MathRoundingUnit);    // used in all of the above queries.
 
                         // Create the temp table
