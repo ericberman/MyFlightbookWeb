@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prefer alternative means of payment?  %APP_NAME% now accepts *Paypal*, *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*.
+        ///   Looks up a localized string similar to Prefer alternative means of payment?  %APP_NAME% now accepts [*Paypal*](https://%APP_URL%%APP_ROOT%/mvc/Donate?ppal=1),  *Bitcoin*, *Ethereum*, *Venmo*, and *Zelle*.
         /// </summary>
         internal static string DonateCrypto {
             get {
