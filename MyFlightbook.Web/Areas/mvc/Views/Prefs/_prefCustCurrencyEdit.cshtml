@@ -63,8 +63,10 @@
         var decMinEvents = $("#decMinEvents");
         if (intEventTypes.has(parseInt(sender.value))) {
             decMinEvents.attr("step", "1");
+            decMinEvents.attr("min", "1");
         } else {
             decMinEvents.attr("step", "0.01");
+            decMinEvents.attr("min", "0.01");
         }
     }
 
