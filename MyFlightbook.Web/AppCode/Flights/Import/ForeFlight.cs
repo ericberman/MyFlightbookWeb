@@ -86,12 +86,17 @@ namespace MyFlightbook.ImportFlights
         public string Text { get; set; }
         public string TypeCode { get; set; }
         public string Model { get; set; }
-        protected List<string> PassengerNames { get; private set; }
-        protected List<string> StudentNames { get; private set; }
-        protected List<string> InstructorNames { get; private set; }
-        protected List<string> ExaminerNames { get; private set; }
+        protected List<string> PassengerNames { get; private set; } = new List<string>();
+        protected List<string> StudentNames { get; private set; } = new List<string>();
+        protected List<string> InstructorNames { get; private set; } = new List<string>();
+        protected List<string> ExaminerNames { get; private set; } = new List<string>();
 
-        protected List<string> SafetyPilotNames { get; private set; }
+        protected List<string> SafetyPilotNames { get; private set; } = new List<string>();
+        protected List<string> PICNames { get; private set; } = new List<string>();
+        protected List<string> SICNames { get; private set; } = new List<string>();
+        protected List<string> FONames { get; private set; } = new List<string>();
+        protected List<string> EngineerNames { get; private set; } = new List<string>();
+        protected List<string> AttendentNames { get; private set; } = new List<string>();
         #endregion
 
         public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict) : base(dr)
@@ -131,6 +136,23 @@ namespace MyFlightbook.ImportFlights
                     case "safety pilot":
                     case "safetypilot":
                         lstResult = SafetyPilotNames;
+                        break;
+                    case "pic":
+                        lstResult = PICNames;
+                        break;
+                    case "sic":
+                        lstResult = SICNames;
+                        break;
+                    case "first officer":
+                    case "fo":
+                        lstResult = FONames;
+                        break;
+                    case "flight engineer":
+                    case "engineer":
+                        lstResult = EngineerNames;
+                        break;
+                    case "flight attendant":
+                        lstResult = AttendentNames;
                         break;
                 }
                 if (lstResult != null)
@@ -190,12 +212,6 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            StudentNames = new List<string>();
-            InstructorNames = new List<string>();
-            ExaminerNames = new List<string>();
-            PassengerNames = new List<string>();
-            SafetyPilotNames = new List<string>();
-
             // try to parse people's role on the flight
             Person1 = AddToRole(Person1);
             Person2 = AddToRole(Person2);
@@ -246,11 +262,12 @@ namespace MyFlightbook.ImportFlights
                 Approaches = cApproaches,
                 fHoldingProcedures = (Holds > 0),
                 CFIName = InstructorName,
-                Comment = JoinStrings(new string[] { PilotComments, Text, sbApproaches.ToString().Trim(), Person1, Person2, Person3, Person4, Person5, Person6 }),
+                Comment = JoinStrings(new string[] { PilotComments, Text, Person1, Person2, Person3, Person4, Person5, Person6 }),
             };
 
             le.CustomProperties.SetItems(new CustomFlightProperty[]
             {
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, sbApproaches.ToString().Trim()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, OffDuty, true),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, TimeOut, true),
@@ -264,6 +281,11 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSafetyPilotName, JoinStrings(SafetyPilotNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, JoinStrings(PICNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, JoinStrings(SICNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFirstOfficerName, JoinStrings(FONames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightEngineerName, JoinStrings(EngineerNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightAttendant, JoinStrings(AttendentNames)),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, GroundTrainingGiven),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, GroundTraining),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),

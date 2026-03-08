@@ -195,6 +195,7 @@ namespace MyFlightbook
             IDPropLessonEnd = 669,
             IDPropEnhancedVisionApproach = 670,
             IDProp6155SICCheck = 677,
+            IDPropFlightEngineerName = 681,
             IDPropCaptainName = 682,
             IDPropFirstOfficerName = 683,
             IDPropSpecialAuthorizationApproach = 695,
