@@ -1524,6 +1524,13 @@ namespace MyFlightbook
                 lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightReview || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropBFR);
             }
 
+            // Ditto IPC given
+            if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropIPC))
+            {
+                lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropIPCGivenToStudent)) { FlightID = le.FlightID, TextValue = szStudentName });
+                lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropIPC);
+            }
+
             // Swap ground instruction given/ground-instruction received
             CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
             if (cfpGIReceived != null)
