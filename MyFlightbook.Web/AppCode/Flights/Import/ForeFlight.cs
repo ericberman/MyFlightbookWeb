@@ -48,6 +48,10 @@ namespace MyFlightbook.ImportFlights
         public decimal Solo { get; set; }
         public decimal CrossCountry { get; set; }
         public decimal Distance { get; set; }
+        public decimal MultiPilot { get; set; }
+        public decimal IFR { get; set; }
+        public decimal PICUS { get; set; }
+        public decimal NVG { get; set; }
         public int DayTakeoffs { get; set; }
         public int DayLandingsFullStop { get; set; }
         public int NightTakeoffs { get; set; }
@@ -101,10 +105,10 @@ namespace MyFlightbook.ImportFlights
 
         public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict) : base(dr)
         {
-            if (dict != null && !String.IsNullOrWhiteSpace(AircraftID) && dict.ContainsKey(AircraftID))
+            if (dict != null && !String.IsNullOrWhiteSpace(AircraftID) && dict.TryGetValue(AircraftID, out ForeFlightAircraftDescriptor ffad))
             {
-                Model = dict[AircraftID].Model;
-                TypeCode = dict[AircraftID].TypeCode;
+                Model = ffad.Model;
+                TypeCode = ffad.TypeCode;
             }
         }
 
@@ -265,7 +269,10 @@ namespace MyFlightbook.ImportFlights
                 Comment = JoinStrings(new string[] { PilotComments, Text, Person1, Person2, Person3, Person4, Person5, Person6 }),
             };
 
-            le.CustomProperties.SetItems(new CustomFlightProperty[]
+            // Add in any custom properties that were found in parsing; some may get overwritten below
+            le.CustomProperties.SetItems(CandidateProperties);
+
+            le.CustomProperties.AddItems(new CustomFlightProperty[]
             {
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, sbApproaches.ToString().Trim()),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
@@ -291,6 +298,10 @@ namespace MyFlightbook.ImportFlights
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropMultiPilotTime, MultiPilot),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPICUS, PICUS),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIFRTime, IFR),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVGoggleTime, NVG),
                 CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalFlightRemarks, InstructorComments),
           });
 

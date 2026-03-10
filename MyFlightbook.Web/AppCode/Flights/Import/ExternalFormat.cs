@@ -9,7 +9,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2023 MyFlightbook LLC
+ * Copyright (c) 2017-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,6 +21,25 @@ namespace MyFlightbook.ImportFlights
     /// </summary>
     public abstract class ExternalFormat
     {
+        #region properties
+        protected CustomPropertyCollection CandidateProperties = new CustomPropertyCollection();
+
+        private static readonly Dictionary<string, CustomPropertyType> _dictPropByTitle = new Dictionary<string, CustomPropertyType>(StringComparer.CurrentCultureIgnoreCase);
+
+        private Dictionary<string, CustomPropertyType> dictPropByTitle
+        {
+            get
+            {
+                if (_dictPropByTitle.Count == 0)
+                {
+                    foreach (CustomPropertyType cpt in CustomPropertyType.GetCustomPropertyTypes())
+                        _dictPropByTitle[cpt.Title] = cpt;
+                }
+                return _dictPropByTitle;
+            }
+        }
+        #endregion
+
         protected ExternalFormat() { }
 
         /// <summary>
@@ -49,9 +68,14 @@ namespace MyFlightbook.ImportFlights
                 try
                 {
                     PropertyInfo targetObj = targetType.GetProperty(propName);
-                    //	If there is none, skip
+
+                    //	If there is no target property in the object, skip but hold on to it in case it is a custom property that we can add to the candidate properties collection
                     if (targetObj == null)
+                    {
+                        if (dictPropByTitle.TryGetValue(propName, out CustomPropertyType cpt))
+                            CandidateProperties.Add(new SimpleFlightProperty() { PropTypeID = cpt.PropTypeID, ValueString = szObj }.ToProperty(LogbookEntryCore.idFlightNew, CultureInfo.CurrentCulture, null));
                         continue;
+                    }
 
                     //	Set the value in the destination
                     if (targetObj.CanWrite)
