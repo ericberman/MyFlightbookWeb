@@ -185,6 +185,7 @@ namespace MyFlightbook.ImportFlights
             TimeOn = FixedUTCDateFromTime(Date, TimeOn);
 
             List<string> lstApproachStrings = new List<string>() { Approach1, Approach2, Approach3, Approach4, Approach5, Approach6 };
+            lstApproachStrings.RemoveAll(sz => String.IsNullOrWhiteSpace(sz));
             StringBuilder sbApproaches = new StringBuilder();
             int cApproaches = 0;
             foreach (string szApproach in lstApproachStrings)
@@ -201,6 +202,7 @@ namespace MyFlightbook.ImportFlights
                             mc = RegexUtility.ApproachCountForeFlight.Matches(szFixedApproach);
                             if (mc.Count == 1)
                                 cApproaches += Convert.ToInt32(mc[0].Groups["count"].Value, CultureInfo.CurrentCulture);
+                            sbApproaches.Append(szApproach.Trim() + Resources.LocalizedText.LocalizedSpace);    // preserve whatever was there.
                         }
                         else
                         {

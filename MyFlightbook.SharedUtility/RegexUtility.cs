@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -454,7 +454,7 @@ namespace MyFlightbook
         public LazyRegex(string Expression, RegexOptions Options)
         {
             expr = Expression;
-            flags = flags | Options;
+            flags |= Options;
         }
 
         public LazyRegex(string Expression, bool ignoreCase = false, bool multiLine = false) : 

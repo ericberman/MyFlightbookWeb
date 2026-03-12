@@ -26,7 +26,7 @@ namespace MyFlightbook.ImportFlights
 
         private static readonly Dictionary<string, CustomPropertyType> _dictPropByTitle = new Dictionary<string, CustomPropertyType>(StringComparer.CurrentCultureIgnoreCase);
 
-        private Dictionary<string, CustomPropertyType> dictPropByTitle
+        private static Dictionary<string, CustomPropertyType> dictPropByTitle
         {
             get
             {
@@ -141,7 +141,7 @@ namespace MyFlightbook.ImportFlights
             UserAircraft ua = new UserAircraft(szUser);
             szTail = Aircraft.NormalizeTail(szTail);
             IDictionary<string, Aircraft> d = ua.DictAircraftForUser();
-            return ua[szTail] ?? (d.ContainsKey(szTail) ? d[szTail] : null);
+            return ua[szTail] ?? (d.TryGetValue(szTail, out Aircraft value) ? value : null);
         }
 
         #region String merging
