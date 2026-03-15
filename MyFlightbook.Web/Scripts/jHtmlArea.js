@@ -1,8 +1,8 @@
 ﻿/*
-* jHtmlArea 0.8 - WYSIWYG Html Editor jQuery Plugin
-* Copyright (c) 2013-2023 Chris Pietschmann
+* jHtmlArea - WYSIWYG Html Editor jQuery Plugin
+* Copyright (c) 2013-2026 Chris Pietschmann
 * https://github.com/crpietschmann/jHtmlArea
-* Licensed under the Microsoft Reciprocal License (Ms-RL)
+* MIT License
 * https://github.com/crpietschmann/jHtmlArea/license
 */
 (function ($, window) {

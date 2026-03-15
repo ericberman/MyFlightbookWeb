@@ -1,9 +1,9 @@
 ﻿/*
-* jHtmlAreaColorPickerMenu 0.8.0 - A Color Picker Extension to jHtmlArea
+* jHtmlAreaColorPickerMenu - A Color Picker Extension to jHtmlArea
 * Part of the jHtmlArea Project
-* Copyright (c) 2013-2023 Chris Pietschmann
+* Copyright (c) 2013-2026 Chris Pietschmann
 * https://github.com/crpietschmann/jHtmlArea
-* Licensed under the Microsoft Reciprocal License (Ms-RL)
+* MIT License
 * https://github.com/crpietschmann/jHtmlArea/license
 */
 (function($) {
