@@ -1130,8 +1130,8 @@ namespace MyFlightbook.Instruction
 
     public class CFIStudentMap
     {
-        private const string szQStudentsForUser = "SELECT users.*, NULL AS Role, students.CanViewStudent FROM users INNER JOIN students ON users.username=students.StudentName WHERE students.CFIName=?uname";
-        private const string szQInstructorsForUser = "SELECT users.*, NULL AS Role, students.CanViewStudent FROM users INNER JOIN students ON users.username=students.CFIName WHERE students.StudentName=?uname";
+        private const string szQStudentsForUser = "SELECT users.*, NULL AS Role, students.CanViewStudent, CONCAT(COALESCE(LastName, ''), COALESCE(FirstName, ''), username) AS sortName FROM users INNER JOIN students ON users.username=students.StudentName WHERE students.CFIName=?uname ORDER BY sortName ASC";
+        private const string szQInstructorsForUser = "SELECT users.*, NULL AS Role, students.CanViewStudent, CONCAT(COALESCE(LastName, ''), COALESCE(FirstName, ''), username) AS sortName FROM users INNER JOIN students ON users.username=students.CFIName WHERE students.StudentName=?uname ORDER BY sortName ASC";
 
         #region Properties
         /// <summary>
