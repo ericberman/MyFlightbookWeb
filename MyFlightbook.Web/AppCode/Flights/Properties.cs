@@ -749,7 +749,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
         public static void FlushUserCache(string szUser)
         {
-            Profile pf = Profile.GetUser(szUser);
+            IUserProfile pf = util.RequestContext.GetUser(szUser);
             pf.AssociatedData.Remove(szAppCacheKey);
         }
 
@@ -887,7 +887,7 @@ ORDER BY IsFavorite DESC, IF(SortKey='', Title, SortKey) ASC";
                 if (!fForceLoad)
                 {
                     // Try to return props from the user profile.
-                    CustomPropertyType[] rgProps = (CustomPropertyType[])Profile.GetUser(szUser).CachedObject(szAppCacheKey);
+                    CustomPropertyType[] rgProps = (CustomPropertyType[])util.RequestContext.GetUser(szUser).CachedObject(szAppCacheKey);
                     if (rgProps != null)
                         return rgProps;
                 }
@@ -906,7 +906,7 @@ FROM custompropertytypes cpt
 ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
-                Profile pf = Profile.GetUser(szUser);
+                IUserProfile pf = util.RequestContext.GetUser(szUser);
                 szQ = String.Format(CultureInfo.InvariantCulture, szCustomPropsForUserQuery, pf.BlocklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlocklistedProperties)));
             }
 
@@ -926,7 +926,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (String.IsNullOrEmpty(szUser))
                 util.GlobalCache.Set(szAppCacheKey, rgcpt, DateTimeOffset.UtcNow.AddHours(2));
             else
-                Profile.GetUser(szUser).AssociatedData[szAppCacheKey] = rgcpt;
+                util.RequestContext.GetUser(szUser).AssociatedData[szAppCacheKey] = rgcpt;
 
             return rgcpt;
         }

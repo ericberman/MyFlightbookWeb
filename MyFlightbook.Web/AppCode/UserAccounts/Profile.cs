@@ -44,7 +44,7 @@ namespace MyFlightbook
     /// Encapsulates a user of the system.  This is the base class.
     /// </summary>
     [Serializable]
-    public abstract class ProfileBase
+    public abstract class ProfileBase : IUserProfile
     {
         #region creation/initialization
         protected ProfileBase()
@@ -97,6 +97,69 @@ namespace MyFlightbook
         /// Can this user see reports?
         /// </summary>
         public bool CanReport { get { return ProfileRoles.CanReport(Role); } }
+        #endregion
+
+        #region IUserProfile
+        /// <summary>
+        /// Username for the user
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Gets just the first name for the logged in user, logged in user name if none
+        /// </summary>
+        /// <param name="szUser">Logged in user name</param>
+        /// <returns>First name</returns>
+        public string UserFirstName
+        {
+            get { return GetUserName(true, false); }
+        }
+
+        /// <summary>
+        /// Gets just the last name for the logged in user, logged in user name if none
+        /// </summary>
+        /// <param name="szUser">Logged in user name</param>
+        /// <returns>Last name</returns>
+        public string UserLastName
+        {
+            get { return GetUserName(false, true); }
+        }
+
+        /// <summary>
+        /// Gets the full name for the logged in user, logged in user name if none.
+        /// </summary>
+        /// <param name="szUser">Logged in user name</param>
+        /// <returns>Full name</returns>
+        public string UserFullName
+        {
+            get { return GetUserName(true, true); }
+        }
+
+        /// <summary>
+        /// User's email address
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
+        /// </summary>
+        public IDictionary<string, object> AssociatedData { get; private set; } = new ConcurrentDictionary<string, object>();
+
+        /// <summary>
+        /// Safe way to get a cached object (i.e., can return null)
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        public object CachedObject(string szKey)
+        {
+            return (AssociatedData.TryGetValue(szKey, out object o)) ? o : null;
+        }
+
+        /// <summary>
+        /// List of properties ID's that the user has blocklisted from the previously-used list.
+        /// </summary>
+        public HashSet<int> BlocklistedProperties { get; private set; } = new HashSet<int>();
+
         #endregion
 
         #region Properties
@@ -386,11 +449,6 @@ namespace MyFlightbook
         public DateTime LastPasswordChange { get; set; }
         #endregion
 
-            /// <summary>
-            /// Username for the user
-            /// </summary>
-        public string UserName { get; set; }
-
         /// <summary>
         /// Detailed name - username, display name, and email
         /// </summary>
@@ -482,11 +540,6 @@ namespace MyFlightbook
         public IAuthorizationState CloudAhoyToken { get; set; }
 
         /// <summary>
-        /// User's email address
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
         /// The original email address for the user, so that we can tell if it has changed.
         /// </summary>
         protected string OriginalEmail { get; set; }
@@ -522,36 +575,6 @@ namespace MyFlightbook
         public DateTime EnglishProficiencyExpiration { get; set; }
 
         /// <summary>
-        /// Gets just the first name for the logged in user, logged in user name if none
-        /// </summary>
-        /// <param name="szUser">Logged in user name</param>
-        /// <returns>First name</returns>
-        public string UserFirstName
-        {
-            get { return GetUserName(true, false); }
-        }
-
-        /// <summary>
-        /// Gets just the last name for the logged in user, logged in user name if none
-        /// </summary>
-        /// <param name="szUser">Logged in user name</param>
-        /// <returns>Last name</returns>
-        public string UserLastName
-        {
-            get { return GetUserName(false, true); }
-        }
-
-        /// <summary>
-        /// Gets the full name for the logged in user, logged in user name if none.
-        /// </summary>
-        /// <param name="szUser">Logged in user name</param>
-        /// <returns>Full name</returns>
-        public string UserFullName
-        {
-            get { return GetUserName(true, true); }
-        }
-
-        /// <summary>
         /// The license number for the user
         /// </summary>
         public string License { get; set; }
@@ -560,11 +583,6 @@ namespace MyFlightbook
         /// The address for the user
         /// </summary>
         public string Address { get; set; }
-
-        /// <summary>
-        /// List of properties ID's that the user has blocklisted from the previously-used list.
-        /// </summary>
-        public List<int> BlocklistedProperties { get; private set; } = new List<int>();
 
         /// <summary>
         /// Current status of achievement computation for the user.  
@@ -592,11 +610,6 @@ namespace MyFlightbook
                 }
             }
         }
-
-        /// <summary>
-        /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
-        /// </summary>
-        public IDictionary<string, object> AssociatedData { get; private set; } = new ConcurrentDictionary<string, object>();
         #endregion
 
         /// <summary>
@@ -628,18 +641,6 @@ namespace MyFlightbook
                 return szEmail;
             }
         }
-
-        #region Associated data helpers
-        /// <summary>
-        /// Safe way to get a cached object (i.e., can return null)
-        /// </summary>
-        /// <param name="szKey"></param>
-        /// <returns></returns>
-        public object CachedObject(string szKey)
-        {
-            return (AssociatedData.TryGetValue(szKey, out object o)) ? o : null;
-        }
-        #endregion
     }
 
     /// <summary>
@@ -1052,8 +1053,9 @@ namespace MyFlightbook
 
                 PreferredTimeZoneID = (string) util.ReadNullableField(dr, "timezone", null);
 
-                string szBlockList = util.ReadNullableString(dr, "PropertyBlackList");
-                BlocklistedProperties.AddRange(szBlockList.ToInts());
+                IEnumerable<int> rgBlockedPropIds = util.ReadNullableString(dr, "PropertyBlackList").ToInts();
+                foreach (int idProp in rgBlockedPropIds)
+                    BlocklistedProperties.Add(idProp);
 
                 HeadShot = (byte[])util.ReadNullableField(dr, "HeadShot", null);
 

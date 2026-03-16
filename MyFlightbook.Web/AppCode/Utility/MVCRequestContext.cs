@@ -87,5 +87,10 @@ namespace MyFlightbook.Injection
         {
             get { return (HttpContext.Current.Session?.Keys.Cast<string>()) ?? Array.Empty<string>(); }
         }
+
+        public IUserProfile GetUser(string szUser)
+        {
+            return Profile.GetUser(szUser);
+        }
     }
 }
