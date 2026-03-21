@@ -148,13 +148,15 @@ namespace MyFlightbook.Image
                         cor.CannedACL = S3CannedACL.PublicRead;
                         cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
 
-                        _ = await s3.CopyObjectAsync(cor);
-                        _ = await s3.DeleteObjectAsync(dor);
+                        // We do get some stray failures to move, so check for successful copy before deleting
+                        CopyObjectResponse coresp = await s3.CopyObjectAsync(cor);
+                        if (coresp != null && coresp.HttpStatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(coresp.ETag)) 
+                            _ = await s3.DeleteObjectAsync(dor);
                     }
                 }
                 catch (AmazonS3Exception ex)
                 {
-                    util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0}to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
+                    util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0} to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
                 }
             });
         }

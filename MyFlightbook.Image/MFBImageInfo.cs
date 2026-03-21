@@ -874,8 +874,12 @@ namespace MyFlightbook.Image
                AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);   // Fire and forget.
 
             rgfi = diSrc.GetFiles(ThumbnailFile);
-            if (rgfi != null && rgfi.Length > 0)
+            if ((rgfi?.Length ?? 0)  > 0)
                 rgfi[0].MoveTo(szDirDest + ThumbnailFile);
+
+            // Clean up empty directories
+            if (diSrc.GetFiles().Length == 0)
+                diSrc.Delete();
 
             ToDB();
         }
