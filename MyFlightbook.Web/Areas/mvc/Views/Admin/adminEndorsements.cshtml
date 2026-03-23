@@ -87,7 +87,7 @@
         @foreach (EndorsementType et in ViewBag.templates)
         {
             <tr style="vertical-align:top;">
-                <td><a style="cursor: pointer;" onclick="javascript: updateEndorsement(@et.ID, '@et.Title', '@et.FARReference', '@et.BodyTemplate');">Edit</a></td>
+                <td><a style="cursor: pointer;" onclick="javascript: updateEndorsement(@et.ID, '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.Title))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.FARReference))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.BodyTemplate))');">Edit</a></td>
                 <td>
                     <table>
                         <tr>
