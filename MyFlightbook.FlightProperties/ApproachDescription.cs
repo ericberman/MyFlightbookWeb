@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.FlightProperties.Properties;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -45,7 +46,7 @@ namespace MyFlightbook
 
         public string ApproachString
         {
-            get { return String.Format(CultureInfo.CurrentCulture, Count == 1 ? Resources.LogbookEntry.ApproachDescApproach : Resources.LogbookEntry.ApproachDescApproaches, Count, Description); }
+            get { return String.Format(CultureInfo.CurrentCulture, Count == 1 ? PropertyResource.ApproachDescApproach : PropertyResource.ApproachDescApproaches, Count, Description); }
         }
         #endregion
 
@@ -95,7 +96,7 @@ namespace MyFlightbook
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ApproachDescTemplate, ApproachString, Runway, AirportCode);
+            return String.Format(CultureInfo.CurrentCulture, PropertyResource.ApproachDescTemplate, ApproachString, Runway, AirportCode);
         }
 
         public string ToCanonicalString()

@@ -133,33 +133,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} {1} approach.
-        /// </summary>
-        internal static string ApproachDescApproach {
-            get {
-                return ResourceManager.GetString("ApproachDescApproach", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} {1} approaches.
-        /// </summary>
-        internal static string ApproachDescApproaches {
-            get {
-                return ResourceManager.GetString("ApproachDescApproaches", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} to runway {1} at {2}.
-        /// </summary>
-        internal static string ApproachDescTemplate {
-            get {
-                return ResourceManager.GetString("ApproachDescTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto Fill.
         /// </summary>
         internal static string AutoFill {
@@ -615,69 +588,6 @@ namespace Resources {
         internal static string EditFlightUpdatePendingFlight {
             get {
                 return ResourceManager.GetString("EditFlightUpdatePendingFlight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Block: {0}.
-        /// </summary>
-        internal static string ElapsedBlockSummary {
-            get {
-                return ResourceManager.GetString("ElapsedBlockSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Duty: {0}.
-        /// </summary>
-        internal static string ElapsedDutySummary {
-            get {
-                return ResourceManager.GetString("ElapsedDutySummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Flight Duty: {0}.
-        /// </summary>
-        internal static string ElapsedFlightDutySummary {
-            get {
-                return ResourceManager.GetString("ElapsedFlightDutySummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lesson: {0}.
-        /// </summary>
-        internal static string ElapsedLessonSummary {
-            get {
-                return ResourceManager.GetString("ElapsedLessonSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled: {0}.
-        /// </summary>
-        internal static string ElapsedScheduleSummary {
-            get {
-                return ResourceManager.GetString("ElapsedScheduleSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tach: {0}.
-        /// </summary>
-        internal static string ElapsedTachSummary {
-            get {
-                return ResourceManager.GetString("ElapsedTachSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} to {1} ({2}).
-        /// </summary>
-        internal static string ElapsedTime {
-            get {
-                return ResourceManager.GetString("ElapsedTime", resourceCulture);
             }
         }
         
@@ -2360,42 +2270,6 @@ namespace Resources {
         internal static string importTableHeader {
             get {
                 return ResourceManager.GetString("importTableHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Yes/No.
-        /// </summary>
-        internal static string importUnitBoolean {
-            get {
-                return ResourceManager.GetString("importUnitBoolean", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Date.
-        /// </summary>
-        internal static string importUnitDate {
-            get {
-                return ResourceManager.GetString("importUnitDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number.
-        /// </summary>
-        internal static string importUnitNumber {
-            get {
-                return ResourceManager.GetString("importUnitNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text.
-        /// </summary>
-        internal static string importUnitText {
-            get {
-                return ResourceManager.GetString("importUnitText", resourceCulture);
             }
         }
         

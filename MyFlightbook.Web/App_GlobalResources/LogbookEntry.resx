@@ -358,18 +358,6 @@
     <value>{0} - Setting up to import</value>
     <comment>{0} has the app name</comment>
   </data>
-  <data name="importUnitDate" xml:space="preserve">
-    <value>Date</value>
-    <comment>Field to import is a date</comment>
-  </data>
-  <data name="importUnitNumber" xml:space="preserve">
-    <value>Number</value>
-    <comment>Field to import is a number</comment>
-  </data>
-  <data name="importUnitText" xml:space="preserve">
-    <value>Text</value>
-    <comment>Field to import is free-form text</comment>
-  </data>
   <data name="PublicFlightAircraft" xml:space="preserve">
     <value>Aircraft:</value>
   </data>
@@ -521,15 +509,6 @@
   </data>
   <data name="SubtotalComment" xml:space="preserve">
     <value>Totals this page:</value>
-  </data>
-  <data name="ElapsedBlockSummary" xml:space="preserve">
-    <value>Block: {0}</value>
-  </data>
-  <data name="ElapsedDutySummary" xml:space="preserve">
-    <value>Duty: {0}</value>
-  </data>
-  <data name="ElapsedTachSummary" xml:space="preserve">
-    <value>Tach: {0}</value>
   </data>
   <data name="SendFlightBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\sendflightbody.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -691,10 +670,6 @@
   <data name="PrintHeaderLandingsShort" xml:space="preserve">
     <value>Lndgs.</value>
   </data>
-  <data name="importUnitBoolean" xml:space="preserve">
-    <value>Yes/No</value>
-    <comment>Field to import is a boolean (yes/no) value</comment>
-  </data>
   <data name="PropertyGroupSeparator" xml:space="preserve">
     <value>. - - - {0} - - -</value>
     <comment>DO NOT LOCALIZE - used to separate groups of properties in the legacy property drop-down</comment>
@@ -807,15 +782,6 @@
   </data>
   <data name="FlightDetailsTitle" xml:space="preserve">
     <value>Details for Flight on {0:d}</value>
-  </data>
-  <data name="ApproachDescApproach" xml:space="preserve">
-    <value>{0} {1} approach</value>
-  </data>
-  <data name="ApproachDescApproaches" xml:space="preserve">
-    <value>{0} {1} approaches</value>
-  </data>
-  <data name="ApproachDescTemplate" xml:space="preserve">
-    <value>{0} to runway {1} at {2}</value>
   </data>
   <data name="importAuditHeader" xml:space="preserve">
     <value>Notes about file being imported</value>
@@ -1353,24 +1319,11 @@ Proceed with import?</value>
   <data name="NumberOfFlightsOne" xml:space="preserve">
     <value>1 Flight</value>
   </data>
-  <data name="ElapsedFlightDutySummary" xml:space="preserve">
-    <value>Flight Duty: {0}</value>
-  </data>
-  <data name="ElapsedTime" xml:space="preserve">
-    <value>{0} to {1} ({2})</value>
-    <comment>E.g., "23.5 - 24.2 (0.7)" or "18:12 - 19:02 (0:50)"</comment>
-  </data>
   <data name="TemplatesLearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
   <data name="TaxiCrossFillTip" xml:space="preserve">
     <value>Sets taxi time equal to Total Time minus elapsed flight time (flight start to flight end)</value>
-  </data>
-  <data name="ElapsedLessonSummary" xml:space="preserve">
-    <value>Lesson: {0}</value>
-  </data>
-  <data name="ElapsedScheduleSummary" xml:space="preserve">
-    <value>Scheduled: {0}</value>
   </data>
   <data name="LeonAuthorize" xml:space="preserve">
     <value>Authorize %APP_NAME% to access your data on Leon</value>

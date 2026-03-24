@@ -1675,7 +1675,6 @@
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
-    <Compile Include="AppCode\Flights\ApproachDescription.cs" />
     <Compile Include="AppCode\Flights\Backup.cs" />
     <Compile Include="AppCode\Flights\Currency\ArmyMDSCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\AustraliaCurrency.cs" />
@@ -2217,6 +2216,10 @@
     <ProjectReference Include="..\MyFlightbook.CSV\MyFlightbook.CSV.csproj">
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj">
+      <Project>{c9a0ed02-c864-4371-bb7e-1846bae90659}</Project>
+      <Name>MyFlightbook.FlightProperties</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj">
       <Project>{e44b743c-99dd-4ae6-8a87-53475e545c20}</Project>

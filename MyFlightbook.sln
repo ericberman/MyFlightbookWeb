@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Image", "MyFli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.AircraftSupport", "MyFlightbook.AircraftSupport\MyFlightbook.AircraftSupport.csproj", "{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.FlightProperties", "MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj", "{C9A0ED02-C864-4371-BB7E-1846BAE90659}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9A0ED02-C864-4371-BB7E-1846BAE90659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9A0ED02-C864-4371-BB7E-1846BAE90659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9A0ED02-C864-4371-BB7E-1846BAE90659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9A0ED02-C864-4371-BB7E-1846BAE90659}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
