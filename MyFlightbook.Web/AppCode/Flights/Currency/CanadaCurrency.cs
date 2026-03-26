@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -52,7 +52,7 @@ namespace MyFlightbook.Currency
         public PassengerCurrencyCanada(string szName, bool fRequireDayLandings)
             : base(szName, fRequireDayLandings)
         {
-            CurrencyTimespanType = TimespanType.CalendarMonths;
+            CurrencyTimespanType = TimespanType.SlidingMonths;
             ExpirationSpan = 6;
             RequiredEvents = Discrepancy = 5;
             fcCanada = new FlightExperienceCanada();
@@ -89,7 +89,7 @@ namespace MyFlightbook.Currency
 
         public NightCurrencyCanada(string szName) : base(szName, true)  // night touch-and-go landings count.
         {
-            NightTakeoffCurrency.CurrencyTimespanType = this.CurrencyTimespanType = TimespanType.CalendarMonths;
+            NightTakeoffCurrency.CurrencyTimespanType = this.CurrencyTimespanType = TimespanType.SlidingMonths;
             NightTakeoffCurrency.ExpirationSpan = this.ExpirationSpan = TimeSpanCanada;
             this.RequiredEvents = this.Discrepancy = RequiredLandingsCanada;
             NightTakeoffCurrency.RequiredEvents = NightTakeoffCurrency.Discrepancy = RequiredTakeoffsCanada;
