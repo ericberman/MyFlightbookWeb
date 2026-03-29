@@ -205,6 +205,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entries in training devices are excluded from visited airports by default..
+        /// </summary>
+        internal static string airportVisitedAirportsNoteNoSims {
+            get {
+                return ResourceManager.GetString("airportVisitedAirportsNoteNoSims", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visits.
         /// </summary>
         internal static string airportVisits {

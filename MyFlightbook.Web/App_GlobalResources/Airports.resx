@@ -330,4 +330,7 @@
   <data name="errDuplicateAirportTitle" xml:space="preserve">
     <value>Possible Duplicate</value>
   </data>
+  <data name="airportVisitedAirportsNoteNoSims" xml:space="preserve">
+    <value>Entries in training devices are excluded from visited airports by default.</value>
+  </data>
 </root>

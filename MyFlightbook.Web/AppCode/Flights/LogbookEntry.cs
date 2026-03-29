@@ -4274,8 +4274,10 @@ WHERE f1.username = ?uName ");
 
             // Visited airports must in a real aircraft and have some logged time.
             // We don't do this in the query partly so that we don't muck with the caching, but also so that we don't muck with the query.  E.g., if the query requires IMC and PIC, then if we put "PIC OR SIC OR Dual", we'd be changing the conjunction and the overall query semantics.
+            // Issue #1515: if the query is for ONLY sims, then include only sims, else include only real aircraft, since sims don't visit airports.
+            bool fOnlySims = fq.AircraftInstanceTypes == FlightQuery.AircraftInstanceRestriction.TrainingOnly;
             List<LogbookEntryDisplay> lstFlights = new List<LogbookEntryDisplay>(fr.Flights);
-            lstFlights.RemoveAll(le => le.InstanceType != AircraftInstanceTypes.RealAircraft || le.TotalFlightTime + le.PIC + le.SIC + le.CFI + le.Dual <= 0.0M || string.IsNullOrEmpty(le.Route));
+            lstFlights.RemoveAll(le => (!fOnlySims ^ le.InstanceType == AircraftInstanceTypes.RealAircraft) || le.TotalFlightTime + le.PIC + le.SIC + le.CFI + le.Dual <= 0.0M || string.IsNullOrEmpty(le.Route));
 
             fr.SortFlights(curSortKey, curSortDir); // restore sort
             return lstFlights;
