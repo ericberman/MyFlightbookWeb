@@ -6,10 +6,7 @@
     LogbookEntry le = ViewBag.le;
     using (FlightData fd = new FlightData())
     {
-        if (!fd.ParseFlightData(le))
-        {
-            throw new InvalidOperationException(fd.ErrorString);
-        }
+        fd.ParseFlightData(le);
         TelemetryDataTable tdt = fd.Data;
         bool HasLatLong = tdt.HasLatLongInfo;
         string pinRef = "~/images/pushpinsm.png".ToAbsolute();
@@ -20,6 +17,7 @@
             cursor: pointer;
         }
     </style>
+        <div class="error">@fd.ErrorString</div>
         <table class="stickyHeaderTable stickyHeaderAlternate">
             <thead>
                 <tr>
