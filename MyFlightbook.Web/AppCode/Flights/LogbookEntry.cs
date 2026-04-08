@@ -3160,6 +3160,13 @@ WHERE f1.username = ?uName ");
                         }
                         break;
                 }
+
+                // If this is a sim, take it out of total time and put it into groundsim
+                if (new Aircraft(AircraftID).InstanceType != AircraftInstanceTypes.RealAircraft)
+                {
+                    GroundSim = TotalFlightTime;
+                    TotalFlightTime = 0;
+                }
             }
         }
 
