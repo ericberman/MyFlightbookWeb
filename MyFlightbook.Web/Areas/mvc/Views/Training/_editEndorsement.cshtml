@@ -5,10 +5,10 @@
     string sourceUser = ViewBag.sourceUser;
     MyFlightbook.Profile pfTargetUser = MyFlightbook.Profile.GetUser(targetUser);
     MyFlightbook.Profile pfSourceUser = MyFlightbook.Profile.GetUser(sourceUser);
-    EndorsementType template = ViewBag.template;
     Endorsement.StudentTypes studentType = ViewBag.studentType;
     EndorsementMode mode = ViewBag.mode;
     List<EndorsementType> templates = ViewBag.templates;
+    int idTemplateRequested = ViewBag.idTemplate;
 }
 <script type="text/javascript">
     function templateSelected(idTemplate, idSrc) {
@@ -82,34 +82,37 @@
 <div id="pnlEndorsement">
     @if (!String.IsNullOrEmpty(pfTargetUser.UserFullName))
     {
-    <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, pfTargetUser.UserFullName)</h2>
+        <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, pfTargetUser.UserFullName)</h2>
     }
-    <p>
-        <span style="font-weight: bold">@Resources.LocalizedText.Note</span>
-        @Resources.Profile.EndorsementDisclaimer
-        <a target="_blank" href="@("~/mvc/pub/CFISigs".ToAbsolute())">@Resources.SignOff.CFISigsLinkLabel</a>
-    </p>
-    <h2>@Resources.SignOff.EndorsementPickTemplate</h2>
-    <div>
-        <div style="display:inline-block; vertical-align:middle;">
-            @using (Html.BeginForm("EndorseStudent", "Training", FormMethod.Get))
-            {
-                Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "srchEndorsements", placeholder = Resources.SignOff.EndorsementsSearchPrompt, onEnterScript="findEndorsements" });
-                <input type="hidden" value="@targetUser" name="student" />
-            }
-        </div>
-        <div style="display:inline-block; vertical-align:middle;">
-            <select name="template" id="cmbTemplates" onchange="javascript: templateSelected(this.value, -1);">
-                @foreach (EndorsementType et in templates)
+    @if (idTemplateRequested <= 0)
+    {
+        <p>
+            <span style="font-weight: bold">@Resources.LocalizedText.Note</span>
+            @Resources.Profile.EndorsementDisclaimer
+            <a target="_blank" href="@("~/mvc/pub/CFISigs".ToAbsolute())">@Resources.SignOff.CFISigsLinkLabel</a>
+        </p>
+        <h2>@Resources.SignOff.EndorsementPickTemplate</h2>
+        <div>
+            <div style="display:inline-block; vertical-align:middle;">
+                @using (Html.BeginForm("EndorseStudent", "Training", FormMethod.Get))
                 {
-                    <option value="@et.ID">@et.FullTitle</option>
+                    Html.RenderAction("RenderSearchBox", "MFBTemplate", new { id = "srchEndorsements", placeholder = Resources.SignOff.EndorsementsSearchPrompt, onEnterScript = "findEndorsements" });
+                    <input type="hidden" value="@targetUser" name="student" />
                 }
-            </select>
+            </div>
+            <div style="display:inline-block; vertical-align:middle;">
+                <select name="template" id="cmbTemplates" onchange="javascript: templateSelected(this.value, -1);">
+                    @foreach (EndorsementType et in templates)
+                    {
+                        <option value="@et.ID">@et.FullTitle</option>
+                    }
+                </select>
+            </div>
+            <p>@Resources.Profile.EndorsementRequestPrompt <a href="@("~/mvc/pub/contact".ToAbsolute())">@Resources.Profile.EndorsementRequest</a></p>
         </div>
-        <p>@Resources.Profile.EndorsementRequestPrompt <a href="@("~/mvc/pub/contact".ToAbsolute())">@Resources.Profile.EndorsementRequest</a></p>
-    </div>
-    <h2>@Resources.SignOff.EndorsementEditTemplate</h2>
+        <h2>@Resources.SignOff.EndorsementEditTemplate</h2>
+    }
     <div id="divNewEndorsement">
-        @{ Html.RenderAction("RenderEndorsementBody", "Training", new { sourceUser = sourceUser, targetUser = targetUser, idTemplate = @EndorsementType.IDCustomTemplate, studentType = studentType, mode = mode }); }
+        @{ Html.RenderAction("RenderEndorsementBody", "Training", new { sourceUser = sourceUser, targetUser = targetUser, idTemplate = idTemplateRequested > 0 ? idTemplateRequested : EndorsementType.IDCustomTemplate, studentType = studentType, mode = mode }); }
     </div>
 </div>

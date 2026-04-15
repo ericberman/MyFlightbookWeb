@@ -478,6 +478,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\EndorseInvitation.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
@@ -2136,8 +2137,8 @@
     </Content>
     <Content Include="App_GlobalResources\SignOff.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>SignOff.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>SignOff.designer.cs</LastGenOutput>
     </Content>
     <Content Include="App_GlobalResources\Tabs.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

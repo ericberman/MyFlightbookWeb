@@ -588,4 +588,20 @@ Anywhere that you see an expiration date, use either your certificate's expirati
   <data name="EndorsementViewDeleted" xml:space="preserve">
     <value>Show deleted endorsements</value>
   </data>
+  <data name="EndorseRequestSubject" xml:space="preserve">
+    <value>Request to endorse {0} on {1}</value>
+    <comment>{0} is the user to endorse, {1} is the application brand name</comment>
+  </data>
+  <data name="EndorseInvitation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\Email\EndorseInvitation.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RequestEndorsementPrompt" xml:space="preserve">
+    <value>Need this endorsement but your instructor is not with you?</value>
+  </data>
+  <data name="RequestEndorsementRemote" xml:space="preserve">
+    <value>Send a request for this endorsement</value>
+  </data>
+  <data name="RequestEndorsementSuccess" xml:space="preserve">
+    <value>The request has been sent.</value>
+  </data>
 </root>

@@ -340,6 +340,18 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME%.
+        ///
+        ///Please visit the [EndorseStudent Page](&lt;% EndorseStudentLink %&gt;) on %APP_NAME% to view this request and sign their logbook entry.
+        ///.
+        /// </summary>
+        internal static string EndorseInvitation {
+            get {
+                return ResourceManager.GetString("EndorseInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Endorsement was deleted by the student on {0:d}.
         /// </summary>
         internal static string EndorsementDeleted {
@@ -498,6 +510,15 @@ namespace Resources {
         internal static string EndorsementViewDeleted {
             get {
                 return ResourceManager.GetString("EndorsementViewDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request to endorse {0} on {1}.
+        /// </summary>
+        internal static string EndorseRequestSubject {
+            get {
+                return ResourceManager.GetString("EndorseRequestSubject", resourceCulture);
             }
         }
         
@@ -1029,6 +1050,33 @@ namespace Resources {
         internal static string PromptUseAC13543ForSIC {
             get {
                 return ResourceManager.GetString("PromptUseAC13543ForSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need this endorsement but your instructor is not with you?.
+        /// </summary>
+        internal static string RequestEndorsementPrompt {
+            get {
+                return ResourceManager.GetString("RequestEndorsementPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send a request for this endorsement.
+        /// </summary>
+        internal static string RequestEndorsementRemote {
+            get {
+                return ResourceManager.GetString("RequestEndorsementRemote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request has been sent..
+        /// </summary>
+        internal static string RequestEndorsementSuccess {
+            get {
+                return ResourceManager.GetString("RequestEndorsementSuccess", resourceCulture);
             }
         }
         

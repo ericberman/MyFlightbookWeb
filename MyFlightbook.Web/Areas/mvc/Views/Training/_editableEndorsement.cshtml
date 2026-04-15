@@ -116,7 +116,7 @@
                 <td>
                     @if (mode == EndorsementMode.StudentPullAdHoc)
                     {
-                    <input type="text" required name="cfiCert" value="@(pfSourceUser?.Certificate ?? Request["cfiCert"] ?? string.Empty)" />
+                        <input type="text" required name="cfiCert" value="@(pfSourceUser?.Certificate ?? Request["cfiCert"] ?? string.Empty)" />
                     }
                     else
                     {
@@ -151,3 +151,14 @@
         </div>
     }
 </div>
+@if (mode == EndorsementMode.StudentPullAuthenticated && template.ID > 1)
+{
+    using (Html.BeginForm("RequestEndorsement", "Training", FormMethod.Post, new { name = "frmRequestEndorsement", id = "frmRequestEndorsement" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="student" value="@User.Identity.Name" />
+        <input type="hidden" name="instructor" value="@pfSourceUser.UserName" />
+        <input type="hidden" name="tid" value="@template.ID" />
+        <p>@Resources.SignOff.RequestEndorsementPrompt <a href="#" onclick="javascript: requestEndorsement(); return false;">@Resources.SignOff.RequestEndorsementRemote</a></p>
+    }
+}
