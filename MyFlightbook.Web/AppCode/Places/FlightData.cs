@@ -845,6 +845,14 @@ namespace MyFlightbook.Telemetry
                                 // Even if we started from block, we'll leave block unchanged.
                                 le.EngineStart = dtStart = AutoFillOptions.UtcFromZone(dtStartLocal, szIANATimeZone1.Result);
                                 le.EngineEnd = dtEnd = AutoFillOptions.UtcFromZone(dtEndLocal, szIANATimeZone2.Result);
+
+                                // fix up block out/in dates as well
+                                CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
+                                CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+                                if (blockOut != null)
+                                    blockOut.DateValue = AutoFillOptions.UtcFromZone(blockOut.DateValue, szIANATimeZone1.Result);
+                                if (blockIn != null)
+                                    blockIn.DateValue = AutoFillOptions.UtcFromZone(blockIn.DateValue, szIANATimeZone2.Result);
                             }
                             catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
                         } else if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
@@ -859,6 +867,14 @@ namespace MyFlightbook.Telemetry
                             // Even if we started from block, we'll leave block unchanged.
                             le.EngineStart = dtStart = DateTime.SpecifyKind(dtStartLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
                             le.EngineEnd = dtEnd = DateTime.SpecifyKind(dtEndLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+
+                            // fix up block out/in dates as well
+                            CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
+                            CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+                            if (blockOut != null)
+                                blockOut.DateValue = DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+                            if (blockIn != null)
+                                blockIn.DateValue = DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
                         }
 
                         le.FixAmbiguousTimes(); // ensure that ambiguous times are fixed.
