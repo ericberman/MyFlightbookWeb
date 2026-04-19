@@ -850,9 +850,9 @@ namespace MyFlightbook.Telemetry
                                 CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
                                 CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
                                 if (blockOut != null)
-                                    blockOut.DateValue = AutoFillOptions.UtcFromZone(blockOut.DateValue, szIANATimeZone1.Result);
+                                    blockOut.DateValue = AutoFillOptions.UtcFromZone(DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Unspecified), szIANATimeZone1.Result);
                                 if (blockIn != null)
-                                    blockIn.DateValue = AutoFillOptions.UtcFromZone(blockIn.DateValue, szIANATimeZone2.Result);
+                                    blockIn.DateValue = AutoFillOptions.UtcFromZone(DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Unspecified), szIANATimeZone2.Result);
                             }
                             catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
                         } else if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
@@ -872,9 +872,9 @@ namespace MyFlightbook.Telemetry
                             CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
                             CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
                             if (blockOut != null)
-                                blockOut.DateValue = DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+                                blockOut.DateValue = DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Unspecified).ConvertFromTimezone(opt.PreferredTimeZone);
                             if (blockIn != null)
-                                blockIn.DateValue = DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+                                blockIn.DateValue = DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Unspecified).ConvertFromTimezone(opt.PreferredTimeZone);
                         }
 
                         le.FixAmbiguousTimes(); // ensure that ambiguous times are fixed.
