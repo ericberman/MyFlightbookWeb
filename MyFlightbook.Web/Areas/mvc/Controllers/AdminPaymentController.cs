@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2023-2025 MyFlightbook LLC
+ * Copyright (c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -43,6 +43,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult PaymentDetailRows(string szUser, HashSet<Payment.TransactionType> xactions, int offset, int limit)
         {
             ViewBag.PaymentList = Payment.RecordsForUser(szUser, xactions, offset, limit);
+            return PartialView("_pmtDetailRows");
+        }
+
+        /// <summary>
+        /// Support for web service (view a given month)
+        /// </summary>
+        /// <param name="year">Requested Month</param>
+        /// <param name="month">Requested Year</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult PaymentSetForMonth(int month, int year)
+        {
+            ViewBag.PaymentList = Payment.RecordsForMonth(month, year);
             return PartialView("_pmtDetailRows");
         }
 

@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2025 MyFlightbook LLC
+ * Copyright (c) 2013-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -236,6 +236,11 @@ namespace MyFlightbook.Payments
 
             return RecordsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM payments {0} ORDER BY Date DESC {1}", szWHERE, szLimit),
                 (comm) => { comm.Parameters.AddWithValue("szUser", szUser ?? string.Empty); });
+        }
+
+        public static IEnumerable<Payment> RecordsForMonth(int month, int year)
+        {
+            return RecordsForQuery("SELECT * FROM payments WHERE YEAR(date)=?year AND MONTH(date)=?month ORDER BY Date DESC", (comm) => { comm.Parameters.AddWithValue("year", year); comm.Parameters.AddWithValue("month", month); });
         }
 
         /// <summary>

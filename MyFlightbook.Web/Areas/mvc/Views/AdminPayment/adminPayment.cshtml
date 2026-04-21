@@ -50,7 +50,7 @@
 
     <p><input type="button" onclick="javascript:fixFees(this);" value="Fix Donation Fees" /></p>
     <div style="width:800px;">
-        <div style="font-weight:bold; text-align:center;">Running-30-day donations for the past year</div>
+        <div class="b c">Running-30-day donations for the past year</div>
 
         <div id="@ViewBag.ChartData.ContainerID" style="display: inline-block; margin: 0 auto !important; height: @(ViewBag.ChartData.Height.ToString(CultureInfo.InvariantCulture) + "px")">
         </div>
@@ -60,10 +60,10 @@
     </div>
 </div>
 <style type="text/css">
-    .yoyUp {
+    .yoyUp, a.yoyUp {
         color: green;
     }
-    .yoyDown {
+    .yoyDown, a.yoyDown {
         color: red;
     }
     .hw {
@@ -75,7 +75,7 @@
 </style>
 <table class="stickyHeaderTable" style="width: unset;">
     <thead>
-        <tr style="font-weight: bold;">
+        <tr class="b">
             <th>Year</th>
             @for (int i = 0; i < 12; i++)
             {
@@ -92,15 +92,15 @@
             {
                 YearlyPayments yp = rgypp[iYear];
                 <tr>
-                    <td style="font-weight: bold;">@yp.Year.ToString(CultureInfo.CurrentCulture)</td>
+                    <td class="b">@yp.Year.ToString(CultureInfo.CurrentCulture)</td>
                     @for (int i = 0; i < 12; i++)
                     {
                         PeriodPaymentStat pp = yp.MonthlyPayments[i];
                         <td>
                             @if (pp.Net != 0)
                             {
-                                <span title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", pp.Gross, pp.Fee, pp.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", pp.YOYGross, pp.YOYPercent * 100))"
-                                      class="@(pp.YOYGross > 0 ? "yoyUp" : (pp.YOYGross < 0) ? "yoyDown" : string.Empty) @(pp.IsHighWater ? "hw" : string.Empty)">@pp.Net.ToString("C", CultureInfo.CurrentCulture)</span>
+                                <a title="@String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}{2}", pp.Gross, pp.Fee, pp.YOYGross == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", pp.YOYGross, pp.YOYPercent * 100))"
+                                      class="@(pp.YOYGross > 0 ? "yoyUp" : (pp.YOYGross < 0) ? "yoyDown" : string.Empty) @(pp.IsHighWater ? "hw" : string.Empty)" href="#" onclick="javascript: getMonthYear(@(i+1), @yp.Year); return false;">@pp.Net.ToString("C", CultureInfo.CurrentCulture)</a>
                             }
                         </td>
                     }
@@ -116,8 +116,9 @@
         }
     </tbody>
 </table>
-<div><span style="font-weight:bold">Test Transaction</span> @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.CreateError), targetID = "divEnterXactions" }); }</div>
-<div style="@(ViewBag.CreateError == null ? "display:none;" : string.Empty)" id="divEnterXactions">
+<p class="dn" id="divShowAll"><a href="#" onclick="location.reload(); return false;">Remove month/year restriction</a></p>
+<p><span class="b">Enter transactions</span> @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.CreateError), targetID = "divEnterXactions" }); }</p>
+<div class="@(ViewBag.CreateError == null ? "dn" : string.Empty)" id="divEnterXactions">
     @using (Html.BeginForm("Create", "AdminPayment", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -184,6 +185,8 @@
     params.offset = "25";
     params.limit = "25";
 
+    var endlessScrollEnabled = true;
+
     $(document).ready(function () {
         $(document).endlessScroll(
             {
@@ -192,26 +195,52 @@
                 fireDelay: 2000,
                 callback: function (p) {
                     // ajax call to fetch next set of rows
-                    $.ajax(
-                        {
-                            type: "POST",
-                            data: JSON.stringify(params),
-                            url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/PaymentSet")",
-                            dataType: "html",
-                            contentType: "application/json",
-                            error: function (response) {
-                                alert(response.status + ' ' + response.statusText);
-                            },
-                            complete: function (response) {
-                                params.offset = parseInt(params.offset) + parseInt(params.limit);
-                            },
-                            success: function (response) {
-                                $("#tblPaymentTransactions")[0].innerHTML += response;
-                            }
-                        });
+                    if (endlessScrollEnabled) {
+                        $.ajax(
+                            {
+                                type: "POST",
+                                data: JSON.stringify(params),
+                                url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/PaymentSet")",
+                                dataType: "html",
+                                contentType: "application/json",
+                                error: function (response) {
+                                    alert(response.status + ' ' + response.statusText);
+                                },
+                                complete: function (response) {
+                                    params.offset = parseInt(params.offset) + parseInt(params.limit);
+                                },
+                                success: function (response) {
+                                    $("#tblPaymentTransactions")[0].innerHTML += response;
+                                }
+                            });
+                    }
                 }
             });
     });
+
+    function getMonthYear(month, year) {
+        var p = new Object();
+        p.month = month;
+        p.year = year;
+
+        endlessScrollEnabled = false;
+
+        $.ajax(
+            {
+                type: "POST",
+                data: JSON.stringify(p),
+                url: "@VirtualPathUtility.ToAbsolute("~/mvc/AdminPayment/PaymentSetForMonth")",
+                dataType: "html",
+                contentType: "application/json",
+                error: function (response) {
+                    alert(response.status + ' ' + response.statusText);
+                },
+                success: function (response) {
+                    $("#tblPaymentTransactions")[0].innerHTML = response;
+                    $("#divShowAll").show();
+                }
+            });
+    }
 
     function resetGratuities(szUser, fResetReminders) {
         var params = new Object();
