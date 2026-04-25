@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Image", "MyFli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.AircraftSupport", "MyFlightbook.AircraftSupport\MyFlightbook.AircraftSupport.csproj", "{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Telemetry.Tests", "MyFlightbook.Telemetry.Tests\MyFlightbook.Telemetry.Tests.csproj", "{B9018F2D-C59B-481B-925A-D12C9A908D0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C8915D0-92CA-1B06-BAE8-00AE1914A47F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9018F2D-C59B-481B-925A-D12C9A908D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9018F2D-C59B-481B-925A-D12C9A908D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9018F2D-C59B-481B-925A-D12C9A908D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9018F2D-C59B-481B-925A-D12C9A908D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -254,8 +254,8 @@ namespace MyFlightbook.Telemetry
             else if (k.eleCoords != null)
             {
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < k.eleCoords.Count(); i++)
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} ", (k.eleCoords.ElementAt(i).Value.Replace("\r", " ").Replace("\n", " ")));
+                foreach (XElement coordElement in k.eleCoords)
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} ", coordElement.Value.Replace("\r", " ").Replace("\n", " "));
                 coords = sb.ToString();
             }
             else
@@ -295,26 +295,24 @@ namespace MyFlightbook.Telemetry
 
         private bool ParseKMLv2(KMLElements k)
         {
-            var timeStamps = k.ele22.Descendants(k.ns + "when");
-            var coords = k.ele22.Descendants(k.ns22 + "coord");
-
-            int cCoords = coords.Count();
-
             List<Position> lstSamples = new List<Position>();
-            for (int iRow = 0; iRow < cCoords; iRow++)
+            using (IEnumerator<XElement> timestampEnumerator = k.ele22.Descendants(k.ns + "when").GetEnumerator())
             {
-                var coord = coords.ElementAt(iRow);
-                string[] rgRow = coord.Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                Position sample = new Position(rgRow);
-
-                if (iRow < timeStamps.Count())
+                foreach (XElement coord in k.ele22.Descendants(k.ns22 + "coord"))
                 {
-                    sample.TypeOfSpeed = Position.SpeedType.Derived;
-                    string szTimeStamp = timeStamps.ElementAt(iRow).Value;
-                    if (!String.IsNullOrEmpty(szTimeStamp))
-                        sample.Timestamp = szTimeStamp.ParseUTCDate();
+                    string[] rgRow = coord.Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    Position sample = new Position(rgRow);
+
+                    if (timestampEnumerator.MoveNext())
+                    {
+                        sample.TypeOfSpeed = Position.SpeedType.Derived;
+                        string szTimeStamp = timestampEnumerator.Current.Value;
+                        if (!String.IsNullOrEmpty(szTimeStamp))
+                            sample.Timestamp = szTimeStamp.ParseUTCDate();
+                    }
+
+                    lstSamples.Add(sample);
                 }
-                lstSamples.Add(sample);
             }
 
             // Derive speed or see if it is available in extended data.
