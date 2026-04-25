@@ -4,6 +4,6 @@
 		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.6.0" />
+		<PackageReference Include="MySql.Data" Version="9.7.0" />
 	</ItemGroup>
 </Project>
