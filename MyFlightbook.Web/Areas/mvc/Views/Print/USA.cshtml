@@ -30,7 +30,7 @@
                 <th class="headerBig" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderApproaches</th>
                 <th class="headerBig w1cm" colspan="2">@Resources.LogbookEntry.PrintHeaderLanding</th>
-                <th class="headerBig" colspan="@(2 + (fShowOther ? 1 : 0) + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))" class="w3cm">@Resources.LogbookEntry.PrintHeaderCategory2</th>
+                <th class="headerBig w3cm" colspan="@(2 + (fShowOther ? 1 : 0) + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))">@Resources.LogbookEntry.PrintHeaderCategory2</th>
                 <th class="headerBig" colspan="3">@Resources.LogbookEntry.PrintHeaderCondition2</th>
                 <th class="headerSmall w1cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderSim</th>
                 @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
@@ -84,17 +84,25 @@
                     <td><div class="fhd"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
                     <td><div class="fhd">@pl.ModelDisplay(led)</div></td>
                     <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
-                    <td><div class="fhd">@led.Departure</div></td>
-                    <td><div class="fhd">@led.Destination</div></td>
-                    <td><div class="fhd">
-                        <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
-                        <div cclass="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                        <div class="wsprel">@led.CustPropertyDisplay</div>
-                        @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
-                        {
-                            Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
-                        }
-                    </div></td>
+                    @if (led.Airports.Count() <= 2)
+                    {
+                        <td><div class="fhd c">@led.Departure</div></td>
+                        <td><div class="fhd c">@led.Destination</div></td>
+                    }
+                    else
+                    {
+                        <td colspan="2"><div class="fhd c">@led.Route</div></td>
+                    }
+                    <td>
+                        <div class="fhd">
+                            <div cclass="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                            <div class="wsprel">@led.CustPropertyDisplay</div>
+                            @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                            {
+                                Html.RenderAction("SignatureBlock", "Flights", new { led = led, fUseHHMM = pl.CurrentUser.UsesHHMM, fInteractive = false });
+                            }
+                        </div>
+                    </td>
                     <td><div class="fhd">@led.Approaches.FormatInt()</div></td>
                     <td><div class="fhd">@led.NetDayLandings.FormatInt()</div></td>
                     <td><div class="fhd">@led.NetNightLandings.FormatInt()</div></td>
@@ -122,7 +130,7 @@
                         OptionalColumn oc = pl.Options.OptionalColumns[i];
                         if (!oc.IsCatClass)
                         {
-                            <td><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
+                            <td class="fhd"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                         }
                     }
                     <td><div class="fhd">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>

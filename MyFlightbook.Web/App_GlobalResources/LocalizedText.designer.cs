@@ -4188,7 +4188,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force a new page:.
+        ///   Looks up a localized string similar to Force a new page.
         /// </summary>
         internal static string PrintViewBreakPeriodPrompt {
             get {
@@ -4611,7 +4611,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic (fit to data).
+        ///   Looks up a localized string similar to Automatic (fit data).
         /// </summary>
         internal static string PrintViewRowHeightAutomatic {
             get {
@@ -4620,7 +4620,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Row height (lines of text):.
+        ///   Looks up a localized string similar to Row height (lines of text).
         /// </summary>
         internal static string PrintViewRowHeightPrompt {
             get {

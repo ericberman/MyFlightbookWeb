@@ -210,6 +210,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 fq.ClearRestriction(propToDelete ?? string.Empty);
 
             PrintingOptions po = PrintingOptionsFromForm();
+            PrintLayout pl = PrintLayout.LayoutForType(po.Layout, MyFlightbook.Profile.GetUser(user));
+
+            pl.OnSelected(po);
 
             RouteValueDictionary routeVals = new RouteValueDictionary
             {

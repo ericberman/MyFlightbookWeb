@@ -1,0 +1,80 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2026 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+.force-even-page {
+    break-after: left;
+    page-break-after: left;
+}
+
+.force-odd-page {
+    page-break-after: right;
+    break-after: right;
+}
+
+.page-start-anchor {
+    break-after: page;
+}
+
+.rowHeight1 {
+    height: 1.2em !important;
+    line-height: 1.2em !important;
+    overflow: hidden;
+}
+
+.rowHeight2 {
+    height: 2.4em !important;
+    line-height: 1.2em !important;
+    overflow: hidden;
+}
+
+.rowHeight3 {
+    height: 2.4em !important;
+    line-height: 1.2em !important;
+    overflow: hidden;
+}
+
+.pageTable td {
+    font-size: smaller;
+}
+
+td:nth-child(odd of .altColumns) {
+    background-color: #dfdfdf;
+}
+
+tr.bordered td, tr.bordered th {
+    padding: 3px;
+    border: 1px solid black;
+}
+
+tr.bordered, th.bordered {
+    page-break-inside: avoid;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid gray;
+    page-break-inside: avoid;
+    font-weight: bold;
+    font-size: smaller;
+}
+
+    tr.subtotal td.subtotalLabel {
+        border: none;
+    }
+
+@media screen {
+}
+
+.headerBig {
+    text-align: center;
+    font-weight: bold;
+}
+
+.headerSmall {
+    text-align: center;
+    font-size: smaller;
+}

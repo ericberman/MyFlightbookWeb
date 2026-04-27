@@ -3228,11 +3228,29 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to US Formats (similar to ASA, Jeppesen, etc.).
+        ///   Looks up a localized string similar to USA (similar to ASA, Jeppesen, etc.).
         /// </summary>
         internal static string PrintFormatUSA {
             get {
                 return ResourceManager.GetString("PrintFormatUSA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USA (Facing Pages).
+        /// </summary>
+        internal static string PrintFormatUSAFacing {
+            get {
+                return ResourceManager.GetString("PrintFormatUSAFacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This layout will show facing pages sequentially.  For best results, include a cover sheet, download a PDF and print in landscape mode with duplex along the short-edge of the page..
+        /// </summary>
+        internal static string PrintFormatUSAFacingTip {
+            get {
+                return ResourceManager.GetString("PrintFormatUSAFacingTip", resourceCulture);
             }
         }
         

@@ -13,7 +13,7 @@
     PrintLayout pl = ViewBag.pl;
 
     IEnumerable<OptionalColumnType> optionalColumnCandidates = new OptionalColumnType[]
-{
+    {
         OptionalColumnType.Complex,
         OptionalColumnType.Retract,
         OptionalColumnType.Tailwheel,
@@ -62,7 +62,7 @@
         OptionalColumnType.Part121PIC,
         OptionalColumnType.Part135SIC,
         OptionalColumnType.Part135PIC,
-        };
+    };
 }
 <script type="text/javascript">
     function toggleSelectAll(sender) {
@@ -78,6 +78,7 @@
             <option value="Portrait" @((po.Layout == PrintLayoutType.Portrait).ToSelected())>@Resources.LogbookEntry.PrintFormatPortrait</option>
             <option value="EASA" @((po.Layout == PrintLayoutType.EASA).ToSelected())>@Resources.LogbookEntry.PrintFormatEASA</option>
             <option value="USA" @((po.Layout == PrintLayoutType.USA).ToSelected())>@Resources.LogbookEntry.PrintFormatUSA</option>
+            <option value="USAFacing" @((po.Layout == PrintLayoutType.USAFacing).ToSelected())>@Resources.LogbookEntry.PrintFormatUSAFacing</option>
             <option value="Canada" @((po.Layout == PrintLayoutType.Canada).ToSelected())>@Resources.LogbookEntry.PrintFormatCanada</option>
             <option value="SACAA" @((po.Layout == PrintLayoutType.SACAA).ToSelected())>@Resources.LogbookEntry.PrintFormatSACAA</option>
             <option value="CASA" @((po.Layout == PrintLayoutType.CASA).ToSelected())>@Resources.LogbookEntry.PrintFormatCASA</option>
@@ -107,7 +108,7 @@
     <div class="fineprint"><span class="b">@Resources.LocalizedText.Note</span> @Resources.LocalizedText.PrintViewPaginationNote</div>
     <table cellpadding="4">
         <tr>
-            <td>@Resources.LocalizedText.PrintViewFlightsPerPage@{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); }</td>
+            <td>@Resources.LocalizedText.PrintViewFlightsPerPage @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = "flightsPerPageTip" }); } </td>
             <td>
                 <select name="poFlightsPerPage" onchange="javascript:@(onChange)();">
                     <option value="-1" @((po.FlightsPerPage <= 0).ToSelected())>@Resources.LocalizedText.PrintViewAsFit</option>
