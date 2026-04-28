@@ -67,8 +67,10 @@ namespace MyFlightbook
             IDPropCheckrideSport = 89,
             IDPropInstructorName = 92,          // Not flagged as a known property
             IDPropTakeoffAny = 93,              // Not flagged as a known property
+            IDPropFuelAdded = 94,
             IDPropTachStart = 95,
             IDPropTachEnd = 96,
+            IDPropInstructionChargeReceived = 97,
             IDPropXCLessThan50nm = 100,
             IDPropInstrumentExaminer = 107,
             IDPropMilitaryCoPilottime = 110,
@@ -82,6 +84,7 @@ namespace MyFlightbook
             IDPropPart91 = 155,
             IDPropFlightNumber = 156,           // Not flagged as a known property
             IDPropGroundInstructionReceived = 158,
+            IDPropFuelPrice = 159,
             IDPropCheckrideNewCatClassType = 161,
             IDPropFlightReview = 164,           // Not flagged as a known property
             IDPropStudentName = 166,            // Not flagged as a known property - just used for copying to instructor's flight.
@@ -157,6 +160,7 @@ namespace MyFlightbook
             IDPropHighAltitudeLandings = 504,
             IDPropMilitaryPrimaryTime = 511,
             IDPropMilitarySecondaryTime = 512,
+            IDPropInstructionChargeSpent = 526,
             IDPropUASKnowledgeTest10773 = 527,
             IDPropUASTrainingCourse10774 = 528,
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
@@ -189,6 +193,7 @@ namespace MyFlightbook
             IDPropMilitaryAircraftCommander = 659,
             IDPropMultiPilotTime = 664,
             IDPropRunwaysUsed = 651,
+            IDPropFuelCost = 662,
             IDPropXCMoreThan100nm = 665,
             IDPropFlightMeterStart = 666,
             IDPropFlightMeterEnd = 667,
@@ -206,6 +211,7 @@ namespace MyFlightbook
             IDPropRole = 718,
             IDPropPlannedBlock = 751,
             IDPropCrew4 = 754,
+            IDPropInstructionRate = 755,
             IDPropXCMoreThan400nm = 770,
             IDPropXCNoLanding = 781,
             IDPropNightIMC = 793,

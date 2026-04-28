@@ -3202,7 +3202,7 @@ WHERE f1.username = ?uName ");
         private void AutofillFinishInstruction()
         {
             // Issue #411: check for ground instruction given or received.
-            if ((Dual > 0 && CFI == 0) || (CFI > 0 && Dual == 0)) // no point if we can't tell whether it's given or received...
+            if ((Dual == 0) ^ (CFI == 0)) // no point if we can't tell whether it's given or received, so we're looking for one OR the other to be non-zero, but not both.
             {
                 CustomFlightProperty cfpLessonStart = CustomProperties[CustomPropertyType.KnownProperties.IDPropLessonStart];
                 CustomFlightProperty cfpLessonEnd = CustomProperties[CustomPropertyType.KnownProperties.IDPropLessonEnd];
@@ -3220,6 +3220,26 @@ WHERE f1.username = ?uName ");
                     tsGroundTraining = tsGroundTraining.Subtract(tsEngine.CompareTo(tsFlight) > 0 ? tsEngine : tsFlight);
 
                     CustomProperties.Add(CustomFlightProperty.PropertyWithValue(idTargetID, (decimal)tsGroundTraining.TotalHours));
+                }
+
+                // Issue #1524: if we have 2 of three variables, fill in the 3rd.
+                decimal instructionRate = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructionRate);
+                decimal instructionChargeSpent = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructionChargeSpent);
+                decimal instructionChargeReceived = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropInstructionChargeReceived);
+
+                if (Dual > 0) // Instruction received 
+                {
+                    if (instructionRate == 0 && instructionChargeSpent > 0)
+                        CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructionRate, instructionChargeSpent / Dual));
+                    else if (instructionChargeSpent == 0 && instructionRate > 0)
+                        CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructionChargeSpent, instructionRate * Dual));
+                }
+                else if (CFI > 0) // Instruction given - should always be true here!!
+                {
+                    if (instructionRate == 0 && instructionChargeReceived > 0)
+                        CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructionRate, instructionChargeReceived / CFI));
+                    else if (instructionChargeReceived == 0 && instructionRate > 0)
+                        CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructionChargeReceived, instructionRate * CFI));
                 }
             }
         }
@@ -3249,13 +3269,47 @@ WHERE f1.username = ?uName ");
         {
             decimal fuelAtStart = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtStart);
             decimal fuelAtLanding = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAtLanding);
-            decimal fuelConsumed = fuelAtStart - fuelAtLanding;
-            if (fuelConsumed > 0)
+            decimal fuelConsumed = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelConsumed);
+
+            // Issue #1524: if you know 2 of 3 variables, fill in the 3rd.
+            if (fuelAtStart > fuelAtLanding && fuelAtLanding > 0 && fuelConsumed == 0)
             {
-                if (TotalFlightTime > 0 && CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelBurnRate) == 0)
-                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelBurnRate, fuelConsumed / TotalFlightTime));
-                if (CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelConsumed) == 0)
-                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelConsumed, fuelConsumed));
+                fuelConsumed = fuelAtStart - fuelAtLanding;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelConsumed, fuelConsumed));
+            }
+            else if (fuelAtStart > fuelAtLanding && fuelConsumed > 0 && fuelAtLanding == 0)
+            {
+                fuelAtLanding = fuelAtStart - fuelConsumed;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelAtLanding, fuelAtLanding));
+            } else if (fuelAtLanding > 0 && fuelConsumed > 0 && fuelAtStart == 0)
+            {
+                fuelAtStart = fuelAtLanding + fuelConsumed;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelAtStart, fuelAtStart));
+            }
+
+            // If we have a fuel consumed and a total time , but no burn rate, fill in the burn rate.
+            if (fuelConsumed > 0 && TotalFlightTime > 0 && CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelBurnRate) == 0)
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelBurnRate, fuelConsumed / TotalFlightTime));
+
+            // Now do the same 2 of 3 for fuel cost, based on fuel added and fuel price.
+            decimal fuelAdded = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelAdded);
+            decimal fuelPrice = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelPrice);
+            decimal fuelCost = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropFuelCost);
+
+            if (fuelAdded > 0 && fuelPrice > 0 && fuelCost == 0)
+            {
+                fuelCost = fuelAdded * fuelPrice;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelCost, fuelCost));
+            }
+            else if (fuelAdded > 0 && fuelCost > 0 && fuelPrice == 0)
+            {
+                fuelPrice = fuelCost / fuelAdded;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelPrice, fuelPrice));
+            }
+            else if (fuelPrice > 0 && fuelCost > 0 && fuelAdded == 0)
+            {
+                fuelAdded = fuelCost / fuelPrice;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFuelAdded, fuelAdded));
             }
         }
         #endregion
