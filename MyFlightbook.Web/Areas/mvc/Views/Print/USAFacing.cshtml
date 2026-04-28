@@ -15,11 +15,18 @@
         {
             fShowOther = fShowOther || !m_CategoryClasses.Contains(le.EffectiveCatClass);
         }
-    }}
+    }
+}
 <p class="noprint c"><span class="b">@Resources.LocalizedText.Note</span> @Resources.LogbookEntry.PrintFormatUSAFacingTip</p>
+@if (!pl.Options.Sections.IncludeCoverPage)
+{
+    <div class="page-start-anchor">
+        &nbsp;
+    </div>
+}
 @foreach (LogbookPrintedPage lpp in pages)
 {
-    pl.StripRedundantOrExcludedProperties(new int[] { (int) CustomPropertyType.KnownProperties.IDPropApproachName }, lpp.Flights);
+    pl.StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropApproachName }, lpp.Flights);
 
     // Do the left table, then do the right table.
     <div class="force-even-page">

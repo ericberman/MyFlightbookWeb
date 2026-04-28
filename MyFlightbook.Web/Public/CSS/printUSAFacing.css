@@ -17,6 +17,7 @@
 
 .page-start-anchor {
     break-after: page;
+    page-break-after: always;
 }
 
 .rowHeight1 {
