@@ -75,7 +75,10 @@
             case "CreatePendingFlight":
             case "UpdatePendingFlight":
             case "CommitPendingFlight":
+            case "CheckFlight":
+            case "AutofillFlight":
                 $(".detailsSection[name='addFlight']").show();
+                $("#rowAutofillOptions").toggle(sender.value == "AutofillFlight");
                 break;
             case "currency":
             case "VisitedAirports":
@@ -122,11 +125,11 @@
     <table>
         <tr>
             <td>Client ID:</td>
-            <td><input id="txtClientID" name="clientID" style="width: 400px;" type="text" required value="@currentClient.clientID" /></td>
+            <td><input id="txtClientID" name="clientID" class="w100" type="text" required value="@currentClient.clientID" /></td>
         </tr>
         <tr>
             <td>Client Secret:</td>
-            <td><input id="txtClientSecret" name="clientSecret" style="width: 400px;" type="password" value="@currentClient.clientSecret" required /></td>
+            <td><input id="txtClientSecret" name="clientSecret" class="w100" type="password" value="@currentClient.clientSecret" required /></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -137,15 +140,15 @@
         </tr>
         <tr>
             <td>Authorization URL:</td>
-            <td><input id="txtAuthURL" name="authTarget" style="width: 400px;" required value="@currentClient.oAuth2AuthorizeEndpoint" /></td>
+            <td><input id="txtAuthURL" name="authTarget" class="w100" required value="@currentClient.oAuth2AuthorizeEndpoint" /></td>
         </tr>
         <tr>
             <td>Redirect URL:</td>
-            <td><input id="txtRedirectURL" name="targetRedir" style="width: 400px;" value="@currentClient.redirectEndpoint" required /></td>
+            <td><input id="txtRedirectURL" name="targetRedir" class="w100" value="@currentClient.redirectEndpoint" required /></td>
         </tr>
         <tr>
-            <td style="vertical-align:top">Scope:</td>
-            <td><input id="txtScope" name="scopes" style="width: 400px;" value="@String.Join(" ", currentClient.Scopes)" /></td>
+            <td class="topAlign">Scope:</td>
+            <td><input id="txtScope" name="scopes" class="w100" value="@String.Join(" ", currentClient.Scopes)" /></td>
         </tr>
         <tr>
             <td></td>
@@ -163,9 +166,9 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align:top">Token URL</td>
+            <td class="topAlign">Token URL</td>
             <td>
-                <input id="txtTokenURL" name="tokenTarget" style="width: 400px;" required value="@currentClient.oAuth2TokenEndpoint" />
+                <input id="txtTokenURL" name="tokenTarget" class="w100" required value="@currentClient.oAuth2TokenEndpoint" />
                 <input type="hidden" name="code" id="hdnAuthorization" value="@ViewBag.Authorization" />
                 <input type="hidden" name="state" id="hdnState" value="@ViewBag.State" />
             </td>
@@ -174,7 +177,7 @@
             <td></td>
             <td>
                 <button type="submit" name="submit" value="token">Get Token</button>
-                <button type="submit" name="submit" value="refresh" id="btnRefresh" style="display:none;"></button>
+                <button type="submit" name="submit" value="refresh" id="btnRefresh" class="dn"></button>
             </td>
         </tr>
     </table>
@@ -189,37 +192,39 @@
                 <p>You can request results in either XML or JSON</p>
             </td>
         </tr>
-        <tr style="vertical-align:top">
-            <td style="vertical-align:top">
+        <tr class="topAlign">
+            <td class="topAlign">
                 <div>Resource URL:</div>
                 <div class="fineprint">(minus verb, other data)</div>
             </td>
-            <td><input id="txtResourceURL" name="targetResource" value="@ViewBag.resourceURL" style="width: 400px;" required /></td>
+            <td><input id="txtResourceURL" name="targetResource" value="@ViewBag.resourceURL" class="w100" required /></td>
         </tr>
-        <tr style="vertical-align:top">
+        <tr class="topAlign">
             <td>Resource Action:</td>
             <td>
                 <select id="cmbResourceAction" onchange="showResource(this);">
                     <option selected value="none">(Custom - GET only)</option>
-                    <option value="currency" >Currency</option>
-                    <option value="totals" >Totals</option>
-                    <option value="VisitedAirports" >Visited Airports</option>
-                    <option value="AddAircraftForUser" >Add Aircraft</option>
-                    <option value="AircraftForUser" >Aircraft for user</option>
-                    <option value="MakesAndModels" >Makes / Models</option>
-                    <option value="CommitFlightWithOptions" >Add flight (POST only)</option>
-                    <option value="CreatePendingFlight" >Add pending flight (POST only)</option>
-                    <option value="PendingFlightsForUser" >View pending flights</option>
-                    <option value="UpdatePendingFlight" >Update pending flight (POST only)</option>
-                    <option value="DeletePendingFlight" >Delete a pending flight</option>
-                    <option value="CommitPendingFlight" >Commit a pending flight to logbook (POST only)</option>
-                    <option value="FlightsWithQueryAndOffset" >View flights (POST only)</option>
-                    <option value="FlightPathForFlight" >Flight Path for flight</option>
-                    <option value="FlightPathForFlightGPX" >Flight Path (GPX) for flight</option>
-                    <option value="DeleteLogbookEntry" >Delete Flight</option>
-                    <option value="AvailablePropertyTypesForUser" >Properties for user</option>
-                    <option value="GetNamedQueries" >Get Named Queries</option>
-                    <option value="UploadImage" >Upload an image (POST only)</option>
+                    <option value="currency">Currency</option>
+                    <option value="totals">Totals</option>
+                    <option value="VisitedAirports">Visited Airports</option>
+                    <option value="AddAircraftForUser">Add Aircraft</option>
+                    <option value="AircraftForUser">Aircraft for user</option>
+                    <option value="MakesAndModels">Makes / Models</option>
+                    <option value="CommitFlightWithOptions">Add flight (POST only)</option>
+                    <option value="CreatePendingFlight">Add pending flight (POST only)</option>
+                    <option value="CheckFlight">Check flight (POST only)</option>
+                    <option value="AutofillFlight">Autofill flight (POST only)</option>
+                    <option value="PendingFlightsForUser">View pending flights</option>
+                    <option value="UpdatePendingFlight">Update pending flight (POST only)</option>
+                    <option value="DeletePendingFlight">Delete a pending flight</option>
+                    <option value="CommitPendingFlight">Commit a pending flight to logbook (POST only)</option>
+                    <option value="FlightsWithQueryAndOffset">View flights (POST only)</option>
+                    <option value="FlightPathForFlight">Flight Path for flight</option>
+                    <option value="FlightPathForFlightGPX">Flight Path (GPX) for flight</option>
+                    <option value="DeleteLogbookEntry">Delete Flight</option>
+                    <option value="AvailablePropertyTypesForUser">Properties for user</option>
+                    <option value="GetNamedQueries">Get Named Queries</option>
+                    <option value="UploadImage">Upload an image (POST only)</option>
                 </select>
                 <label><input type="checkbox" id="ckJSON" name="json" value="1" />Request JSON data (default is XML)</label>
                 <input type="hidden" name="access_token" id="hdnAccessToken" value="@(currentClient?.AuthState?.AccessToken ?? string.Empty)" />
@@ -227,21 +232,21 @@
                 <div id="resourceViews">
                     <div class="detailsSection" name="none">
                         <table>
-                            <tr style="vertical-align:top">
+                            <tr class="topAlign">
                                 <td>Verb:</td>
                                 <td><input id="txtCustomVerb" /></td>
                             </tr>
-                            <tr style="vertical-align:top">
+                            <tr class="topAlign">
                                 <td><div>Additional URL data:</div><div class="fineprint">(will NOT be URL encoded)</div></td>
                                 <td><input id="txtCustomData" /></td>
                             </tr>
                         </table>
                     </div>
-                    <div class="detailsSection" name="flightsWithQueryAndOffset" style="display:none;">
+                    <div class="detailsSection dn" name="flightsWithQueryAndOffset">
                         <table>
                             <tr>
                                 <td>(Optional): JSON-ified Flight Query:</td>
-                                <td><textarea id="txtFlightQuery" name="fq" style="width: 200px" rows="5">{}</textarea></td>
+                                <td><textarea id="txtFlightQuery" name="fq" class="w100" rows="5">{}</textarea></td>
                             </tr>
                             <tr id="rowOffset">
                                 <td>Offset:</td>
@@ -253,7 +258,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="detailsSection" name="addAircraft" style="display:none">
+                    <div class="detailsSection dn" name="addAircraft">
                         <table>
                             <tr>
                                 <td>Tail Number:</td>
@@ -269,15 +274,15 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="detailsSection" name="noParam" style="display:none">
+                    <div class="detailsSection dn" name="noParam">
                     </div>
-                    <div class="detailsSection" name="addFlight" style="display:none;">
+                    <div class="detailsSection dn" name="addFlight">
                         <table>
-                            <tr style="vertical-align:top">
+                            <tr class="topAlign">
                                 <td>Flight data JSON-ified:</td>
-                                <td><textarea id="txtFlightToAdd" name="le" style="width: 200px" rows="5"></textarea></td>
+                                <td><textarea id="txtFlightToAdd" name="le" class="w100" rows="5"></textarea></td>
                             </tr>
-                            <tr style="vertical-align:top">
+                            <tr class="topAlign">
                                 <td>Format:</td>
                                 <td>
                                     <select id="cmbFlightFormat" name="format">
@@ -286,15 +291,19 @@
                                     </select>
                                 </td>
                             </tr>
+                            <tr class="topAlign" id="rowAutofillOptions">
+                                <td>Autofill Options (optional)</td>
+                                <td><textarea id="txtAutofillOptions" name="options" class="w100" rows="5"></textarea></td>
+                            </tr>
                         </table>
                     </div>
-                    <div class="detailsSection" name="flightID" style="display:none;">
+                    <div class="detailsSection dn" name="flightID">
                         Flight ID: <input id="decFlightID" name="idFlight" value="0" step="1" type="number" />
                     </div>
-                    <div class="detailsSection" name="pendingID" style="display: none;">
+                    <div class="detailsSection dn" name="pendingID">
                         Pending Flight ID: <input id="txtPendingID" name="idpending" />
                     </div>
-                    <div class="detailsSection" name="uploadImage" style="display:none;">
+                    <div class="detailsSection dn" name="uploadImage">
                         <table>
                             <tr>
                                 <td>File to upload</td>
@@ -336,7 +345,7 @@
                             </tr>
                             <tr>
                                 <td>Target page</td>
-                                <td><input id="txtImgUploadURL" name="txtImgUploadURL" style="width: 100%;" value="@("~/mvc/image/UploadFlightImage".ToAbsoluteURL(Request))" /></td>
+                                <td><input id="txtImgUploadURL" name="txtImgUploadURL" class="w100" value="@("~/mvc/image/UploadFlightImage".ToAbsoluteURL(Request))" /></td>
                             </tr>
                         </table>
                     </div>
@@ -346,7 +355,7 @@
         <tr>
             <td>State</td>
             <td>
-                <input id="txtState" name="txtState" style="width: 400px;" value="@ViewBag.state" />
+                <input id="txtState" name="txtState" class="w100" value="@ViewBag.state" />
             </td>
         </tr>
     </table>
@@ -356,38 +365,38 @@
 <button type="button" onclick="javascript: window.location = '@Request.Url.GetLeftPart(UriPartial.Path)' + '?clear=1';">Clear State</button>&nbsp;
 <button type="button" onclick="javascript: refreshToken();">Refresh Token</button>&nbsp;
 <div><span id="lblErr" class="error">@ViewBag.error</span></div>
-<div style="padding:5px; background-color:lightgray; border:1px solid black; border-radius: 4px; margin: 5px;">
+<div class="calloutSmall calloutBackground shadowed w100">
     @{  Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divOutputResults", labelText = "Output/Result:" }); }
-    <div id="divOutputResults" style="display: none; word-wrap:break-word;">
-        <table border="1" style="border-collapse:collapse; overflow: hidden; table-layout:fixed; width: 100%;">
+    <div id="divOutputResults" class="dn wsprew">
+        <table>
             <thead>
                 <tr>
-                    <td style="text-align: center; font-weight: bold">Key</td>
-                    <td style="text-align: center; font-weight: bold">Value</td>
+                    <td class="c b">Key</td>
+                    <td class="c b">Value</td>
                 </tr>
             </thead>
             @foreach (string szKey in Request.Params.Keys)
             {
                 <tr>
-                    <td>@szKey</td>
-                    <td>@Request.Params[szKey]</td>
+                    <td class="w25">@szKey</td>
+                    <td style="word-wrap: break-word; overflow-wrap:anywhere;">@Request.Params[szKey]</td>
                 </tr>
             }
         </table>
     </div>
 </div>
 <div>
-    <table style="width: 100%; word-wrap: break-word;">
-        <tr style="vertical-align:top;">
-            <td style="width: 100px;">Authorization result:</td>
+    <table class="w100 wsprew">
+        <tr class="topAlign">
+            <td class="w100">Authorization result:</td>
             <td>@ViewBag.authorization</td>
         </tr>
-        <tr style="vertical-align:top;">
-            <td style="width: 100px;">Token result:</td>
-            <td style="word-break: break-word; white-space: pre-line;">@JsonConvert.SerializeObject(currentClient.AuthState, Formatting.Indented)</td>
+        <tr class="topAlign">
+            <td class="w100">Token result:</td>
+            <td class="wsprew">@JsonConvert.SerializeObject(currentClient.AuthState, Formatting.Indented)</td>
         </tr>
-        <tr style="vertical-align:top;">
-            <td style="width: 100px;">POST result:</td>
+        <tr class="topAlign">
+            <td class="w100">POST result:</td>
             <td><div id="divPostResults"></div></td>
         </tr>
     </table>

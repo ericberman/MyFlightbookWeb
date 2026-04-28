@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.Extensions;
 using System;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -16,6 +17,7 @@ namespace MyFlightbook.Telemetry
     /// <summary>
     /// Container for options that can affect how autofill operates
     /// </summary>
+    [Serializable]
     public class AutoFillOptions
     {
         public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime, BlockTime };
@@ -136,6 +138,8 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// True to plow ahead and continue even if errors are encountered.
         /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
         public bool IgnoreErrors { get; set; }
 
         /// <summary>
@@ -153,15 +157,19 @@ namespace MyFlightbook.Telemetry
         /// Indicates whether to try to convert times to UTC time based on lat/long
         /// </summary>
         [Obsolete("Use TimeConversion Instead")]
+        [JsonIgnore]
+        [XmlIgnore]
         public bool TryLocal { get; set; } = false;
 
         /// <summary>
         /// How should times be interpreted?  UTC?  Local time?  Or in the user's preferred time zone (using PreferredTimeZone).
         /// </summary>
         [JsonIgnore]
+        [XmlIgnore]
         public TimeConversionCriteria TimeConversion { get; set; } = TimeConversionCriteria.None;
 
         [JsonIgnore]
+        [XmlIgnore]
         public TimeZoneInfo PreferredTimeZone { get; set; }
         #endregion
 
