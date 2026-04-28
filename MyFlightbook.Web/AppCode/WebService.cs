@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Authentication;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Web.Security;
 using System.Web.Services;
 
@@ -736,6 +737,9 @@ namespace MyFlightbook
             po?.ToString();  // avoid warning about unused po
 
             string szUser = GetEncryptedUser(szAuthUserToken);
+
+            // Issue #1525: handle inconsistant \r vs \r\n vs \r\r\n
+            le.Comment = Regex.Replace(le.Comment, @"(\r\n)|\r|\n|(\r\r\n)", Environment.NewLine);
 
             EventRecorder.LogCall("CommitFlightWithOptions - user {user}", szUser);
 
