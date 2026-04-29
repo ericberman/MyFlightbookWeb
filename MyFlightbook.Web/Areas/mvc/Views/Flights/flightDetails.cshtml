@@ -197,7 +197,7 @@
                 <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldApproaches</td>
                 <td style="padding: 3px; min-width: 1cm">@led.Approaches.FormatInt() </td>
                 <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldHold</td>
-                <td style="padding: 3px; min-width: 1cm">@led.fHoldingProcedures.FormatBoolean() </td>
+                <td class="b" style="padding: 3px; min-width: 1cm">@Html.Raw(led.fHoldingProcedures.FormatBoolean()) </td>
                 <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldLanding</td>
                 <td style="padding: 3px; min-width: 1cm">@led.Landings.FormatInt() </td>
                 <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldDayLandings</td>

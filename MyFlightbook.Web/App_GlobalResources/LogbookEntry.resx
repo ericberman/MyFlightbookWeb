@@ -656,7 +656,7 @@
     <value>Layout to use</value>
   </data>
   <data name="PrintFormatUSA" xml:space="preserve">
-    <value>US Formats (similar to ASA, Jeppesen, etc.)</value>
+    <value>USA (similar to ASA, Jeppesen, etc.)</value>
   </data>
   <data name="PrintHeaderApproachesShort" xml:space="preserve">
     <value>App.</value>
@@ -1999,5 +1999,11 @@ Proceed with import?</value>
   </data>
   <data name="PrintHeaderTurbopropSIC" xml:space="preserve">
     <value>Turboprop - SIC</value>
+  </data>
+  <data name="PrintFormatUSAFacing" xml:space="preserve">
+    <value>USA (Facing Pages)</value>
+  </data>
+  <data name="PrintFormatUSAFacingTip" xml:space="preserve">
+    <value>This layout will show facing pages sequentially.  For best results, include a cover sheet, download a PDF and print in landscape mode with duplex along the short-edge of the page.</value>
   </data>
 </root>

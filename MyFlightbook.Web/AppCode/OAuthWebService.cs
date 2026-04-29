@@ -3,6 +3,7 @@ using DotNetOpenAuth.OAuth2;
 using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.ImportFlights;
+using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using System;
@@ -141,30 +142,30 @@ namespace OAuthAuthorizationServer.Services
     }
 
     #region Available Services
-    public enum OAuthServiceID
-    {
-        /* 0 = invalid */
-        none,
-        /* Aircraft Services */
-        AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser,
-        /* Flight Services */
-        CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight,
-        /* Flight Services (Pending) */
-        CreatePendingFlight, PendingFlightsForUser, UpdatePendingFlight, DeletePendingFlight, CommitPendingFlight,
-        /* Currency */
-        GetCurrencyForUser, currency,
-        /* Totals */
-        TotalsForUserWithQuery, totals,
-        /* Visited Airports */
-        VisitedAirports,
-        /* Images */
-        UpdateImageAnnotation, DeleteImage, UploadImage,
-        /* Canned Queries */
-        AddNamedQuery, DeleteNamedQuery, GetNamedQueries
-    }
-
     public class OAuthServiceCall : WebService
     {
+        protected enum OAuthServiceID
+        {
+            /* 0 = invalid */
+            none,
+            /* Aircraft Services */
+            AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser,
+            /* Flight Services */
+            CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight, CheckFlight, AutofillFlight,
+            /* Flight Services (Pending) */
+            CreatePendingFlight, PendingFlightsForUser, UpdatePendingFlight, DeletePendingFlight, CommitPendingFlight,
+            /* Currency */
+            GetCurrencyForUser, currency,
+            /* Totals */
+            TotalsForUserWithQuery, totals,
+            /* Visited Airports */
+            VisitedAirports,
+            /* Images */
+            UpdateImageAnnotation, DeleteImage, UploadImage,
+            /* Canned Queries */
+            AddNamedQuery, DeleteNamedQuery, GetNamedQueries
+        }
+
         /// <summary>
         /// Determines the requested service from the request path.
         /// </summary>
@@ -217,6 +218,8 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.FlightPathForFlight:
                 case OAuthServiceID.FlightPathForFlightGPX:
                 case OAuthServiceID.PendingFlightsForUser:
+                case OAuthServiceID.CheckFlight:
+                case OAuthServiceID.AutofillFlight:
                     return MFBOAuthScope.readflight;
                 case OAuthServiceID.currency:
                 case OAuthServiceID.GetCurrencyForUser:
@@ -465,6 +468,12 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.PropertiesForFlight:
                         WriteObject(s, mfbSvc.PropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.CheckFlight:
+                        WriteObject(s, mfbSvc.CheckFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le")));
+                        break;
+                    case OAuthServiceID.AutofillFlight:
+                        WriteObject(s, mfbSvc.AutofillFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le"), GetOptionalParam<AutoFillOptions>("options")));
                         break;
                     case OAuthServiceID.CreatePendingFlight:
                         WriteObject(s, mfbSvc.CreatePendingFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le")));

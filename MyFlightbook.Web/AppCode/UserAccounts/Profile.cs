@@ -18,6 +18,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -2523,6 +2524,36 @@ HAVING numaccounts > 1");
                     util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.SignInvitationExisting.Replace("<% SignPendingFlightsLink %>", szURL).Replace("<% Requestor %>", pf.UserFullName));
                     util.SendMessage(msg);
                 }
+            }
+        }
+
+        public static void RequestEndorsement(string student, string instructor, int idTemplate)
+        {
+            if (String.IsNullOrEmpty(student))
+                throw new ArgumentNullException(nameof(student));
+            if (String.IsNullOrEmpty(instructor))
+                throw new ArgumentNullException(nameof(instructor));
+
+            Profile pfInstr = GetUser(instructor) ?? throw new InvalidOperationException($"No such user '{instructor}'");
+            CFIStudentMap map = new CFIStudentMap(instructor);
+            InstructorStudent pfStudent = CFIStudentMap.GetInstructorStudent(map.Students, student) ?? throw new UnauthorizedAccessException();
+            EndorsementType template = EndorsementType.GetEndorsementByID(idTemplate) ?? throw new InvalidOperationException($"No such endorsement template with id {idTemplate}");
+
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfStudent.UserFullName));
+                msg.ReplyToList.Add(new MailAddress(pfStudent.Email, pfStudent.UserFullName));
+                msg.To.Add(new MailAddress(pfInstr.Email, pfInstr.UserFullName));
+                msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorseRequestSubject, pfStudent.UserFullName, Branding.CurrentBrand.AppName);
+                msg.IsBodyHtml = true;
+
+                var nvc = HttpUtility.ParseQueryString(string.Empty);
+                nvc.Add("student", student);
+                nvc.Add("tid", idTemplate.ToString(CultureInfo.InvariantCulture));
+                string szURL = $"~/mvc/training/EndorseStudent?{nvc}".ToAbsoluteBrandedUri().ToString();
+
+                util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.EndorseInvitation.Replace("<% EndorseStudentLink %>", szURL).Replace("<% Requestor %>", WebUtility.HtmlEncode(pfStudent.UserFullName)).Replace("<% EndorsementTitle %>", WebUtility.HtmlEncode(template.Title)));
+                util.SendMessage(msg);
             }
         }
     }

@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.MediaConvert" Version="4.0.15" />
-    <PackageReference Include="AWSSDK.S3" Version="4.0.19.1" />
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.2.20" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.11.0" />
+    <PackageReference Include="AWSSDK.MediaConvert" Version="4.0.17.2" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.22.1" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.2.29" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>

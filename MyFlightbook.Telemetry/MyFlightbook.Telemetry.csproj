@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GeoTimeZone" Version="6.1.0" />
+    <PackageReference Include="NodaTime" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyFlightbook.Charting\MyFlightbook.Charting.csproj" />
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj" />
   </ItemGroup>

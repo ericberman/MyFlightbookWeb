@@ -105,6 +105,7 @@ namespace MyFlightbook.Telemetry
                 ParsedData.Columns.Add(new DataColumn(KnownColumnNames.LON, typeof(double)));
                 ParsedData.Columns.Add(new DataColumn(KnownColumnNames.LAT, typeof(double)));
                 ParsedData.Columns.Add(new DataColumn(KnownColumnNames.SPEED, typeof(double)));
+                ParsedData.Columns.Add(new DataColumn(KnownColumnNames.TIMEKIND, typeof(int)));
 
                 CultureInfo ci = CultureInfo.InvariantCulture;
 
@@ -141,6 +142,7 @@ namespace MyFlightbook.Telemetry
                                 DateTimeKind.Utc);
 
                             dr[KnownColumnNames.DATE] = dt;
+                            dr[KnownColumnNames.TIMEKIND] = (int)dt.Kind;
                             dr[KnownColumnNames.ALT] = alt;
                             dr[KnownColumnNames.LAT] = (Convert.ToDouble(rgWords[3].Substring(0, 2), ci) + (Convert.ToDouble(rgWords[3].Substring(2), ci) / 60.0)) * ((String.Compare(rgWords[4], "N", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : -1);
                             dr[KnownColumnNames.LON] = (Convert.ToDouble(rgWords[5].Substring(0, 3), ci) + (Convert.ToDouble(rgWords[5].Substring(3), ci) / 60.0)) * ((String.Compare(rgWords[6], "E", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : -1);

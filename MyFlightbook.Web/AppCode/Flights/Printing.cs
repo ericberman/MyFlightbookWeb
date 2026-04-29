@@ -38,7 +38,7 @@ namespace MyFlightbook.Printing
         bool IsCondensed { get; }
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline, HongKong }
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider, Condensed, PCAA, UASCivi, TwoPage, Navy, Airline, HongKong, USAFacing }
 
     #region Printing Layout implementations
     public abstract class PrintLayout : IPrintingTemplate
@@ -62,6 +62,9 @@ namespace MyFlightbook.Printing
         /// </summary>
         public abstract bool SupportsImages { get; }
 
+        /// <summary>
+        /// Does this template support optional columns?
+        /// </summary>
         public abstract bool SupportsOptionalColumns { get; }
 
         /// <summary>
@@ -74,6 +77,12 @@ namespace MyFlightbook.Printing
         /// </summary>
         /// <param name="po">The requested printing options</param>
         public virtual void Init(PrintingOptions po) { }
+
+        /// <summary>
+        /// Called when this layout is selected
+        /// </summary>
+        /// <param name="po">The requested printing options.</param>
+        public virtual void OnSelected(PrintingOptions po) { }
 
         /// <summary>
         /// Get the layout for the specified type
@@ -92,6 +101,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutEASA() { CurrentUser = pf };
                 case PrintLayoutType.USA:
                     return new PrintLayoutUSA() { CurrentUser = pf };
+                case PrintLayoutType.USAFacing:
+                    return new PrintLayoutUSAFacing() { CurrentUser = pf };
                 case PrintLayoutType.Canada:
                     return new PrintLayoutCanada() { CurrentUser = pf };
                 case PrintLayoutType.SACAA:
@@ -464,11 +475,37 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
             int linesOfText = (int)Math.Ceiling(le.RedactedComment.Length / 120.0) + (int)Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
-            int routeLine = le.Airports.Count() > 2 ? 1 : 0;
-            return Math.Max(1, (linesOfText + routeLine + 1) / 2);
+            return Math.Max(1, (linesOfText + 1) / 2);
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printUSA.css?v=3"; } }
+    }
+
+    public class PrintLayoutUSAFacing : PrintLayout
+    {
+        public override bool SupportsImages { get { return false; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
+            int linesOfText = (int)Math.Ceiling(le.RedactedComment.Length / 120.0) + (int)Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
+            return Math.Max(1, (linesOfText + 1) / 2);
+        }
+
+        public override string CSSPath { get { return "~/Public/CSS/printUSAFacing.css"; } }
+
+        public override void OnSelected(PrintingOptions po)
+        {
+            if (po == null)
+                throw new ArgumentNullException(nameof(po));
+            // USA facing layout requires fixed row height; set to 2 by default.
+            if (po.FixedRowHeight == 0)
+                po.FixedRowHeight = 3;
+        }
     }
 
     public class PrintLayoutNavy : PrintLayout
@@ -595,8 +632,8 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Number of flights to print; less than or = 0 for continuous
         /// </summary>
-        [System.ComponentModel.DefaultValue(0)]
-        public int FlightsPerPage { get; set; } = 0;
+        [System.ComponentModel.DefaultValue(10)]
+        public int FlightsPerPage { get; set; } = 10;
 
         /// <summary>
         /// Include images when printing?
@@ -1459,10 +1496,8 @@ namespace MyFlightbook.Printing
         /// <param name="d"></param>
         private static void RemoveStripedSubtotals(IDictionary<string, LogbookEntryDisplay> d)
         {
-            if (d == null || d.Count <= 1 || !d.ContainsKey(Resources.LogbookEntry.PrintTotalsAllCatClass))
+            if (d == null || d.Count <= 1 || !d.TryGetValue(Resources.LogbookEntry.PrintTotalsAllCatClass, out LogbookEntryDisplay led))
                 return;
-
-            LogbookEntryDisplay led = d[Resources.LogbookEntry.PrintTotalsAllCatClass];
             d.Clear();
             d[Resources.LogbookEntry.PrintTotalsAllCatClass] = led;
         }

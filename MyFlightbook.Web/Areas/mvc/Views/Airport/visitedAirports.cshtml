@@ -78,7 +78,7 @@
 </div>
 <p>
     <span style="font-weight:bold">@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, rgva.Count())&nbsp;@Resources.LocalizedText.Note</span>
-    @Resources.Airports.airportVisitedAirportsNote
+    @Resources.Airports.airportVisitedAirportsNote @(fq.AircraftInstanceTypes == FlightQuery.AircraftInstanceRestriction.TrainingOnly ? string.Empty : Resources.Airports.airportVisitedAirportsNoteNoSims)
 </p>
 <div id="searchForm" style="display:none;">
     @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }

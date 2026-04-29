@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Charting;
+﻿using GeoTimeZone;
+using MyFlightbook.Charting;
 using MyFlightbook.CSV;
 using MyFlightbook.Telemetry.Properties;
 using System;
@@ -99,6 +100,8 @@ namespace MyFlightbook.Telemetry
 
             int iSecondsOffsetCol = -1;
 
+            int? utcOffset = null;
+
             using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(szData)))
             {
                 using (CSVReader csvr = new CSVReader(ms))
@@ -138,6 +141,8 @@ namespace MyFlightbook.Telemetry
                             if (rgszHeader[i].Trim().Equals("ElapsedSeconds", StringComparison.OrdinalIgnoreCase))
                                 iSecondsOffsetCol = i;
                         }
+                        // Add a timezone offset column, since the dtBase above is in local time.
+                        m_dt.Columns.Add(KnownColumnNames.TZOFFSET, typeof(int));
 
                         string[] rgszRow = null;
                         int iRow = 0;
@@ -152,7 +157,14 @@ namespace MyFlightbook.Telemetry
 
                             try
                             {
-                                m_dt.Rows.Add(ParseCSVRow(rgszRow, columnIndexMap, dtBase, iSecondsOffsetCol));
+                                DataRow row = ParseCSVRow(rgszRow, columnIndexMap, dtBase, iSecondsOffsetCol);
+                                // Issue #1516: use the first sample we find to find the timezone offset; use that for this and all subsequent samples, but only initialize it once.
+                                if (utcOffset == null)
+                                    utcOffset = (row[KnownColumnNames.LAT] != null && row[KnownColumnNames.LON] != null) ?
+                                        (int)AutoFillOptions.UtcFromZone(dtBase, TimeZoneLookup.GetTimeZone((double)row[KnownColumnNames.LAT], (double)row[KnownColumnNames.LON]).Result).Subtract(DateTime.SpecifyKind(dtBase, DateTimeKind.Utc)).TotalMinutes :
+                                        0;
+                                row[KnownColumnNames.TZOFFSET] = utcOffset.Value;
+                                m_dt.Rows.Add(row);
                             }
                             catch (MyFlightbookException ex)
                             {

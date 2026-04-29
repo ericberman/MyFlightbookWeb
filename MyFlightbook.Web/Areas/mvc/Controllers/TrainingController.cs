@@ -476,17 +476,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderEndorsementEditor(string sourceUser, string targetUser, StudentTypes studentType, EndorsementMode mode, string searchText = "")
+        public ActionResult RenderEndorsementEditor(string sourceUser, string targetUser, StudentTypes studentType, EndorsementMode mode, string searchText = "", int idTemplate = 0)
         {
             ViewBag.sourceUser = sourceUser;
             ViewBag.targetUser = targetUser;
             ViewBag.studentType = studentType;
             ViewBag.mode = mode;
             ViewBag.query = searchText;
+            ViewBag.idTemplate = idTemplate;
 
             List<EndorsementType> lst = new List<EndorsementType>(EndorsementType.LoadTemplates(searchText));
             if (lst.Count == 0) // if nothing found, use the custom template
-                lst.Add(EndorsementType.GetEndorsementByID(1));
+                lst.Add(EndorsementType.GetEndorsementByID(EndorsementType.IDCustomTemplate));
 
             ViewBag.templates = lst;
 
@@ -496,7 +497,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderEndorsementBody(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
         {
-            ViewBag.template = EndorsementType.GetEndorsementByID((idSrc > 0 || idTemplate < 0) ? EndorsementType.IDCustomTemplate : idTemplate);
+            ViewBag.template = EndorsementType.GetEndorsementByID((idSrc > 0 || idTemplate < 0) ? EndorsementType.IDCustomTemplate : idTemplate) ?? EndorsementType.GetEndorsementByID(EndorsementType.IDCustomTemplate);
             Endorsement e = (idSrc > 0) ? EndorsementWithID(idSrc) : null;
             ViewBag.source = (studentType == StudentTypes.External || ((e?.StudentName) ?? string.Empty).CompareCurrentCulture(targetUser) == 0) ? e : null;  // don't allow copy from someone else's endorsement.
             ViewBag.targetUser = targetUser;
@@ -706,17 +707,30 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult EndorseStudent(string student, int @extern = 0)
+        public ActionResult EndorseStudent(string student, int @extern = 0, int tid = 0)
         {
             ViewBag.studentType = @extern != 0 ? StudentTypes.External : StudentTypes.Member;
-            ViewBag.targetUser = student;
+            ViewBag.templateID = tid;
             ViewBag.endorsements = EndorsementsForUser(student, User.Identity.Name, fIncludeDeleted: @extern == 0); // issue # 1196 - don't include deleted external endorsements.
             ViewBag.nonOwnedEndorsements = string.IsNullOrEmpty(student) ? Array.Empty<Endorsement>() : RemoveEndorsementsByInstructor(EndorsementsForUser(student, null), User.Identity.Name);
-            InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student));
+            InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student)) ?? (@extern == 0 ? throw new UnauthorizedAccessException() : (InstructorStudent) null);
+            ViewBag.targetUser = (instrStudent == null) ? string.Empty : student;
             ViewBag.canViewStudent = instrStudent?.CanViewLogbook ?? false;
             ViewBag.canEditStudent = instrStudent?.CanAddLogbook ?? false;
 
             return View("endorseStudent");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RequestEndorsement(string student, string instructor, int tid)
+        {
+            return SafeOp(() =>
+            {
+                InstructorStudent.RequestEndorsement(student, instructor, tid);
+                return new EmptyResult();
+            });
         }
 
         [HttpGet]

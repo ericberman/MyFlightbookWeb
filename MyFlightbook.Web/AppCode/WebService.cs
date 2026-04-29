@@ -4,6 +4,7 @@ using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Lint;
 using MyFlightbook.SharedUtility.EventRecorder;
+using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Authentication;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Web.Security;
 using System.Web.Services;
 
@@ -737,6 +739,9 @@ namespace MyFlightbook
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 
+            // Issue #1525: handle inconsistant \r vs \r\n vs \r\r\n
+            le.Comment = Regex.Replace(le.Comment, @"(\r\n)|\r|\n|(\r\r\n)", Environment.NewLine);
+
             EventRecorder.LogCall("CommitFlightWithOptions - user {user}", szUser);
 
             PrepareFlightForSubmission(le, szUser);
@@ -851,6 +856,27 @@ namespace MyFlightbook
                     result.Add(fi.IssueDescription);
 
             return result.ToArray();
+        }
+
+        [WebMethod]
+        public LogbookEntry AutofillFlight(string szAuthUserToken, LogbookEntry le, AutoFillOptions options = null)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+
+            string szUser = GetEncryptedUser(szAuthUserToken);
+            // slam in the authenticated user.
+            le.User = GetEncryptedUser(szAuthUserToken);
+
+            if (options == null)
+                options = AutoFillOptions.DefaultOptionsForUser(Profile.GetUser(szUser));
+
+            using (FlightData fd = new FlightData())
+                fd.AutoFill(le, options);
+
+            return le;
         }
 
         #region Pending Flights support

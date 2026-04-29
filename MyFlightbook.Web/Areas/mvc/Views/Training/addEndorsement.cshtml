@@ -46,6 +46,18 @@
             }
         });
     }
+
+
+    function requestEndorsement() {
+        var form = $("#frmRequestEndorsement");
+        var f = form.serialize();
+        $.ajax({
+            url: "@Url.Action("RequestEndorsement", "Training")",
+            type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (r) { window.alert('@Resources.SignOff.RequestEndorsementSuccess'); }
+        });
+    }
 </script>
 @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmSelectInstr", name = "frmSelectInstr" }))
 {

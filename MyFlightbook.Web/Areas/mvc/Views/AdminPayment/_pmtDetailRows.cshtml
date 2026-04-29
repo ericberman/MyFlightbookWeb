@@ -7,7 +7,7 @@
         NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
         string targetID = String.Format(CultureInfo.InvariantCulture, "divPmt{0}", p.ID);
         string clickID = String.Format(CultureInfo.InvariantCulture, "lblPmt{0}", p.ID);
-    <tr style="vertical-align: top;">
+    <tr class="topAlign">
         <td>@p.ID</td>
         <td>@p.Timestamp.ToString()</td>
         <td>@p.Username</td>
@@ -16,21 +16,21 @@
         <td>@((p.Amount - Math.Abs(p.Fee)).ToString("C"))</td>
         <td>@p.Type.ToString()</td>
         <td>@p.Notes</td>
-        <td style="min-width: 300px; width: 40%">
-            <span style="font-weight: bold;">@p.TransactionID</span>
+        <td class="w40">
+            <span class="b">@p.TransactionID</span>
             @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = targetID }); }
-            <div style="display:none;" id="@targetID">
+            <div class="dn" id="@targetID">
                 <table>
                     @foreach (string szKey in nvc.AllKeys)
                     {
                         <tr>
                             @if (szKey == null)
                             {
-                                <td style="white-space: pre;">@p.TransactionNotes</td>
+                                <td class="wsprel">@p.TransactionNotes</td>
                             }
                             else
                             {
-                                <td style="font-weight:bold">@szKey</td>
+                                <td class="b">@szKey</td>
                                 <td>@nvc[szKey]</td>
                             }
                         </tr>

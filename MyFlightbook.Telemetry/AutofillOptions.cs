@@ -1,6 +1,9 @@
 ﻿using MyFlightbook.Geography.SolarTools;
 using Newtonsoft.Json;
+using NodaTime;
+using NodaTime.Extensions;
 using System;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -14,6 +17,7 @@ namespace MyFlightbook.Telemetry
     /// <summary>
     /// Container for options that can affect how autofill operates
     /// </summary>
+    [Serializable]
     public class AutoFillOptions
     {
         public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime, BlockTime };
@@ -134,6 +138,8 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// True to plow ahead and continue even if errors are encountered.
         /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
         public bool IgnoreErrors { get; set; }
 
         /// <summary>
@@ -151,15 +157,19 @@ namespace MyFlightbook.Telemetry
         /// Indicates whether to try to convert times to UTC time based on lat/long
         /// </summary>
         [Obsolete("Use TimeConversion Instead")]
+        [JsonIgnore]
+        [XmlIgnore]
         public bool TryLocal { get; set; } = false;
 
         /// <summary>
         /// How should times be interpreted?  UTC?  Local time?  Or in the user's preferred time zone (using PreferredTimeZone).
         /// </summary>
         [JsonIgnore]
+        [XmlIgnore]
         public TimeConversionCriteria TimeConversion { get; set; } = TimeConversionCriteria.None;
 
         [JsonIgnore]
+        [XmlIgnore]
         public TimeZoneInfo PreferredTimeZone { get; set; }
         #endregion
 
@@ -192,6 +202,32 @@ namespace MyFlightbook.Telemetry
 
             return false;   // should never hit this.
         }
+
+        /// <summary>
+        /// Form https://tkit.dev/2018/04/05/converting-to-and-from-local-time-in-c-net-with-noda-time/
+        /// Converts a local-time DateTime to UTC DateTime based on the specified
+        /// timezone. The returned object will be of UTC DateTimeKind. To be used
+        /// when we want to know what's the UTC representation of the time somewhere
+        /// in the world.
+        /// </summary>
+        /// <param name="dateTime">Local DateTime as UTC or Unspecified DateTimeKind.</param>
+        /// <param name="timezone">Timezone name (in TZDB format).</param>
+        /// <returns>UTC DateTime as UTC DateTimeKind.</returns>
+        public static DateTime UtcFromZone(DateTime dateTime, string timezone)
+        {
+            if (dateTime.Kind == DateTimeKind.Local)
+                throw new ArgumentException("Expected non-local kind of DateTime");
+
+            var zone = DateTimeZoneProviders.Tzdb[timezone];
+            LocalDateTime asLocal = dateTime.ToLocalDateTime();
+            ZonedDateTime asZoned = asLocal.InZoneLeniently(zone);
+            Instant instant = asZoned.ToInstant();
+            ZonedDateTime asZonedInUtc = instant.InUtc();
+            DateTime utc = asZonedInUtc.ToDateTimeUtc();
+
+            return utc;
+        }
+
         #endregion
 
         /// <summary>

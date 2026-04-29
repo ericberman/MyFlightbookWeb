@@ -1,0 +1,263 @@
+﻿@using MyFlightbook.Printing
+@using System.Globalization
+@{
+    PrintLayout pl = ViewBag.pl;
+    IEnumerable<LogbookPrintedPage> pages = pl.Pages;
+    HashSet<int> m_CategoryClasses = new HashSet<int>() { (int)CategoryClass.CatClassID.ASEL, (int)CategoryClass.CatClassID.AMEL };
+    foreach (OptionalColumn column in pl.Options.OptionalColumns)
+    {
+        m_CategoryClasses.Add((int)column.AssociatedCategoryClass);
+    }
+    bool fShowOther = false;
+    foreach (LogbookPrintedPage lpp in pages)
+    {
+        foreach (LogbookEntryBase le in lpp.Flights)
+        {
+            fShowOther = fShowOther || !m_CategoryClasses.Contains(le.EffectiveCatClass);
+        }
+    }
+}
+<p class="noprint c"><span class="b">@Resources.LocalizedText.Note</span> @Resources.LogbookEntry.PrintFormatUSAFacingTip</p>
+@if (!pl.Options.Sections.IncludeCoverPage)
+{
+    <div class="page-start-anchor">
+        &nbsp;
+    </div>
+}
+@foreach (LogbookPrintedPage lpp in pages)
+{
+    pl.StripRedundantOrExcludedProperties(new int[] { (int)CustomPropertyType.KnownProperties.IDPropApproachName }, lpp.Flights);
+
+    // Do the left table, then do the right table.
+    <div class="force-even-page">
+        @{ Html.RenderPartial("_printHeader"); }
+        <table class="pageTable">
+            <thead class="header bordered">
+                <tr class="bordered">
+                    <th class="headerSmall w2cm rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderDate</th>
+                    <th class="headerSmall rowHeight3 w3cm" rowspan="2">@Resources.LogbookEntry.PrintHeaderModel</th>
+                    <th class="headerSmall w12cm rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderAircraft</th>
+                    <th class="headerBig rowHeight1" colspan="2">@Resources.LogbookEntry.PrintHeaderRoute</th>
+                    <th class="headerSmall w1cm rowHeight2" rowspan="2">@Resources.LogbookEntry.FieldTotal</th>
+                    <th class="headerBig w3cm rowHeight1" colspan="@(2 + (fShowOther ? 1 : 0) + OptionalColumn.CatClassColumnCount(pl.Options.OptionalColumns))">@Resources.LogbookEntry.PrintHeaderCategory2</th>
+                    <th class="headerBig w1cm rowHeight1" colspan="2">@Resources.LogbookEntry.PrintHeaderLanding</th>
+                    <th class="headerSmall w1cm rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderApproaches</th>
+                </tr>
+                <tr class="bordered">
+                    <th class="headerSmall rowHeight2 w2cm">@Resources.LogbookEntry.PrintHeaderFrom</th>
+                    <th class="headerSmall rowHeight2 w2cm">@Resources.LogbookEntry.PrintHeaderTo</th>
+                    <th class="headerSmall rowHeight2 w1cm">@CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).CatClass</th>
+                    <th class="headerSmall rowHeight2 w1cm">@CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMEL).CatClass</th>
+                    @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                    {
+                        if (oc.IsCatClass)
+                        {
+                            <th class="headerSmall rowHeight2 w1cm"><div class="custColumn">@oc.Title</div></th>
+                        }
+                    }
+                    @if (fShowOther)
+                    {
+                        <th class="headerSmall rowHeight2 w1cm">&nbsp;</th>
+                    }
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderDay</th>
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderNight</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (LogbookEntryDisplay led in lpp.Flights)
+                {
+                    string appchName = led.CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropApproachName);
+                    if (!String.IsNullOrEmpty(appchName))
+                    {
+                        appchName = $"({appchName})";
+                    }
+                    <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
+                        <td><div class="fhd w2cm"><input class="dn" type="checkbox" name="ckpb" value="@led.FlightID" @(pl.Options.PageBreaks.Contains(led.FlightID).ToChecked()) />@pl.ChangeMarkerForFlight(led)@led.Date.ToShortDateString()</div></td>
+                        <td><div class="fhd w3cm">@pl.ModelDisplay(led)</div></td>
+                        <td><div class="fhd">@led.TailNumOrSimDisplay</div></td>
+                        @if (led.Airports.Count() <= 2)
+                        {
+                            <td><div class="fhd c">@led.Departure</div></td>
+                            <td><div class="fhd c">@led.Destination</div></td>
+                        }
+                        else
+                        {
+                            <td colspan="2"><div class="fhd c">@led.Route</div></td>
+                        }
+                        <td class="altColumns"><div class="fhd">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        <td class="altColumns w1cm"><div class="fhd">@(led.EffectiveCatClass == (int)CategoryClass.CatClassID.ASEL ? led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</div></td>
+                        <td class="altColumns w1cm"><div class="fhd">@(led.EffectiveCatClass == (int)CategoryClass.CatClassID.AMEL ? led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM) : string.Empty)</div></td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            OptionalColumn oc = pl.Options.OptionalColumns[i];
+                            if (oc.IsCatClass)
+                            {
+                                <td class="fhd altColumns w1cm"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
+                            }
+                        }
+
+                        @if (fShowOther)
+                        {
+                            <td class="fhd altColumns w1cm"><div class="fhd">@pl.OtherCatClassValue(led)</div></td>
+                        }
+                        <td><div class="fhd w12cm">@led.NetDayLandings.FormatInt()</div></td>
+                        <td><div class="fhd w12cm">@led.NetNightLandings.FormatInt()</div></td>
+                        <td><div class="fhd">@led.Approaches.FormatInt() <span class="fineprint">@appchName</span></div></td>
+                    </tr>
+                }
+                @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+                {
+                    int itemIndex = 0;
+                    foreach (LogbookEntryDisplay led in stc.Subtotals)
+                    {
+                        <tr class="subtotal">
+                            @if (itemIndex++ == 0)
+                            {
+                                <td colspan="3" style="height: @(1.2 * stc.SubtotalCount)em;" rowspan='@stc.SubtotalCount'>@stc.GroupTitle</td>
+                            }
+                            <td class="rowHeight1" colspan="2">@led.CatClassDisplay</td>
+                            <td class="rowHeight1 altColumns">@led.TotalFlightTime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1 altColumns">@led.TotalForCategoryClass(CategoryClass.CatClassID.ASEL).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1 altColumns">@led.TotalForCategoryClass(CategoryClass.CatClassID.AMEL).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                            {
+                                OptionalColumn oc = pl.Options.OptionalColumns[i];
+                                if (oc.IsCatClass)
+                                {
+                                    <td class="rowHeight1 altColumns">@led.OptionalColumnCatClassTotal(i).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                                }
+                            }
+                            @if (fShowOther)
+                            {
+                                <td class="rowHeight1 altColumns">@led.TotalExceptForCategoryClasses(m_CategoryClasses).FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            }
+                            <td class="rowHeight1">@led.NetDayLandings.FormatInt()</td>
+                            <td class="rowHeight1">@led.NetNightLandings.FormatInt()</td>
+                            <td class="rowHeight1">@led.Approaches.FormatInt()</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="force-odd-page">
+        @{ Html.RenderPartial("_printHeader"); }
+        <table class="pageTable">
+            <thead class="header bordered">
+                <tr class="bordered">
+                    <th class="headerBig rowHeight1" colspan="3">@Resources.LogbookEntry.PrintHeaderCondition2</th>
+                    <th class="headerSmall w1cm rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderSim</th>
+                    @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                    {
+                        if (!oc.IsCatClass)
+                        {
+                            <th class="headerSmall 1cm rowHeight3" rowspan="2"><div class="custColumn">@oc.Title</div></th>
+                        }
+                    }
+                    <th class="headerBig rowHeight1" colspan="@(3 + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (pl.CurrentUser.IsInstructor ? 1 : 0))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
+                    <th class="headerBig rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
+                </tr>
+                <tr class="bordered">
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderNight</th>
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderIMC</th>
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderCrossCountry</th>
+                    @if (pl.CurrentUser.IsInstructor)
+                    {
+                        <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.FieldCFI</th>
+                    }
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.FieldDual</th>
+                    @if (pl.CurrentUser.TracksSecondInCommandTime)
+                    {
+                        <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.FieldSIC</th>
+                    }
+                    <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (LogbookEntryDisplay led in lpp.Flights)
+                {
+                    <tr class="bordered breakable @(pl.Options.PageBreaks.Contains(led.FlightID) ? "breakBefore" : string.Empty)" @Html.Raw(pl.ColorForFlight(led))>
+                        <td class="altColumns"><div class="fhd">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        <td class="altColumns"><div class="fhd">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        <td class="altColumns"><div class="fhd">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        <td class="altColumns"><div class="fhd">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            OptionalColumn oc = pl.Options.OptionalColumns[i];
+                            if (!oc.IsCatClass)
+                            {
+                                <td class="altColumns"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
+                            }
+                        }
+                        <td class="altColumns"><div class="fhd">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        @if (pl.CurrentUser.IsInstructor)
+                        {
+                            <td class="altColumns"><div class="fhd aColumns">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        }
+                        <td class="altColumns"><div class="fhd">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        @if (pl.CurrentUser.TracksSecondInCommandTime)
+                        {
+                            <td class="altColumns"><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        }
+                        <td class="altColumns"><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        <td>
+                            <div class="fhd">
+                                @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
+                                {
+                                    <div class="flR">
+                                        @if (led.HasDigitizedSig)
+                                        {
+                                            <img class="flR w2cm" src="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute()" />
+                                        }
+                                        <img class="imgMiddle flL" style="width: .7cm margin-right: 1pt;" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
+                                        <div class="@(led.HasValidSig ? "signatureValid" : "signatureInvalid")">
+                                            @led.SignatureMainLine
+                                            @led.SignatureCommentLine
+                                        </div>
+                                    </div>
+                                }
+                                <div cclass="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
+                                <div class="wsprel">@led.CustPropertyDisplay</div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @foreach (LogbookPrintedPageSubtotalsCollection stc in lpp.Subtotals)
+                {
+                    foreach (LogbookEntryDisplay led in stc.Subtotals)
+                    {
+                        <tr class="subtotal">
+                            <td class="rowHeight1 altColumns">@led.Nighttime.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1 altColumns">@led.IMC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1 altColumns">@led.SimulatedIFR.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1 altColumns">@led.GroundSim.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                            {
+                                OptionalColumn oc = pl.Options.OptionalColumns[i];
+                                if (!oc.IsCatClass)
+                                {
+                                    <td class="rowHeight1 altColumns">@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                                }
+                            }
+                            <td class="rowHeight1 altColumns">@led.CrossCountry.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            @if (pl.CurrentUser.IsInstructor)
+                            {
+                                <td class="rowHeight1 altColumns">@led.CFI.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            }
+                            <td class="rowHeight1 altColumns">@led.Dual.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            @if (pl.CurrentUser.TracksSecondInCommandTime)
+                            {
+                                <td class="rowHeight1 altColumns">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            }
+                            <td class="rowHeight1 altColumns">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            <td class="rowHeight1"></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

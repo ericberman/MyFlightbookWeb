@@ -6,8 +6,6 @@ using MyFlightbook.Geography;
 using MyFlightbook.Geography.SolarTools;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using NodaTime;
-using NodaTime.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -805,31 +803,6 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        /// <summary>
-        /// Form https://tkit.dev/2018/04/05/converting-to-and-from-local-time-in-c-net-with-noda-time/
-        /// Converts a local-time DateTime to UTC DateTime based on the specified
-        /// timezone. The returned object will be of UTC DateTimeKind. To be used
-        /// when we want to know what's the UTC representation of the time somewhere
-        /// in the world.
-        /// </summary>
-        /// <param name="dateTime">Local DateTime as UTC or Unspecified DateTimeKind.</param>
-        /// <param name="timezone">Timezone name (in TZDB format).</param>
-        /// <returns>UTC DateTime as UTC DateTimeKind.</returns>
-        private static DateTime UtcFromZone(DateTime dateTime, string timezone)
-        {
-            if (dateTime.Kind == DateTimeKind.Local)
-                throw new ArgumentException("Expected non-local kind of DateTime");
-
-            var zone = DateTimeZoneProviders.Tzdb[timezone];
-            LocalDateTime asLocal = dateTime.ToLocalDateTime();
-            ZonedDateTime asZoned = asLocal.InZoneLeniently(zone);
-            Instant instant = asZoned.ToInstant();
-            ZonedDateTime asZonedInUtc = instant.InUtc();
-            DateTime utc = asZonedInUtc.ToDateTimeUtc();
-
-            return utc;
-        }
-
         private string GenerateSyntheticPath(LogbookEntry le, AutoFillOptions opt)
         {
             string result = string.Empty;
@@ -870,8 +843,16 @@ namespace MyFlightbook.Telemetry
 
                                 // Update engine start/end regardless since we're going to recompute those.
                                 // Even if we started from block, we'll leave block unchanged.
-                                le.EngineStart = dtStart = UtcFromZone(dtStartLocal, szIANATimeZone1.Result);
-                                le.EngineEnd = dtEnd = UtcFromZone(dtEndLocal, szIANATimeZone2.Result);
+                                le.EngineStart = dtStart = AutoFillOptions.UtcFromZone(dtStartLocal, szIANATimeZone1.Result);
+                                le.EngineEnd = dtEnd = AutoFillOptions.UtcFromZone(dtEndLocal, szIANATimeZone2.Result);
+
+                                // fix up block out/in dates as well
+                                CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
+                                CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+                                if (blockOut != null)
+                                    blockOut.DateValue = AutoFillOptions.UtcFromZone(DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Unspecified), szIANATimeZone1.Result);
+                                if (blockIn != null)
+                                    blockIn.DateValue = AutoFillOptions.UtcFromZone(DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Unspecified), szIANATimeZone2.Result);
                             }
                             catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
                         } else if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
@@ -886,6 +867,14 @@ namespace MyFlightbook.Telemetry
                             // Even if we started from block, we'll leave block unchanged.
                             le.EngineStart = dtStart = DateTime.SpecifyKind(dtStartLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
                             le.EngineEnd = dtEnd = DateTime.SpecifyKind(dtEndLocal, DateTimeKind.Local).ConvertFromTimezone(opt.PreferredTimeZone);
+
+                            // fix up block out/in dates as well
+                            CustomFlightProperty blockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
+                            CustomFlightProperty blockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+                            if (blockOut != null)
+                                blockOut.DateValue = DateTime.SpecifyKind(blockOut.DateValue, DateTimeKind.Unspecified).ConvertFromTimezone(opt.PreferredTimeZone);
+                            if (blockIn != null)
+                                blockIn.DateValue = DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Unspecified).ConvertFromTimezone(opt.PreferredTimeZone);
                         }
 
                         le.FixAmbiguousTimes(); // ensure that ambiguous times are fixed.

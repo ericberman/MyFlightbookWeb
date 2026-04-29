@@ -15,7 +15,6 @@ using static MyFlightbook.AircraftInstance;
  *
 *******************************************************/
 
-
 namespace MyFlightbook.Admin
 {
     public static class AdminAircraft
@@ -139,39 +138,64 @@ OR (aircraft.tailnormal IN ('{5}'))";
         {
             List<Aircraft> lst = new List<Aircraft>();
 
-            DBHelper dbh = new DBHelper(@"SELECT
+            DBHelper dbh = new DBHelper(@"WITH Dupes AS (
+    -- Same tailnormal AND same version
+    SELECT tailnormal
+    FROM aircraft
+    GROUP BY tailnormal, version
+    HAVING COUNT(idAircraft) > 1
+
+    UNION
+
+    -- Same tailnormal AND same idModel but different versions
+    SELECT tailnormal
+    FROM aircraft
+    GROUP BY tailnormal, idModel
+    HAVING COUNT(DISTINCT version) > 1
+),
+DupeAircraft AS (
+    SELECT ac.idaircraft
+    FROM aircraft ac
+    INNER JOIN Dupes ON ac.tailnormal = Dupes.tailnormal
+),
+FlightCounts AS (
+    SELECT f.idaircraft, COUNT(DISTINCT f.idflight) AS numFlights
+    FROM flights f
+    INNER JOIN DupeAircraft da ON f.idaircraft = da.idaircraft
+    GROUP BY f.idaircraft
+),
+UserCounts AS (
+    SELECT ua.idaircraft, COUNT(DISTINCT ua.username) AS numUsers
+    FROM useraircraft ua
+    INNER JOIN DupeAircraft da ON ua.idaircraft = da.idaircraft
+    GROUP BY ua.idaircraft
+)
+SELECT
     ac.*,
     models.*,
-	IF (ac.Tailnumber LIKE '#%', CONCAT('#', models.model), ac.TailNormal) AS sortKey,
-    IF (ac.InstanceType = 1, '', Concat(' (', aircraftinstancetypes.Description, ')')) as 'InstanceTypeDesc',
-    TRIM(CONCAT(manufacturers.manufacturer, ' ', CONCAT(COALESCE(models.typename, ''), ' '), models.modelname)) AS 'ModelCommonName',
+    IF(ac.Tailnumber LIKE '#%', CONCAT('#', models.model), ac.TailNormal) AS sortKey,
+    IF(ac.InstanceType = 1, '', CONCAT(' (', aircraftinstancetypes.Description, ')')) AS InstanceTypeDesc,
+    TRIM(CONCAT(manufacturers.manufacturer, ' ', COALESCE(models.typename, ''), ' ', models.modelname)) AS ModelCommonName,
     0 AS Flags,
     '' AS DefaultImage,
     '' AS UserNotes,
     '' AS TemplateIDs,
-    COUNT(DISTINCT f.idflight) AS numFlights,
-    COUNT(DISTINCT ua.username) AS numUsers,
+    COALESCE(fc.numFlights, 0) AS numFlights,
+    COALESCE(uc.numUsers, 0) AS numUsers,
     0 AS flightsForUser,
     '' AS userNames,
     NULL AS EarliestDate,
     NULL AS LatestDate,
     0 AS hours
 FROM Aircraft ac
-    INNER JOIN models ON ac.idmodel=models.idmodel
-    INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer
-    INNER JOIN aircraftinstancetypes ON ac.InstanceType=aircraftinstancetypes.ID
-    LEFT JOIN flights f on f.idaircraft = ac.idaircraft
-    LEFT JOIN useraircraft ua ON ua.idaircraft=ac.idaircraft
-WHERE ac.tailnormal IN
-    (SELECT NormalizedTail FROM
-        (SELECT ac.tailnormal AS NormalizedTail,
-             CONCAT(ac.tailnormal, ',', Version) AS TailMatch,
-             COUNT(idAircraft) AS cAircraft
-         FROM Aircraft ac
-         GROUP BY TailMatch
-         HAVING cAircraft > 1) AS Dupes)
+    INNER JOIN Dupes ON ac.tailnormal = Dupes.tailnormal
+    INNER JOIN models ON ac.idmodel = models.idmodel
+    INNER JOIN manufacturers ON manufacturers.idManufacturer = models.idmanufacturer
+    INNER JOIN aircraftinstancetypes ON ac.InstanceType = aircraftinstancetypes.ID
+    LEFT JOIN FlightCounts fc ON fc.idaircraft = ac.idaircraft
+    LEFT JOIN UserCounts uc ON uc.idaircraft = ac.idaircraft
 GROUP BY ac.idaircraft
-ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC");
+ORDER BY ac.tailnormal ASC, ac.version, numUsers DESC, ac.idaircraft ASC;");
 
             dbh.ReadRows((comm) => { },
                 (dr) => { lst.Add(new Aircraft(dr) { Stats = new AircraftStats(dr) }); });
