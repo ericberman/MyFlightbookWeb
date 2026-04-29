@@ -1540,12 +1540,16 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(lstUsersToMigrate));
 
             if (idModelTarget == MakeModel.UnknownModel)
-                throw new MyFlightbookException("Can't clone to empty model");
+                throw new InvalidOperationException("Can't clone to empty model");
 
             Aircraft acOriginal = new Aircraft(this.AircraftID);
 
             if (idModelTarget == acOriginal.ModelID)
-                throw new MyFlightbookException("Can't clone to same model");
+                throw new InvalidOperationException("Can't clone to same model");
+
+            // Diagnostic for issue #1518 - somehow we are getting duplicate anonymous aircraft!
+            if (IsAnonymous)
+                throw new InvalidOperationException("Can't clone an anonymous aircraft - how did we get here?  (Check call stack!)");
 
             MakeModel mmOriginal = MakeModel.GetModel(acOriginal.ModelID);
             MakeModel mmNew = MakeModel.GetModel(idModelTarget);
