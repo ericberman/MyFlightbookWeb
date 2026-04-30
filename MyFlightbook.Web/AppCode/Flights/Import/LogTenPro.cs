@@ -911,38 +911,6 @@ namespace MyFlightbook.ImportFlights
             return sz.StartsWith("{") && sz.Contains("flight_flightDate") && (sz.Contains("aircraft_aircraftID") || sz.Contains("flight_selectedAircraftID"));
         }
 
-        private static DataTable ToIntermediateTable(IEnumerable<LogTenPro> flights)
-        {
-            var table = new DataTable("LogTenProIntermediate");
-
-            // 1. Get all public instance properties
-            var props = typeof(LogTenPro)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-                .ToList();
-
-            // 2. Create a column for each property
-            foreach (var prop in props)
-            {
-                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                table.Columns.Add(prop.Name, type);
-            }
-
-            // 3. Populate rows
-            foreach (var flight in flights)
-            {
-                var row = table.NewRow();
-                foreach (var prop in props)
-                {
-                    var value = prop.GetValue(flight);
-                    row[prop.Name] = value ?? DBNull.Value;
-                }
-                table.Rows.Add(row);
-            }
-
-            return table;
-        }
-
         public override bool CanParse(byte[] rgb)
         {
             // Check for JSON
