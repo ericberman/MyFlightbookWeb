@@ -3,11 +3,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2025 MyFlightbook LLC
+ * Copyright (c) 2017-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -179,6 +182,7 @@ namespace MyFlightbook.ImportFlights
         public DateTime flight_actualDepartureTime { get; set; }
 
         [JsonProperty("flight_actualInstrument")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_actualInstrument { get; set; }
 
         [JsonProperty("flight_aeroTows")]
@@ -206,6 +210,7 @@ namespace MyFlightbook.ImportFlights
         public int flight_commandPractice { get; set; }
 
         [JsonProperty("flight_crossCountry")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_crossCountry { get; set; }
 
         [JsonProperty("flight_customLanding1")]
@@ -254,33 +259,43 @@ namespace MyFlightbook.ImportFlights
         public string flight_customNote5 { get; set; }
 
         [JsonProperty("flight_customOp1")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp1 { get; set; }
 
         [JsonProperty("flight_customOp10")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp10 { get; set; }
 
         [JsonProperty("flight_customOp2")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp2 { get; set; }
 
         [JsonProperty("flight_customOp3")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp3 { get; set; }
 
         [JsonProperty("flight_customOp4")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp4 { get; set; }
 
         [JsonProperty("flight_customOp5")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp5 { get; set; }
 
         [JsonProperty("flight_customOp6")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp6 { get; set; }
 
         [JsonProperty("flight_customOp7")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp7 { get; set; }
 
         [JsonProperty("flight_customOp8")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp8 { get; set; }
 
         [JsonProperty("flight_customOp9")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customOp9 { get; set; }
 
         [JsonProperty("flight_customTakeoff1")]
@@ -314,33 +329,43 @@ namespace MyFlightbook.ImportFlights
         public int flight_customTakeoff9 { get; set; }
 
         [JsonProperty("flight_customTime1")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime1 { get; set; }
 
         [JsonProperty("flight_customTime10")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime10 { get; set; }
 
         [JsonProperty("flight_customTime2")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime2 { get; set; }
 
         [JsonProperty("flight_customTime3")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime3 { get; set; }
 
         [JsonProperty("flight_customTime4")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime4 { get; set; }
 
         [JsonProperty("flight_customTime5")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime5 { get; set; }
 
         [JsonProperty("flight_customTime6")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime6 { get; set; }
 
         [JsonProperty("flight_customTime7")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime7 { get; set; }
 
         [JsonProperty("flight_customTime8")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime8 { get; set; }
 
         [JsonProperty("flight_customTime9")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_customTime9 { get; set; }
 
         [JsonProperty("flight_dayLandings")]
@@ -353,18 +378,23 @@ namespace MyFlightbook.ImportFlights
         public int flight_dayTakeoffs { get; set; }
 
         [JsonProperty("flight_dualGiven")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_dualGiven { get; set; }
 
         [JsonProperty("flight_dualReceived")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_dualReceived { get; set; }
 
         [JsonProperty("flight_dualReceivedNight")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_dualReceivedNight { get; set; }
 
         [JsonProperty("flight_duration")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_duration { get; set; }
 
         [JsonProperty("flight_faaPart121")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_faaPart121 { get; set; }
 
         [JsonProperty("flight_faaPart135")]
@@ -380,6 +410,7 @@ namespace MyFlightbook.ImportFlights
         public bool flight_far1 { get; set; }
 
         [JsonProperty("flight_flightEngineer")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_flightEngineer { get; set; }
 
         [JsonProperty("flight_flightEngineerCapacity")]
@@ -416,6 +447,7 @@ namespace MyFlightbook.ImportFlights
         public int flight_goArounds { get; set; }
 
         [JsonProperty("flight_ground")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_ground { get; set; }
 
         [JsonProperty("flight_groundLaunches")]
@@ -438,9 +470,11 @@ namespace MyFlightbook.ImportFlights
         public DateTime flight_landingTime { get; set; }
 
         [JsonProperty("flight_multiPilot")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_multiPilot { get; set; }
 
         [JsonProperty("flight_night")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_night { get; set; }
 
         [JsonProperty("flight_nightLandings")]
@@ -450,6 +484,7 @@ namespace MyFlightbook.ImportFlights
         public int flight_nightTakeoffs { get; set; }
 
         [JsonProperty("flight_nightVisionGoggle")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_nightVisionGoggle { get; set; }
 
         [JsonProperty("flight_nightVisionGoggleLandings")]
@@ -467,18 +502,22 @@ namespace MyFlightbook.ImportFlights
         public DateTime flight_onDutyTime { get; set; }
 
         [JsonProperty("flight_p1us")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_p1us { get; set; }
 
         [JsonProperty("flight_p1usNight")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_p1usNight { get; set; }
 
         [JsonProperty("flight_pic")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_pic { get; set; }
 
         [JsonProperty("flight_picCapacity")]
         public bool flight_picCapacity { get; set; }
 
         [JsonProperty("flight_picNight")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_picNight { get; set; }
 
         [JsonProperty("flight_pilotFlyingCapacity")]
@@ -488,6 +527,7 @@ namespace MyFlightbook.ImportFlights
         public int flight_poweredLaunches { get; set; }
 
         [JsonProperty("flight_relief")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_relief { get; set; }
 
         [JsonProperty("flight_reliefCrewCapacity")]
@@ -511,6 +551,7 @@ namespace MyFlightbook.ImportFlights
         public DateTime flight_scheduledDepartureTime { get; set; }
 
         [JsonProperty("flight_scheduledTotalTime")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_scheduledTotalTime { get; set; }
 
         [JsonProperty("flight_selectedApproach1")]
@@ -583,6 +624,7 @@ namespace MyFlightbook.ImportFlights
         public string flight_selectedCrewStudent { get; set; }
 
         [JsonProperty("flight_sfi")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_sfi { get; set; }
 
         [JsonProperty("flight_shipboardLandings")]
@@ -592,24 +634,29 @@ namespace MyFlightbook.ImportFlights
         public int flight_shipboardTakeoffs { get; set; }
 
         [JsonProperty("flight_sic")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_sic { get; set; }
 
         [JsonProperty("flight_sicCapacity")]
         public bool flight_sicCapacity { get; set; }
 
         [JsonProperty("flight_sicNight")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_sicNight { get; set; }
 
         [JsonProperty("flight_simulatedInstrument")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_simulatedInstrument { get; set; }
 
         [JsonProperty("flight_simulator")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_simulator { get; set; }
 
         [JsonProperty("flight_sky")]
         public string flight_sky { get; set; }
 
         [JsonProperty("flight_solo")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_solo { get; set; }
 
         [JsonConverter(typeof(MFBDateTimeConverter))]
@@ -620,9 +667,11 @@ namespace MyFlightbook.ImportFlights
         public string flight_to { get; set; }
 
         [JsonProperty("flight_totalDutyTime")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_totalDutyTime { get; set; }
 
         [JsonProperty("flight_totalTime")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_totalTime { get; set; }
 
         [JsonProperty("flight_touchAndGoes")]
@@ -632,6 +681,7 @@ namespace MyFlightbook.ImportFlights
         public bool flight_underSupervisionCapacity { get; set; }
 
         [JsonProperty("flight_visibility")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal flight_visibility { get; set; }
 
         [JsonProperty("flight_waterLandings")]
@@ -845,12 +895,67 @@ namespace MyFlightbook.ImportFlights
         }
     }
 
+    [Serializable]
+    public class LogTenProJSON
+    {
+        public dynamic metadata { get; set; }
+        public IEnumerable<LogTenPro> entities { get; set; }
+    }
+
     public class LogTenProImporter : ExternalFormatImporter
     {
         public override string Name { get { return "LogTen Pro"; } }
 
+        private static bool IsJSONLTP(string sz)
+        {
+            return sz.StartsWith("{") && sz.Contains("flight_flightDate") && (sz.Contains("aircraft_aircraftID") || sz.Contains("flight_selectedAircraftID"));
+        }
+
+        private static DataTable ToIntermediateTable(IEnumerable<LogTenPro> flights)
+        {
+            var table = new DataTable("LogTenProIntermediate");
+
+            // 1. Get all public instance properties
+            var props = typeof(LogTenPro)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+                .ToList();
+
+            // 2. Create a column for each property
+            foreach (var prop in props)
+            {
+                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                table.Columns.Add(prop.Name, type);
+            }
+
+            // 3. Populate rows
+            foreach (var flight in flights)
+            {
+                var row = table.NewRow();
+                foreach (var prop in props)
+                {
+                    var value = prop.GetValue(flight);
+                    row[prop.Name] = value ?? DBNull.Value;
+                }
+                table.Rows.Add(row);
+            }
+
+            return table;
+        }
+
         public override bool CanParse(byte[] rgb)
         {
+            // Check for JSON
+            // Read the first non-empty row and see if it has LogTenPro headers
+            using (MemoryStream ms = new MemoryStream(rgb))
+            {
+                using (StreamReader sr = new StreamReader(ms))
+                {
+                    string szJSON = sr.ReadToEnd();
+                    if (IsJSONLTP(szJSON))
+                        return true;
+                }
+            }
             using (MemoryStream ms = new MemoryStream(rgb))
             {
                 // Read the first non-empty row and see if it has LogTenPro headers
@@ -872,6 +977,56 @@ namespace MyFlightbook.ImportFlights
                 }
             }
             return false;
+        }
+
+        public override byte[] PreProcess(byte[] rgb)
+        {
+            using (MemoryStream ms = new MemoryStream(rgb))
+            {
+                using (StreamReader sr = new StreamReader(ms))
+                {
+                    string szJSON = sr.ReadToEnd();
+                    if (IsJSONLTP(szJSON))
+                    {
+                        // Try to parse this as JSON and convert to CSV
+                        LogTenProJSON ltpj = JsonConvert.DeserializeObject<LogTenProJSON>(szJSON);
+                        if (ltpj?.entities != null)
+                        {
+                            using (DataTable dt = new DataTable())
+                            {
+                                dt.Locale = CultureInfo.InvariantCulture;
+
+                                // 1. Get all public instance properties
+                                var props = typeof(LogTenPro)
+                                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                    .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
+                                    .ToList();
+
+                                // 2. Create a column for each property
+                                foreach (var prop in props)
+                                {
+                                    var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                                    dt.Columns.Add(new DataColumn(prop.Name, type));
+                                }
+
+                                // 3. Populate rows
+                                foreach (var flight in ltpj.entities)
+                                {
+                                    var row = dt.NewRow();
+                                    foreach (var prop in props)
+                                    {
+                                        var value = prop.GetValue(flight);
+                                        row[prop.Name] = value ?? DBNull.Value;
+                                    }
+                                    dt.Rows.Add(row);
+                                }
+                                return System.Text.Encoding.UTF8.GetBytes(CsvWriter.WriteToString(dt, true, true));
+                            }
+                        }
+                    }
+                }
+            }
+            return base.PreProcess(rgb);
         }
 
         public override string CSVFromDataTable(DataTable dt)
