@@ -1194,4 +1194,26 @@ namespace MyFlightbook
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Enable decimals to be set via either decimal or hh:mm format (e.g., "1:30" => 1.5).  This is useful for user input where you want to allow either format.
+    /// </summary>
+    public class FlexibleDecimalConverter : JsonConverter<decimal>
+    {
+        public override decimal ReadJson(JsonReader reader, Type objectType, decimal existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Float || reader.TokenType == JsonToken.Integer)
+                return Convert.ToDecimal(reader.Value);
+            else if (reader.TokenType == JsonToken.String)
+                return ((string)reader.Value).SafeParseDecimal();
+
+            return 0m; // or throw
+        }
+
+        public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value);
+        }
+    }
+
 }
