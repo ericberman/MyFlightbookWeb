@@ -2144,23 +2144,38 @@ HAVING numaccounts > 1");
                     continue;
                 if (sb.Length > 0)
                     sb.Append(" AND ");
-                sb.AppendFormat(CultureInfo.InvariantCulture, " SearchString LIKE ?param{0} ", i);
+                sb.Append($"(u.username LIKE ?param{i} OR u.firstName LIKE ?param{i} OR u.lastName LIKE ?param{i} OR u.email LIKE ?param{i}) "); 
                 args.AddWithValue(String.Format(CultureInfo.InvariantCulture, "param{0}", i), String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
                 i++;
             }
 
             // bias mostly to a perfect match, then bias towards something that has the name as specified (in order), then bias towards anything else containing the words
-            const string szQ = @"SELECT NULL AS Role, Users.*, IF(username = ?uname, 2, (IF(username like ?fullName, 1, 0))) AS Bias, CONCAT_WS(' ', email, username, firstname, lastname) AS SearchString 
-                            FROM Users 
-                            HAVING {0}
-                            ORDER BY bias DESC, length(Username) ASC 
-                            LIMIT 200";
+            const string szQ = @"SELECT NULL as Role, u.*,
+    (
+        CASE
+            WHEN u.username = ?search THEN 200
+            WHEN u.username LIKE ?searchPrefix THEN 150
+            WHEN u.email = ?search THEN 120
+            WHEN u.email LIKE ?searchPrefix THEN 100
+            WHEN u.firstName LIKE ?searchPrefix OR u.lastName LIKE ?searchPrefix THEN 80
+            WHEN u.username LIKE ?searchAnywhere THEN 60
+            WHEN u.email LIKE ?searchAnywhere THEN 50
+            ELSE 10
+        END
+        +
+        (100 - LENGTH(u.username))   -- shorter usernames rank higher
+    ) AS MatchScore
+FROM Users u
+WHERE ({0})
+ORDER BY MatchScore DESC
+LIMIT 200;";
 
             DBHelper dbh = new DBHelper(args) { CommandText = String.Format(CultureInfo.InvariantCulture, szQ, sb.ToString()) };
 
             dbh.ReadRows((comm) => { 
-                comm.Parameters.AddWithValue("fullName", String.Format(CultureInfo.InvariantCulture, "%{0}%", szSearch));
-                comm.Parameters.AddWithValue("uname", szSearch);    // no wildcarding - must match exactly
+                comm.Parameters.AddWithValue("search", szSearch);
+                comm.Parameters.AddWithValue("searchPrefix", String.Format(CultureInfo.InvariantCulture, "{0}%", szSearch));
+                comm.Parameters.AddWithValue("searchAnywhere", String.Format(CultureInfo.InvariantCulture, "%{0}%", szSearch));
                 },
                 (dr) => { lst.Add(new Profile(dr)); });
 
