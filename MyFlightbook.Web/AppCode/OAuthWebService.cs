@@ -20,7 +20,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2025 MyFlightbook LLC
+ * Copyright (c) 2018-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -149,7 +149,7 @@ namespace OAuthAuthorizationServer.Services
             /* 0 = invalid */
             none,
             /* Aircraft Services */
-            AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser,
+            AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser, AircraftMatchingPrefix,
             /* Flight Services */
             CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight, CheckFlight, AutofillFlight,
             /* Flight Services (Pending) */
@@ -199,6 +199,7 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.AddAircraftForUser:
                 case OAuthServiceID.DeleteAircraftForUser:
                 case OAuthServiceID.UpdateMaintenanceForAircraftWithFlagsAndNotes:
+                case OAuthServiceID.AircraftMatchingPrefix:
                     return MFBOAuthScope.addaircraft;
                 case OAuthServiceID.addFlight:
                 case OAuthServiceID.CommitFlightWithOptions:
@@ -441,6 +442,9 @@ namespace OAuthAuthorizationServer.Services
                     case OAuthServiceID.currency:
                     case OAuthServiceID.GetCurrencyForUser:
                         WriteObject(s, mfbSvc.GetCurrencyForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.AircraftMatchingPrefix:
+                        WriteObject(s, mfbSvc.AircraftMatchingPrefix(GeneratedAuthToken, GetRequiredParam("szPrefix")));
                         break;
                     case OAuthServiceID.DeleteAircraftForUser:
                         WriteObject(s, mfbSvc.DeleteAircraftForUser(GeneratedAuthToken, GetRequiredParam<int>("idAircraft")));

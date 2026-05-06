@@ -87,6 +87,9 @@
             case "MakesAndModels":
             case "PendingFlightsForUser":
                 break;
+            case "AircraftMatchingPrefix":
+                $("#divAcPrefix").show();
+                break;
             case "FlightPathForFlight":
             case "FlightPathForFlightGPX":
             case "DeleteLogbookEntry":
@@ -208,6 +211,7 @@
                     <option value="totals">Totals</option>
                     <option value="VisitedAirports">Visited Airports</option>
                     <option value="AddAircraftForUser">Add Aircraft</option>
+                    <option value="AircraftMatchingPrefix">Aircraft Matching Prefix</option>
                     <option value="AircraftForUser">Aircraft for user</option>
                     <option value="MakesAndModels">Makes / Models</option>
                     <option value="CommitFlightWithOptions">Add flight (POST only)</option>
@@ -273,6 +277,9 @@
                                 <td><input id="txtInstanceType" name="idInstanceType" /></td>
                             </tr>
                         </table>
+                    </div>
+                    <div class="detailsSection dn" name="aircraftPrefix" id="divAcPrefix">
+                        Prefix: <input type="text" name="szPrefix" />
                     </div>
                     <div class="detailsSection dn" name="noParam">
                     </div>
