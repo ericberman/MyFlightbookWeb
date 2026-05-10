@@ -2,8 +2,8 @@
   <Import Project="..\packages\Microsoft.CodeAnalysis.CSharp.CodeStyle.4.14.0\build\Microsoft.CodeAnalysis.CSharp.CodeStyle.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.CSharp.CodeStyle.4.14.0\build\Microsoft.CodeAnalysis.CSharp.CodeStyle.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MvcBuildViews>true</MvcBuildViews>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <MvcBuildViews Condition="'$(Configuration)' == 'Release'">true</MvcBuildViews>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>
     </ProductVersion>
