@@ -85,7 +85,7 @@
         @if (signinStep == 0)
         {
             <div class="l" style="margin-top: 18pt;">
-                @Resources.Profile.SignInNewUserPrompt <a class="b" href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.LocalizedText.SignInCreateAccountLink</a> @Html.Raw(Resources.LocalizedText.SignInCreateAccountFree)
+                @Resources.Profile.SignInNewUserPrompt <a class="b" href="@($"~/mvc/auth/newuser{Request.Url.Query}".ToAbsolute())">@Resources.LocalizedText.SignInCreateAccountLink</a> @Html.Raw(Resources.LocalizedText.SignInCreateAccountFree)
             </div>
         }
     </div>
