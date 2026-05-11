@@ -124,7 +124,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add an alternate email.
+        ///   Looks up a localized string similar to Add an alternate e-mail.
         /// </summary>
         internal static string accountEmailAddAlias {
             get {
@@ -133,7 +133,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete this alternative email (alias).
+        ///   Looks up a localized string similar to Delete this alternative e-mail (alias).
         /// </summary>
         internal static string accountEmailAliasDelete {
             get {
@@ -151,7 +151,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alternate emails.
+        ///   Looks up a localized string similar to Alternate e-mails.
         /// </summary>
         internal static string accountEmailAliasesHeader {
             get {
@@ -169,7 +169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to E-mail.
         /// </summary>
         internal static string accountEmailPrompt {
             get {
@@ -286,7 +286,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retype Email.
+        ///   Looks up a localized string similar to Retype E-mail.
         /// </summary>
         internal static string accountRetypeEmailPrompt {
             get {
@@ -313,7 +313,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verify email address.
+        ///   Looks up a localized string similar to Verify e-mail address.
         /// </summary>
         internal static string accountVerifyEmailPrompt {
             get {
@@ -331,7 +331,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This email has been verified.
+        ///   Looks up a localized string similar to This e-mail has been verified.
         /// </summary>
         internal static string accountVerifyEmailValid {
             get {
@@ -349,7 +349,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please verify your email on %APP_NAME%.
+        ///   Looks up a localized string similar to Please verify your e-mail on %APP_NAME%.
         /// </summary>
         internal static string accountVerifySubject {
             get {
@@ -358,7 +358,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email {0} has been validated.  Thank-you..
+        ///   Looks up a localized string similar to E-mail {0} has been validated.  Thank-you..
         /// </summary>
         internal static string accountVerifyValidated {
             get {
@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To verify your address, an email with a unique link will be sent to you.  By clicking on the link, you demonstrate your ability to receive messages at that address.  Verification is optional, but can help ensure that you can do things like password resets.
+        ///   Looks up a localized string similar to To verify your address, an e-mail with a unique link will be sent to you.  By clicking on the link, you demonstrate your ability to receive messages at that address.  Verification is optional, but can help ensure that you can do things like password resets.
         /// </summary>
         internal static string accountVerifyWhy {
             get {
@@ -1987,7 +1987,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ditch the paper without losing your history. MyFlightbook makes the switch easy and stress free. Whether you are moving from a handwritten logbook or another digital system, the transition is designed to be smooth and low pressure. Simply enter your starting totals and begin logging new flights electronically—no scanning needed. .
+        ///   Looks up a localized string similar to Ditch the paper without losing your history. %APP_NAME% makes the switch easy and stress free. Whether you are moving from a handwritten logbook or another digital system, the transition is designed to be smooth and low pressure. Simply enter your starting totals and begin logging new flights electronically—no scanning needed. .
         /// </summary>
         internal static string newHomePromoSect8a {
             get {
@@ -1996,7 +1996,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Want to add those old pen and ink entries later? Go for it! MyFlightbook gives you full flexibility, whether you want a complete digital archive or just want to preserve your early flying days. Need instructor signatures? You can send a batch request and have them signed digitally with just a few clicks. The result is a clean, professional logbook that is secure, compliant, and always ready for your next adventure..
+        ///   Looks up a localized string similar to Want to add those old pen and ink entries later? Go for it! %APP_NAME% gives you full flexibility, whether you want a complete digital archive or just want to preserve your early flying days. Need instructor signatures? You can send a batch request and have them signed digitally with just a few clicks. The result is a clean, professional logbook that is secure, compliant, and always ready for your next adventure..
         /// </summary>
         internal static string newHomePromoSect8b {
             get {
