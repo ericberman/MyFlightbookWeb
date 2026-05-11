@@ -57,7 +57,7 @@
                 {
                     <p class="b">@ViewBag.email</p>
                 }
-                <div><input type="@(signinStep == 0 ? "email" : "hidden")" name="userEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtEmail" style="width: 20em;" value="@(ViewBag.email ?? string.Empty)" /></div>
+                <div><input type="@(signinStep == 0 ? "email" : "hidden")" name="userEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtEmail" style="width: 20em;" value="@(ViewBag.email ?? Request["login_hint"] ?? string.Empty)" /></div>
                 @if (signinStep == 0)
                 {
                     <input type="hidden" name="userPW" />
