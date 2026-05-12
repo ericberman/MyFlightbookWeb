@@ -846,7 +846,7 @@ namespace MyFlightbook.Currency
                         CustomPropertyType cpt = new CustomPropertyType(dr);
 
                         // don't include blocklisted properties in totals.
-                        if (pf.BlocklistedProperties.Exists(i => i == cpt.PropTypeID))
+                        if (pf.BlocklistedProperties.Contains(cpt.PropTypeID))
                             continue;
 
                         bool fPropIsInQuery = Restriction.PropertyTypes.Contains(cpt);

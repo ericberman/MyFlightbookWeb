@@ -241,7 +241,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     if (pf.BlocklistedProperties.Contains(id))
                     {
-                        pf.BlocklistedProperties.RemoveAll(idPropType => id == idPropType);
+                        pf.BlocklistedProperties.Remove(id);
                         pf.FCommit();
                         // refresh the cache
                         CustomPropertyType.GetCustomPropertyTypes(User.Identity.Name, true);

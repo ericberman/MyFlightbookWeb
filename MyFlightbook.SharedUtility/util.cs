@@ -59,6 +59,8 @@ namespace MyFlightbook
         string RelativeToAbsolute(string relativePath);
 
         string RelativeToAbsoluteFilePath(string relativePath);
+
+        IUserProfile GetUser(string szUser);
     }
 
     /// <summary>
@@ -93,6 +95,48 @@ namespace MyFlightbook
         int FlushCache();
 
         IEnumerator GetEnumerator();
+    }
+
+    /// <summary>
+    /// Defines a basic user profile with common attributes and functionality - mostly name, username, email, and caching
+    /// </summary>
+    public interface IUserProfile
+    {
+        /// <summary>
+        /// The internal invariant username for the user
+        /// </summary>
+        string UserName { get; }
+        /// <summary>
+        /// Given name to use for this user
+        /// </summary>
+        string UserFirstName { get; }
+        /// <summary>
+        /// Surname to use for this user
+        /// </summary>
+        string UserLastName { get; }
+        /// <summary>
+        /// Full name to use for this user
+        /// </summary>
+        string UserFullName { get; }
+        /// <summary>
+        /// User's email address
+        /// </summary>
+        string Email { get; }
+        /// <summary>
+        /// Convenience dictionary of cached data associated with the user
+        /// TREAT THIS AS A PER-USER CACHE - it can be flushed
+        /// </summary>
+        IDictionary<string, object> AssociatedData { get; }
+        /// <summary>
+        /// Safe way to get a cached object from AssociatedData (i.e., can return null)
+        /// </summary>
+        /// <param name="szKey">Key for the object</param>
+        /// <returns></returns>
+        object CachedObject(string szKey);
+        /// <summary>
+        /// Set of property IDs that the user has blocked.
+        /// </summary>
+        HashSet<int> BlocklistedProperties { get; }
     }
 
     /// <summary>
