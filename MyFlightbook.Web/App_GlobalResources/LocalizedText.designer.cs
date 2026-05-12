@@ -5425,7 +5425,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E-mail address:.
+        ///   Looks up a localized string similar to Already have an account?  Please sign in with your e-mail address.
         /// </summary>
         internal static string SignInEmailPrompt {
             get {

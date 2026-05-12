@@ -44,21 +44,20 @@
         });
     });
 </script>
-<div style="padding: 10px; margin-left:auto; max-width: 700px; margin-right: auto;" id="divSignIn">
-    <div style="display:inline-block; margin:5px; vertical-align:top">
-        <h2></h2>
+<div class="hc" id="divSignIn" style="max-width: 700px;">
+    <div class="dib topAlign">
         @using (Html.BeginForm("", "Auth", String.IsNullOrEmpty(Request["ReturnUrl"]) ? new { } : new { ReturnUrl = Request["ReturnUrl"] }, FormMethod.Post, new { id = "frmSignIn", name = "frmSignIn" }))
         {
             <div id="vwSignIn">
                 @if (String.IsNullOrEmpty(ViewBag.email))
                 {
-                    <div>@Resources.LocalizedText.SignInEmailPrompt</div>
+                    <p>@Resources.LocalizedText.SignInEmailPrompt</p>
                 }
                 else
                 {
                     <p class="b">@ViewBag.email</p>
                 }
-                <div><input type="@(signinStep == 0 ? "email" : "hidden")" name="userEmail" id="txtEmail" style="width: 20em;" value="@(ViewBag.email ?? string.Empty)" /></div>
+                <div><input type="@(signinStep == 0 ? "email" : "hidden")" name="userEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtEmail" style="width: 20em;" value="@(ViewBag.email ?? Request["login_hint"] ?? string.Empty)" /></div>
                 @if (signinStep == 0)
                 {
                     <input type="hidden" name="userPW" />
@@ -68,7 +67,7 @@
                 {
                     <div>
                         <div>@Resources.LocalizedText.SignInPasswordPrompt</div>
-                        <div><input type="password" name="userPW" id="txtPW" style="width:20em;" /></div>
+                        <div><input type="password" name="userPW" id="txtPW" style="width:20em;" />  <a href="@("~/mvc/auth/resetpass".ToAbsolute())">@Resources.LocalizedText.SignInForgotPasswordLink</a></div>
                     </div>
                     <div class="@(fCollectTFA ? string.Empty : "dn")">
                         <div>
@@ -83,11 +82,10 @@
                 <div class="error">@(ViewBag.error ?? string.Empty)</div>
             </div>
         }
-        <div style="margin-top: 18pt;"><a href="@("~/mvc/auth/resetpass".ToAbsolute())">@Resources.LocalizedText.SignInForgotPasswordLink</a></div>
         @if (signinStep == 0)
         {
-            <div style="margin-top: 18pt;">
-                @Resources.Profile.SignInNewUserPrompt <a href="@("~/mvc/auth/newuser".ToAbsolute())">@Resources.LocalizedText.SignInCreateAccountLink</a> @Html.Raw(Resources.LocalizedText.SignInCreateAccountFree)
+            <div class="l" style="margin-top: 18pt;">
+                @Resources.Profile.SignInNewUserPrompt <a class="b" href="@($"~/mvc/auth/newuser{Request.Url.Query}".ToAbsolute())">@Resources.LocalizedText.SignInCreateAccountLink</a> @Html.Raw(Resources.LocalizedText.SignInCreateAccountFree)
             </div>
         }
     </div>

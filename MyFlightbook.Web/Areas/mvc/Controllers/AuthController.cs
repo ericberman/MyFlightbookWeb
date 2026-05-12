@@ -11,7 +11,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -378,6 +378,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpGet]
         public ActionResult NewUser()
         {
+            ViewBag.email = Request["login_hint"];
             return View("newuser");
         }
 
@@ -425,6 +426,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         // GET: mvc/Auth - present a sign-in page
         public ActionResult Index()
         {
+            string szHintEmail = Request["login_hint"];
+            if ((Request["prompt"] ?? string.Empty).CompareCurrentCultureIgnoreCase("create") == 0) // if the caller specifically requested account creation, go to the account creation page.
+                return Redirect(Url.Action("NewUser", "Auth") + Request.Url.Query);
             return View("signin");
         }
     }

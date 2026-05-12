@@ -214,13 +214,16 @@ GROUP BY eventtype;");
         {
             List<FlightsByDateStats> lst = new List<FlightsByDateStats>();
             DBHelper dbh = new DBHelper(@"SELECT 
-    COUNT(*) AS numflights,
-    MONTH(f.date) AS fMonth,
-    YEAR(f.date) AS fYear
-FROM
-    flights f
+    SUM(flights_per_day) AS numflights,
+    MONTH(date) AS fMonth,
+    YEAR(date) AS fYear
+FROM (
+    SELECT date, COUNT(*) AS flights_per_day
+    FROM flights
+    GROUP BY date
+) d
 GROUP BY fYear, fMonth
-ORDER BY fYear ASC, fMonth ASC");
+ORDER BY fYear, fMonth;");
             dbh.CommandArgs.Timeout = 300;  // use a long timeout
             dbh.ReadRows((comm) => { },
                 (dr) =>
@@ -263,25 +266,28 @@ ORDER BY activityyear ASC , activitymonth ASC");
         {
             List<FlightsPerUserStats> lstFlightsPerUser = new List<FlightsPerUserStats>();
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
-    COUNT(f2.usercount) AS numusers, f2.numflights
-FROM
-    (SELECT 
-        u.username AS usercount,
-            FLOOR((COUNT(f.idflight) + 99) / 100) * 100 AS numflights
-    FROM
-        users u
-    LEFT JOIN flights f ON u.username = f.username
-    {0}
-    GROUP BY u.username
-    ORDER BY numflights ASC) f2
-GROUP BY f2.numflights
-ORDER BY f2.numflights ASC;", creationDate == null ? string.Empty : "WHERE u.creationdate > ?creationDate"));
+            DBHelper dbh = new DBHelper(@"SELECT 
+    COUNT(*) AS numusers, FLOOR((flightcount + 99) / 100) * 100 AS numflights
+FROM (
+    SELECT u.username,
+           COALESCE(fc.flightcount, 0) AS flightcount
+    FROM (
+        SELECT username
+        FROM users
+        WHERE users.creationdate > ?creationDate
+    ) u
+    LEFT JOIN (
+        SELECT username, COUNT(*) AS flightcount
+        FROM flights
+        GROUP BY username
+    ) fc ON u.username = fc.username
+) x
+GROUP BY numflights
+ORDER BY numflights;");
             dbh.CommandArgs.Timeout = 300;  // use a long timeout
             dbh.ReadRows((comm) =>
             {
-                if (creationDate.HasValue)
-                    comm.Parameters.AddWithValue("creationDate", creationDate.Value);
+                comm.Parameters.AddWithValue("creationDate", creationDate ?? DateTime.MinValue);
             },
                 (dr) => { lstFlightsPerUser.Add(new FlightsPerUserStats() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
 
