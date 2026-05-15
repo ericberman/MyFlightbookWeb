@@ -3768,6 +3768,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multi Engine Day.
+        /// </summary>
+        internal static string PrintHeaderMEDay {
+            get {
+                return ResourceManager.GetString("PrintHeaderMEDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airplane MEL.
         /// </summary>
         internal static string PrintHeaderMEL {
@@ -3777,11 +3786,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multi Engine Night.
+        /// </summary>
+        internal static string PrintHeaderMENight {
+            get {
+                return ResourceManager.GetString("PrintHeaderMENight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Make, Model, Variant.
         /// </summary>
         internal static string PrintHeaderModel {
             get {
                 return ResourceManager.GetString("PrintHeaderModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ME.
+        /// </summary>
+        internal static string PrintHeaderMultiEngineShort {
+            get {
+                return ResourceManager.GetString("PrintHeaderMultiEngineShort", resourceCulture);
             }
         }
         
@@ -3813,11 +3840,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Other Day.
+        /// </summary>
+        internal static string PrintHeaderOtherDay {
+            get {
+                return ResourceManager.GetString("PrintHeaderOtherDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P2 / P3.
         /// </summary>
         internal static string PrintHeaderOtherNames {
             get {
                 return ResourceManager.GetString("PrintHeaderOtherNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other Night.
+        /// </summary>
+        internal static string PrintHeaderOtherNight {
+            get {
+                return ResourceManager.GetString("PrintHeaderOtherNight", resourceCulture);
             }
         }
         
@@ -3993,6 +4038,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Single Engine Day.
+        /// </summary>
+        internal static string PrintHeaderSEDay {
+            get {
+                return ResourceManager.GetString("PrintHeaderSEDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flights.
         /// </summary>
         internal static string PrintHeaderSegments {
@@ -4007,6 +4061,15 @@ namespace Resources {
         internal static string PrintHeaderSEL {
             get {
                 return ResourceManager.GetString("PrintHeaderSEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single Engine Night.
+        /// </summary>
+        internal static string PrintHeaderSENight {
+            get {
+                return ResourceManager.GetString("PrintHeaderSENight", resourceCulture);
             }
         }
         
@@ -4043,6 +4106,15 @@ namespace Resources {
         internal static string PrintHeaderSimInstrument {
             get {
                 return ResourceManager.GetString("PrintHeaderSimInstrument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SE.
+        /// </summary>
+        internal static string PrintHeaderSingleEngineShort {
+            get {
+                return ResourceManager.GetString("PrintHeaderSingleEngineShort", resourceCulture);
             }
         }
         
@@ -4781,6 +4853,15 @@ namespace Resources {
         internal static string RunningTotalComment {
             get {
                 return ResourceManager.GetString("RunningTotalComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SACAA style report.
+        /// </summary>
+        internal static string SACAAReportHeader {
+            get {
+                return ResourceManager.GetString("SACAAReportHeader", resourceCulture);
             }
         }
         
