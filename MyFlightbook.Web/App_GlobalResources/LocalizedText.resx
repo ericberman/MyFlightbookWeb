@@ -749,9 +749,6 @@
   <data name="CloudStorageSuccess" xml:space="preserve">
     <value>Data successfully saved!</value>
   </data>
-  <data name="DonateThankYouTitle" xml:space="preserve">
-    <value>Thank-you for supporting %APP_NAME%</value>
-  </data>
   <data name="DonateSolicitation" xml:space="preserve">
     <value>Please support %APP_NAME%</value>
   </data>

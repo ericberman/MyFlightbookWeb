@@ -161,6 +161,8 @@ namespace MyFlightbook
         /// </summary>
         public HashSet<int> BlocklistedProperties { get; private set; } = new HashSet<int>();
 
+        public virtual string PreferredGreeting { get { return UserFullName; } set { } }
+
         #endregion
 
         #region Properties
@@ -686,7 +688,7 @@ namespace MyFlightbook
 
         private const string prefKeyPreferredGreeting = "preferredGreeting";
         [System.Runtime.Serialization.IgnoreDataMember]
-        public string PreferredGreeting
+        public override string PreferredGreeting
         {
             get { return PreferenceExists(prefKeyPreferredGreeting) ? (string)GetPreferenceForKey(prefKeyPreferredGreeting) : UserFirstName; }
             set { SetPreferenceForKey(prefKeyPreferredGreeting, value, String.IsNullOrEmpty(value)); }
