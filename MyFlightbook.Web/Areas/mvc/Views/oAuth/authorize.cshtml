@@ -1,8 +1,12 @@
-﻿
+﻿@using MyFlightbook;
+@using System.Globalization;
 @{
     ViewBag.Title = Resources.oAuth.oAuthAuthorizeTitle;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     IEnumerable<string> lstScopes = ViewBag.scopesList;
+    string redirLInk = ViewBag.proxyRedirectUri ?? Request["redirect_uri"] ?? string.Empty;
+    Uri redirUri = new Uri(Request["redirect_uri"]);
+    string redirLinkified = String.Format(CultureInfo.CurrentCulture, Resources.oAuth.oAuthRedirect, redirUri.Host.ToUpper(CultureInfo.CurrentCulture)).Linkify(true);
 
 }
 @if (!String.IsNullOrEmpty(ViewBag.error))
@@ -15,7 +19,7 @@ else
     {
         @Html.AntiForgeryToken()
         <p>@Resources.oAuth.oAuthAuthPrompt</p>
-        <p style="font-weight: bold;">@ViewBag.clientName</p>
+        <h2>@ViewBag.clientName</h2>
         <p>@Resources.oAuth.oAuthRequestedPermissions</p>
         if (lstScopes.Any())
         {
@@ -30,14 +34,18 @@ else
         {
             <p>@Resources.oAuth.oAuthNoScopesDefined</p>
         }
+        <p>@Resources.oAuth.oAuthAuthWarning</p>
+        <div>@Resources.oAuth.oAuthRedirect</div>
+        <div class="b l">@redirUri.Host.ToUpper(CultureInfo.CurrentCulture)</div>
         <p>
             <button type="submit" name="authAction" value="authorize">@Resources.LogbookEntry.PropertyYes</button>
             <button type="submit" name="authAction" value="reject">@Resources.LogbookEntry.PropertyNo</button>
         </p>
-        <input type="hidden" name="client_id" value="@(Request["client_id"] ?? string.Empty)" />
-        <input type="hidden" name="redirect_uri" value="@(Request["redirect_uri"] ?? string.Empty)" />
+        <input type="hidden" name="client_id" value="@(ViewBag.proxyClientId ?? Request["client_id"] ?? string.Empty)" />
+        <input type="hidden" name="redirect_uri" value="@(redirLInk)" />
+        <input type="hidden" name="scope" value="@(ViewBag.proxyScope ?? Request["scope"] ?? string.Empty)" />
+        <input type="hidden" name="response_type" value="code" />
         <input type="hidden" name="state" value="@(Request["state"] ?? string.Empty)" />
-        <input type="hidden" name="scope" value="@(Request["scope"] ?? string.Empty)" />
-        <input type="hidden" name="response_type" value="@(Request["response_type"] ?? string.Empty)" />
+        <input type="hidden" name="pkcestate" value="@(ViewBag.pkceState ?? string.Empty)" />
     }
 }

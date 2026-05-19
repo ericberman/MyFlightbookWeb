@@ -162,4 +162,10 @@
   <data name="oAuthAuthPrompt" xml:space="preserve">
     <value>The application below has requested access to your data.  Do you want to give it access?</value>
   </data>
+  <data name="oAuthAuthWarning" xml:space="preserve">
+    <value>Important - make sure that you trust the app that is requesting permission and that you have explicitly asked for it to do so!</value>
+  </data>
+  <data name="oAuthRedirect" xml:space="preserve">
+    <value>When you approve or deny this request, you will be redirected to the following domain; ensure that this is what you expect:</value>
+  </data>
 </root>

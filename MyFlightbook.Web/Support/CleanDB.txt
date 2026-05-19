@@ -43,4 +43,5 @@ truncate storedqueries;
 truncate basicmedevent;
 truncate pendingvideos;
 truncate sponsoredads;
+truncate PkceAuthorization;
 SET FOREIGN_KEY_CHECKS=1;

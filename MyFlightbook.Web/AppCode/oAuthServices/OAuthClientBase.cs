@@ -4,6 +4,7 @@ using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
 using MyFlightbook.OAuth.RosterBuster;
 using Newtonsoft.Json;
+using OAuthAuthorizationServer.Code;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -391,8 +392,9 @@ namespace MyFlightbook.OAuth
             dynamic d = JsonConvert.DeserializeObject<dynamic>(result);
 
             // REPORT Error - often it's if the URL we are redirecting to doesn't match the referrer, then it fails.  
-            if (!String.IsNullOrEmpty(d.error ?? string.Empty))
-                throw new MyFlightbookValidationException(d.error);
+            // Issue #1532 - better error message; d.error is not a string.
+            if (!String.IsNullOrEmpty(d?.error?.ToString() ?? string.Empty))
+                throw new InvalidOperationException(d.error.ToString());
 
             string scopes = d.scope;
             AuthorizationState authstate = new AuthorizationState(scopes != null ? OAuthUtilities.SplitScopes(scopes) : null)
@@ -418,7 +420,7 @@ namespace MyFlightbook.OAuth
         /// <param name="code">The code returned from the authorization step</param>
         /// <param name="redirEndpoint">The redirect Uri used originally</param>
         /// <returns>The granted access token</returns>
-        public async Task<IAuthorizationState> ConvertToken(string redirEndpoint, string code)
+        public async Task<IAuthorizationState> ConvertToken(string redirEndpoint, string code, string code_verifier = null)
         {
             if (String.IsNullOrEmpty(redirEndpoint))
                 throw new ArgumentNullException(nameof(redirEndpoint));
@@ -433,6 +435,9 @@ namespace MyFlightbook.OAuth
                 { "grant_type", "authorization_code" },
                 { "code", code }
             };
+
+            if (!String.IsNullOrEmpty(code_verifier))
+                dContent["code_verifier"] = code_verifier;
 
             using (FormUrlEncodedContent c = new FormUrlEncodedContent(dContent))
             {
@@ -573,13 +578,49 @@ namespace MyFlightbook.OAuth
         public string clientSecret { get { return AppSecret; } }
 
         public string redirectEndpoint { get { return _redirEndpoint; } }
+
+        public ClientType OAuthClientType { get; set; } = ClientType.Confidential;
+
+        public string CodeChallenge { get; set; } = string.Empty;
+
+        public string CodeVerifier { get; set; } = string.Empty;
         #endregion
 
-        public OAuth2AdHocClient(string clientID, string clientSecret, string authEndpoint, string tokenEndpoint, string redirEndpoint, string[] scopes = null) : base(string.Empty, string.Empty, authEndpoint, tokenEndpoint, scopes)
+        public OAuth2AdHocClient(string clientID, string clientSecret, string authEndpoint, string tokenEndpoint, string redirEndpoint, string[] scopes = null, ClientType clientType = ClientType.Confidential) : base(string.Empty, string.Empty, authEndpoint, tokenEndpoint, scopes)
         {
             _clientID = clientID;
             _clientSecret = clientSecret;
             _redirEndpoint = redirEndpoint;
+            OAuthClientType = clientType;
+            if (OAuthClientType == ClientType.Public)
+                RefreshChallengeVerifier();
+        }
+
+        public void RefreshChallengeVerifier()
+        {
+            // 32 bytes = 256 bits of entropy
+            byte[] bytes = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(bytes);
+            }
+
+            CodeVerifier = bytes.ToBase64URL();
+
+            using (var sha256 = SHA256.Create())
+            {
+                CodeChallenge = sha256.ComputeHash(Encoding.ASCII.GetBytes(CodeVerifier)).ToBase64URL();
+            }
+        }
+
+        public const string publicClientProxyID = "publicClientProxy";
+
+        /// <summary>
+        /// For PKCE clients, we have a proxy in front of the token endpoint that is configured with the same clientID/secret as the public client, and then we call that with the PKCE code and verifier, and it proxies to the real token endpoint.
+        /// </summary>
+        public static MFBOauth2Client ConfidentialProxyClient
+        {
+            get { return MFBOauth2Client.GetClientByID(publicClientProxyID)?.First() ?? throw new InvalidOperationException($"misconfiguration - need a client configured with id of {publicClientProxyID}"); }
         }
     }
 }

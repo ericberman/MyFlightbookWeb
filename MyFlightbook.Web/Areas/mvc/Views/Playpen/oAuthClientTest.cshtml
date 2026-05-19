@@ -1,8 +1,17 @@
-﻿@using Newtonsoft.Json
+﻿@using DotNetOpenAuth.OAuth2;
+@using Newtonsoft.Json
+@using System.Security.Cryptography;
+@using System.Text;
 @{
     ViewBag.Title = "oAuth Client Test Bed";
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     MyFlightbook.OAuth.OAuth2AdHocClient currentClient = ViewBag.client;
+    var curString = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+    curString["clear"] = "1";
+    string clearLink = $"{Request.Url.AbsolutePath}?{curString.ToString()}";
+
+    curString["pkce"] = "1";
+    string pkceLink = $"{Request.Url.AbsolutePath}?{curString.ToString()}";
 }
 <script type="text/javascript">
     function getResource(method) {
@@ -123,6 +132,10 @@
         }
     }
 </script>
+@if (currentClient.OAuthClientType != ClientType.Public)
+{
+    <p>The flow is slightly different if you want to use PKCE.  <a href="@pkceLink">Use PKCE</a></p>
+}
 @using (Html.BeginForm("OAuthAuthorize", "PlayPen", FormMethod.Post, new { id = "frmAuthorize", name = "frmAuthorize" }))
 {
     <table>
@@ -130,10 +143,24 @@
             <td>Client ID:</td>
             <td><input id="txtClientID" name="clientID" class="w100" type="text" required value="@currentClient.clientID" /></td>
         </tr>
-        <tr>
-            <td>Client Secret:</td>
-            <td><input id="txtClientSecret" name="clientSecret" class="w100" type="password" value="@currentClient.clientSecret" required /></td>
-        </tr>
+        @if (currentClient.OAuthClientType == ClientType.Public)
+        {
+            <tr>
+                <td>Code Challenge (generated)</td>
+                <td>@currentClient.CodeChallenge <input type="hidden" name="code_challenge" value="@currentClient.CodeChallenge" /> <input type="hidden" name="pkce" value="true" /></td>
+            </tr>
+            <tr>
+                <td>Code Verifier (generated)</td>
+                <td>@currentClient.CodeVerifier <input type="hidden" name="code_verifier" value="@currentClient.CodeVerifier" /><input type="hidden" name="clientSecret" class="w100" value="abc123" /></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>Client Secret:</td>
+                <td><input id="txtClientSecret" name="clientSecret" class="w100" type="password" value="@currentClient.clientSecret" required /></td>
+            </tr>
+        }
         <tr>
             <td colspan="2">
                 <h2>1) Authorization</h2>
@@ -185,7 +212,7 @@
         </tr>
     </table>
 }
-@using (Html.BeginForm("OAuthResource", "PlayPen", FormMethod.Get, new { id = "frmResource", name = "frmResource", enctype= "multipart/form-data" }))
+@using (Html.BeginForm("OAuthResource", "PlayPen", FormMethod.Get, new { id = "frmResource", name = "frmResource", enctype = "multipart/form-data" }))
 {
     <table>
         <tr>
@@ -369,11 +396,11 @@
 }
 <button type="button" onclick="javascript: getResource('GET');">Get Resource (GET)</button>&nbsp;
 <button type="button" onclick="javascript: getResource('POST');">Get Resource (POST)</button>&nbsp;
-<button type="button" onclick="javascript: window.location = '@Request.Url.GetLeftPart(UriPartial.Path)' + '?clear=1';">Clear State</button>&nbsp;
+<button type="button" onclick="javascript: window.location = '@clearLink';">Clear State</button>&nbsp;
 <button type="button" onclick="javascript: refreshToken();">Refresh Token</button>&nbsp;
 <div><span id="lblErr" class="error">@ViewBag.error</span></div>
 <div class="calloutSmall calloutBackground shadowed w100">
-    @{  Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divOutputResults", labelText = "Output/Result:" }); }
+    @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divOutputResults", labelText = "Output/Result:" }); }
     <div id="divOutputResults" class="dn wsprew">
         <table>
             <thead>
