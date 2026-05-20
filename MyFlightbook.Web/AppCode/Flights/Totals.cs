@@ -1447,6 +1447,37 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
             _12MonthTotal = Convert.ToDecimal(util.ReadNullableField(dr, "_12MonthTotal", 0.0M), CultureInfo.InvariantCulture);
             _24MonthTotal = Convert.ToDecimal(util.ReadNullableField(dr, "_24MonthTotal", 0.0M), CultureInfo.InvariantCulture);
             LastFlight = Convert.ToDateTime(util.ReadNullableField(dr, "LastFlight", DateTime.MinValue), CultureInfo.InvariantCulture);
+
+            IDCatClass = (CategoryClass.CatClassID)Convert.ToInt32(util.ReadNullableField(dr, "idCatClass", 0), CultureInfo.InvariantCulture);
+
+            DaySEDual = Convert.ToDecimal(util.ReadNullableField(dr, "DayDualSE", 0.0M), CultureInfo.InvariantCulture);
+            DaySEPIC = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICSE", 0.0M), CultureInfo.InvariantCulture);
+            DaySESIC = Convert.ToDecimal(util.ReadNullableField(dr, "DaySICSE", 0.0M), CultureInfo.InvariantCulture);
+            DaySEPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICUSSE", 0.0M), CultureInfo.InvariantCulture);
+            DayMEDual = Convert.ToDecimal(util.ReadNullableField(dr, "DayDualME", 0.0M), CultureInfo.InvariantCulture);
+            DayMEPIC = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICME", 0.0M), CultureInfo.InvariantCulture);
+            DayMESIC = Convert.ToDecimal(util.ReadNullableField(dr, "DaySICME", 0.0M), CultureInfo.InvariantCulture);
+            DayMEPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICUSME", 0.0M), CultureInfo.InvariantCulture);
+            DayOtherDual = Convert.ToDecimal(util.ReadNullableField(dr, "DayDualOther", 0.0M), CultureInfo.InvariantCulture);
+            DayOtherPIC = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICOther", 0.0M), CultureInfo.InvariantCulture);
+            DayOtherSIC = Convert.ToDecimal(util.ReadNullableField(dr, "DaySICOther", 0.0M), CultureInfo.InvariantCulture);
+            DayOtherPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "DayPICUSOther", 0.0M), CultureInfo.InvariantCulture);
+            NightSEDual = Convert.ToDecimal(util.ReadNullableField(dr, "NightDualSE", 0.0M), CultureInfo.InvariantCulture);
+            NightSEPIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICSE", 0.0M), CultureInfo.InvariantCulture);
+            NightSESIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightSICSE", 0.0M), CultureInfo.InvariantCulture);
+            NightSEPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICUSSE", 0.0M), CultureInfo.InvariantCulture);
+            NightMEDual = Convert.ToDecimal(util.ReadNullableField(dr, "NightDualME", 0.0M), CultureInfo.InvariantCulture);
+            NightMEPIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICME", 0.0M), CultureInfo.InvariantCulture);
+            NightMESIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightSICME", 0.0M), CultureInfo.InvariantCulture);
+            NightMEPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICUSME", 0.0M), CultureInfo.InvariantCulture);
+            NightOtherDual = Convert.ToDecimal(util.ReadNullableField(dr, "NightDualOther", 0.0M), CultureInfo.InvariantCulture);
+            NightOtherPIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICOther", 0.0M), CultureInfo.InvariantCulture);
+            NightOtherSIC = Convert.ToDecimal(util.ReadNullableField(dr, "NightSICOther", 0.0M), CultureInfo.InvariantCulture);
+            NightOtherPICUS = Convert.ToDecimal(util.ReadNullableField(dr, "NightPICUSOther", 0.0M), CultureInfo.InvariantCulture);
+            CFISE = Convert.ToDecimal(util.ReadNullableField(dr, "CFISE", 0.0M), CultureInfo.InvariantCulture);
+            CFIME = Convert.ToDecimal(util.ReadNullableField(dr, "CFIME", 0.0M), CultureInfo.InvariantCulture);
+            CFIFSTD = Convert.ToDecimal(util.ReadNullableField(dr, "CFIFSTD", 0.0M), CultureInfo.InvariantCulture);
+            GroundSim = Convert.ToDecimal(util.ReadNullableField(dr, "GroundSim", 0.0M), CultureInfo.InvariantCulture);
         }
 
         #region properties
@@ -1477,6 +1508,43 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
         public decimal _24MonthTotal { get; private set; }
         public DateTime LastFlight { get; private set; }
 
+        public CategoryClass.CatClassID IDCatClass { get; private set; }
+
+        public decimal DaySEPIC { get; private set; }
+        public decimal DaySESIC { get; private set; }
+        public decimal DaySEDual { get; private set; }
+        public decimal DaySEPICUS { get; private set; }
+
+        public decimal DayMEPIC { get; private set; }
+        public decimal DayMESIC { get; private set; }
+        public decimal DayMEDual { get; private set; }
+        public decimal DayMEPICUS { get; private set; }
+
+        public decimal DayOtherPIC { get; private set; }
+        public decimal DayOtherSIC { get; private set; }
+        public decimal DayOtherDual { get; private set; }
+        public decimal DayOtherPICUS { get; private set; }
+
+        public decimal NightSEPIC { get; private set; }
+        public decimal NightSESIC { get; private set; }
+        public decimal NightSEDual { get; private set; }
+        public decimal NightSEPICUS { get; private set; }
+
+        public decimal NightMEPIC { get; private set; }
+        public decimal NightMESIC { get; private set; }
+        public decimal NightMEDual { get; private set; }
+        public decimal NightMEPICUS { get; private set; }
+
+        public decimal NightOtherPIC { get; private set; }
+        public decimal NightOtherSIC { get; private set; }
+        public decimal NightOtherDual { get; private set; }
+        public decimal NightOtherPICUS { get; private set; }
+
+        public decimal CFISE { get; private set; }
+        public decimal CFIME { get; private set; }
+        public decimal CFIFSTD { get; private set; }
+        public decimal GroundSim { get; private set; }
+
         public bool is12MonthTotal { get; private set; }
         #endregion
 
@@ -1506,7 +1574,7 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
 
             List<ModelRollupRow> lst = new List<ModelRollupRow>();
 
-            const string szRollupQuery = @"SELECT 
+            string szRollupQuery = $@"SELECT 
     familydisplay,
     ModelDisplay,
     IF(InstanceTypeID=1, SUM(ROUND(PIC * ?qf))/?qf, 0) AS PIC,
@@ -1532,6 +1600,34 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
     SUM(IF(iscertifiedIFR <> 0, cInstrumentApproaches, 0)) AS approaches,
     SUM(IF(iscertifiedIFR <> 0 and f.date > DATE_SUB(NOW(), Interval 6 month), cInstrumentApproaches, 0)) as _6MonthApproaches,
     SUM(IF(iscertifiedIFR <> 0 and f.date > DATE_SUB(NOW(), Interval 12 month), cInstrumentApproaches, 0)) as _12MonthApproaches,
+    SUM(IF (f.IsSingleEngine, f.nightDual, 0)) as NightDualSE,
+    SUM(IF (f.IsSingleEngine, f.nightPIC, 0)) as NightPICSE,
+    SUM(IF (f.IsSingleEngine, f.nightSIC, 0)) as NightSICSE,
+    SUM(IF (f.IsSingleEngine, f.nightPICUS, 0)) as NightPICUSSE,
+    SUM(IF (f.IsSingleEngine, f.dayDual, 0)) as DayDualSE,
+    SUM(IF (f.IsSingleEngine, f.dayPIC, 0)) as DayPICSE,
+    SUM(IF (f.IsSingleEngine, f.daySIC, 0)) as DaySICSE,
+    SUM(IF (f.IsSingleEngine, f.dayPICUS, 0)) as DayPICUSSE,
+    SUM(IF (f.IsMultiEngine, f.nightDual, 0)) as NightDualME,
+    SUM(IF (f.IsMultiEngine, f.nightPIC, 0)) as NightPICME,
+    SUM(IF (f.IsMultiEngine, f.nightSIC, 0)) as NightSICME,
+    SUM(IF (f.IsMultiEngine, f.nightPICUS, 0)) as NightPICUSME,
+    SUM(IF (f.IsMultiEngine, f.dayDual, 0)) as DayDualME,
+    SUM(IF (f.IsMultiEngine, f.dayPIC, 0)) as DayPICME,
+    SUM(IF (f.IsMultiEngine, f.daySIC, 0)) as DaySICME,
+    SUM(IF (f.IsMultiEngine, f.dayPICUS, 0)) as DayPICUSME,
+    SUM(IF (f.IsOther, f.nightDual, 0)) as NightDualOther,
+    SUM(IF (f.IsOther, f.nightPIC, 0)) as NightPICOther,
+    SUM(IF (f.IsOther, f.nightSIC, 0)) as NightSICOther,
+    SUM(IF (f.IsOther, f.nightPICUS, 0)) as NightPICUSOther,
+    SUM(IF (f.IsOther, f.dayDual, 0)) as DayDualOther,
+    SUM(IF (f.IsOther, f.dayPIC, 0)) as DayPICOther,
+    SUM(IF (f.IsOther, f.daySIC, 0)) as DaySICOther,
+    SUM(IF (f.IsOther, f.dayPICUS, 0)) as DayPICUSOther,
+    SUM(IF (f.instancetypeid = 1 AND f.idcatclass IN (1, 3), f.CFI, 0)) AS CFISE,
+    SUM(IF (instancetypeid = 1 AND f.idcatclass IN (2, 4), f.CFI, 0)) AS CFIME,
+    SUM(IF (f.instancetypeid <> 1, f.CFI, 0)) AS CFIFSTD,
+    SUM(groundSim) AS groundSim,
     MAX(f.date) AS LastFlight
 FROM (SELECT 
         flights.*,
@@ -1542,6 +1638,18 @@ FROM (SELECT
         ait.IsCertifiedLanding,
         ait.ID AS InstanceTypeID,
         ait.Description AS InstanceTypeDescription,
+        LEAST(flights.night, flights.pic) as NightPIC,
+        LEAST(flights.night, flights.dualReceived) as NightDual,
+        LEAST(flights.night, flights.sic) as NightSIC,
+        LEAST(flights.night, COALESCE(fpPicus.decValue, 0)) as NightPICUS,
+        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.pic) as DayPIC,
+        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.dualReceived) as DayDual,
+        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.sic) as DaySIC,
+        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), COALESCE(fpPicus.decValue, 0)) as DayPICUS,
+        IF(categoryclass.idCatClass in (1,3), 1, 0) AS IsSingleEngine,
+        IF(categoryclass.idCatClass in (2,4), 1, 0) AS IsMultiEngine,
+        IF(categoryclass.idCatClass > 4, 1, 0) AS IsOther,
+        categoryclass.idCatClass,
         IF(ait.ID = 1, categoryclass.Category, CONCAT(categoryclass.Category, ' - ', ait.Description)) AS Category,
         IF(ait.ID = 1, IF(models.family = '', models.model, models.family), CONCAT('(', ait.Description, ')')) AS FamilyDisplay,
         TRIM(CONCAT(manufacturers.manufacturer, ' - ', IF(models.family = '', models.model, models.family))) AS ModelDisplay,
@@ -1550,8 +1658,7 @@ FROM (SELECT
             aircraft.tailnumber) AS 'TailNumberDisplay',
         aircraft.TailNumber AS RawTailNumber,
         useraircraft.privatenotes AS AircraftPrivateNotes,
-        GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title)
-            SEPARATOR ' ') AS CustomProperties,
+        {(fq.IsDefault ? string.Empty : "GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title) SEPARATOR ' ') AS CustomProperties,")}
         models.*,
         fpEng.decValue AS EngineerTime,
         fpMil.decValue AS MilitaryTime
@@ -1566,16 +1673,16 @@ FROM (SELECT
             LEFT JOIN flighttelemetry ft ON (flights.idflight = ft.idflight)
             LEFT JOIN FlightProperties fpEng ON fpEng.idflight = flights.idflight AND fpEng.idproptype = 257
             LEFT JOIN flightproperties fpMil ON fpMil.idflight = flights.idflight AND fpMil.idproptype = 90
-            LEFT JOIN FlightProperties fdc ON flights.idFlight = fdc.idFlight
-            LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType
+            LEFT JOIN flightproperties fpPICUS on fpPicus.idflight = flights.idflight AND fpPicus.idpropType = 840
+            {(fq.IsDefault ? string.Empty : @"LEFT JOIN FlightProperties fdc ON flights.idFlight = fdc.idFlight
+            LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType")}
       WHERE
-        {0}
-    GROUP BY flights.idFlight , models.idmodel {1}
+        {fq.RestrictClause}
+    GROUP BY flights.idFlight , models.idmodel {(String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause)}
     ORDER BY familyDisplay asc) f
 GROUP BY f.familyDisplay WITH ROLLUP";
 
-            DBHelper.ExecuteWithArgs(args,
-                String.Format(CultureInfo.InvariantCulture, szRollupQuery, fq.RestrictClause, String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause),
+            DBHelper.ExecuteWithArgs(args, szRollupQuery,
                 (dr) =>
                 {
                     if (dr.HasRows)

@@ -124,6 +124,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Important - make sure that you trust the app that is requesting permission and that you have explicitly asked for it to do so!.
+        /// </summary>
+        internal static string oAuthAuthWarning {
+            get {
+                return ResourceManager.GetString("oAuthAuthWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have authorized the following applications to access your data:.
         /// </summary>
         internal static string oAuthedAppsListHeader {
@@ -147,6 +156,15 @@ namespace Resources {
         internal static string oAuthNoScopesDefined {
             get {
                 return ResourceManager.GetString("oAuthNoScopesDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you approve or deny this request, you will be redirected to the following domain; ensure that this is what you expect:.
+        /// </summary>
+        internal static string oAuthRedirect {
+            get {
+                return ResourceManager.GetString("oAuthRedirect", resourceCulture);
             }
         }
         

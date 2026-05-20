@@ -231,6 +231,7 @@
 <div id="targetModel" class="dn overX">
     @if (reports.ReportByModel.Any())
     {
+        bool fHasOther = false;
         <div class="ra noprint"><label><input type="checkbox" onclick="javascript: $('.t12rollup').toggle();" />@Resources.Totals.ShowTrailing12</label></div>
         <table class="rollupReport modelRollup" cellpadding="0" cellspacing="0">
             <thead>
@@ -276,13 +277,139 @@
                         <td class="PaddedCell ra">@((new decimal[] { row.Total, row._12MonthTotal, row._24MonthTotal }).FormatMulti(fUseHHMM))</td>
                         <td class="PaddedCell c">@row.LastFlight.ToString("d", CultureInfo.CurrentCulture)</td>
                     </tr>
+                    if (row.ModelDisplay == null)
+                    {
+                        fHasOther = fHasOther || row.DayOtherDual + row.DayOtherPIC + row.DayOtherSIC + row.DayOtherPICUS + row.NightOtherDual + row.NightOtherPIC + row.NightOtherSIC + row.NightOtherPICUS > 0;
+                    }
                 }
             </tbody>
         </table>
+        <div>&nbsp;</div>
+        <h2>@Resources.LogbookEntry.SACAAReportHeader</h2>
+        <div>&nbsp;</div>
+        <style type="text/css">
+            .PaddedCell.overrideNone, .PaddedCell.overrideNone:nth-child(even) {
+                background-color: var(--body-background);
+            }
+            .overrideShade {
+                background-color: var(--table-alternate-row-background);
+            }
+            .thickLeft {
+                border-left: 2pt solid var(--default-border);
+            }
+        </style>
+        <table class="rollupReport modelRollup" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="PaddedCell"></th>
+                    <th class="PaddedCell thickLeft" colspan="2">@Resources.LogbookEntry.PrintHeaderInstrumentTime</th>
+                    <th class="PaddedCell thickLeft" colspan="3">@Resources.LogbookEntry.PrintHeaderInstructorTime</th>
+                    <th class="PaddedCell overrideNone thickLeft" rowspan="2">@Resources.LogbookEntry.PrintHeaderFSTDInstrumentTime</th>
+                    <th class="PaddedCell thickLeft" colspan="4">@Resources.LogbookEntry.PrintHeaderSEDay</th>
+                    <th class="PaddedCell" colspan="4">@Resources.LogbookEntry.PrintHeaderSENight</th>
+                    <th class="PaddedCell thickLeft" colspan="4">@Resources.LogbookEntry.PrintHeaderMEDay</th>
+                    <th class="PaddedCell" colspan="4">@Resources.LogbookEntry.PrintHeaderMENight</th>
+                    @if (fHasOther)
+                    {
+                        <th class="PaddedCell" colspan="4">@Resources.LogbookEntry.PrintHeaderOtherDay</th>
+                        <th class="PaddedCell" colspan="4">@Resources.LogbookEntry.PrintHeaderOtherNight</th>
+                    }
+                </tr>
+                <tr>
+                    <th class="PaddedCell overrideShade thickLeft">@Resources.LogbookEntry.PrintHeaderIMC</th>
+                    <th class="PaddedCell overrideNone">@Resources.LogbookEntry.PrintHeaderSimInstrument</th>
+                    <th class="PaddedCell overrideShade thickLeft">@Resources.LogbookEntry.PrintHeaderSingleEngineShort</th>
+                    <th class="PaddedCell overrideNone">@Resources.LogbookEntry.PrintHeaderMultiEngineShort</th>
+                    <th class="PaddedCell overrideShade">@Resources.LogbookEntry.PrintHeaderFSTDInstrumentTime</th>
+
+                    <th class="PaddedCell thickLeft">@Resources.LogbookEntry.FieldDual</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldDual</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+
+                    <th class="PaddedCell thickLeft">@Resources.LogbookEntry.FieldDual</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldDual</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                    <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+
+                    @if (fHasOther)
+                    {
+                        <th class="PaddedCell thickLeft">@Resources.LogbookEntry.FieldDual</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderCoPilot</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+
+                        <th class="PaddedCell">@Resources.LogbookEntry.FieldDual</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.FieldPIC</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.FieldSIC</th>
+                        <th class="PaddedCell">@Resources.LogbookEntry.PrintHeaderPICUS</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ModelRollupRow row in reports.DD1821List)
+                {
+                    <tr class="@(row.ModelDisplay == null ? "totalRow" : string.Empty) @(row.is12MonthTotal ? "t12rollup" : string.Empty) @(row.ModelDisplay == null && !row.is12MonthTotal ? "doubleTop" : string.Empty)">
+                        <td class="PaddedCell">@(row.ModelDisplay ?? Resources.LogbookEntry.FieldTotal)</td>
+                        <td class="PaddedCell ra thickLeft">@row.IMC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.SimIMC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra thickLeft">@row.CFISE.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.CFIME.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.CFIFSTD.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra thickLeft">@row.GroundSim.FormatDecimal(fUseHHMM, false)</td>
+
+                        <td class="PaddedCell ra thickLeft">@row.DaySEDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DaySEPIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DaySESIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DaySEPICUS.FormatDecimal(fUseHHMM, false)</td>
+
+                        <td class="PaddedCell ra">@row.NightSEDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightSEPIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightSESIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightSEPICUS.FormatDecimal(fUseHHMM, false)</td>
+
+
+                        <td class="PaddedCell ra thickLeft">@row.DayMEDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DayMEPIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DayMESIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.DayMEPICUS.FormatDecimal(fUseHHMM, false)</td>
+
+                        <td class="PaddedCell ra">@row.NightMEDual.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightMEPIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightMESIC.FormatDecimal(fUseHHMM, false)</td>
+                        <td class="PaddedCell ra">@row.NightMEPICUS.FormatDecimal(fUseHHMM, false)</td>
+
+                        @if (fHasOther)
+                        {
+                            <td class="PaddedCell ra thickLeft">@row.DayOtherDual.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.DayOtherPIC.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.DayOtherSIC.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.DayOtherPICUS.FormatDecimal(fUseHHMM, false)</td>
+
+                            <td class="PaddedCell ra">@row.NightOtherDual.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.NightOtherPIC.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.NightOtherSIC.FormatDecimal(fUseHHMM, false)</td>
+                            <td class="PaddedCell ra">@row.NightOtherPICUS.FormatDecimal(fUseHHMM, false)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
     }
     else
     {
-    <p class="error">@Resources.LocalizedText.errNoMatchingFlightsFound</p>
+        <p class="error">@Resources.LocalizedText.errNoMatchingFlightsFound</p>
     }
 </div>
 <div id="targetTime" class="dn overX">

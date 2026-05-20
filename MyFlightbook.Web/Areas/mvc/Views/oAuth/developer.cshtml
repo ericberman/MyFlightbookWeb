@@ -49,6 +49,7 @@
         params.clientCallBack = parent.find("textarea[name='clientCallBack']").val();
         params.clientScopes = parent.find("input[name='clientScopes']").val();
         params.szOwner = parent.find("input[name='clientOwner']").val();
+        params.isPublic = parent.find("input[name='isPublic']").val();
         var d = JSON.stringify(params);
         $.ajax({
             url: '@Url.Action("UpdateOauthClient", "OAuth")',
@@ -56,6 +57,11 @@
             error: function (xhr) { window.alert(xhr.responseText); },
             success: function (response) { window.location.reload(); }
         });
+    }
+
+    function togglePassword(f) {
+        $("#txtSecret").prop("disabled", f);
+        $("#txtSecret").val(f ? "(ignored)" : "");
     }
 </script>
 <h2>Source code</h2>
@@ -100,7 +106,10 @@
                     </tr>
                     <tr style="vertical-align:top">
                         <td>Client Secret</td>
-                        <td><input type="text" maxlength="255" required id="txtSecret" name="clientSecret" value="@(newClient?.ClientSecret ?? string.Empty)" /></td>
+                        <td>
+                            <div><input type="text" maxlength="255" required id="txtSecret" name="clientSecret" value="@(newClient?.ClientSecret ?? string.Empty)" /></div>
+                            <div><label><input name="isPublic" type="checkbox" onclick="javascript: togglePassword(this.checked);" />Create as a public client, using PKCE (no secret required).</label></div>
+                        </td>
                         <td>This is the secret for your client.  Keep it safe!!!</td>
                     </tr>
                     <tr style="vertical-align:top">
@@ -167,7 +176,12 @@
                         </td>
                         <td>
                             <div class="displayCell">@client.ClientSecret</div>
-                            <div class="editCell"><input type="text" name="clientSecret" value="@client.ClientSecret" /></div>
+                            <div class="editCell"><input type="text" name="clientSecret" value="@client.ClientSecret" @((client.ClientType == DotNetOpenAuth.OAuth2.ClientType.Confidential) ? "disabled" : string.Empty) /></div>
+                            @if (client.ClientType == DotNetOpenAuth.OAuth2.ClientType.Public)
+                            {
+                                <div>(Client is public, MUST use the PKCE path)</div>
+                                <input type="hidden" name="isPublic" value="true" />
+                            }
                         </td>
                         <td>
                             <div class="displayCell">@client.ClientName</div>

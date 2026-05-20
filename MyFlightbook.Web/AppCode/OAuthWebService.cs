@@ -537,27 +537,14 @@ namespace OAuthAuthorizationServer.Services
                 if (!Request.IsSecureConnection)
                     throw new HttpException((int)HttpStatusCode.Forbidden, "Authorization requests MUST be on a secure channel");
 
-                OAuthServiceID? serviceID = RequestedService(Request, requestedService);
-                if (serviceID == null)
+                OAuthServiceID? serviceID = RequestedService(Request, requestedService) ?? throw new InvalidOperationException($"Requested service '{requestedService ?? "null"}' is not recognized.");
+                using (OAuthServiceCall service = new OAuthServiceCall(Request, requestedService))
                 {
-                    AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
-                    OutgoingWebResponse wr = authorizationServer.HandleTokenRequest();
                     Response.Clear();
-                    Response.ContentType = "application/json; charset=utf-8";
-                    Response.Write(wr.Body);
+                    Response.ContentType = service.ContentType;
+                    service.Execute(Response.OutputStream);
                     Response.Flush(); // Sends all currently buffered output to the client.
                     Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                }
-                else
-                {
-                    using (OAuthServiceCall service = new OAuthServiceCall(Request, requestedService))
-                    {
-                        Response.Clear();
-                        Response.ContentType = service.ContentType;
-                        service.Execute(Response.OutputStream);
-                        Response.Flush(); // Sends all currently buffered output to the client.
-                        Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    }
                 }
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException))

@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2020-2025 MyFlightbook LLC
+ * Copyright (c) 2020-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -94,7 +95,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 json = await sr.ReadToEndAsync();
             }
 
-            return new HttpStatusCodeResult(StripeUtility.ProcessStripeNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, Request["version"] ?? StripeUtility.ORIGINAL_API_VERSION, json));
+            return new HttpStatusCodeResult(StripeUtility.ProcessStripeNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, Request["version"] ?? StripeUtility.CURRENT_API_VERSION, json, (user) => { EarnedGratuity.UpdateEarnedGratuities(user, true); }));
         }
         #endregion
 
@@ -102,7 +103,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult PaypalNotify()
         {
-            PayPalIPN.ProcessIPNNotification(Request);
+            PayPalIPN.ProcessIPNNotification(Request.Params, Encoding.ASCII.GetString(Request.BinaryRead(Request.ContentLength)), (user) => {
+                EarnedGratuity.UpdateEarnedGratuities(user, true);
+            });
             return new EmptyResult();
         }
         #endregion

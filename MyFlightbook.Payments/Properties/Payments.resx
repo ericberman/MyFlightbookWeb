@@ -117,55 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="addflightScopeDescription" xml:space="preserve">
-    <value>Add/Modify flights in your account</value>
+  <data name="DonateThankYouTitle" xml:space="preserve">
+    <value>Thank-you for supporting %APP_NAME%</value>
   </data>
-  <data name="currencyScopeDescription" xml:space="preserve">
-    <value>Retrieve your flying currency</value>
-  </data>
-  <data name="oAuthedAppsListHeader" xml:space="preserve">
-    <value>You have authorized the following applications to access your data:</value>
-  </data>
-  <data name="oAuthNoApplicationsFound" xml:space="preserve">
-    <value>No applications found</value>
-  </data>
-  <data name="oAuthNoScopesDefined" xml:space="preserve">
-    <value>No specific permissions specified!</value>
-  </data>
-  <data name="oAuthRequestedPermissions" xml:space="preserve">
-    <value>Requested permissions:</value>
-  </data>
-  <data name="totalsScopeDescription" xml:space="preserve">
-    <value>Retrieve your flying totals</value>
-  </data>
-  <data name="addaircraftScopeDescription" xml:space="preserve">
-    <value>Add/Modify aircraft in your account</value>
-  </data>
-  <data name="modifyImagesScopeDescription" xml:space="preserve">
-    <value>Modify Images for your flights or aircraft</value>
-  </data>
-  <data name="readaircraftScopeDescription" xml:space="preserve">
-    <value>Retrieve aircraft in your account</value>
-  </data>
-  <data name="readflightScopeDescription" xml:space="preserve">
-    <value>Retrieve flights in your account</value>
-  </data>
-  <data name="visitedScopeDescription" xml:space="preserve">
-    <value>Retrieve visited airports</value>
-  </data>
-  <data name="namedqueriesScopeDescription" xml:space="preserve">
-    <value>Create, view, and update named queries</value>
-  </data>
-  <data name="oAuthAuthorizeTitle" xml:space="preserve">
-    <value>Authorize Application</value>
-  </data>
-  <data name="oAuthAuthPrompt" xml:space="preserve">
-    <value>The application below has requested access to your data.  Do you want to give it access?</value>
-  </data>
-  <data name="oAuthAuthWarning" xml:space="preserve">
-    <value>Important - make sure that you trust the app that is requesting permission and that you have explicitly asked for it to do so!</value>
-  </data>
-  <data name="oAuthRedirect" xml:space="preserve">
-    <value>When you approve or deny this request, you will be redirected to the following domain; ensure that this is what you expect:</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DonationThankYou" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\DonationThankYou.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

@@ -2006,4 +2006,31 @@ Proceed with import?</value>
   <data name="PrintFormatUSAFacingTip" xml:space="preserve">
     <value>This layout will show facing pages sequentially.  For best results, include a cover sheet, download a PDF and print in landscape mode with duplex along the short-edge of the page.</value>
   </data>
+  <data name="PrintHeaderSEDay" xml:space="preserve">
+    <value>Single Engine Day</value>
+  </data>
+  <data name="PrintHeaderMEDay" xml:space="preserve">
+    <value>Multi Engine Day</value>
+  </data>
+  <data name="PrintHeaderOtherDay" xml:space="preserve">
+    <value>Other Day</value>
+  </data>
+  <data name="PrintHeaderSENight" xml:space="preserve">
+    <value>Single Engine Night</value>
+  </data>
+  <data name="PrintHeaderMENight" xml:space="preserve">
+    <value>Multi Engine Night</value>
+  </data>
+  <data name="PrintHeaderOtherNight" xml:space="preserve">
+    <value>Other Night</value>
+  </data>
+  <data name="PrintHeaderSingleEngineShort" xml:space="preserve">
+    <value>SE</value>
+  </data>
+  <data name="PrintHeaderMultiEngineShort" xml:space="preserve">
+    <value>ME</value>
+  </data>
+  <data name="SACAAReportHeader" xml:space="preserve">
+    <value>SACAA style report</value>
+  </data>
 </root>

@@ -1767,20 +1767,20 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank-you for supporting %APP_NAME%.
+        ///   Looks up a localized string similar to Create a PDF to download.
         /// </summary>
-        internal static string DonateThankYouTitle {
+        internal static string DownloadAsPDF {
             get {
-                return ResourceManager.GetString("DonateThankYouTitle", resourceCulture);
+                return ResourceManager.GetString("DownloadAsPDF", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Create a PDF to download.
         /// </summary>
-        internal static string DownloadAsPDF {
+        internal static string DownloadAsPDF1 {
             get {
-                return ResourceManager.GetString("DownloadAsPDF", resourceCulture);
+                return ResourceManager.GetString("DownloadAsPDF1", resourceCulture);
             }
         }
         

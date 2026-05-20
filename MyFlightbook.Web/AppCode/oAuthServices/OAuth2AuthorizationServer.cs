@@ -8,9 +8,12 @@ using MyFlightbook;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 
 /******************************************************
@@ -118,6 +121,136 @@ namespace OAuthAuthorizationServer.Code
         }
     }
 
+    public class SyntheticTokenRequest : HttpRequestBase
+    {
+        private readonly NameValueCollection _form;
+        private readonly Uri _uri;
+
+        public SyntheticTokenRequest(Uri uri, NameValueCollection form)
+        {
+            _uri = uri;
+            _form = form;
+        }
+
+        public override NameValueCollection Form => _form;
+        public override NameValueCollection Headers => new NameValueCollection();
+        public override Uri Url => _uri;
+        public override string HttpMethod => "POST";
+        public override string RequestType => "POST";
+        public override NameValueCollection QueryString => new NameValueCollection();
+        public override bool IsSecureConnection => _uri.Scheme == "https";
+        public override NameValueCollection ServerVariables => new NameValueCollection
+        {
+            { "HTTPS", _uri.Scheme == "https" ? "on" : "off" },
+            { "HTTP_HOST", _uri.Host },
+            { "SERVER_PORT", _uri.Port.ToString(CultureInfo.InvariantCulture) },
+            { "REQUEST_URI", _uri.AbsolutePath }
+        };
+    }
+
+    [Serializable]
+    public class PkceTempRecord
+    {
+        #region Properties
+        public string State { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string RedirectEndpoint { get; set; } = string.Empty;
+        public string Scope { get; set; } = string.Empty;
+        public string CodeChallenge { get; set; } = string.Empty;
+        public string CodeChallengeMethod { get; set; } = string.Empty;
+        public string PublicCode { get; set; } = string.Empty;
+        public string LegacyCode { get; set; } = string.Empty;
+        public DateTime ExpiresUtc { get; set; } = DateTime.UtcNow.AddMinutes(5);
+        public bool Used { get; set; }
+        #endregion
+
+        public PkceTempRecord() { }
+
+        private PkceTempRecord(IDataReader dr) : this()
+        {
+            State = (string)dr["state"];
+            ClientId = (string)dr["ClientId"];
+            RedirectEndpoint= (string)dr["RedirectUri"];
+            CodeChallenge= (string)dr["CodeChallenge"];
+            CodeChallengeMethod= (string)dr["CodeChallengeMethod"];
+            PublicCode= (string)dr["PublicCode"];
+            LegacyCode = (string)dr["LegacyCode"];
+            ExpiresUtc = DateTime.SpecifyKind(Convert.ToDateTime(dr["ExpiresUtc"], CultureInfo.InvariantCulture), DateTimeKind.Utc);
+            Scope = (string)dr["scopes"];
+            Used = Convert.ToBoolean(dr["Used"], CultureInfo.InvariantCulture);
+        }
+
+        public void Commit()
+        {
+            DBHelper dbh = new DBHelper(@"REPLACE INTO PkceAuthorization SET State=?state, ClientId=?clientID, RedirectUri=?redirectUri, CodeChallenge=?challenge, CodeChallengeMethod=?method,
+                LegacyCode=?legacy, PublicCode=?public, ExpiresUtc=?ExpiresUtc, scopes=?scope, used=?used");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("state", State);
+                comm.Parameters.AddWithValue("clientID", ClientId);
+                comm.Parameters.AddWithValue("redirectUri", RedirectEndpoint);
+                comm.Parameters.AddWithValue("challenge", CodeChallenge);
+                comm.Parameters.AddWithValue("method", CodeChallengeMethod);
+                comm.Parameters.AddWithValue("public", PublicCode);
+                comm.Parameters.AddWithValue("legacy", LegacyCode);
+                comm.Parameters.AddWithValue("ExpiresUtc", ExpiresUtc);
+                comm.Parameters.AddWithValue("used", Used);
+                comm.Parameters.AddWithValue("scope", Scope.LimitTo(255));
+            });
+            if (!String.IsNullOrEmpty(dbh.LastError))
+                throw new InvalidOperationException(dbh.LastError);
+        }
+
+        public static PkceTempRecord LoadFromPublicCode(string code)
+        {
+            PkceTempRecord result = null;
+            DBHelper dbh = new DBHelper("SELECT * FROM PkceAuthorization WHERE publiccode=?code");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("code", code); },
+                (dr) => { result = new PkceTempRecord(dr); });
+            return result;
+        }
+
+        public static PkceTempRecord LoadFromState(string state)
+        {
+            PkceTempRecord result = null;
+            DBHelper dbh = new DBHelper("SELECT * FROM PkceAuthorization WHERE state=?state");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("state", state); },
+                (dr) => { result = new PkceTempRecord(dr); });
+            return result;
+        }
+
+        public void ValidateGrant(string verifier, string clientId)
+        {
+            if (Used || ExpiresUtc < DateTime.UtcNow)
+                throw new InvalidOperationException("PKCE already used or expired; please use a new verifier/challenge code.");
+
+            if (ClientId != clientId)
+                throw new InvalidOperationException("invalid_client");
+
+            // Validate PKCE
+            if (CodeChallengeMethod == "S256")
+            {
+                using (var sha = SHA256.Create())
+                {
+                    string computed = sha.ComputeHash(Encoding.ASCII.GetBytes(verifier)).ToBase64URL();
+                    if (computed != CodeChallenge)
+                        throw new InvalidOperationException("invalid_grant");
+                }
+            }
+            else
+            {
+                if (verifier != CodeChallenge)
+                    throw new InvalidOperationException("invalid_grant");
+            }
+
+            // Mark as used
+            Used = true;
+            Commit();
+        }
+    }
+
     /// <summary>
     /// An OAuth 2.0 Client that has registered with this Authorization Server.
     /// Adapted from DotNetOpenAuth sample code.
@@ -125,18 +258,18 @@ namespace OAuthAuthorizationServer.Code
     [Serializable]
     public sealed partial class MFBOauth2Client : IClientDescription
     {
-        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope, string szuser)
+        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope, string szuser,  ClientType clientType = ClientType.Confidential)
         {
             ClientName = name;
             ClientIdentifier = clientIdentifier;
-            ClientSecret = clientSecret;
+            ClientSecret = clientType == ClientType.Confidential ? clientSecret : string.Empty;
             Callbacks = String.IsNullOrEmpty(callback) ? Array.Empty<string>() : AllowedCallbacksFromString(callback);
-            ClientType = DotNetOpenAuth.OAuth2.ClientType.Public;
+            ClientType = clientType;
             Scope = scope;
             OwningUser = szuser;
         }
 
-        private MFBOauth2Client(MySqlDataReader dr) : this((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"], (string)dr["owningUserName"])
+        private MFBOauth2Client(MySqlDataReader dr) : this((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"], (string)dr["owningUserName"], (ClientType) util.ReadNullableField(dr, "ClientType", 0))
         {
             
         }
@@ -175,7 +308,7 @@ namespace OAuthAuthorizationServer.Code
         {
             if (String.IsNullOrWhiteSpace(ClientName))
                 throw new MyFlightbookValidationException("Client Name cannot be empty");
-            if (String.IsNullOrWhiteSpace(ClientSecret))
+            if (String.IsNullOrWhiteSpace(ClientSecret) && ClientType == ClientType.Confidential)
                 throw new MyFlightbookValidationException("Client secret cannot be empty");
             if (String.IsNullOrWhiteSpace(ClientIdentifier))
                 throw new MyFlightbookValidationException("Client identifier cannot be empty");
@@ -208,7 +341,7 @@ namespace OAuthAuthorizationServer.Code
         public void Commit()
         {
             Validate(); // will throw an exception as appropriate
-            DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=1");
+            DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=?clientType");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("id", ClientIdentifier.LimitTo(45));
@@ -217,6 +350,7 @@ namespace OAuthAuthorizationServer.Code
                 comm.Parameters.AddWithValue("name", ClientName.LimitTo(255));
                 comm.Parameters.AddWithValue("scopes", Scope.LimitTo(255));
                 comm.Parameters.AddWithValue("user", OwningUser.LimitTo(255));
+                comm.Parameters.AddWithValue("clientType", (int)ClientType);
             });
             OAuth2AuthorizationServer.RefreshClients();
         }
@@ -275,7 +409,7 @@ namespace OAuthAuthorizationServer.Code
         {
             get
             {
-                IDictionary<string, Uri> links = new Dictionary<string, Uri>();
+                Dictionary<string, Uri> links = new Dictionary<string, Uri>();
                 if (Callbacks != null)
                 {
                     foreach (string sz in Callbacks)

@@ -2,10 +2,10 @@
 using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Geography;
+using MyFlightbook.Geography.SolarTools;
 using MyFlightbook.Mapping;
 using MyFlightbook.OAuth;
 using MyFlightbook.Schedule;
-using MyFlightbook.Geography.SolarTools;
 using MyFlightbook.Telemetry;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
@@ -326,36 +326,50 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                             defaultClient = clients.First();
                     }
 
+                    bool fUsePKCS = Request["pkce"] != null;
+
+                    string codeVerifier = Request["code_verifier"] ?? string.Empty;
+                    string codeChallenge = Request["code_challenge"] ?? string.Empty;
+
+                    if (fUsePKCS && String.IsNullOrEmpty(codeVerifier) || String.IsNullOrEmpty(codeChallenge))
+                    {
+                        OAuth2AdHocClient c = new OAuth2AdHocClient(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, Array.Empty<string>(), ClientType.Public);
+                        codeVerifier = c.CodeVerifier;
+                        codeChallenge = c.CodeChallenge;
+                    }
+
                     string clientID = Request["clientID"] ?? defaultClient?.ClientIdentifier ?? string.Empty;
                     string clientSecret = Request["clientSecret"] ?? defaultClient?.ClientSecret ?? string.Empty;
-                    string authURL = Request["authTarget"] ?? "~/mvc/oAuth/Authorize".ToAbsoluteURL(Request).ToString();
-                    string tokenURL = Request["tokenTarget"] ?? "~/mvc/oAuth/OAuthToken".ToAbsoluteURL(Request).ToString();
+                    string authURL = Request["authTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/AuthorizePKCE?code_challenge={codeChallenge}&code_challenge_method=S256" : "~/mvc/oAuth/Authorize").ToAbsoluteURL(Request).ToString();
+                    string tokenURL = Request["tokenTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/OAuthToken?code_verifier={codeVerifier}" : "~/mvc/oAuth/OAuthToken").ToAbsoluteURL(Request).ToString();
                     string redirectURL = Request["targetRedir"] ?? Request.Url.GetLeftPart(UriPartial.Path);
                     string scope = Request["scopes"] ?? "currency totals addflight readflight addaircraft readaircraft visited namedqueries images";
-                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray());
+                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray(), fUsePKCS ? ClientType.Public : ClientType.Confidential) { CodeVerifier = codeVerifier, CodeChallenge = codeChallenge };
                 }
                 return client;
             }
             set { Session[sessionKeyOAuthClient] = value; }
         }
 
-        protected void InitViewBag()
+        public ActionResult ClientTestBed()
         {
+            if (Request["clear"] !=  null || (Request["pkce"] != null && CurrentClient.OAuthClientType == ClientType.Confidential))
+            {
+                CurrentClient = null;
+                var oldparams = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                oldparams.Remove("clear");
+                oldparams.Remove("code");
+                oldparams.Remove("state");
+                oldparams.Remove("error");
+                oldparams.Remove("success");
+                return Redirect($"{Request.Url.AbsolutePath}{(oldparams.Count == 0 ? string.Empty : "?" + oldparams.ToString())}");
+            }
             ViewBag.client = CurrentClient;
             ViewBag.resourceURL = Request["txtResourceURL"] ?? "~/mvc/oAuth/OAuthResource".ToAbsoluteURL(Request).ToString();
             ViewBag.authorization = Request["code"] ?? string.Empty;
             ViewBag.State = Request["state"] ?? string.Empty;
             ViewBag.error = Request["error"] ?? string.Empty;
-        }
 
-        public ActionResult ClientTestBed()
-        {
-            if (Request["clear"] !=  null)
-            {
-                CurrentClient = null;
-                return Redirect("ClientTestBed");
-            }
-            InitViewBag();
             return View("oAuthClientTest");
         }
 
@@ -382,7 +396,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 else if (submitter.CompareCurrentCultureIgnoreCase("token") == 0)
                 {
-                    adhocClient.AuthState = await adhocClient.ConvertToken(targetRedir, Request["code"]);
+                    adhocClient.AuthState = await adhocClient.ConvertToken(targetRedir, Request["code"], Request["code_verifier"]);
                     return Redirect("ClientTestBed");
                 }
                 else if (submitter.CompareCurrentCultureIgnoreCase("refresh") == 0)

@@ -465,6 +465,21 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Like ToSafeBase64, but trims away any "="
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string ToBase64URL(this byte[] bytes)
+        {
+            if (bytes == null)
+                throw new ArgumentNullException(nameof(bytes));
+            return Convert.ToBase64String(bytes)
+             .Replace("+", "-")
+             .Replace("/", "_")
+             .TrimEnd('=');
+        }
+
+        /// <summary>
         /// Compresses a string and converts it to base 64 in a manner that does NOT require URL encoding so that it can be passed as a parameter in a URL
         /// </summary>
         /// <param name="sz"></param>

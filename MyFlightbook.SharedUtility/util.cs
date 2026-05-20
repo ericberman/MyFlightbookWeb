@@ -119,6 +119,10 @@ namespace MyFlightbook
         /// </summary>
         string UserFullName { get; }
         /// <summary>
+        /// Preferred greeting for this user (e.g., "Captain Smith" or "John") - this is what we should use when addressing the user in communications
+        /// </summary>
+        string PreferredGreeting { get; }
+        /// <summary>
         /// User's email address
         /// </summary>
         string Email { get; }
