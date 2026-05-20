@@ -520,7 +520,7 @@ WHERE
         /// Returns all events with a non-zero flag for the specified user.
         /// </summary>
         /// <param name="szUser">Username that owns the events</param>
-        /// <returns>An array of matching ProfileEvent objects</returns>
+        /// <returns>An array of matching FlightProperties objects</returns>
         public static IEnumerable<CustomFlightProperty> GetFlaggedEvents(string szUser)
         {
             List<CustomFlightProperty> lst = new List<CustomFlightProperty>();

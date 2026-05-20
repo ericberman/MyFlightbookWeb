@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Schedule;
+﻿using MyFlightbook.FlightProperties;
+using MyFlightbook.Schedule;
 using MyFlightbook.SponsoredAds;
 using System;
 using System.Collections.Generic;

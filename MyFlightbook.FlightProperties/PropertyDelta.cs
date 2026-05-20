@@ -1,15 +1,16 @@
-﻿using System;
+﻿using MyFlightbook.FlightProperties.Properties;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2024 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-namespace MyFlightbook
+namespace MyFlightbook.FlightProperties
 {
     [Serializable]
     public class PropertyDelta : IComparable, IEquatable<PropertyDelta>
@@ -86,13 +87,13 @@ namespace MyFlightbook
                 case ChangeType.Unchanged:
                     return string.Empty;
                 case ChangeType.Added:
-                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", Resources.LogbookEntry.CompareAdded, PropName, NewValue);
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", PropertyResource.CompareAdded, PropName, NewValue);
                 case ChangeType.Deleted:
-                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", Resources.LogbookEntry.CompareDeleted, PropName, OldValue);
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", PropertyResource.CompareDeleted, PropName, OldValue);
                 case ChangeType.Modified:
-                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", Resources.LogbookEntry.CompareModified, PropName, OldValue, NewValue);
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", PropertyResource.CompareModified, PropName, OldValue, NewValue);
                 case ChangeType.ModifiedWhiteSpace:
-                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", Resources.LogbookEntry.CompareModifiedWhitespace, PropName, OldValue, NewValue);
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", PropertyResource.CompareModifiedWhitespace, PropName, OldValue, NewValue);
             }
         }
 

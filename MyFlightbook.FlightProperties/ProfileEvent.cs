@@ -1,14 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -17,35 +10,8 @@ using System.Xml.Serialization;
  *
 *******************************************************/
 
-namespace MyFlightbook
+namespace MyFlightbook.FlightProperties
 {
-    /// <summary>
-    /// Describes cross-fill for a specific property with a tip and a script reference
-    /// </summary>
-    public class CrossFillDescriptor
-    {
-        /// <summary>
-        /// The top for the cross-fill arrow
-        /// </summary>
-        public string Tip { get; set; }
-
-        /// <summary>
-        /// Client-resolved reference to the script to execute on cross-fill
-        /// </summary>
-        public string ScriptRef { get; set; }
-
-        public CrossFillDescriptor()
-        {
-            Tip = ScriptRef = string.Empty;
-        }
-
-        public CrossFillDescriptor(string tip, string scriptref)
-        {
-            Tip = tip;
-            ScriptRef = scriptref;
-        }
-    }
-
     /// <summary>
     /// A flight property coupled with date and some flight properties.  
     /// Called a "ProfileEvent" because it (used to) include mostly events that were not necessarily coupled with flights 
@@ -124,7 +90,7 @@ INNER JOIN categoryclass cc ON mo.idcategoryclass = cc.idCatClass
 WHERE f.username=?User AND (cp.Flags & {0}) <> 0 AND ((fp.IntValue <> 0) OR (fp.DecValue <> 0.0) OR (cp.Type=4)) 
 ORDER BY f.Date Desc";
 
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQueryBase, (ulong) pg));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQueryBase, (ulong)pg));
             if (!dbh.ReadRows(
                 (comm) =>
                 {

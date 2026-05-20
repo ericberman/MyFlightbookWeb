@@ -126,6 +126,18 @@
   <data name="ApproachDescTemplate" xml:space="preserve">
     <value>{0} to runway {1} at {2}</value>
   </data>
+  <data name="CompareAdded" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="CompareDeleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="CompareModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="CompareModifiedWhitespace" xml:space="preserve">
+    <value>Modified (leading/trailing whitespace only)</value>
+  </data>
   <data name="ElapsedBlockSummary" xml:space="preserve">
     <value>Block: {0}</value>
   </data>
@@ -148,6 +160,15 @@
     <value>{0} to {1} ({2})</value>
     <comment>E.g., "23.5 - 24.2 (0.7)" or "18:12 - 19:02 (0:50)"</comment>
   </data>
+  <data name="errTemplateDescriptionTooLong" xml:space="preserve">
+    <value>Template description cannot exceed 255 characters.</value>
+  </data>
+  <data name="errTemplateNoName" xml:space="preserve">
+    <value>Template requires a name</value>
+  </data>
+  <data name="errTemplateNoProperties" xml:space="preserve">
+    <value>Template is empty - need to have at least one property.</value>
+  </data>
   <data name="importUnitBoolean" xml:space="preserve">
     <value>Yes/No</value>
     <comment>Field to import is a boolean (yes/no) value</comment>
@@ -169,5 +190,47 @@
   </data>
   <data name="PropertyYes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="TemplateAnonymousBasic" xml:space="preserve">
+    <value>Anonymous Aircraft (Basic)</value>
+  </data>
+  <data name="TemplateAnonymousBasicDesc" xml:space="preserve">
+    <value>Contains properties useful for flights in anonymous aircraft</value>
+  </data>
+  <data name="templateGroupAuto" xml:space="preserve">
+    <value>Automatic</value>
+  </data>
+  <data name="templateGroupCheckrides" xml:space="preserve">
+    <value>Checkrides and Reviews</value>
+  </data>
+  <data name="templateGroupLessons" xml:space="preserve">
+    <value>Lesson Plans</value>
+  </data>
+  <data name="templateGroupMissions" xml:space="preserve">
+    <value>Missions</value>
+  </data>
+  <data name="templateGroupRole" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="templateGroupTraining" xml:space="preserve">
+    <value>Training</value>
+  </data>
+  <data name="TemplateMRU" xml:space="preserve">
+    <value>Previously Used</value>
+  </data>
+  <data name="TemplateMRUDescription" xml:space="preserve">
+    <value>Automatically shows properties you've used on previous flights.  You can remove ones you no longer need.</value>
+  </data>
+  <data name="TemplateSimBasic" xml:space="preserve">
+    <value>Simulator / Training Device (Basic)</value>
+  </data>
+  <data name="TemplateSimBasicDesc" xml:space="preserve">
+    <value>Contains properties useful for any sort of simulator flight</value>
+  </data>
+  <data name="TemplateStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="TemplateStudentDesc" xml:space="preserve">
+    <value>Contains properties useful for students</value>
   </data>
 </root>

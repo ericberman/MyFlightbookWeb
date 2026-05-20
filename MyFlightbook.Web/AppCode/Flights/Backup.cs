@@ -2,6 +2,7 @@
 using MyFlightbook.CloudStorage;
 using MyFlightbook.CSV;
 using MyFlightbook.Currency;
+using MyFlightbook.FlightProperties;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;

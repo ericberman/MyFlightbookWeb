@@ -22,7 +22,7 @@ namespace MyFlightbook.FlightProperties.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PropertyResource {
+    public class PropertyResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MyFlightbook.FlightProperties.Properties.PropertyResource", typeof(PropertyResource).Assembly);
@@ -51,7 +51,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} {1} approach.
         /// </summary>
-        internal static string ApproachDescApproach {
+        public static string ApproachDescApproach {
             get {
                 return ResourceManager.GetString("ApproachDescApproach", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} {1} approaches.
         /// </summary>
-        internal static string ApproachDescApproaches {
+        public static string ApproachDescApproaches {
             get {
                 return ResourceManager.GetString("ApproachDescApproaches", resourceCulture);
             }
@@ -81,16 +81,52 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} to runway {1} at {2}.
         /// </summary>
-        internal static string ApproachDescTemplate {
+        public static string ApproachDescTemplate {
             get {
                 return ResourceManager.GetString("ApproachDescTemplate", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added.
+        /// </summary>
+        public static string CompareAdded {
+            get {
+                return ResourceManager.GetString("CompareAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted.
+        /// </summary>
+        public static string CompareDeleted {
+            get {
+                return ResourceManager.GetString("CompareDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modified.
+        /// </summary>
+        public static string CompareModified {
+            get {
+                return ResourceManager.GetString("CompareModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modified (leading/trailing whitespace only).
+        /// </summary>
+        public static string CompareModifiedWhitespace {
+            get {
+                return ResourceManager.GetString("CompareModifiedWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block: {0}.
         /// </summary>
-        internal static string ElapsedBlockSummary {
+        public static string ElapsedBlockSummary {
             get {
                 return ResourceManager.GetString("ElapsedBlockSummary", resourceCulture);
             }
@@ -99,7 +135,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Duty: {0}.
         /// </summary>
-        internal static string ElapsedDutySummary {
+        public static string ElapsedDutySummary {
             get {
                 return ResourceManager.GetString("ElapsedDutySummary", resourceCulture);
             }
@@ -108,7 +144,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Flight Duty: {0}.
         /// </summary>
-        internal static string ElapsedFlightDutySummary {
+        public static string ElapsedFlightDutySummary {
             get {
                 return ResourceManager.GetString("ElapsedFlightDutySummary", resourceCulture);
             }
@@ -117,7 +153,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Lesson: {0}.
         /// </summary>
-        internal static string ElapsedLessonSummary {
+        public static string ElapsedLessonSummary {
             get {
                 return ResourceManager.GetString("ElapsedLessonSummary", resourceCulture);
             }
@@ -126,7 +162,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Scheduled: {0}.
         /// </summary>
-        internal static string ElapsedScheduleSummary {
+        public static string ElapsedScheduleSummary {
             get {
                 return ResourceManager.GetString("ElapsedScheduleSummary", resourceCulture);
             }
@@ -135,7 +171,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Tach: {0}.
         /// </summary>
-        internal static string ElapsedTachSummary {
+        public static string ElapsedTachSummary {
             get {
                 return ResourceManager.GetString("ElapsedTachSummary", resourceCulture);
             }
@@ -144,16 +180,43 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} to {1} ({2}).
         /// </summary>
-        internal static string ElapsedTime {
+        public static string ElapsedTime {
             get {
                 return ResourceManager.GetString("ElapsedTime", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Template description cannot exceed 255 characters..
+        /// </summary>
+        public static string errTemplateDescriptionTooLong {
+            get {
+                return ResourceManager.GetString("errTemplateDescriptionTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template requires a name.
+        /// </summary>
+        public static string errTemplateNoName {
+            get {
+                return ResourceManager.GetString("errTemplateNoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template is empty - need to have at least one property..
+        /// </summary>
+        public static string errTemplateNoProperties {
+            get {
+                return ResourceManager.GetString("errTemplateNoProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes/No.
         /// </summary>
-        internal static string importUnitBoolean {
+        public static string importUnitBoolean {
             get {
                 return ResourceManager.GetString("importUnitBoolean", resourceCulture);
             }
@@ -162,7 +225,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
-        internal static string importUnitDate {
+        public static string importUnitDate {
             get {
                 return ResourceManager.GetString("importUnitDate", resourceCulture);
             }
@@ -171,7 +234,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Number.
         /// </summary>
-        internal static string importUnitNumber {
+        public static string importUnitNumber {
             get {
                 return ResourceManager.GetString("importUnitNumber", resourceCulture);
             }
@@ -180,7 +243,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Text.
         /// </summary>
-        internal static string importUnitText {
+        public static string importUnitText {
             get {
                 return ResourceManager.GetString("importUnitText", resourceCulture);
             }
@@ -189,7 +252,7 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string PropertyNo {
+        public static string PropertyNo {
             get {
                 return ResourceManager.GetString("PropertyNo", resourceCulture);
             }
@@ -198,9 +261,135 @@ namespace MyFlightbook.FlightProperties.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
-        internal static string PropertyYes {
+        public static string PropertyYes {
             get {
                 return ResourceManager.GetString("PropertyYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anonymous Aircraft (Basic).
+        /// </summary>
+        public static string TemplateAnonymousBasic {
+            get {
+                return ResourceManager.GetString("TemplateAnonymousBasic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contains properties useful for flights in anonymous aircraft.
+        /// </summary>
+        public static string TemplateAnonymousBasicDesc {
+            get {
+                return ResourceManager.GetString("TemplateAnonymousBasicDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic.
+        /// </summary>
+        public static string templateGroupAuto {
+            get {
+                return ResourceManager.GetString("templateGroupAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checkrides and Reviews.
+        /// </summary>
+        public static string templateGroupCheckrides {
+            get {
+                return ResourceManager.GetString("templateGroupCheckrides", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lesson Plans.
+        /// </summary>
+        public static string templateGroupLessons {
+            get {
+                return ResourceManager.GetString("templateGroupLessons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missions.
+        /// </summary>
+        public static string templateGroupMissions {
+            get {
+                return ResourceManager.GetString("templateGroupMissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roles.
+        /// </summary>
+        public static string templateGroupRole {
+            get {
+                return ResourceManager.GetString("templateGroupRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Training.
+        /// </summary>
+        public static string templateGroupTraining {
+            get {
+                return ResourceManager.GetString("templateGroupTraining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previously Used.
+        /// </summary>
+        public static string TemplateMRU {
+            get {
+                return ResourceManager.GetString("TemplateMRU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically shows properties you&apos;ve used on previous flights.  You can remove ones you no longer need..
+        /// </summary>
+        public static string TemplateMRUDescription {
+            get {
+                return ResourceManager.GetString("TemplateMRUDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simulator / Training Device (Basic).
+        /// </summary>
+        public static string TemplateSimBasic {
+            get {
+                return ResourceManager.GetString("TemplateSimBasic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contains properties useful for any sort of simulator flight.
+        /// </summary>
+        public static string TemplateSimBasicDesc {
+            get {
+                return ResourceManager.GetString("TemplateSimBasicDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Student.
+        /// </summary>
+        public static string TemplateStudent {
+            get {
+                return ResourceManager.GetString("TemplateStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contains properties useful for students.
+        /// </summary>
+        public static string TemplateStudentDesc {
+            get {
+                return ResourceManager.GetString("TemplateStudentDesc", resourceCulture);
             }
         }
     }

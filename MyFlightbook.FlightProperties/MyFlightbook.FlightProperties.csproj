@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyFlightbook.AircraftSupport\MyFlightbook.AircraftSupport.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
   </ItemGroup>
 
@@ -22,7 +23,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\PropertyResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PropertyResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

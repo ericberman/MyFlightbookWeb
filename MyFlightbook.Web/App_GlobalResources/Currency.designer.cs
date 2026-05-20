@@ -1805,19 +1805,12 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to  &lt;div&gt;
-        ///    &lt;p&gt;
-        ///       You can define custom deadlines that will appear in your currency.  The difference from other currencies is that a deadline isn&apos;t impacted by your flying.
-        ///    &lt;/p&gt;
+        ///    &lt;p&gt;You can define custom deadlines that will appear in your currency.  The difference from other currencies is that a deadline isn&apos;t impacted by your flying, but rather by the passage of time (or, for aircraft, aircraft usage).&lt;/p&gt;
         ///    &lt;p&gt;
         ///        Examples include:
         ///            &lt;ul&gt;
-        ///                &lt;li&gt;Certificate/registration expirations&lt;/li&gt;
-        ///                &lt;li&gt;Inspections mandated by airworthiness directives&lt;/li&gt;
-        ///                &lt;li&gt;Employer-imposed deadlines&lt;/li&gt;
-        ///            &lt;/ul&gt;
-        ///    &lt;/p&gt;
-        ///    &lt;p&gt;
-        ///        A deadline may be due based on a [rest of string was truncated]&quot;;.
+        ///                &lt;li&gt;Certificate/registration expirations.  Particularly useful if you have multiple certificates (e.g., FAA and EASA)&lt;/li&gt;
+        ///                &lt;li&gt;Additional medical certificates, if you have more than [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DeadlineDescription {
             get {

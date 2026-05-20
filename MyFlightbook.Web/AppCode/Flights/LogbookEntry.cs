@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.Encryptors;
+using MyFlightbook.FlightProperties;
 using MyFlightbook.FlightStatistics;
 using MyFlightbook.Geography;
 using MyFlightbook.Histogram;
