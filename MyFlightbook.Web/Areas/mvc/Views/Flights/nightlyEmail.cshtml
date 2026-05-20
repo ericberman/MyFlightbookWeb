@@ -100,7 +100,7 @@
         <div style="margin-left: auto; margin-right:auto; margin-top: 5px; margin-bottom: 5px; text-align:center; width:80%; border: 1px solid black; background-color:#EEEEEE">
             @if (Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), Username) > 0)
             {
-                <p>@Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle)</p>
+                <p>@Branding.ReBrand(MyFlightbook.Payments.Properties.Payments.DonateThankYouTitle)</p>
             }
             else
             {
