@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.BasicmedTools;
+using MyFlightbook.FlightProperties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,7 +7,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2021-2022 MyFlightbook LLC
+ * Copyright (c) 2021-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

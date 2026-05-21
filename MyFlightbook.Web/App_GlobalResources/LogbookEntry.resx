@@ -358,18 +358,6 @@
     <value>{0} - Setting up to import</value>
     <comment>{0} has the app name</comment>
   </data>
-  <data name="importUnitDate" xml:space="preserve">
-    <value>Date</value>
-    <comment>Field to import is a date</comment>
-  </data>
-  <data name="importUnitNumber" xml:space="preserve">
-    <value>Number</value>
-    <comment>Field to import is a number</comment>
-  </data>
-  <data name="importUnitText" xml:space="preserve">
-    <value>Text</value>
-    <comment>Field to import is free-form text</comment>
-  </data>
   <data name="PublicFlightAircraft" xml:space="preserve">
     <value>Aircraft:</value>
   </data>
@@ -521,15 +509,6 @@
   </data>
   <data name="SubtotalComment" xml:space="preserve">
     <value>Totals this page:</value>
-  </data>
-  <data name="ElapsedBlockSummary" xml:space="preserve">
-    <value>Block: {0}</value>
-  </data>
-  <data name="ElapsedDutySummary" xml:space="preserve">
-    <value>Duty: {0}</value>
-  </data>
-  <data name="ElapsedTachSummary" xml:space="preserve">
-    <value>Tach: {0}</value>
   </data>
   <data name="SendFlightBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\sendflightbody.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -691,10 +670,6 @@
   <data name="PrintHeaderLandingsShort" xml:space="preserve">
     <value>Lndgs.</value>
   </data>
-  <data name="importUnitBoolean" xml:space="preserve">
-    <value>Yes/No</value>
-    <comment>Field to import is a boolean (yes/no) value</comment>
-  </data>
   <data name="PropertyGroupSeparator" xml:space="preserve">
     <value>. - - - {0} - - -</value>
     <comment>DO NOT LOCALIZE - used to separate groups of properties in the legacy property drop-down</comment>
@@ -808,15 +783,6 @@
   <data name="FlightDetailsTitle" xml:space="preserve">
     <value>Details for Flight on {0:d}</value>
   </data>
-  <data name="ApproachDescApproach" xml:space="preserve">
-    <value>{0} {1} approach</value>
-  </data>
-  <data name="ApproachDescApproaches" xml:space="preserve">
-    <value>{0} {1} approaches</value>
-  </data>
-  <data name="ApproachDescTemplate" xml:space="preserve">
-    <value>{0} to runway {1} at {2}</value>
-  </data>
   <data name="importAuditHeader" xml:space="preserve">
     <value>Notes about file being imported</value>
   </data>
@@ -916,15 +882,6 @@
   <data name="PrintHeaderTakeoffsLandings" xml:space="preserve">
     <value>Takeoffs (T) / Landings (L)</value>
   </data>
-  <data name="CompareAdded" xml:space="preserve">
-    <value>Added</value>
-  </data>
-  <data name="CompareDeleted" xml:space="preserve">
-    <value>Deleted</value>
-  </data>
-  <data name="CompareModified" xml:space="preserve">
-    <value>Modified</value>
-  </data>
   <data name="CompareHeader" xml:space="preserve">
     <value>Changes to this flight:</value>
   </data>
@@ -971,15 +928,6 @@ Proceed with import?</value>
   <data name="SendToCloudAhoyView" xml:space="preserve">
     <value>View on CloudAhoy</value>
   </data>
-  <data name="errTemplateDescriptionTooLong" xml:space="preserve">
-    <value>Template description cannot exceed 255 characters.</value>
-  </data>
-  <data name="errTemplateNoName" xml:space="preserve">
-    <value>Template requires a name</value>
-  </data>
-  <data name="errTemplateNoProperties" xml:space="preserve">
-    <value>Template is empty - need to have at least one property.</value>
-  </data>
   <data name="TemplateAvailableProperties" xml:space="preserve">
     <value>Available properties</value>
   </data>
@@ -1016,18 +964,6 @@ Proceed with import?</value>
   <data name="TemplateFindPropertiesWatermark" xml:space="preserve">
     <value>Find properties</value>
   </data>
-  <data name="templateGroupAuto" xml:space="preserve">
-    <value>Automatic</value>
-  </data>
-  <data name="templateGroupCheckrides" xml:space="preserve">
-    <value>Checkrides and Reviews</value>
-  </data>
-  <data name="templateGroupMissions" xml:space="preserve">
-    <value>Missions</value>
-  </data>
-  <data name="templateGroupTraining" xml:space="preserve">
-    <value>Training</value>
-  </data>
   <data name="TemplateHeader" xml:space="preserve">
     <value>Flight Templates</value>
   </data>
@@ -1036,12 +972,6 @@ Proceed with import?</value>
   </data>
   <data name="TemplateMakeOwn" xml:space="preserve">
     <value>Add to My Templates</value>
-  </data>
-  <data name="TemplateMRU" xml:space="preserve">
-    <value>Previously Used</value>
-  </data>
-  <data name="TemplateMRUDescription" xml:space="preserve">
-    <value>Automatically shows properties you've used on previous flights.  You can remove ones you no longer need.</value>
   </data>
   <data name="TemplateNamePrompt" xml:space="preserve">
     <value>Name for template</value>
@@ -1085,26 +1015,8 @@ Proceed with import?</value>
   <data name="TemplateBrowseTemplates" xml:space="preserve">
     <value>Select from available templates</value>
   </data>
-  <data name="TemplateAnonymousBasic" xml:space="preserve">
-    <value>Anonymous Aircraft (Basic)</value>
-  </data>
-  <data name="TemplateAnonymousBasicDesc" xml:space="preserve">
-    <value>Contains properties useful for flights in anonymous aircraft</value>
-  </data>
-  <data name="TemplateSimBasic" xml:space="preserve">
-    <value>Simulator / Training Device (Basic)</value>
-  </data>
-  <data name="TemplateSimBasicDesc" xml:space="preserve">
-    <value>Contains properties useful for any sort of simulator flight</value>
-  </data>
-  <data name="templateGroupRole" xml:space="preserve">
-    <value>Roles</value>
-  </data>
   <data name="TemplateDefaultTooltip" xml:space="preserve">
     <value>Use this template by default</value>
-  </data>
-  <data name="templateGroupLessons" xml:space="preserve">
-    <value>Lesson Plans</value>
   </data>
   <data name="TemplateAircraftHeader" xml:space="preserve">
     <value>Templates for this aircraft:</value>
@@ -1286,12 +1198,6 @@ Proceed with import?</value>
   <data name="PublicFlightShowOptions" xml:space="preserve">
     <value>Display</value>
   </data>
-  <data name="TemplateStudent" xml:space="preserve">
-    <value>Student</value>
-  </data>
-  <data name="TemplateStudentDesc" xml:space="preserve">
-    <value>Contains properties useful for students</value>
-  </data>
   <data name="PrintFormatCondensed" xml:space="preserve">
     <value>Condensed</value>
   </data>
@@ -1353,24 +1259,11 @@ Proceed with import?</value>
   <data name="NumberOfFlightsOne" xml:space="preserve">
     <value>1 Flight</value>
   </data>
-  <data name="ElapsedFlightDutySummary" xml:space="preserve">
-    <value>Flight Duty: {0}</value>
-  </data>
-  <data name="ElapsedTime" xml:space="preserve">
-    <value>{0} to {1} ({2})</value>
-    <comment>E.g., "23.5 - 24.2 (0.7)" or "18:12 - 19:02 (0:50)"</comment>
-  </data>
   <data name="TemplatesLearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
   <data name="TaxiCrossFillTip" xml:space="preserve">
     <value>Sets taxi time equal to Total Time minus elapsed flight time (flight start to flight end)</value>
-  </data>
-  <data name="ElapsedLessonSummary" xml:space="preserve">
-    <value>Lesson: {0}</value>
-  </data>
-  <data name="ElapsedScheduleSummary" xml:space="preserve">
-    <value>Scheduled: {0}</value>
   </data>
   <data name="LeonAuthorize" xml:space="preserve">
     <value>Authorize %APP_NAME% to access your data on Leon</value>
@@ -1701,9 +1594,6 @@ Proceed with import?</value>
   </data>
   <data name="CopyFlightLinkTip" xml:space="preserve">
     <value>Copies a link to this flight to the clipboard.  Works best if you share details for the flight; otherwise recipients will see a map of the flight and no other details</value>
-  </data>
-  <data name="CompareModifiedWhitespace" xml:space="preserve">
-    <value>Modified (leading/trailing whitespace only)</value>
   </data>
   <data name="ImportWizardAutofillNone" xml:space="preserve">
     <value>Import data as-is</value>

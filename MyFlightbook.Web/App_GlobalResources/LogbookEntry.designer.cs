@@ -133,33 +133,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} {1} approach.
-        /// </summary>
-        internal static string ApproachDescApproach {
-            get {
-                return ResourceManager.GetString("ApproachDescApproach", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} {1} approaches.
-        /// </summary>
-        internal static string ApproachDescApproaches {
-            get {
-                return ResourceManager.GetString("ApproachDescApproaches", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} to runway {1} at {2}.
-        /// </summary>
-        internal static string ApproachDescTemplate {
-            get {
-                return ResourceManager.GetString("ApproachDescTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto Fill.
         /// </summary>
         internal static string AutoFill {
@@ -358,47 +331,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added.
-        /// </summary>
-        internal static string CompareAdded {
-            get {
-                return ResourceManager.GetString("CompareAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deleted.
-        /// </summary>
-        internal static string CompareDeleted {
-            get {
-                return ResourceManager.GetString("CompareDeleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Changes to this flight:.
         /// </summary>
         internal static string CompareHeader {
             get {
                 return ResourceManager.GetString("CompareHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Modified.
-        /// </summary>
-        internal static string CompareModified {
-            get {
-                return ResourceManager.GetString("CompareModified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Modified (leading/trailing whitespace only).
-        /// </summary>
-        internal static string CompareModifiedWhitespace {
-            get {
-                return ResourceManager.GetString("CompareModifiedWhitespace", resourceCulture);
             }
         }
         
@@ -615,69 +552,6 @@ namespace Resources {
         internal static string EditFlightUpdatePendingFlight {
             get {
                 return ResourceManager.GetString("EditFlightUpdatePendingFlight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Block: {0}.
-        /// </summary>
-        internal static string ElapsedBlockSummary {
-            get {
-                return ResourceManager.GetString("ElapsedBlockSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Duty: {0}.
-        /// </summary>
-        internal static string ElapsedDutySummary {
-            get {
-                return ResourceManager.GetString("ElapsedDutySummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Flight Duty: {0}.
-        /// </summary>
-        internal static string ElapsedFlightDutySummary {
-            get {
-                return ResourceManager.GetString("ElapsedFlightDutySummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lesson: {0}.
-        /// </summary>
-        internal static string ElapsedLessonSummary {
-            get {
-                return ResourceManager.GetString("ElapsedLessonSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled: {0}.
-        /// </summary>
-        internal static string ElapsedScheduleSummary {
-            get {
-                return ResourceManager.GetString("ElapsedScheduleSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tach: {0}.
-        /// </summary>
-        internal static string ElapsedTachSummary {
-            get {
-                return ResourceManager.GetString("ElapsedTachSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} to {1} ({2}).
-        /// </summary>
-        internal static string ElapsedTime {
-            get {
-                return ResourceManager.GetString("ElapsedTime", resourceCulture);
             }
         }
         
@@ -1029,33 +903,6 @@ namespace Resources {
         internal static string errRouteTooLong {
             get {
                 return ResourceManager.GetString("errRouteTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Template description cannot exceed 255 characters..
-        /// </summary>
-        internal static string errTemplateDescriptionTooLong {
-            get {
-                return ResourceManager.GetString("errTemplateDescriptionTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Template requires a name.
-        /// </summary>
-        internal static string errTemplateNoName {
-            get {
-                return ResourceManager.GetString("errTemplateNoName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Template is empty - need to have at least one property..
-        /// </summary>
-        internal static string errTemplateNoProperties {
-            get {
-                return ResourceManager.GetString("errTemplateNoProperties", resourceCulture);
             }
         }
         
@@ -2360,42 +2207,6 @@ namespace Resources {
         internal static string importTableHeader {
             get {
                 return ResourceManager.GetString("importTableHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Yes/No.
-        /// </summary>
-        internal static string importUnitBoolean {
-            get {
-                return ResourceManager.GetString("importUnitBoolean", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Date.
-        /// </summary>
-        internal static string importUnitDate {
-            get {
-                return ResourceManager.GetString("importUnitDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number.
-        /// </summary>
-        internal static string importUnitNumber {
-            get {
-                return ResourceManager.GetString("importUnitNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text.
-        /// </summary>
-        internal static string importUnitText {
-            get {
-                return ResourceManager.GetString("importUnitText", resourceCulture);
             }
         }
         
@@ -5422,24 +5233,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anonymous Aircraft (Basic).
-        /// </summary>
-        internal static string TemplateAnonymousBasic {
-            get {
-                return ResourceManager.GetString("TemplateAnonymousBasic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contains properties useful for flights in anonymous aircraft.
-        /// </summary>
-        internal static string TemplateAnonymousBasicDesc {
-            get {
-                return ResourceManager.GetString("TemplateAnonymousBasicDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Available properties.
         /// </summary>
         internal static string TemplateAvailableProperties {
@@ -5656,60 +5449,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic.
-        /// </summary>
-        internal static string templateGroupAuto {
-            get {
-                return ResourceManager.GetString("templateGroupAuto", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Checkrides and Reviews.
-        /// </summary>
-        internal static string templateGroupCheckrides {
-            get {
-                return ResourceManager.GetString("templateGroupCheckrides", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lesson Plans.
-        /// </summary>
-        internal static string templateGroupLessons {
-            get {
-                return ResourceManager.GetString("templateGroupLessons", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missions.
-        /// </summary>
-        internal static string templateGroupMissions {
-            get {
-                return ResourceManager.GetString("templateGroupMissions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roles.
-        /// </summary>
-        internal static string templateGroupRole {
-            get {
-                return ResourceManager.GetString("templateGroupRole", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Training.
-        /// </summary>
-        internal static string templateGroupTraining {
-            get {
-                return ResourceManager.GetString("templateGroupTraining", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Flight Templates.
         /// </summary>
         internal static string TemplateHeader {
@@ -5733,24 +5472,6 @@ namespace Resources {
         internal static string TemplateMakeOwn {
             get {
                 return ResourceManager.GetString("TemplateMakeOwn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Previously Used.
-        /// </summary>
-        internal static string TemplateMRU {
-            get {
-                return ResourceManager.GetString("TemplateMRU", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatically shows properties you&apos;ve used on previous flights.  You can remove ones you no longer need..
-        /// </summary>
-        internal static string TemplateMRUDescription {
-            get {
-                return ResourceManager.GetString("TemplateMRUDescription", resourceCulture);
             }
         }
         
@@ -5827,47 +5548,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Simulator / Training Device (Basic).
-        /// </summary>
-        internal static string TemplateSimBasic {
-            get {
-                return ResourceManager.GetString("TemplateSimBasic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contains properties useful for any sort of simulator flight.
-        /// </summary>
-        internal static string TemplateSimBasicDesc {
-            get {
-                return ResourceManager.GetString("TemplateSimBasicDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Learn more.
         /// </summary>
         internal static string TemplatesLearnMore {
             get {
                 return ResourceManager.GetString("TemplatesLearnMore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Student.
-        /// </summary>
-        internal static string TemplateStudent {
-            get {
-                return ResourceManager.GetString("TemplateStudent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contains properties useful for students.
-        /// </summary>
-        internal static string TemplateStudentDesc {
-            get {
-                return ResourceManager.GetString("TemplateStudentDesc", resourceCulture);
             }
         }
         

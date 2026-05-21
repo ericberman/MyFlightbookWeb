@@ -340,9 +340,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME%.
+        ///   Looks up a localized string similar to &lt;p&gt;
+        ///    &lt;span style=&quot;font-weight:bold; font-size: larger&quot;&gt;&lt;% Requestor %&gt;&lt;/span&gt; has asked you to endorse their logbook on %APP_NAME% with an endorsement titled &amp;quot;&lt;span style=&quot;font-weight: bold&quot;&gt;&lt;% EndorsementTitle %&gt;&lt;/span&gt;&amp;quot;.
+        ///&lt;/p&gt;
         ///
-        ///Please visit the [EndorseStudent Page](&lt;% EndorseStudentLink %&gt;) on %APP_NAME% to view this request and sign their logbook entry.
+        ///If you know &lt;% Requestor %&gt;, please visit the &lt;a href=&quot;&lt;% EndorseStudentLink %&gt;&quot;&gt;Endorse Student Page&lt;/a&gt; on %APP_NAME% to view this request and issue the endorsement.
         ///.
         /// </summary>
         internal static string EndorseInvitation {

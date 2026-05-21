@@ -1,5 +1,6 @@
 ﻿@using MyFlightbook.Achievements
 @using MyFlightbook.BasicmedTools
+@using MyFlightbook.FlightProperties
 @using MyFlightbook.Currency
 @using MyFlightbook.Image
 @using System.Globalization
@@ -9,7 +10,7 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     ViewBag.defaultTab = tabID.tabProfile;
     ProfileCurrency pc = new ProfileCurrency(m_pf);
-    string requestedPane = (Request["pane"] ?? (string) ViewBag.requestedPane ?? "medical").ToLower();
+    string requestedPane = (Request["pane"] ?? (string)ViewBag.requestedPane ?? "medical").ToLower();
     IEnumerable<ProfileEvent> rgIPCs = ProfileEvent.GetIPCEvents(User.Identity.Name);
     IEnumerable<ProfileEvent> rgBFRs = ProfileEvent.GetBFREvents(User.Identity.Name, pc.LastBFREvent);
     UserRatings ur = new UserRatings(User.Identity.Name);

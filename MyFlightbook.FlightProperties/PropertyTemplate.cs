@@ -1,3 +1,4 @@
+using MyFlightbook.FlightProperties.Properties;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
@@ -5,13 +6,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
-using System.Web;
 using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2025 MyFlightbook LLC
+ * Copyright (c) 2019-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -149,17 +150,17 @@ namespace MyFlightbook.Templates
             switch (pg)
             {
                 case PropertyTemplateGroup.Automatic:
-                    return Resources.LogbookEntry.templateGroupAuto;
+                    return PropertyResource.templateGroupAuto;
                 case PropertyTemplateGroup.Checkrides:
-                    return Resources.LogbookEntry.templateGroupCheckrides;
+                    return PropertyResource.templateGroupCheckrides;
                 case PropertyTemplateGroup.Missions:
-                    return Resources.LogbookEntry.templateGroupMissions;
+                    return PropertyResource.templateGroupMissions;
                 case PropertyTemplateGroup.Training:
-                    return Resources.LogbookEntry.templateGroupTraining;
+                    return PropertyResource.templateGroupTraining;
                 case PropertyTemplateGroup.Roles:
-                    return Resources.LogbookEntry.templateGroupRole;
+                    return PropertyResource.templateGroupRole;
                 case PropertyTemplateGroup.Lessons:
-                    return Resources.LogbookEntry.templateGroupLessons;
+                    return PropertyResource.templateGroupLessons;
                 default:
                     return string.Empty;
             }
@@ -254,7 +255,7 @@ namespace MyFlightbook.Templates
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Name, NameForGroup(Group));
+            return $"{Name} {NameForGroup(Group)}";
         }
 
         /// <summary>
@@ -366,8 +367,8 @@ namespace MyFlightbook.Templates
         {
             ID = (int) KnownTemplateIDs.ID_MRU;
             Group = PropertyTemplateGroup.Automatic;
-            Name = Resources.LogbookEntry.TemplateMRU;
-            Description = Resources.LogbookEntry.TemplateMRUDescription;
+            Name = PropertyResource.TemplateMRU;
+            Description = PropertyResource.TemplateMRUDescription;
         }
 
         public MRUPropertyTemplate(string szuser) : this()
@@ -387,8 +388,8 @@ namespace MyFlightbook.Templates
         {
             ID = (int)KnownTemplateIDs.ID_SIM;
             Group = PropertyTemplateGroup.Automatic;
-            Name = Resources.LogbookEntry.TemplateSimBasic;
-            Description = Resources.LogbookEntry.TemplateSimBasicDesc;
+            Name = PropertyResource.TemplateSimBasic;
+            Description = PropertyResource.TemplateSimBasicDesc;
             m_propertyTypes.Clear();
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropSimRegistration);
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
@@ -402,8 +403,8 @@ namespace MyFlightbook.Templates
         {
             ID = (int)KnownTemplateIDs.ID_ANON;
             Group = PropertyTemplateGroup.Automatic;
-            Name = Resources.LogbookEntry.TemplateAnonymousBasic;
-            Description = Resources.LogbookEntry.TemplateAnonymousBasicDesc;
+            Name = PropertyResource.TemplateAnonymousBasic;
+            Description = PropertyResource.TemplateAnonymousBasicDesc;
             m_propertyTypes.Clear();
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropAircraftRegistration);
         }
@@ -416,8 +417,8 @@ namespace MyFlightbook.Templates
         {
             ID = (int)KnownTemplateIDs.ID_STUDENT;
             Group = PropertyTemplateGroup.Automatic;
-            Name = Resources.LogbookEntry.TemplateStudent;
-            Description = Resources.LogbookEntry.TemplateStudentDesc;
+            Name = PropertyResource.TemplateStudent;
+            Description = PropertyResource.TemplateStudentDesc;
             m_propertyTypes.Clear();
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropInstructorName);
@@ -500,13 +501,13 @@ namespace MyFlightbook.Templates
         public virtual void Validate()
         {
             if (String.IsNullOrWhiteSpace(Name))
-                throw new MyFlightbookValidationException(Resources.LogbookEntry.errTemplateNoName);
+                throw new MyFlightbookValidationException(PropertyResource.errTemplateNoName);
 
             if (m_propertyTypes.Count == 0)
-                throw new MyFlightbookValidationException(Resources.LogbookEntry.errTemplateNoProperties);
+                throw new MyFlightbookValidationException(PropertyResource.errTemplateNoProperties);
 
             if (Description.Length > 255)
-                throw new MyFlightbookValidationException(Resources.LogbookEntry.errTemplateDescriptionTooLong);
+                throw new MyFlightbookValidationException(PropertyResource.errTemplateDescriptionTooLong);
         }
 
         /// <summary>
@@ -591,7 +592,7 @@ namespace MyFlightbook.Templates
             if (String.IsNullOrWhiteSpace(Owner))
                 return;
 
-            Profile.GetUser(Owner).AssociatedData.Remove(szCacheKey);
+            util.RequestContext.GetUser(Owner).AssociatedData.Remove(szCacheKey);
         }
 
         private static List<PropertyTemplate> CachedTemplatesForUser(string szUser)
@@ -601,7 +602,7 @@ namespace MyFlightbook.Templates
             if (String.IsNullOrWhiteSpace(szUser))
                 return null;
 
-            return (List<PropertyTemplate>) Profile.GetUser(szUser).CachedObject(szCacheKey);
+            return (List<PropertyTemplate>)util.RequestContext.GetUser(szUser).CachedObject(szCacheKey);
         }
         #endregion
 
@@ -645,7 +646,7 @@ namespace MyFlightbook.Templates
                 DBHelper dbh = new DBHelper("SELECT * FROM propertytemplate WHERE owner=?user");
                 dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
                 (dr) => { lst.Add(new UserPropertyTemplate(dr)); });
-                Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
+                util.RequestContext.GetUser(szUser).AssociatedData[szCacheKey] = lst;
             }
 
             // Add in the automatic properties as well.
@@ -824,11 +825,11 @@ namespace MyFlightbook.Templates
             StringBuilder sb = new StringBuilder();
             foreach (TemplateCollection tc in templates)
             {
-                sb.AppendFormat(CultureInfo.CurrentCulture, "<div style=\"font-weight:bold; font-size: smaller\">{0}</div>", HttpUtility.HtmlEncode(tc.GroupName));
+                sb.AppendFormat(CultureInfo.CurrentCulture, "<div style=\"font-weight:bold; font-size: smaller\">{0}</div>", WebUtility.HtmlEncode(tc.GroupName));
                 foreach (PropertyTemplate pt in tc.Templates)
                 {
                     sb.AppendFormat(CultureInfo.CurrentCulture, "<div><label><input type=\"checkbox\" {0} onclick=\"javascript: toggleTemplate({1}, {2}, this.checked);\" />{3}</label></div>",
-                        hs.Contains(pt.ID) ? "checked" : string.Empty, ac.AircraftID, pt.ID, HttpUtility.HtmlEncode(pt.Name));
+                        hs.Contains(pt.ID) ? "checked" : string.Empty, ac.AircraftID, pt.ID, WebUtility.HtmlEncode(pt.Name));
                 }
             }
             return sb.ToString();
