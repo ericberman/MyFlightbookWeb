@@ -238,7 +238,7 @@ namespace MyFlightbook.ImportFlights
             string szModel = rModelFixed.Expr.Replace(((String.IsNullOrEmpty(TypeCode) ? Model : TypeCode) ?? string.Empty), string.Empty);
 
             // If ground instruction and no tail number, use #007705, which is anonymous generic ground
-            if (String.IsNullOrEmpty(TailNum) && GroundTraining > 0)
+            if (String.IsNullOrEmpty(TailNum) && String.IsNullOrEmpty(AircraftID) && GroundTraining > 0)
                 AircraftID = "#007705";
 
             LogbookEntry le = new LogbookEntry()
