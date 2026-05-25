@@ -1494,6 +1494,31 @@ namespace MyFlightbook.Image
             return result;
         }
 
+        /// <summary>
+        /// Like ScaledImage, but works with PNG so that it preserves transparency.
+        /// </summary>
+        /// <param name="sIn"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static byte[] ScaledPNGImage(Stream sIn, int width, int height)
+        {
+            if (sIn == null)
+                throw new ArgumentNullException(nameof(sIn));
+            if (sIn.Length == 0)
+                return Array.Empty<byte>();
+            using (MagickImage image = new MagickImage(sIn))
+            {
+                image.Resize(new MagickGeometry((uint)width, (uint)height));
+                using (MemoryStream msOut = new MemoryStream())
+                {
+                    image.Write(msOut, MagickFormat.Png);
+                    return msOut.GetBuffer();
+                }
+            }
+        }
+
         public static byte[] ScaledImage(Stream sIn, int width, int height)
         {
             if (sIn == null)

@@ -2,6 +2,7 @@
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.Messages;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.Image;
 using MyFlightbook.OAuth;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -77,6 +79,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 ViewBag.scopesList = MFBOauthServer.ScopeDescriptions(requestedScopes);
                 ViewBag.clientName = client.ClientName;
+                ViewBag.clientLogoHref = (client.Logo?.Length ?? 0) == 0 ? null : $"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientIdentifier)}".ToAbsolute();
             }
             catch (Exception ex) when (ex is HttpException || ex is ProtocolException || ex is ProtocolFaultResponseException || ex is MyFlightbookException)
             {
@@ -689,11 +692,60 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Developer Page
         [HttpPost]
         [Authorize]
+        public ActionResult SetOAuthLogo(string clientID)
+        {
+            return SafeOp(() =>
+            {
+                MFBOauth2Client client = MFBOauth2Client.GetClientByID(clientID)?.FirstOrDefault();
+                if (User.Identity.Name.CompareCurrentCultureIgnoreCase(client?.OwningUser ?? string.Empty) != 0)
+                    throw new UnauthorizedAccessException("Not authorized to update this client");
+
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("No file uploaded");
+
+                Stream s = Request.Files[0].InputStream;
+                byte[] rgb = s == null ? Array.Empty<byte>() : MFBImageInfo.ScaledPNGImage(s, 150, 150);
+                if (rgb != null && rgb.Length > 0)
+                {
+                    if (rgb.Length > 256000)
+                        throw new InvalidOperationException("Image too large");
+                    client.Logo = rgb;
+                    client.Commit();
+                }
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteOAuthLogo(string clientID)
+        {
+            return SafeOp(() =>
+            {
+                MFBOauth2Client client = MFBOauth2Client.GetClientByID(clientID)?.FirstOrDefault();
+                if (User.Identity.Name.CompareCurrentCultureIgnoreCase(client?.OwningUser ?? string.Empty) != 0)
+                    throw new UnauthorizedAccessException("Not authorized to update this client");
+                client.Logo = null;
+                client.Commit();
+                return new EmptyResult();
+            });
+        }
+
+        [Authorize]
+        public ActionResult ViewOAuthLogo(string clientID)
+        {
+            MFBOauth2Client client = MFBOauth2Client.GetClientByID(clientID)?.FirstOrDefault();
+            return (client?.Logo != null && client.Logo.Length > 0) ? (ActionResult) File(client.Logo, "image/png") : Redirect("~/images/1x1.png");
+        }
+
+        [HttpPost]
+        [Authorize]
         public ActionResult UpdateOauthClient(string clientID, string clientSecret, string clientName, string clientCallBack, string clientScopes, string szOwner, bool isPublic = false)
         {
             return SafeOp(() =>
             {
-                MFBOauth2Client client = new MFBOauth2Client(clientID, clientSecret, clientCallBack, clientName, (clientScopes ?? string.Empty).Replace(",", " "), szOwner, isPublic ? ClientType.Public : ClientType.Confidential);
+                MFBOauth2Client originalClient = MFBOauth2Client.GetClientByID(clientID)?.FirstOrDefault(); // Pick up the pre-existing logo.
+                MFBOauth2Client client = new MFBOauth2Client(clientID, clientSecret, clientCallBack, clientName, (clientScopes ?? string.Empty).Replace(",", " "), szOwner, isPublic ? ClientType.Public : ClientType.Confidential, originalClient?.Logo);
                 client.Commit();
                 return new EmptyResult();
             });

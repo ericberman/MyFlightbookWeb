@@ -258,7 +258,7 @@ namespace OAuthAuthorizationServer.Code
     [Serializable]
     public sealed partial class MFBOauth2Client : IClientDescription
     {
-        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope, string szuser,  ClientType clientType = ClientType.Confidential)
+        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope, string szuser,  ClientType clientType = ClientType.Confidential, byte[] logo = null)
         {
             ClientName = name;
             ClientIdentifier = clientIdentifier;
@@ -267,11 +267,11 @@ namespace OAuthAuthorizationServer.Code
             ClientType = clientType;
             Scope = scope;
             OwningUser = szuser;
+            Logo = logo;
         }
 
-        private MFBOauth2Client(MySqlDataReader dr) : this((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"], (string)dr["owningUserName"], (ClientType) util.ReadNullableField(dr, "ClientType", 0))
+        private MFBOauth2Client(MySqlDataReader dr) : this((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"], (string)dr["owningUserName"], (ClientType) util.ReadNullableField(dr, "ClientType", 0), (byte[])util.ReadNullableField(dr, "logo", null))
         {
-            
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace OAuthAuthorizationServer.Code
         public void Commit()
         {
             Validate(); // will throw an exception as appropriate
-            DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=?clientType");
+            DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=?clientType, logo=?logo");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("id", ClientIdentifier.LimitTo(45));
@@ -351,6 +351,7 @@ namespace OAuthAuthorizationServer.Code
                 comm.Parameters.AddWithValue("scopes", Scope.LimitTo(255));
                 comm.Parameters.AddWithValue("user", OwningUser.LimitTo(255));
                 comm.Parameters.AddWithValue("clientType", (int)ClientType);
+                comm.Parameters.AddWithValue("logo", Logo);
             });
             OAuth2AuthorizationServer.RefreshClients();
         }
@@ -391,9 +392,25 @@ namespace OAuthAuthorizationServer.Code
             get { return Callbacks == null ? string.Empty : String.Join(" ", Callbacks); }
         }
 
+        /// <summary>
+        /// Set of scopes, space delimited
+        /// </summary>
         public string Scope { get; set; }
+
+        /// <summary>
+        /// Is this a public or a confidential client?  Public clients have no secret and must use PKCE; confidential clients MUST use their secret
+        /// </summary>
         public ClientType ClientType { get; set; }
+
+        /// <summary>
+        /// Username of the owning user for this client
+        /// </summary>
         public string OwningUser { get; set; }
+
+        /// <summary>
+        /// PNG file for a logo
+        /// </summary>
+        public byte[] Logo { get; set; }
 
         private Uri AuthLinkForCallback(string szCallback)
         {
@@ -405,6 +422,9 @@ namespace OAuthAuthorizationServer.Code
                         HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(util.RequestContext.CurrentRequestUrl);
         }
 
+        /// <summary>
+        /// Allowed callbacks asn an enumerable list
+        /// </summary>
         public IDictionary<string, Uri> AuthLinks
         {
             get

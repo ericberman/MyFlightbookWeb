@@ -20,20 +20,28 @@ else
         @Html.AntiForgeryToken()
         <p>@Resources.oAuth.oAuthAuthPrompt</p>
         <h2>@ViewBag.clientName</h2>
-        <p>@Resources.oAuth.oAuthRequestedPermissions</p>
-        if (lstScopes.Any())
-        {
-            <ul>
-                @foreach (string scope in lstScopes)
+        <div>
+            @if (!String.IsNullOrEmpty(ViewBag.clientLogoHref))
+            {
+            <div class="dib imgMiddle"><img src="@ViewBag.clientLogoHref" />&nbsp;&nbsp;</div>
+            }
+            <div class="dib imgMiddle">
+                <h3>@Resources.oAuth.oAuthRequestedPermissions</h3>
+                @if (lstScopes.Any())
                 {
-                    <li>@scope</li>
+                <ul>
+                    @foreach (string scope in lstScopes)
+                    {
+                        <li>@scope</li>
+                    }
+                </ul>
                 }
-            </ul>
-        }
-        else
-        {
-            <p>@Resources.oAuth.oAuthNoScopesDefined</p>
-        }
+                else
+                {
+                <p>@Resources.oAuth.oAuthNoScopesDefined</p>
+                }
+            </div>
+        </div>
         <p>@Resources.oAuth.oAuthAuthWarning</p>
         <div>@Resources.oAuth.oAuthRedirect</div>
         <div class="b l">@redirUri.Host.ToUpper(CultureInfo.CurrentCulture)</div>

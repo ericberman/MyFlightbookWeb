@@ -14,8 +14,9 @@
             {
                 IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromString(client.Scope));
                 <tr>
-                    <td style="vertical-align: top; font-weight: bold;">@client.ClientName</td>
-                    <td style="vertical-align: top;">
+                    <td class="topAlign"><img src="@($"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientId)}".ToAbsolute())" /></td>
+                    <td class="topAlign b">@client.ClientName</td>
+                    <td class="topAlign">
                         @if (lstScopes.Any())
                         {
                             <ul>
@@ -30,7 +31,7 @@
                             @Resources.oAuth.oAuthNoScopesDefined
                         }
                     </td>
-                    <td style="vertical-align: top;"><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: oaClientPrefs.deleteClient($(this).closest('tr'), '@client.ClientId'); return false;" /></td>
+                    <td class="topAlign"><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: oaClientPrefs.deleteClient($(this).closest('tr'), '@client.ClientId'); return false;" /></td>
                 </tr>
             }
         </table>

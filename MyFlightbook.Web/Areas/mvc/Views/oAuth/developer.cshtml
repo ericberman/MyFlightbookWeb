@@ -10,6 +10,7 @@
     IEnumerable<MFBOauth2Client> ownedClients = AdminMode ? MFBOauth2Client.GetAvailableClients() : MFBOauth2Client.GetClientsForUser(User.Identity.Name);
     MFBOauth2Client newClient = ViewBag.client;
 }
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=11")"></script>
 <script type="text/javascript">
     $(() => {
         defaultButtonForDiv("divNewClient", "btnAddClient");
@@ -26,6 +27,34 @@
             clientCallBack: { required: "You must provide at least one valid callback URL for your client." }
         });
     });
+
+    function setUploadTarget(div, clientID, promptID) {
+        ajaxFileUpload($(div), {
+            uploadURL: "@Url.Action("SetOAuthLogo", "OAuth")",
+            allowedTypes: "png",
+            dragTargetClass: "fileDragTarget",
+            additionalParams: [{ name: "clientID", value: clientID }],
+            maxFiles: 1,
+            promptID: promptID,
+            onUpload: function () { window.location.reload(); },
+            dropPrompt: "@Resources.LocalizedText.UploadImages",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+    }
+
+    function deleteLogo(id) {
+                    var params = new Object();
+            params.clientID = id;
+            var d = JSON.stringify(params);
+            $.ajax({
+                url: '@Url.Action("DeleteOAuthLogo", "OAuth")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function (response) { window.location.reload(); }
+            });
+    }
 
     function deleteClient(id) {
         if (confirm("Are you sure?  You can NOT undo this action, and it WILL disable the service for any user of your client!")) {
@@ -145,6 +174,7 @@
     <h2>Your oAuth clients:</h2>
     if (ownedClients.Any())
     {
+        int iClient = 0;
         <table class="stickyHeaderTable stickyHeaderAlternate">
             <thead>
                 <tr>
@@ -158,13 +188,24 @@
                     <th class="headerBase gvhDefault gvhLeft">Client Name</th>
                     <th class="headerBase gvhDefault gvhLeft">Callback URL(s)</th>
                     <th class="headerBase gvhDefault gvhLeft">Scopes (space separated)</th>
+                    <th class="headerBase gvhDefault gvhLeft">Logo</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (MFBOauth2Client client in ownedClients)
                 {
+                    string divID = "divUploadLogo_" + iClient;
+                    string promptID = "promptUploadLogo_" + iClient;
+                    iClient++;
                     <tr style="vertical-align: top;">
-                        <td><img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: deleteClient('@client.ClientIdentifier'); return false;" /></td>
+                        <td>
+                            <img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: deleteClient('@client.ClientIdentifier'); return false;" />
+                            <script type="text/javascript">
+                                $(() => {
+                                    setUploadTarget($("#@divID"), "@client.ClientIdentifier", "@promptID");
+                                });
+                            </script>
+                        </td>
                         @if (AdminMode)
                         {
                             <td>@client.OwningUser</td>
@@ -204,6 +245,15 @@
                         <td>
                             <div class="displayCell">@client.Scope</div>
                             <div class="editCell"><input type="text" name="clientScopes" value="@client.Scope" /></div>
+                        </td>
+                        <td>
+                            <div class="displayCell"><img src="@($"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientIdentifier)}".ToAbsolute())" /></div>
+                            <div class="editCell" style="min-width: 200px;">
+                                <div>Upload a PNG of your logo.  It will be scaled to max 150x150 pixels.  It MUST be in PNG format.</div>
+                                <img id="@promptID" src="@($"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientIdentifier)}".ToAbsolute())" />
+                                <div id="@divID" style="display:inline-block;"></div>
+                                &nbsp;<img class="topAlign" src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: deleteLogo('@client.ClientIdentifier'); return false;" />
+                            </div>
                         </td>
                         <td>
                             <div class="displayCell">
