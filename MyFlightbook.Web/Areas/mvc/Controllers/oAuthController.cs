@@ -290,8 +290,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     // Fake the request environment DNOA needs
                     // by using DNOA's AuthorizationServer directly
                     // against a NameValueCollection instead of HttpRequest
-                    requestBase = new SyntheticTokenRequest(
-                        new Uri("https://developer.myflightbook.com/logbook/mvc/oAuth/OAuthToken"),
+                    requestBase = new Injection.SyntheticTokenRequest(
+                        new Uri($"https://{Request.Url.Host}/logbook/mvc/oAuth/OAuthToken"),
                         new NameValueCollection
                         {
                         { "grant_type", "authorization_code" },

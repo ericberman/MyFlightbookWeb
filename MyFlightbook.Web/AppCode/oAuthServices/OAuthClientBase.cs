@@ -613,14 +613,12 @@ namespace MyFlightbook.OAuth
             }
         }
 
-        public const string publicClientProxyID = "publicClientProxy";
-
         /// <summary>
         /// For PKCE clients, we have a proxy in front of the token endpoint that is configured with the same clientID/secret as the public client, and then we call that with the PKCE code and verifier, and it proxies to the real token endpoint.
         /// </summary>
         public static MFBOauth2Client ConfidentialProxyClient
         {
-            get { return MFBOauth2Client.GetClientByID(publicClientProxyID)?.First() ?? throw new InvalidOperationException($"misconfiguration - need a client configured with id of {publicClientProxyID}"); }
+            get { return MFBOauth2Client.GetClientByID(OAuth2AuthorizationServer.publicClientProxyID)?.First() ?? throw new InvalidOperationException($"misconfiguration - need a client configured with id of {OAuth2AuthorizationServer.publicClientProxyID}"); }
         }
     }
 }

@@ -8,13 +8,12 @@ using MyFlightbook;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 
 /******************************************************
  * 
@@ -119,33 +118,6 @@ namespace OAuthAuthorizationServer.Code
                     comm.Parameters.AddWithValue("handle", handle);
                 });
         }
-    }
-
-    public class SyntheticTokenRequest : HttpRequestBase
-    {
-        private readonly NameValueCollection _form;
-        private readonly Uri _uri;
-
-        public SyntheticTokenRequest(Uri uri, NameValueCollection form)
-        {
-            _uri = uri;
-            _form = form;
-        }
-
-        public override NameValueCollection Form => _form;
-        public override NameValueCollection Headers => new NameValueCollection();
-        public override Uri Url => _uri;
-        public override string HttpMethod => "POST";
-        public override string RequestType => "POST";
-        public override NameValueCollection QueryString => new NameValueCollection();
-        public override bool IsSecureConnection => _uri.Scheme == "https";
-        public override NameValueCollection ServerVariables => new NameValueCollection
-        {
-            { "HTTPS", _uri.Scheme == "https" ? "on" : "off" },
-            { "HTTP_HOST", _uri.Host },
-            { "SERVER_PORT", _uri.Port.ToString(CultureInfo.InvariantCulture) },
-            { "REQUEST_URI", _uri.AbsolutePath }
-        };
     }
 
     [Serializable]
@@ -417,9 +389,9 @@ namespace OAuthAuthorizationServer.Code
             if (szCallback == null)
                 throw new ArgumentNullException(nameof(szCallback));
             return String.Format(CultureInfo.InvariantCulture, "~/mvc/oAuth/Authorize?client_id={0}&redirect_uri={1}&scope={2}&response_type=code",
-                        HttpUtility.UrlEncode(ClientIdentifier),
-                        HttpUtility.UrlEncode(szCallback),
-                        HttpUtility.UrlEncode(Scope)).ToAbsoluteURL(util.RequestContext.CurrentRequestUrl);
+                        WebUtility.UrlEncode(ClientIdentifier),
+                        WebUtility.UrlEncode(szCallback),
+                        WebUtility.UrlEncode(Scope)).ToAbsoluteURL(util.RequestContext.CurrentRequestUrl);
         }
 
         /// <summary>
@@ -479,6 +451,7 @@ namespace OAuthAuthorizationServer.Code
         {
             get { return !string.IsNullOrEmpty(this.ClientSecret); }
         }
+        private static readonly char[] domainSeparator = new char[] { ',' };
 
         /// <summary>
         /// Checks to see if the callback is from a set of local/debug domains as defined in the localconfig "DebugDomains" key, which is a comma-separated list of domains INCLUDING scheme.
@@ -489,7 +462,7 @@ namespace OAuthAuthorizationServer.Code
         static bool IsDeveloperCallback(Uri callback)
         {
             string szDomains = LocalConfig.SettingForKey("DebugDomains");
-            string[] rgDomains = szDomains.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgDomains = szDomains.Split(domainSeparator, StringSplitOptions.RemoveEmptyEntries);
             string szLeftPart = callback.GetLeftPart(UriPartial.Authority);
 
             foreach (string sz in rgDomains)
@@ -556,9 +529,7 @@ namespace OAuthAuthorizationServer.Code
     /// </summary>
     public class MFBOauthClientAuth
     {
-        public MFBOauthClientAuth()
-        {
-        }
+        public MFBOauthClientAuth() { }
 
         public MFBOauthClientAuth(MySqlDataReader dr) : this()
         {
@@ -866,8 +837,14 @@ namespace OAuthAuthorizationServer.Code
             return rsa;
         }
 
+        public const string publicClientProxyID = "publicClientProxy";
+
         private static bool IsAuthorizationValid(HashSet<string> requestedScopes, string clientIdentifier, DateTime issuedUtc, string username)
         {
+            // The proxy is always valid
+            if (clientIdentifier.CompareCurrentCultureIgnoreCase(publicClientProxyID) == 0)
+                return true;
+
             // If db precision exceeds token time precision (which is common), the following query would
             // often disregard a token that is minted immediately after the authorization record is stored in the db.
             // To compensate for this, we'll increase the timestamp on the token's issue date by 1 second.

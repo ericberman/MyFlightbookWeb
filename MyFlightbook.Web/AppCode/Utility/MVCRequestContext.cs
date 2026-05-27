@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
@@ -92,5 +94,35 @@ namespace MyFlightbook.Injection
         {
             return Profile.GetUser(szUser);
         }
+    }
+
+    /// <summary>
+    /// Writeable HttpRequestBase implementation to allow creation of synthetic requests for token generation, etc.
+    /// </summary>
+    public class SyntheticTokenRequest : HttpRequestBase
+    {
+        private readonly NameValueCollection _form;
+        private readonly Uri _uri;
+
+        public SyntheticTokenRequest(Uri uri, NameValueCollection form)
+        {
+            _uri = uri;
+            _form = form;
+        }
+
+        public override NameValueCollection Form => _form;
+        public override NameValueCollection Headers => new NameValueCollection();
+        public override Uri Url => _uri;
+        public override string HttpMethod => "POST";
+        public override string RequestType => "POST";
+        public override NameValueCollection QueryString => new NameValueCollection();
+        public override bool IsSecureConnection => _uri.Scheme == "https";
+        public override NameValueCollection ServerVariables => new NameValueCollection
+        {
+            { "HTTPS", _uri.Scheme == "https" ? "on" : "off" },
+            { "HTTP_HOST", _uri.Host },
+            { "SERVER_PORT", _uri.Port.ToString(CultureInfo.InvariantCulture) },
+            { "REQUEST_URI", _uri.AbsolutePath }
+        };
     }
 }
