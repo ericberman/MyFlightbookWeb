@@ -115,10 +115,10 @@
 <div id="invalidProps">
     <div><button type="button" id="btnRefreshProps" onclick="javascript: refreshBrokenProps()">Refresh empty props</button></div>
 </div>
-<div id="divInvalidPropProgress" style="display:none;">Evaluating properties for issues... <img id="imgProgress" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="height:16px; width: 16px;" /></div>
+<div id="divInvalidPropProgress" class="dn">Evaluating properties for issues... <img id="imgProgress" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="height:16px; width: 16px;" /></div>
 
 <h2>Invalid signatures</h2>
-<div id="divBrokenSigsResult" style="display:none;">
+<div id="divBrokenSigsResult" class="dn">
     <img id="imgProgress" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" style="height:16px; width: 16px;" /> <span id="spanSigProgress"></span>
 </div>
 <div><button type="button" onclick="javascript: $(this).toggle(); $('#divBrokenSigsResult').toggle(); refreshBrokenSigs(this);">Refresh</button></div>
@@ -126,26 +126,41 @@
 <h2>Cache management</h2>
 <div>@ViewBag.memStats</div>
 
-@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCacheTable", labelText = "ObjectSummary" }); }
-<div id="divCacheTable" style="display:none">
+@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divCacheTable", labelText = "Object Summary" }); }
+<div id="divCacheTable" class="dn">
     <table>
         @foreach (string szClass in dCache.Keys)
-            {
-                <tr>
-                    <td>@szClass</td>
-                    <td>@dCache[szClass]</td>
-                </tr>
-            }
+        {
+            <tr>
+                <td>@szClass</td>
+                <td>@dCache[szClass]</td>
+            </tr>
+        }
     </table>
 </div>
 
 
 <p>
     <button type="button" onclick="javascript: flushCache();">Flush Cache</button>
-    <span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span></p>
+    <span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span>
+</p>
 <div id="divFlushCacheResults"></div>
 
 <h2>Nightly Run</h2>
+@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divTempDir", labelText = "Contents of Temp Dir" }); }
+<div id="divTempDir" class="dn">
+    <table cellpadding="0" cellspacing="0">
+        @foreach (string sz in ViewBag.tempFileSummary)
+        {
+            string[] rg = sz.Split('\t');
+            <tr>
+                <td><pre>@rg[0] </pre></td>
+                <td><pre>@rg[1] </pre></td>
+                <td><pre>@rg[2] </pre></td>
+            </tr>
+        }
+    </table>
+</div>
 <p>
     <button type="button" onclick="javascript: startNightlyRun(this);">Kick Off Nightly Run</button>
     <span class="fineprint">BE CAREFUL! This can spam users.  Only click once, and only if it DIDN'T run last night.</span>

@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -740,6 +741,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.cacheSummary = d;
             ViewBag.memStats = String.Format(CultureInfo.CurrentCulture, "Cache has {0:#,##0} items", cItems);
+            List<string> lstFiles = new List<string>();
+            foreach (string szFile in Directory.EnumerateFiles(System.IO.Path.GetTempPath()))
+            {
+                FileInfo fi = new FileInfo(szFile);
+                lstFiles.Add($"{fi.FullName}\t{fi.Length}\t{fi.LastWriteTime}");
+            }
+            ViewBag.tempFileSummary = lstFiles;
             return View("adminMisc");
         }
 
