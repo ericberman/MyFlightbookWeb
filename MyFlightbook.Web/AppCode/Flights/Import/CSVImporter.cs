@@ -82,7 +82,7 @@ namespace MyFlightbook.ImportFlights
         */
         private readonly static string[] colFlightID = { "Flight ID" };
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local", "FlightDate" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "AircraftIdent", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "TotalTime", "fcv_tail_number", "tail_number", "TailNum" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "AircraftIdent", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "fcv_tail_number", "tail_number", "TailNum" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight", "TotalTime" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr", "Approaches.Count" };
