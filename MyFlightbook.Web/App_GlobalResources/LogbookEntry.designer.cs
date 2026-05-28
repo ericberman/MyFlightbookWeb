@@ -4425,7 +4425,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you finish, the following request will be sent:.
+        ///   Looks up a localized string similar to The following request will be sent.
         /// </summary>
         internal static string RequestSigsFinishPrompt {
             get {

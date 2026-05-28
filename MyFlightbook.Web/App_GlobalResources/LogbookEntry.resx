@@ -1725,7 +1725,7 @@ Proceed with import?</value>
     <value>Please select at least one flight to be signed</value>
   </data>
   <data name="RequestSigsFinishPrompt" xml:space="preserve">
-    <value>When you finish, the following request will be sent:</value>
+    <value>The following request will be sent</value>
   </data>
   <data name="RequestSigsFlightsToSignLabel" xml:space="preserve">
     <value>Flights to sign:</value>
