@@ -149,7 +149,7 @@ namespace OAuthAuthorizationServer.Services
             /* 0 = invalid */
             none,
             /* Aircraft Services */
-            AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser, AircraftMatchingPrefix,
+            AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser, AircraftMatchingPrefix, ModelsWithIDs,
             /* Flight Services */
             CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight, CheckFlight, AutofillFlight,
             /* Flight Services (Pending) */
@@ -211,6 +211,7 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.CommitPendingFlight:
                     return MFBOAuthScope.addflight;
                 case OAuthServiceID.MakesAndModels:
+                case OAuthServiceID.ModelsWithIDs:
                 case OAuthServiceID.AircraftForUser:
                     return MFBOAuthScope.readaircraft;
                 case OAuthServiceID.FlightsWithQueryAndOffset:
@@ -469,6 +470,9 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.MakesAndModels:
                         WriteObject(s, mfbSvc.MakesAndModels());
+                        break;
+                    case OAuthServiceID.ModelsWithIDs:
+                        WriteObject(s, mfbSvc.ModelsWithIDs(GeneratedAuthToken, GetRequiredParam<int[]>("rgIDs")));
                         break;
                     case OAuthServiceID.PropertiesForFlight:
                         WriteObject(s, mfbSvc.PropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));

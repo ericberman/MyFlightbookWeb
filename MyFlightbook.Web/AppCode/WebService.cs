@@ -447,6 +447,16 @@ namespace MyFlightbook
             return SimpleMakeModel.GetAllMakeModels();
         }
 
+        [WebMethod]
+        public MakeModel[] ModelsWithIDs(string szAuthToken, int[] rgIDs)
+        {
+            string szUser = GetEncryptedUser(szAuthToken);
+            if (String.IsNullOrEmpty(szUser))
+                throw new UnauthorizedAccessException(Resources.WebService.errBadAuth);
+            EventRecorder.LogCall("ModelsWithIDs - user {user}", szUser);
+            return MakeModel.ModelsForIds(rgIDs).ToArray();
+        }
+
         /// <summary>
         /// Updates the culture for the duration of the request
         /// </summary>

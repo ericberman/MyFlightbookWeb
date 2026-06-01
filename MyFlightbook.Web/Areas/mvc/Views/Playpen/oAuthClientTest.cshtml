@@ -96,6 +96,9 @@
             case "MakesAndModels":
             case "PendingFlightsForUser":
                 break;
+            case "ModelsWithIDs":
+                $("#divModelIDs").show();
+                break;
             case "AircraftMatchingPrefix":
                 $("#divAcPrefix").show();
                 break;
@@ -241,6 +244,7 @@
                     <option value="AircraftMatchingPrefix">Aircraft Matching Prefix</option>
                     <option value="AircraftForUser">Aircraft for user</option>
                     <option value="MakesAndModels">Makes / Models</option>
+                    <option value="ModelsWithIDs">Models with IDs</option>
                     <option value="CommitFlightWithOptions">Add flight (POST only)</option>
                     <option value="CreatePendingFlight">Add pending flight (POST only)</option>
                     <option value="CheckFlight">Check flight (POST only)</option>
@@ -307,6 +311,9 @@
                     </div>
                     <div class="detailsSection dn" name="aircraftPrefix" id="divAcPrefix">
                         Prefix: <input type="text" name="szPrefix" />
+                    </div>
+                    <div class="detailsSection dn" name="modelIDs" id="divModelIDs">
+                        Model IDs (JSON notation): <input type="text" name="rgIDs" value="[]" />
                     </div>
                     <div class="detailsSection dn" name="noParam">
                     </div>

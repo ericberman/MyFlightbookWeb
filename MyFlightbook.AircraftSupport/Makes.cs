@@ -895,7 +895,7 @@ WHERE {1}";
         /// </summary>
         /// <param name="rgmodelid">An enumerable set of make/model IDs</param>
         /// <returns>A sorted (by model) enumerable list of matching models</returns>
-        public static IEnumerable<MakeModel> ModelsForAircraftIds(IEnumerable<int> rgmodelid)
+        public static IEnumerable<MakeModel> ModelsForIds(IEnumerable<int> rgmodelid)
         {
             if (rgmodelid == null)
                 throw new ArgumentNullException(nameof(rgmodelid));

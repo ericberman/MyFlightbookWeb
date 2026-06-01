@@ -95,7 +95,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
             ViewBag.aircraft = lstAc;
 
-            ViewBag.models = MakeModel.ModelsForAircraftIds(lstAc.Select(ac => ac.ModelID));
+            ViewBag.models = MakeModel.ModelsForIds(lstAc.Select(ac => ac.ModelID));
             ViewBag.categoryClasses = CategoryClass.CategoryClasses();
             ViewBag.properties = CustomPropertyType.AllPreviouslyUsedPropsForUser(fq.UserName);
             ViewBag.cannedQueries = CannedQuery.QueriesForUser(fq.UserName);
