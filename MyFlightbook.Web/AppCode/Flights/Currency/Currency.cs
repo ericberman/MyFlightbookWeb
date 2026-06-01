@@ -970,7 +970,7 @@ namespace MyFlightbook.Currency
         /// <returns>A human-readable string for the currency status</returns>
         public static string StatusDisplayForDate(DateTime dtExpiration)
         {
-            return String.Format(CultureInfo.CurrentCulture, (DateTime.Compare(dtExpiration.Date, DateTime.Now.Date) < 0) ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, dtExpiration.ToShortDateString());
+            return dtExpiration.HasValue() ? String.Format(CultureInfo.CurrentCulture, (DateTime.Compare(dtExpiration.Date, DateTime.Now.Date) < 0) ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, dtExpiration.ToShortDateString()) : string.Empty;
         }
 
         /// <summary>
