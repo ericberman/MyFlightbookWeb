@@ -903,9 +903,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult UploadBasicMedImages(int szKey)
+        public async Task<ActionResult> UploadBasicMedImages(int szKey)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
@@ -924,7 +924,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
 
                 if (szKey > 0)
-                    pi?.Commit(MFBImageInfoBase.ImageClass.BasicMed, szKey.ToString(CultureInfo.InvariantCulture));
+                    _ = await pi?.Commit(MFBImageInfoBase.ImageClass.BasicMed, szKey.ToString(CultureInfo.InvariantCulture));
                 else if (pi?.IsValid ?? false)
                     Session[szID] = pi;
 
