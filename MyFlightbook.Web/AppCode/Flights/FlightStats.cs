@@ -131,15 +131,15 @@ namespace MyFlightbook.FlightStatistics
         {
             get
             {
-                List<LinkedString> lstStats = new List<LinkedString>()
-                {
-                    new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, NumFlightsTotal, NumAircraft, NumModels)),
-                };
+                List<LinkedString> lstStats = new List<LinkedString>();
 
                 if (HasSlowInformation)
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAirports, NumUsers, NumFlights, m_lstAirports.Count, CountriesVisited), "~/mvc/flights/myflights".ToAbsolute()));
+                {
+                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, NumFlightsTotal.ToRoughNum(), NumAircraft.ToRoughNum(), NumModels.ToRoughNum())));
+                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAirports, NumUsers.ToRoughNum(), NumFlights.ToRoughNum(), m_lstAirports.Count, CountriesVisited), "~/mvc/flights/myflights".ToAbsolute()));
+                }
                 else
-                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers, NumFlights), "~/mvc/flights/myflights".ToAbsolute()));
+                    lstStats.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsUsersFlights, NumUsers.ToRoughNum(), NumFlights.ToRoughNum()), "~/mvc/flights/myflights".ToAbsolute()));
                 return lstStats;
             }
         }
@@ -267,14 +267,13 @@ namespace MyFlightbook.FlightStatistics
         private void RefreshAircraftAndModels()
         {
 
-            DBHelper dbh = new DBHelper(@"SELECT (SELECT COUNT(*) FROM flights) AS numFlights, (SELECT COUNT(*) FROM aircraft WHERE instancetype=1) AS numaircraft, (SELECT COUNT(*) FROM models) AS nummodels");
-            dbh.CommandArgs.Timeout = 300;  // use a long timeout
-            dbh.ReadRow((comm) => { }, (dr) =>
-            {
-                NumFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
-                NumAircraft = Convert.ToInt32(dr["numAircraft"], CultureInfo.InvariantCulture);
-                NumModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture);
-            });
+            DBHelper dbh = new DBHelper("SELECT COUNT(*) AS numFlights FROM flights");
+            dbh.CommandArgs.Timeout = 500;  // use a long timeout
+            dbh.ReadRow((comm) => { }, (dr) => { NumFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture); });
+            dbh.CommandText = "SELECT COUNT(*) AS numaircraft FROM aircraft WHERE instancetype=1";
+            dbh.ReadRow((comm) => { }, (dr) => { NumAircraft = Convert.ToInt32(dr["numAircraft"], CultureInfo.InvariantCulture); });
+            dbh.CommandText = "SELECT COUNT(*) AS nummodels FROM models";
+            dbh.ReadRow((comm) => { }, (dr) => { NumModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture); });
         }
 
         // Handle the slower queries.  Spawns a new thread; don't bother waiting for result.
@@ -358,8 +357,8 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                             AirportList al = alMaster.CloneSubset(szRoute, true);
 
                             foreach (airport ap in al.UniqueAirports)
-                                if (dictVisited.ContainsKey(ap.GeoHashKey))
-                                    dictVisited[ap.GeoHashKey].Visit(szUser, szFamily, szTail);
+                                if (dictVisited.TryGetValue(ap.GeoHashKey, out AirportStats value))
+                                    value.Visit(szUser, szFamily, szTail);
                         });
 
                     m_lstAirports.Clear();

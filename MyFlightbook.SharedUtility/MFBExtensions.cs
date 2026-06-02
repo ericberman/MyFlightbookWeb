@@ -928,6 +928,22 @@ namespace MyFlightbook
         {
             return i.ToString("#,##0", CultureInfo.CurrentCulture);
         }
+
+        /// <summary>
+        /// Converts a large number to a rough number with K/M/B suffixes, e.g., 1,234 => 1.2K, 12,345,678 => 12.3M, etc.  Rounds to the nearest tenth.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static string ToRoughNum(this int i)
+        {
+            if (i >= 1_000_000_000)
+                return $"{(i / 1_000_000_000.0):F1}B";
+            if (i >= 1_000_000)
+                return $"{(i / 1_000_000.0):F1}M";
+            if (i >= 1_000)
+                return $"{(i / 1_000.0):F1}K";
+            return i.PrettyString();
+        }
         #endregion
 
         #region Boolean extensions
