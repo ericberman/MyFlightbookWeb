@@ -52,10 +52,6 @@
     });
 </script>
 <div class="centered80">
-    <div class="homepageRecentStats">
-        @{ Html.RenderPartial("_recentStats"); }
-    </div>
-    <br />
     <h2>@Resources.Profile.HomePromoCurrencyHeader</h2>
     <div class="centered80" id="divCurrency">
         <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
@@ -66,5 +62,9 @@
         <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
     </div>
     <h2 class="c"><img src="@("~/images/rightarrow.png".ToAbsolute())" alt="@szViewLogbookPrompt" title="@szViewLogbookPrompt" class="imgMiddle" /> <a href="@("~/mvc/flights".ToAbsolute())">@szViewLogbookPrompt</a></h2>
+    <br />
+    <div class="homepageRecentStats">
+        @{ Html.RenderPartial("_recentStats"); }
+    </div>
 </div>
 
