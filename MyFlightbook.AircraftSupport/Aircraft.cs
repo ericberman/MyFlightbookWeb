@@ -1018,7 +1018,16 @@ namespace MyFlightbook
 
             // Issue #1505 - catch pseudo anonymous and silently map it to anonymous
             if (IsNew && rPsuedoAnonymous.IsMatch(TailNumber) && InstanceType == AircraftInstanceTypes.RealAircraft)
+            {
                 TailNormal = TailNumber = AnonymousTailnumberForModel(ModelID);
+                // Issue #1518 - don't create a dupe though!
+                List<Aircraft> acanon = AircraftMatchingTail(TailNormal);
+                if (acanon.Count > 0)
+                {
+                    AircraftID = acanon[0].AircraftID;
+                    return;
+                }
+            }
 
             // Issue #855 - log changes to shared notes in case of abuse.
             if (!IsNew && oldPublicNotes.CompareCurrentCultureIgnoreCase(PublicNotes) != 0)
