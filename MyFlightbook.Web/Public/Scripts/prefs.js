@@ -114,14 +114,7 @@ function prefsFlightEntryEditor(localPrefEndPoint, options) {
     }
 
     this.fullDefaults = function() {
-        var perms = new Array(0, 1, 2, 3, 4, 5);
-        if ($('#' + options.ckCFI)[0].checked)
-            perms.push(6);
-        if ($('#' + options.ckSIC)[0].checked)
-            perms.push(7);
-        perms.push(8);
-        perms.push(9);
-        return perms;
+        return new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     }
 
     this.resetPermutations = function () {
