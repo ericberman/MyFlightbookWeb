@@ -2138,7 +2138,14 @@ HAVING numaccounts > 1");
 
             DBHelperCommandArgs args = new DBHelperCommandArgs();
 
+            // Short circuit - first look for a perfect match on username or email (common scenario)
+            DBHelper dbh1 = new DBHelper("SELECT NULL as Role, u.* FROM users u WHERE u.username=?search OR u.email=?search");
+            dbh1.ReadRows((comm) => { comm.Parameters.AddWithValue("search", szSearch); },
+                (dr) => { lst.Add(new Profile(dr)); });
+            if (lst.Count > 0)
+                return lst;
 
+            // If we're here, there was no perfect match
             StringBuilder sb = new StringBuilder();
             int i = 0;
             foreach (string szWord in rgWords)
