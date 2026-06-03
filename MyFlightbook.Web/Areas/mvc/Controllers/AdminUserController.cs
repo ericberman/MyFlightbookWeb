@@ -18,11 +18,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult findUsers(string szSearch)
         {
-            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport)
-                throw new UnauthorizedAccessException();
+            return SafeOp(() =>
+            {
+                if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanSupport)
+                    throw new UnauthorizedAccessException();
 
-            ViewBag.FoundUsers = ProfileAdmin.FindUsers(szSearch);
-            return PartialView("_foundUsers");
+                ViewBag.FoundUsers = ProfileAdmin.FindUsers(szSearch);
+                return PartialView("_foundUsers");
+            });
         }
 
         [HttpPost]

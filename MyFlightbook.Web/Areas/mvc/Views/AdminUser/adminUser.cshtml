@@ -19,7 +19,7 @@
                 type: "POST", data: d, dataType: "html", contentType: "application/json",
                 error: function (xhr, status, error) {
                     $("#userTableResult").html("");
-                    window.alert(xhr.responseJSON.Message);
+                    window.alert(xhr.responseText);
                 },
                 complete: function (response) { $("#prgFindUser").toggle(); },
                 success: function (response) { $("#userTableResult").html(response); }

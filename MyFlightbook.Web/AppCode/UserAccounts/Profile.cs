@@ -2124,6 +2124,8 @@ HAVING numaccounts > 1");
             util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.AccountUnlockedSubject, Branding.CurrentBrand.AppName), Resources.EmailTemplates.AccountUnlocked, new MailAddress(u.Email, MyFlightbook.Profile.GetUser(szUser).UserFullName), true, false);
         }
 
+        private static readonly char[] ftSpecialChars = { '@', '-', '+', '~', '*', '(', ')', '"', '<', '>', '.', ',' };
+
         static public IEnumerable<Profile> FindUsers(string szSearch)
         {
             List<Profile> lst = new List<Profile>();
@@ -2131,33 +2133,21 @@ HAVING numaccounts > 1");
             if (String.IsNullOrEmpty(szSearch))
                 return lst;
 
-            string[] rgWords = szSearch.SplitSpaces();
+            string sanitized = new string(szSearch.Select(c => ftSpecialChars.Contains(c) ? ' ' : c).ToArray());
+            string[] rgWords = sanitized.SplitSpaces();
 
             if (rgWords.Length == 0)
                 return lst;
 
             DBHelperCommandArgs args = new DBHelperCommandArgs();
 
-            // Short circuit - first look for a perfect match on username or email (common scenario)
-            DBHelper dbh1 = new DBHelper("SELECT NULL as Role, u.* FROM users u WHERE u.username=?search OR u.email=?search");
-            dbh1.ReadRows((comm) => { comm.Parameters.AddWithValue("search", szSearch); },
-                (dr) => { lst.Add(new Profile(dr)); });
-            if (lst.Count > 0)
-                return lst;
-
-            // If we're here, there was no perfect match
             StringBuilder sb = new StringBuilder();
-            int i = 0;
             foreach (string szWord in rgWords)
             {
                 string sz = szWord.Trim();
                 if (sz.Length == 0)
                     continue;
-                if (sb.Length > 0)
-                    sb.Append(" AND ");
-                sb.Append($"(u.username LIKE ?param{i} OR u.firstName LIKE ?param{i} OR u.lastName LIKE ?param{i} OR u.email LIKE ?param{i}) "); 
-                args.AddWithValue(String.Format(CultureInfo.InvariantCulture, "param{0}", i), String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
-                i++;
+                sb.Append($" +{sz}*");
             }
 
             // bias mostly to a perfect match, then bias towards something that has the name as specified (in order), then bias towards anything else containing the words
@@ -2177,13 +2167,14 @@ HAVING numaccounts > 1");
         (100 - LENGTH(u.username))   -- shorter usernames rank higher
     ) AS MatchScore
 FROM Users u
-WHERE ({0})
+WHERE u.username=?search OR u.email=?search OR MATCH (search_text) AGAINST (?freeWords IN BOOLEAN MODE)
 ORDER BY MatchScore DESC
 LIMIT 200;";
 
-            DBHelper dbh = new DBHelper(args) { CommandText = String.Format(CultureInfo.InvariantCulture, szQ, sb.ToString()) };
+            DBHelper dbh = new DBHelper(szQ);
 
             dbh.ReadRows((comm) => { 
+                comm.Parameters.AddWithValue("freewords", sb.ToString().Trim());
                 comm.Parameters.AddWithValue("search", szSearch);
                 comm.Parameters.AddWithValue("searchPrefix", String.Format(CultureInfo.InvariantCulture, "{0}%", szSearch));
                 comm.Parameters.AddWithValue("searchAnywhere", String.Format(CultureInfo.InvariantCulture, "%{0}%", szSearch));
