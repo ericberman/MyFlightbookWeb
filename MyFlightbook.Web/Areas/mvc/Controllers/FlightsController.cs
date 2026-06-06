@@ -206,7 +206,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false)
+        public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false, string originalPath = null)
         {
             return SafeOp(() =>
             {
@@ -218,7 +218,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 FlightResult fr = FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);
                 FlightResultRange range = fr.GetResultRange(pageSize, FlightRangeType.Search, sortExpr, sortDir, 0, pageRequest);
-                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, ShareKey.ShareKeyWithID(skID), miniMode);
+                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, ShareKey.ShareKeyWithID(skID), miniMode, originalPath);
             });
         }
 
@@ -459,10 +459,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult FlightContextMenu(LogbookEntry le, string contextParams)
+        public ActionResult FlightContextMenu(LogbookEntry le, string contextParams, string signatureTarget = null)
         {
             ViewBag.le = le ?? throw new ArgumentNullException(nameof(le));
             ViewBag.contextParams = contextParams ?? string.Empty;
+            ViewBag.signatureTarget = signatureTarget;
             return PartialView("_flightContextMenu");
         }
 
@@ -475,7 +476,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             FlightResult fr,
             FlightResultRange currentRange,
             ShareKey sk = null,
-            bool miniMode = false
+            bool miniMode = false,
+            string originalPath = null
             )
         {
             ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq), "Flight query passed to content for results is null!");
@@ -498,34 +500,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!dictAircraft.ContainsKey(le.AircraftID))
                 {
                     Aircraft ac = ua[le.AircraftID];
-                    /*
-                    // Issue #1268 Diagnostic: we are sometimes failing when getting an aircraft by ID
-                    // Populate aircraft here rather than in the view, and send an alert if things are amiss, with diagnostics that might (hopefully?) help figure out what's going wrong
-                    // TODO: Remove (most of) this code when we figure it out.  This is a decently fast way to ensure we've populated aircraft images, though, so keep that?
-                    if (ac == null) // this should never, ever happen, but per issue #1268 it is!!
-                    {
-                        int oldCount = ua.Count;
-                        // try again - in case it's a simple cache miss.  Then notify.
-                        ua.InvalidateCache();
-                        int newCount = ua.Count;
-                        ac = ua[le.AircraftID];
-                        if (ac == null) 
-                        {
-                            // yikes!  Wasn't just a cache miss - try loading it from database, adding it if that succeeds
-                            ac = new Aircraft(le.AircraftID);
-                            if (ac.AircraftID != le.AircraftID)
-                                util.NotifyAdminEvent("Issue #1268 - aircraft used in flight does not exist!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
-                            else
-                            {
-                                ua.FAddAircraftForUser(new Aircraft(le.AircraftID));
-                                util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft - now added to user's profile!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
-                            }
-                        }
-                        else
-                            util.NotifyAdminEvent("Issue #1268 - aircraft used in flight is not in useraircraft!!!", String.Format(CultureInfo.CurrentCulture, "User: {0}, idFlight: {1}, idAircraft: {2} ({3} - {4}), useraircraftCount was {5}, now {6}", fq.UserName, le.FlightID, le.AircraftID, le.TailNumDisplay ?? string.Empty, le.ModelDisplay ?? string.Empty, oldCount, newCount), ProfileRoles.maskSiteAdminOnly);
-                    }
-                    */
-
                     if (!ac.ImagesHaveBeenFilled)
                         ac.PopulateImages();
                     dictAircraft[le.AircraftID] = ac;
@@ -536,6 +510,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.sk = sk;
             ViewBag.miniMode = miniMode;
             ViewBag.contextParams = GetContextParams(fq, fr, currentRange);
+            ViewBag.originalPath = originalPath;
 
             return PartialView("_logbookTableContents");
         }

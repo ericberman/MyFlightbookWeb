@@ -276,7 +276,8 @@
             fr = fr,
             sk = sk,
             currentRange = currentRange,
-            miniMode = miniMode
+            miniMode = miniMode,
+            originalPath = Request.Url.PathAndQuery
         });
     }
 </div>
@@ -300,6 +301,7 @@
     <input type="hidden" name="skID" value="@(sk?.ID ?? string.Empty)" />
     <input type="hidden" name="selectedFlights" id="hdnSelectedFlights" value="" />
     <input type="hidden" name="miniMode" id="hdnMiniMode" value="@Json.Encode(miniMode)" />
+    <input type="hidden" name="originalPath" value="@Request.Url.PathAndQuery" />
     @Html.AntiForgeryToken()
 }
 @using (Html.BeginForm("", "Flights", FormMethod.Post, new { id = "frmDeleteFlights", name = "frmDeleteFlights" }))
