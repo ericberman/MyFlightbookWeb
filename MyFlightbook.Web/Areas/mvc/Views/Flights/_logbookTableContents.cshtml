@@ -29,27 +29,6 @@
     bool miniMode = ViewBag.miniMode;
     HashSet<int> hsPropExclusion = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropFlightNumber };
 
-    string signatureTemplate = "~/mvc/flightedit/Sign/".ToAbsolute() + "{0}";
-
-    var contextParams = HttpUtility.ParseQueryString(ViewBag.contextParams ?? string.Empty);
-    if (!String.IsNullOrEmpty(ViewBag.originalPath))
-    {
-        var originalUrl = ((string)ViewBag.originalPath).ToAbsoluteURL(Request);
-        var originalParams = HttpUtility.ParseQueryString(originalUrl.Query);
-        // copy over only the missing ones; we don't want to duplicate params like student=joe&student=joe.
-        foreach (string k in contextParams)
-        {
-            if (originalParams[k] == null)
-            {
-                originalParams[k] = contextParams[k];
-            }
-        }
-        signatureTemplate += $"?ret={WebUtility.UrlEncode(originalUrl.AbsolutePath + "?" + originalParams.ToString())}";
-    }
-    else
-    {
-        signatureTemplate += $"?ret={WebUtility.UrlEncode(Request.Url.PathAndQuery)}";
-    }
 }
 <script type="text/javascript">
     $(() => {
@@ -282,7 +261,7 @@ else
                             <div name="fltContext" class="popContainer">
                                 <div class="ctxtMenuIcon popTrigger"></div>
                                 <div class="popMenuContent popMenuHidden ctxtTight ctxtRight">
-                                    @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led, contextParams = ViewBag.contextParams, signatureTarget = String.Format(CultureInfo.InvariantCulture, signatureTemplate, led.FlightID) }); }
+                                    @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led, contextParams = ViewBag.contextParams, signatureTarget = String.Format(CultureInfo.InvariantCulture, ViewBag.SignFlightTemplate, led.FlightID) }); }
                                 </div>
                             </div>
                             <input type="checkbox" name="selFlight" value="@led.FlightID" onchange="javascript: toggleSelectedFlight(this);" class="dn" />
@@ -293,7 +272,7 @@ else
                         {
                             if (led.CFISignatureState != LogbookEntryCore.SignatureState.Valid)
                             {
-                                <a href="@String.Format(CultureInfo.InvariantCulture, signatureTemplate, led.FlightID)">
+                                <a href="@String.Format(CultureInfo.InvariantCulture, ViewBag.SignFlightTemplate, led.FlightID)">
                                     <img src="@("~/images/signaturesm.png".ToAbsolute())" style="margin-right: 3px;" alt="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" title="@((led.CFISignatureState == LogbookEntry.SignatureState.Invalid) ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign)" />
                                 </a>
                             }

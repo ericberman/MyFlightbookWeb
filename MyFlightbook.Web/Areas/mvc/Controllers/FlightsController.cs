@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 /******************************************************
@@ -509,9 +511,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ViewBag.sk = sk;
             ViewBag.miniMode = miniMode;
-            ViewBag.contextParams = GetContextParams(fq, fr, currentRange);
-            ViewBag.originalPath = originalPath;
 
+            string signatureTemplate = "~/mvc/flightedit/Sign/".ToAbsolute() + "{0}";
+            ViewBag.contextParams = GetContextParams(fq, fr, currentRange);
+            var contextParams = HttpUtility.ParseQueryString(ViewBag.contextParams ?? string.Empty);
+            if (!String.IsNullOrEmpty(originalPath))
+            {
+                Uri originalUrl = originalPath.ToAbsoluteURL(Request);
+                var originalParams = HttpUtility.ParseQueryString(originalUrl.Query);
+                // copy over only the missing ones; we don't want to duplicate params like student=joe&student=joe.
+                foreach (string k in contextParams)
+                {
+                    if (originalParams[k] == null)
+                        originalParams[k] = contextParams[k];
+                }
+                ViewBag.SignFlightTemplate = signatureTemplate + $"?ret={WebUtility.UrlEncode(originalUrl.AbsolutePath + "?" + originalParams.ToString())}";
+            }
+            else
+                ViewBag.SignFlightTemplate = signatureTemplate + $"?ret={WebUtility.UrlEncode(Request.Url.PathAndQuery)}";
+        
             return PartialView("_logbookTableContents");
         }
 
