@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -22,31 +23,51 @@ namespace MyFlightbook.SponsoredAds
         /// <summary>
         /// ID for this campaign
         /// </summary>
-        public int ID { get; set; }
+        public int ID { get; private set; }
         /// <summary>
         /// Name for this campaign
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// URL for clicks
         /// </summary>
-        public string TargetLink { get; set; }
+        public string TargetLink { get; private set; }
 
         /// <summary>
         /// Name of the image file
         /// </summary>
-        public string ImageName { get; set; }
+        public string ImageName { get; private set; }
 
         /// <summary>
         /// # of impressions on our end
         /// </summary>
-        public int ImpressionCount { get; set; }
+        public int ImpressionCount { get; private set; }
 
         /// <summary>
         /// Click-through counts
         /// </summary>
-        public int ClickCount { get; set; }
+        public int ClickCount { get; private set; }
+
+        /// <summary>
+        /// Preferred image width for a logo
+        /// </summary>
+        public int PreferredWidth { get; private set; }
+
+        /// <summary>
+        /// Prefered image height for a logo
+        /// </summary>
+        public int PreferredHeight { get; private set; }
+
+        /// <summary>
+        /// Short promotional text for the ad, uses simple markup
+        /// </summary>
+        public string PromoText { get; private set; }
+
+        /// <summary>
+        /// A header for the text.  NOT marked up.
+        /// </summary>
+        public string PromoHeader { get; private set; }
 
         /// <summary>
         /// URL for the image (relative)
@@ -67,17 +88,16 @@ namespace MyFlightbook.SponsoredAds
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
-            InitFromDataReader(dr);
-        }
-
-        private void InitFromDataReader(IDataReader dr)
-        {
             ID = Convert.ToInt32(dr["idSponsoredAds"], CultureInfo.InvariantCulture);
             Name = (string)dr["Name"];
             TargetLink = (string)dr["TargetURL"];
             ImageName = (string)dr["ImageName"];
             ImpressionCount = Convert.ToInt32(dr["ImpressionCount"], CultureInfo.InvariantCulture);
             ClickCount = Convert.ToInt32(dr["ClickCount"], CultureInfo.InvariantCulture);
+            PreferredHeight = Convert.ToInt32(dr["PreferredImgHeight"], CultureInfo.InvariantCulture);
+            PreferredWidth = Convert.ToInt32(dr["PreferredImgWidth"], CultureInfo.InvariantCulture);
+            PromoHeader = dr["promoHeader"] as string;
+            PromoText = dr["promoTextMarkup"] as string;
         }
         #endregion
 
@@ -120,8 +140,12 @@ namespace MyFlightbook.SponsoredAds
         public void AddImpression()
         {
             ImpressionCount++;
-            DBHelper dbh = new DBHelper("UPDATE sponsoredads SET ImpressionCount = ImpressionCount + 1 WHERE idSponsoredAds=?id");
-            dbh.DoNonQuery((comm) => {comm.Parameters.AddWithValue("id", ID);});
+            // Fire and forget; we don't care about the result, and we don't want to wait for the database update to complete before showing the ad.
+            new Task(() =>
+            {
+                DBHelper dbh = new DBHelper("UPDATE sponsoredads SET ImpressionCount = ImpressionCount + 1 WHERE idSponsoredAds=?id");
+                dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
+            }).Start();
         }
 
         /// <summary>
@@ -130,8 +154,11 @@ namespace MyFlightbook.SponsoredAds
         public void AddClick()
         {
             ClickCount++;
-            DBHelper dbh = new DBHelper("UPDATE sponsoredads SET ClickCount = ClickCount + 1 WHERE idSponsoredAds=?id");
-            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
+            new Task(() =>
+            {
+                DBHelper dbh = new DBHelper("UPDATE sponsoredads SET ClickCount = ClickCount + 1 WHERE idSponsoredAds=?id");
+                dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
+            }).Start();
         }
         #endregion
     }

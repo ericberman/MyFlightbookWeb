@@ -1834,24 +1834,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Need paper logbooks transcribed or audited?.
-        /// </summary>
-        internal static string ImportAculogHeader {
-            get {
-                return ResourceManager.GetString("ImportAculogHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %APP_NAME% has partnered with *AcuLog* for professional and reliable transcription services..
-        /// </summary>
-        internal static string ImportAculogPromo {
-            get {
-                return ResourceManager.GetString("ImportAculogPromo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This flight will be ADDED to your logbook..
         /// </summary>
         internal static string ImportAddTooltip {

@@ -1060,12 +1060,6 @@ Proceed with import?</value>
   <data name="TemplateCopyTemplate" xml:space="preserve">
     <value>{0} - Copy</value>
   </data>
-  <data name="ImportAculogHeader" xml:space="preserve">
-    <value>Need paper logbooks transcribed or audited?</value>
-  </data>
-  <data name="ImportAculogPromo" xml:space="preserve">
-    <value>%APP_NAME% has partnered with *AcuLog* for professional and reliable transcription services.</value>
-  </data>
   <data name="ImportBlogLink" xml:space="preserve">
     <value>Read an in-depth description of importing in the blog</value>
   </data>
