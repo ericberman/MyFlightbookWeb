@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2025 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -68,13 +68,13 @@ namespace MyFlightbook.Currency
                 switch (RegenType)
                 {
                     case RegenUnit.CalendarMonths:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenMonths, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenMonths, RegenSpan);
                     case RegenUnit.Days:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenDays, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenDays, RegenSpan);
                     case RegenUnit.None:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenManual);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenManual);
                     case RegenUnit.Hours:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenHours, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenHours, RegenSpan);
                     default:
                         return string.Empty;
                 }
@@ -89,8 +89,8 @@ namespace MyFlightbook.Currency
             get
             {
                 return UsesHours ?
-                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineDueTemplateHours, AircraftHours) :
-                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineDueTemplateDate, Expiration.ToShortDateString());
+                    String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateHours, AircraftHours) :
+                    String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateDate, Expiration.ToShortDateString());
             }
         }
 
@@ -104,20 +104,20 @@ namespace MyFlightbook.Currency
                 switch (RegenType)
                 {
                     case RegenUnit.CalendarMonths:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenPromptMonths, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenPromptMonths, RegenSpan);
                     case RegenUnit.Days:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenPromptDays, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenPromptDays, RegenSpan);
                     case RegenUnit.Hours:
-                        return String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineRegenPromptHours, RegenSpan);
+                        return String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineRegenPromptHours, RegenSpan);
                     case RegenUnit.None:
-                        return Resources.Currency.deadlineRegenPromptNone;
+                        return Properties.Currency.deadlineRegenPromptNone;
                     default:
                         return string.Empty;
                 }
             }
         }
 
-        public string DisplayName { get { return Name + (String.IsNullOrEmpty(TailNumber) ? string.Empty : Resources.LocalizedText.LocalizedSpace + String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedParenthetical, TailNumber)); } }
+        public string DisplayName { get { return Name + (String.IsNullOrEmpty(TailNumber) ? string.Empty : $" ({TailNumber})"); } }
 
         /// <summary>
         /// The aircraft for which this deadline applies, if any
@@ -221,25 +221,25 @@ namespace MyFlightbook.Currency
             ErrorString = string.Empty;
 
             if (String.IsNullOrEmpty(Name))
-                ErrorString = Resources.Currency.errDeadlineNoName;
+                ErrorString = Properties.Currency.errDeadlineNoName;
             if (String.IsNullOrEmpty(Username) && AircraftID <= 0)
                 ErrorString = "BUG: need to have EITHER a user owner OR an aircraft owner";
             if (RegenSpan <= 0 && RegenType != RegenUnit.None)
-                ErrorString = Resources.Currency.errDeadlineNoSpan;
+                ErrorString = Properties.Currency.errDeadlineNoSpan;
             if (!Expiration.HasValue() && AircraftHours <= 0)
-                ErrorString = Resources.Currency.errDeadlineNoDate;
+                ErrorString = Properties.Currency.errDeadlineNoDate;
             if (Expiration.HasValue() && AircraftHours > 0)
-                ErrorString = Resources.Currency.errDeadlineHoursOrDate;
+                ErrorString = Properties.Currency.errDeadlineHoursOrDate;
             if (AircraftHours > 0 && AircraftID <= 0)
-                ErrorString = Resources.Currency.errDeadlineHoursWithoutAircraft;
+                ErrorString = Properties.Currency.errDeadlineHoursWithoutAircraft;
             return ErrorString.Length == 0;
         }
 
         public override string ToString()
         {
             return (AircraftID > 0) ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineDisplayFormatAircraft, TailNumber, Name, ExpirationDisplay, RegenDescription) : 
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.deadlineDisplayFormat, Name, ExpirationDisplay, RegenDescription);
+                String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormatAircraft, TailNumber, Name, ExpirationDisplay, RegenDescription) : 
+                String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormat, Name, ExpirationDisplay, RegenDescription);
         }
 
         /// <summary>
@@ -425,14 +425,14 @@ GROUP BY d.iddeadlines";
                     if (dc.HighWaterTach > 0)
                     {
                         delta = dTach;
-                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentTach, dc.HighWaterTach, dTach > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dTach) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dTach));
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Properties.Currency.DeadlineCurrentTach, dc.HighWaterTach, dTach > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dTach) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dTach));
                     }
 
                     // see if hobbs has a smaller delta from the target than tach did
                     if (dc.HighWaterHobbs > 0 && Math.Abs(dHobbs) < Math.Abs(dTach))
                     {
                         delta = dHobbs;
-                        szDesc = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentHobbs, dc.HighWaterHobbs, dHobbs> 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dHobbs) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dHobbs));
+                        szDesc = String.Format(CultureInfo.CurrentCulture, Properties.Currency.DeadlineCurrentHobbs, dc.HighWaterHobbs, dHobbs> 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapNegative, dHobbs) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCurrentGapPositive, -dHobbs));
                     }
 
                     CurrencyState defState = delta == decimal.MinValue ? CurrencyState.NoDate : (delta < -10 ? CurrencyState.OK : (delta < 0 ? CurrencyState.GettingClose : CurrencyState.NotCurrent));

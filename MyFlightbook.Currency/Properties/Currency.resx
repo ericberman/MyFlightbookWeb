@@ -117,132 +117,81 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DisclaimerLink" xml:space="preserve">
-    <value>Notes importantes</value>
-    <comment>Disclaimer link</comment>
+  <data name="currencyExpiration1Year" xml:space="preserve">
+    <value>For 1 year</value>
   </data>
-  <data name="DiscrepancyTemplate" xml:space="preserve">
-    <value>(Déficit par {0} {1})</value>
-    <comment>Template for discrepancy in a custom currency rule.  E.g., "Short by 2 approaches"</comment>
+  <data name="currencyExpiration2Years" xml:space="preserve">
+    <value>For 2 years</value>
   </data>
-  <data name="DiscrepancyTemplateIFR" xml:space="preserve">
-    <value>(Déficit par {0} {1} et {2} {3})</value>
-    <comment>Template for what you're short by for IFR, e.g., "(Short by 2 approaches and 1 hold)"</comment>
+  <data name="currencyExpiration3Years" xml:space="preserve">
+    <value>For 3 years</value>
   </data>
-  <data name="DiscrepancyTemplateNight" xml:space="preserve">
-    <value>(Déficit par {0} {1}; verifier que les décollages requis ont bien été!)</value>
-    <comment>Template for what you're short by for night; e.g., "Short by 2 landings"</comment>
+  <data name="currencyExpiration5Years" xml:space="preserve">
+    <value>For 5 years</value>
   </data>
-  <data name="FlyingStatus" xml:space="preserve">
-    <value>Etat de vos compétences:</value>
-    <comment>Header for currency</comment>
+  <data name="currencyExpiration10Years" xml:space="preserve">
+    <value>For 10 years</value>
   </data>
-  <data name="FormatCurrent" xml:space="preserve">
-    <value>A jour jusqu’au: {0}</value>
-    <comment>If you're current, how much longer are you so?</comment>
+  <data name="currencyExpirationNone" xml:space="preserve">
+    <value>Forever</value>
   </data>
-  <data name="FormatExpired" xml:space="preserve">
-    <value>Date d’expiration: {0}</value>
-    <comment>If you expired, when did your currency expire?</comment>
+  <data name="DeadlineCurrentHobbs" xml:space="preserve">
+    <value>Current Hobbs Est.: {0:#,##0.0#} {1}</value>
   </data>
-  <data name="FormatNeverCurrent" xml:space="preserve">
-    <value>Pas qualifié!</value>
-    <comment>If you've never been current, this is your status</comment>
+  <data name="DeadlineCurrentTach" xml:space="preserve">
+    <value>Current Tach Est.: {0:#,##0.0#} {1}</value>
   </data>
-  <data name="GeneralDisclaimer" xml:space="preserve">
-    <value>Vérifier les règles du système administratif qui vous est applicable. Les informations fournies le sont à titre indicatif et il appartient au pilote de vérifier que la tenue et les conditions lui permettant d’entreprendre le vol, soient conformes à la réglementation en vigueur</value>
-    <comment>General "I'm not responsible for you being current or not" disclaimer.</comment>
+  <data name="deadlineDisplayFormat" xml:space="preserve">
+    <value>{0} - Due {1} {2}</value>
+    <comment>{0} = name, {1} is due date, {2} is the regeneration rule</comment>
   </data>
-  <data name="Hold" xml:space="preserve">
-    <value>Circuit d’attente</value>
-    <comment>Holding procedures (1 hold, 2 holds)</comment>
+  <data name="deadlineDisplayFormatAircraft" xml:space="preserve">
+    <value>{0} - {1} - {2} {3}</value>
+    <comment>{0} = Aircraft, {1} = name, {2} is due date, {3} is the regeneration rule, </comment>
   </data>
-  <data name="Holds" xml:space="preserve">
-    <value>Circuits d’attente</value>
-    <comment>Multiple holding procedures</comment>
+  <data name="deadlineDueTemplateDate" xml:space="preserve">
+    <value>Due: {0:d}</value>
   </data>
-  <data name="IFR" xml:space="preserve">
-    <value>IFR</value>
-    <comment>Currency is for IFR in the particular category</comment>
+  <data name="deadlineDueTemplateHours" xml:space="preserve">
+    <value>Due at: {0:#,##0.0#} hours</value>
   </data>
-  <data name="IFRGlider" xml:space="preserve">
-    <value>IFR - Planeur</value>
-    <comment>Currency is for IFR operations in a glider (proving the holder to be insane)</comment>
+  <data name="deadlineRegenDays" xml:space="preserve">
+    <value>(When done, reset for {0} day(s) after completion date)</value>
   </data>
-  <data name="IFRGliderNoPassengers" xml:space="preserve">
-    <value>(Sans Passagers)</value>
-    <comment>Whether IFR glider pilot can not carry passengers</comment>
+  <data name="deadlineRegenHours" xml:space="preserve">
+    <value>(Due every {0} hours)</value>
   </data>
-  <data name="IFRGliderPassengers" xml:space="preserve">
-    <value>(Avec Passagers)</value>
-    <comment>Whether IFR glider pilot can carry passengers</comment>
+  <data name="deadlineRegenManual" xml:space="preserve">
+    <value>(When done, manually set a new due date)</value>
   </data>
-  <data name="IPCRequired" xml:space="preserve">
-    <value>Contrôle en vol requis</value>
-    <comment>You've been out of IFR currency for long enough that an InstrumentProficiencyCheck is required</comment>
+  <data name="deadlineRegenMonths" xml:space="preserve">
+    <value>(When done, reset for {0} calendar month(s) after completion date)</value>
   </data>
-  <data name="NextFlightReview" xml:space="preserve">
-    <value>Prochaine vol de contrôle</value>
-    <comment>Next Flight review is due...</comment>
+  <data name="deadlineRegenPromptDays" xml:space="preserve">
+    <value>New expiration is {0} day(s) from: </value>
   </data>
-  <data name="NextMedical" xml:space="preserve">
-    <value>Prochaine visite médicale</value>
-    <comment>Next medical is due</comment>
+  <data name="deadlineRegenPromptHours" xml:space="preserve">
+    <value>New expiration is {0} hours (tach/hobbs) from: </value>
   </data>
-  <data name="NextPICProficiencyCheck" xml:space="preserve">
-    <value>Prochaine contrôle de la compétence (61.58): {0}</value>
-    <comment>When is the next PIC proficiency check, per 61.58, due?</comment>
+  <data name="deadlineRegenPromptMonths" xml:space="preserve">
+    <value>New expiration is {0} month(s) from: </value>
   </data>
-  <data name="Night" xml:space="preserve">
-    <value>Nuit</value>
-    <comment>Currency is for night</comment>
+  <data name="deadlineRegenPromptNone" xml:space="preserve">
+    <value>New expiration date is:</value>
   </data>
-  <data name="NightTakeoffReminder" xml:space="preserve">
-    <value>Aucun décollage de nuit n’est noté; Vérifier qu’ils aient bien été faits!</value>
-    <comment>We don't require nighttime takeoffs to be logged, but they are required for currency</comment>
+  <data name="errDeadlineHoursOrDate" xml:space="preserve">
+    <value>Please choose a due date, or aircraft hours, but not both</value>
   </data>
-  <data name="NightVision" xml:space="preserve">
-    <value>Vision de nuit</value>
-    <comment>Currency is for night-vision operations</comment>
+  <data name="errDeadlineHoursWithoutAircraft" xml:space="preserve">
+    <value>Can't have a deadline based on aircraft hours without an aircraft!</value>
   </data>
-  <data name="NoStatus" xml:space="preserve">
-    <value>(Pas d'informations disponibles)</value>
-    <comment>Message when no status is available</comment>
+  <data name="errDeadlineNoDate" xml:space="preserve">
+    <value>Please indicate when the deadline is due.</value>
   </data>
-  <data name="Passengers" xml:space="preserve">
-    <value>Passagers</value>
-    <comment>Currency is for carrying passengers</comment>
+  <data name="errDeadlineNoName" xml:space="preserve">
+    <value>Please provide a name for this deadline</value>
   </data>
-  <data name="Priveleges" xml:space="preserve">
-    <value>Privilèges</value>
-    <comment>Header for privileges</comment>
-  </data>
-  <data name="StatusTitle" xml:space="preserve">
-    <value>Statut</value>
-    <comment>Title for "Status" column</comment>
-  </data>
-  <data name="Tailwheel" xml:space="preserve">
-    <value>Train classique</value>
-    <comment>Currency is for tailwheel aircraft</comment>
-  </data>
-  <data name="Takeoff" xml:space="preserve">
-    <value>décollage</value>
-    <comment>1 takeoff</comment>
-  </data>
-  <data name="Takeoffs" xml:space="preserve">
-    <value>décollages</value>
-    <comment>2 or more takeoffs</comment>
-  </data>
-  <data name="CustomCurrencyEventNightLanding" xml:space="preserve">
-    <value>Atterrissage de nuit</value>
-  </data>
-  <data name="CustomCurrencyEventNightLandings" xml:space="preserve">
-    <value>Atterrissages de nuit</value>
-  </data>
-  <data name="CustomCurrencyEventNightTakeoff" xml:space="preserve">
-    <value>Nuit décollage</value>
-  </data>
-  <data name="CustomCurrencyEventNightTakeoffs" xml:space="preserve">
-    <value>Nuit décollages</value>
+  <data name="errDeadlineNoSpan" xml:space="preserve">
+    <value>Please indicate the timespan to use when recreating this deadline</value>
   </data>
 </root>

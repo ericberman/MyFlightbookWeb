@@ -2200,6 +2200,10 @@
       <Project>{8705ec69-4746-4bac-a490-142178cae996}</Project>
       <Name>MyFlightbook.CSV</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.Currency\MyFlightbook.Currency.csproj">
+      <Project>{22160023-e97b-4f74-a383-15c0697e8b40}</Project>
+      <Name>MyFlightbook.Currency</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj">
       <Project>{c9a0ed02-c864-4371-bb7e-1846bae90659}</Project>
       <Name>MyFlightbook.FlightProperties</Name>

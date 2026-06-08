@@ -148,60 +148,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For 10 years.
-        /// </summary>
-        internal static string currencyExpiration10Years {
-            get {
-                return ResourceManager.GetString("currencyExpiration10Years", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For 1 year.
-        /// </summary>
-        internal static string currencyExpiration1Year {
-            get {
-                return ResourceManager.GetString("currencyExpiration1Year", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For 2 years.
-        /// </summary>
-        internal static string currencyExpiration2Years {
-            get {
-                return ResourceManager.GetString("currencyExpiration2Years", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For 3 years.
-        /// </summary>
-        internal static string currencyExpiration3Years {
-            get {
-                return ResourceManager.GetString("currencyExpiration3Years", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For 5 years.
-        /// </summary>
-        internal static string currencyExpiration5Years {
-            get {
-                return ResourceManager.GetString("currencyExpiration5Years", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Forever.
-        /// </summary>
-        internal static string currencyExpirationNone {
-            get {
-                return ResourceManager.GetString("currencyExpirationNone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The following currencies are getting close to expiring or have recently expired:.
         /// </summary>
         internal static string CurrencyExpiringHeader {
@@ -1750,24 +1696,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Hobbs Est.: {0:#,##0.0#} {1}.
-        /// </summary>
-        internal static string DeadlineCurrentHobbs {
-            get {
-                return ResourceManager.GetString("DeadlineCurrentHobbs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current Tach Est.: {0:#,##0.0#} {1}.
-        /// </summary>
-        internal static string DeadlineCurrentTach {
-            get {
-                return ResourceManager.GetString("DeadlineCurrentTach", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Days.
         /// </summary>
         internal static string DeadlineDays {
@@ -1819,47 +1747,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Due {1} {2}.
-        /// </summary>
-        internal static string deadlineDisplayFormat {
-            get {
-                return ResourceManager.GetString("deadlineDisplayFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} - {1} - {2} {3}.
-        /// </summary>
-        internal static string deadlineDisplayFormatAircraft {
-            get {
-                return ResourceManager.GetString("deadlineDisplayFormatAircraft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Deadline is due:.
         /// </summary>
         internal static string DeadlineDueDate {
             get {
                 return ResourceManager.GetString("DeadlineDueDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Due: {0:d}.
-        /// </summary>
-        internal static string deadlineDueTemplateDate {
-            get {
-                return ResourceManager.GetString("deadlineDueTemplateDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Due at: {0:#,##0.0#} hours.
-        /// </summary>
-        internal static string deadlineDueTemplateHours {
-            get {
-                return ResourceManager.GetString("deadlineDueTemplateHours", resourceCulture);
             }
         }
         
@@ -1923,78 +1815,6 @@ namespace Resources {
         internal static string DeadlineRegenAction {
             get {
                 return ResourceManager.GetString("DeadlineRegenAction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (When done, reset for {0} day(s) after completion date).
-        /// </summary>
-        internal static string deadlineRegenDays {
-            get {
-                return ResourceManager.GetString("deadlineRegenDays", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (Due every {0} hours).
-        /// </summary>
-        internal static string deadlineRegenHours {
-            get {
-                return ResourceManager.GetString("deadlineRegenHours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (When done, manually set a new due date).
-        /// </summary>
-        internal static string deadlineRegenManual {
-            get {
-                return ResourceManager.GetString("deadlineRegenManual", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (When done, reset for {0} calendar month(s) after completion date).
-        /// </summary>
-        internal static string deadlineRegenMonths {
-            get {
-                return ResourceManager.GetString("deadlineRegenMonths", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New expiration is {0} day(s) from: .
-        /// </summary>
-        internal static string deadlineRegenPromptDays {
-            get {
-                return ResourceManager.GetString("deadlineRegenPromptDays", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New expiration is {0} hours (tach/hobbs) from: .
-        /// </summary>
-        internal static string deadlineRegenPromptHours {
-            get {
-                return ResourceManager.GetString("deadlineRegenPromptHours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New expiration is {0} month(s) from: .
-        /// </summary>
-        internal static string deadlineRegenPromptMonths {
-            get {
-                return ResourceManager.GetString("deadlineRegenPromptMonths", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New expiration date is:.
-        /// </summary>
-        internal static string deadlineRegenPromptNone {
-            get {
-                return ResourceManager.GetString("deadlineRegenPromptNone", resourceCulture);
             }
         }
         
@@ -2256,51 +2076,6 @@ namespace Resources {
         internal static string errCustomCurrencyNoName {
             get {
                 return ResourceManager.GetString("errCustomCurrencyNoName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please choose a due date, or aircraft hours, but not both.
-        /// </summary>
-        internal static string errDeadlineHoursOrDate {
-            get {
-                return ResourceManager.GetString("errDeadlineHoursOrDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t have a deadline based on aircraft hours without an aircraft!.
-        /// </summary>
-        internal static string errDeadlineHoursWithoutAircraft {
-            get {
-                return ResourceManager.GetString("errDeadlineHoursWithoutAircraft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please indicate when the deadline is due..
-        /// </summary>
-        internal static string errDeadlineNoDate {
-            get {
-                return ResourceManager.GetString("errDeadlineNoDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please provide a name for this deadline.
-        /// </summary>
-        internal static string errDeadlineNoName {
-            get {
-                return ResourceManager.GetString("errDeadlineNoName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please indicate the timespan to use when recreating this deadline.
-        /// </summary>
-        internal static string errDeadlineNoSpan {
-            get {
-                return ResourceManager.GetString("errDeadlineNoSpan", resourceCulture);
             }
         }
         

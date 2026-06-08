@@ -362,37 +362,6 @@
   <data name="deadlineDeleteTooltip" xml:space="preserve">
     <value>Delete this deadline.</value>
   </data>
-  <data name="deadlineDisplayFormat" xml:space="preserve">
-    <value>{0} - Due {1} {2}</value>
-    <comment>{0} = name, {1} is due date, {2} is the regeneration rule</comment>
-  </data>
-  <data name="deadlineRegenDays" xml:space="preserve">
-    <value>(When done, reset for {0} day(s) after completion date)</value>
-  </data>
-  <data name="deadlineRegenManual" xml:space="preserve">
-    <value>(When done, manually set a new due date)</value>
-  </data>
-  <data name="deadlineRegenMonths" xml:space="preserve">
-    <value>(When done, reset for {0} calendar month(s) after completion date)</value>
-  </data>
-  <data name="errDeadlineNoName" xml:space="preserve">
-    <value>Please provide a name for this deadline</value>
-  </data>
-  <data name="errDeadlineNoSpan" xml:space="preserve">
-    <value>Please indicate the timespan to use when recreating this deadline</value>
-  </data>
-  <data name="deadlineDueTemplateDate" xml:space="preserve">
-    <value>Due: {0:d}</value>
-  </data>
-  <data name="deadlineRegenPromptDays" xml:space="preserve">
-    <value>New expiration is {0} day(s) from: </value>
-  </data>
-  <data name="deadlineRegenPromptMonths" xml:space="preserve">
-    <value>New expiration is {0} month(s) from: </value>
-  </data>
-  <data name="deadlineRegenPromptNone" xml:space="preserve">
-    <value>New expiration date is:</value>
-  </data>
   <data name="CustomCurrencyEventLaunch" xml:space="preserve">
     <value>unmanned aerial system (UAS) launch</value>
   </data>
@@ -404,9 +373,6 @@
   </data>
   <data name="CustomCurrencyEventRecovery" xml:space="preserve">
     <value>unmanned aerial system (UAS) recovery</value>
-  </data>
-  <data name="errDeadlineNoDate" xml:space="preserve">
-    <value>Please indicate when the deadline is due.</value>
   </data>
   <data name="FAR11723b1" xml:space="preserve">
     <value>FAR 117.23(b)(1): Flight hours in prior 672 hours</value>
@@ -446,24 +412,6 @@
   </data>
   <data name="CustomCurrencyEventNightTakeoffs" xml:space="preserve">
     <value>night takeoffs</value>
-  </data>
-  <data name="currencyExpiration10Years" xml:space="preserve">
-    <value>For 10 years</value>
-  </data>
-  <data name="currencyExpiration1Year" xml:space="preserve">
-    <value>For 1 year</value>
-  </data>
-  <data name="currencyExpiration2Years" xml:space="preserve">
-    <value>For 2 years</value>
-  </data>
-  <data name="currencyExpiration3Years" xml:space="preserve">
-    <value>For 3 years</value>
-  </data>
-  <data name="currencyExpiration5Years" xml:space="preserve">
-    <value>For 5 years</value>
-  </data>
-  <data name="currencyExpirationNone" xml:space="preserve">
-    <value>Forever</value>
   </data>
   <data name="NVNoPassengers" xml:space="preserve">
     <value>(No Passengers)</value>
@@ -721,30 +669,11 @@
   <data name="DeadlineChangedHours" xml:space="preserve">
     <value>{0} - Updated from due at {1:#,##0.0#} to {2:#,##0.0#}</value>
   </data>
-  <data name="deadlineDisplayFormatAircraft" xml:space="preserve">
-    <value>{0} - {1} - {2} {3}</value>
-    <comment>{0} = Aircraft, {1} = name, {2} is due date, {3} is the regeneration rule, </comment>
-  </data>
-  <data name="deadlineDueTemplateHours" xml:space="preserve">
-    <value>Due at: {0:#,##0.0#} hours</value>
-  </data>
-  <data name="deadlineRegenHours" xml:space="preserve">
-    <value>(Due every {0} hours)</value>
-  </data>
-  <data name="deadlineRegenPromptHours" xml:space="preserve">
-    <value>New expiration is {0} hours (tach/hobbs) from: </value>
-  </data>
   <data name="deadlinesHeaderDeadlines" xml:space="preserve">
     <value>Deadlines</value>
   </data>
   <data name="deadlinesNoDeadlinesDefined" xml:space="preserve">
     <value>No deadlines found</value>
-  </data>
-  <data name="errDeadlineHoursOrDate" xml:space="preserve">
-    <value>Please choose a due date, or aircraft hours, but not both</value>
-  </data>
-  <data name="errDeadlineHoursWithoutAircraft" xml:space="preserve">
-    <value>Can't have a deadline based on aircraft hours without an aircraft!</value>
   </data>
   <data name="CustomCurrencyAddRule" xml:space="preserve">
     <value>Add Currency Rule</value>
@@ -1235,12 +1164,6 @@
   </data>
   <data name="DeadlineRegenAction" xml:space="preserve">
     <value>When the deadline has passed and you've done whatever is required:</value>
-  </data>
-  <data name="DeadlineCurrentHobbs" xml:space="preserve">
-    <value>Current Hobbs Est.: {0:#,##0.0#} {1}</value>
-  </data>
-  <data name="DeadlineCurrentTach" xml:space="preserve">
-    <value>Current Tach Est.: {0:#,##0.0#} {1}</value>
   </data>
   <data name="CurrencyOptions135DutyTime" xml:space="preserve">
     <value>Show FAR 135 Duty Time Status</value>
