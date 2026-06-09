@@ -99,6 +99,10 @@
             @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTTPrintColor", tipTextHTML = Resources.LocalizedText.PrintViewFlightColoringTip }); }
         </div>
         <div>
+            <label><input type="checkbox" onchange="javascript:@(onChange)();" name="poUseStriping" @po.UseZebraStriping.ToChecked() />@Resources.LocalizedText.PrintViewUseZebraStriping</label>
+            @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "mfbTTZebraStripe", tipTextHTML = Resources.LocalizedText.PrintViewUseZebraStripingTip }); }
+        </div>
+        <div>
             <label style="font-size: 7pt;"><input type="radio" value="Small" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Small).ToChecked())>@Resources.LocalizedText.PrintFontSizeSmaller</label>
             <label><input type="radio" value="Normal" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Normal).ToChecked())>@Resources.LocalizedText.PrintFontSizeNormal</label>
             <label style="font-size: 11pt;"><input type="radio" value="Large" onchange="javascript:@(onChange)();" name="poFontSize" @((po.Size == PrintingOptions.FontSize.Large).ToChecked())>@Resources.LocalizedText.PrintFontSizeLarge</label>

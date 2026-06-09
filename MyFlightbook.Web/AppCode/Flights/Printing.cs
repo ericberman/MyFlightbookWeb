@@ -666,6 +666,11 @@ namespace MyFlightbook.Printing
         public bool UseFlightColoring { get; set; }
 
         /// <summary>
+        /// By default, any shading only appears on-screen to save ink.  If this value is set, then rows will also have alternating gray backgrounds in the PDF/print output.  Most useful for facing pages.
+        /// </summary>
+        public bool UseZebraStriping { get; set; } = false;
+
+        /// <summary>
         /// Layout to use
         /// </summary>
         [System.ComponentModel.DefaultValue(PrintLayoutType.Native)]
@@ -1558,7 +1563,7 @@ namespace MyFlightbook.Printing
     /// <summary>
     /// Base class for actual print layouts
     /// </summary>
-    public class PrintLayoutBase : UserControl, IPrintingTemplate
+    public class PrintLayoutBase : IPrintingTemplate
     {
         #region Properties
         public MyFlightbook.Profile CurrentUser { get; private set; }
@@ -1639,31 +1644,6 @@ namespace MyFlightbook.Printing
                 lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID) || (led.IsFSTD && cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropSimRegistration));
                 led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, PropSeparator);
             }
-        }
-
-        /// <summary>
-        /// Return the direct-style flight coloring for a logbookentrydisplay
-        /// </summary>
-        /// <returns></returns>
-        protected string ColorForFlight(object o)
-        {
-            if (o == null || !Options.UseFlightColoring || (!(o is LogbookEntryDisplay led)))
-                return string.Empty;
-
-            if (QueriesToColor == null)
-                QueriesToColor = FlightColor.QueriesToColor(led.User);
-
-            System.Drawing.Color c = System.Drawing.Color.Empty;
-            foreach (CannedQuery cq in QueriesToColor)
-            {
-                if (cq.MatchesFlight(led))
-                {
-                    // Important - always match on the first matching query
-                    c = FlightColor.TryParseColor(cq.ColorString);
-                    break;
-                }
-            }
-            return c == System.Drawing.Color.Empty ? string.Empty : String.Format(CultureInfo.InvariantCulture, "style=\"background-color: {0};\" ", System.Drawing.ColorTranslator.ToHtml(c));
         }
         #endregion
 

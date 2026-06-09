@@ -1776,15 +1776,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a PDF to download.
-        /// </summary>
-        internal static string DownloadAsPDF1 {
-            get {
-                return ResourceManager.GetString("DownloadAsPDF1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to PDF Download.
         /// </summary>
         internal static string DownloadAsPDFTabHeader {
@@ -4796,6 +4787,25 @@ namespace Resources {
         internal static string PrintViewTurbineSubtotalSuffix {
             get {
                 return ResourceManager.GetString("PrintViewTurbineSubtotalSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply shading to alternating rows.
+        /// </summary>
+        internal static string PrintViewUseZebraStriping {
+            get {
+                return ResourceManager.GetString("PrintViewUseZebraStriping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;To conserve ink, background shading that displays on the screen is, by default, excluded from the PDF or when you print from your browser.&lt;/p&gt;
+        ///&lt;p&gt;This option includes an alternating light-gray background for flight rows both on-screen and on the printed page/PDF.&lt;/p&gt;&lt;p&gt;If you use flight coloring, then the color for the flight will override any such shading.&lt;/p&gt;.
+        /// </summary>
+        internal static string PrintViewUseZebraStripingTip {
+            get {
+                return ResourceManager.GetString("PrintViewUseZebraStripingTip", resourceCulture);
             }
         }
         

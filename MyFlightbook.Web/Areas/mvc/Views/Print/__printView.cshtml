@@ -49,6 +49,14 @@
             @:overflow: hidden;
             }
     }
+
+    tbody tr.bordered:nth-child(even)
+    {
+        @if (po.UseZebraStriping)
+        {
+            @:background-color: #dfdfdf;
+        }
+    }
 </style>
 <script type="text/javascript">
     $(() => {

@@ -129,6 +129,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IncludeImages = Request["poImages"] != null,
                 IncludeSignatures = Request["poSigs"] != null,
                 UseFlightColoring = Request["poColors"] != null,
+                UseZebraStriping = Request["poUseStriping"] != null,
                 Size = Enum.TryParse(Request["poFontSize"], true, out PrintingOptions.FontSize fontSize) ? fontSize : PrintingOptions.FontSize.Normal,
                 FlightsPerPage = int.TryParse(Request["poFlightsPerPage"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fpp) ? fpp : 0,
                 FixedRowHeight = int.TryParse(Request["poRowHeight"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fixedRowHeight) ? fixedRowHeight : 0,
