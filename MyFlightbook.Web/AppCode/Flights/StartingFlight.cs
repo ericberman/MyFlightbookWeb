@@ -239,16 +239,16 @@ ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
             get
             {
                 List<string> l = new List<string>();
-                if (IsTurbine) l.Add(Resources.FlightQuery.AircraftFeatureTurbine);
-                if (IsHighPerf) l.Add(Resources.FlightQuery.AircraftFeatureHighPerformance);
+                if (IsTurbine) l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureTurbine);
+                if (IsHighPerf) l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureHighPerformance);
                 if (IsComplex)
-                    l.Add(Resources.FlightQuery.AircraftFeatureComplex);
+                    l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureComplex);
                 else
                 {
-                    if (IsConstantProp) l.Add(Resources.FlightQuery.AircraftFeatureConstantSpeedProp);
-                    if (IsRetract) l.Add(Resources.FlightQuery.AircraftFeatureRetractableGear);
+                    if (IsConstantProp) l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureConstantSpeedProp);
+                    if (IsRetract) l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureRetractableGear);
                 }
-                if (IsTailwheel) l.Add(Resources.FlightQuery.AircraftFeatureTailwheel);
+                if (IsTailwheel) l.Add(FlightQueries.Properties.FlightQuery.AircraftFeatureTailwheel);
                 return String.Join(", ", l.ToArray());
             }
         }

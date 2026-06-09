@@ -5,26 +5,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MyFlightbook.AircraftSupport\MyFlightbook.AircraftSupport.csproj" />
+    <ProjectReference Include="..\MyFlightbook.Airports\MyFlightbook.Airports.csproj" />
+    <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\PropertyResource.Designer.cs">
+    <Compile Update="Properties\FlightQuery.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>PropertyResource.resx</DependentUpon>
+      <DependentUpon>FlightQuery.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Properties\PropertyResource.resx">
+    <EmbeddedResource Update="Properties\FlightQuery.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>PropertyResource.Designer.cs</LastGenOutput>
+      <LastGenOutput>FlightQuery.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
 </Project>

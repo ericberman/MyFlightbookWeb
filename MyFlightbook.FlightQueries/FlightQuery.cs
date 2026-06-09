@@ -1,5 +1,4 @@
-﻿using MyFlightbook.Web.Sharing;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2025 MyFlightbook LLC
+ * Copyright (c) 2009-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,11 +41,11 @@ namespace MyFlightbook
             switch (conjunction)
             {
                 case GroupConjunction.All:
-                    return Resources.FlightQuery.ConjunctionAll;
+                    return FlightQueries.Properties.FlightQuery.ConjunctionAll;
                 case GroupConjunction.Any:
-                    return Resources.FlightQuery.ConjunctionAny;
+                    return FlightQueries.Properties.FlightQuery.ConjunctionAny;
                 case GroupConjunction.None:
-                    return Resources.FlightQuery.ConjunctionNone;
+                    return FlightQueries.Properties.FlightQuery.ConjunctionNone;
             }
             throw new NotImplementedException("Unhandled conjunction: " + conjunction.ToString());
         }
@@ -271,7 +270,7 @@ namespace MyFlightbook
                 List<int> lst = new List<int>();
                 if (AircraftList == null || AircraftList.Count == 0)
                     return null;
-                    
+
                 foreach (Aircraft ac in AircraftList)
                     lst.Add(ac.AircraftID);
                 return lst.ToArray();
@@ -705,7 +704,7 @@ namespace MyFlightbook
             get
             {
                 if (Filters == null || Filters.Count == 0)
-                    return Resources.FlightQuery.FilterNone;
+                    return FlightQueries.Properties.FlightQuery.FilterNone;
 
                 StringBuilder sb = new StringBuilder();
                 foreach (QueryFilterItem qfi in Filters)
@@ -816,41 +815,41 @@ namespace MyFlightbook
             switch (DateRange)
             {
                 case DateRanges.AllTime:
-                    // Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate, Resources.FlightQuery.DatesAll, "DateRange"));
+                    // Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesAll, "DateRange"));
                     break;
                 case DateRanges.Tailing6Months:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate, Resources.FlightQuery.DatesPrev6Month, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrev6Month, "DateRange"));
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.Trailing12Months:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesPrev12Month, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrev12Month, "DateRange"));
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.Trailing30:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesPrev30Days, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrev30Days, "DateRange"));
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.Trailing90:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesPrev90Days, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrev90Days, "DateRange"));
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateTime.Now.AddDays(-90).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.YTD:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesYearToDate, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesYearToDate, "DateRange"));
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", dtStartOfYear.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.ThisMonth:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesThisMonth, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesThisMonth, "DateRange"));
                     DateTime dtMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", dtMonthStart.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.PrevMonth:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesPrevMonth, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrevMonth, "DateRange"));
                     DateTime dtPrevMonthEnd = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
                     DateTime dtPrevMonthStart = new DateTime(dtPrevMonthEnd.Year, dtPrevMonthEnd.Month, 1);
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}' && flights.date <= '{1}') ", dtPrevMonthStart.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), dtPrevMonthEnd.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     break;
                 case DateRanges.PrevYear:
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  Resources.FlightQuery.DatesPrevYear, "DateRange"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, FlightQueries.Properties.FlightQuery.DatesPrevYear, "DateRange"));
                     DateTime dtPrevYearStart = new DateTime(DateTime.Now.Year - 1, 1, 1);
                     DateTime dtPrevYearEnd = new DateTime(DateTime.Now.Year - 1, 12, 31);
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}' && flights.date <= '{1}') ", dtPrevYearStart.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), dtPrevYearEnd.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
@@ -860,17 +859,17 @@ namespace MyFlightbook
                     bool fHasEndDate = (DateMax.CompareTo(DateTime.MinValue) != 0);
                     if (!fHasStartDate && fHasEndDate)
                     {
-                        Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.DatesBefore, DateMax.ToShortDateString()), "DateRange"));
+                        Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, String.Format(CultureInfo.CurrentCulture, FlightQueries.Properties.FlightQuery.DatesBefore, DateMax.ToShortDateString()), "DateRange"));
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date <= '{0}') ", DateMax.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     }
                     else if (fHasStartDate && !fHasEndDate)
                     {
-                        Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.DatesAfter, DateMin.ToShortDateString()), "DateRange"));
+                        Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, String.Format(CultureInfo.CurrentCulture, FlightQueries.Properties.FlightQuery.DatesAfter, DateMin.ToShortDateString()), "DateRange"));
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateMin.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     }
                     else if (fHasStartDate && fHasEndDate)
                     {
-                        Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterDate,  String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.DatesBetween, DateMin.Date.ToShortDateString(), DateMax.Date.ToShortDateString()), "DateRange"));
+                        Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterDate, String.Format(CultureInfo.CurrentCulture, FlightQueries.Properties.FlightQuery.DatesBetween, DateMin.Date.ToShortDateString(), DateMax.Date.ToShortDateString()), "DateRange"));
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date >= '{0}') ", DateMin.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.date <= '{0}') ", DateMax.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
                     }
@@ -993,7 +992,7 @@ namespace MyFlightbook
             }
             AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
 
-            Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
+            Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.ContainsText, GeneralText, "GeneralText"));
         }
 
         private void UpdateAircraft(StringBuilder sbQuery)
@@ -1014,10 +1013,10 @@ namespace MyFlightbook
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Aircraft list in FlightQuery has {0} item(s), id list has {1}.", AircraftList.Count, lstIds.Count));
 
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "flights.idaircraft IN ({0}) ", String.Join(", ", lstIds)));
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAircraft, String.Join(", ", lstDescriptors), "AircraftList"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.ContainsAircraft, String.Join(", ", lstDescriptors), "AircraftList"));
             }
         }
-        
+
         private void UpdateAirports(StringBuilder sbQuery)
         {
             const string regexLocal = "^([a-zA-Z0-9]{3,5})[^a-zA-Z0-9]+\\\\1$";
@@ -1031,7 +1030,7 @@ namespace MyFlightbook
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))) ", MyFlightbook.Airports.airport.maxCodeLength));
                     else
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " ((LENGTH(Route) <= {0}) OR (Route IS NULL) OR (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterFlightRange, Resources.FlightQuery.FlightRangeLocal, "Distance"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterFlightRange, FlightQueries.Properties.FlightQuery.FlightRangeLocal, "Distance"));
                     break;
                 case FlightDistance.NonLocalOnly:
                     // MySQL 8 doesn't support the CONCAT expression in the RLIKE, but MySql 5.7 doesn't support the backreference.  Backreference is better, of course...
@@ -1039,7 +1038,7 @@ namespace MyFlightbook
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " LENGTH(Route) > {0}  AND NOT (Route RLIKE CONCAT('^', LEFT(Route, 4), '[^a-zA-Z0-9]*', LEFT(Route, 4), '$') OR Route RLIKE CONCAT('^', LEFT(Route, 3), '[^a-zA-Z0-9]*', LEFT(Route, 3), '$'))", Airports.airport.maxCodeLength));
                     else
                         AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (LENGTH(Route) > {0}  AND NOT (Route RLIKE '{1}')) ", Airports.airport.maxCodeLength, regexLocal));
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.FilterFlightRange, Resources.FlightQuery.FlightRangeNonLocal, "Distance"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.FilterFlightRange, FlightQueries.Properties.FlightQuery.FlightRangeNonLocal, "Distance"));
                     break;
                 default:
                     break;
@@ -1071,13 +1070,13 @@ namespace MyFlightbook
                     string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? "^" : string.Empty, szNormalAirport, fIsArrival ? "$" : string.Empty);
                     AddParameter(szParam, szParamValue);
 
-                    sbAirportDesc.Append(lstAirports[i] + Resources.LocalizedText.LocalizedSpace);
+                    sbAirportDesc.Append($"{lstAirports[i]} ");
                 }
 
                 sbAirports.Append(')');
                 AddClause(sbQuery, sbAirports.ToString());
 
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAirports, sbAirportDesc.ToString().Trim(), "AirportList"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.ContainsAirports, sbAirportDesc.ToString().Trim(), "AirportList"));
             }
         }
 
@@ -1101,7 +1100,7 @@ namespace MyFlightbook
                 }
                 szModelsIDQuery = String.Format(CultureInfo.InvariantCulture, "models.idmodel IN ({0}) ", String.Join(", ", lstIds));
 
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsMakeModel, String.Join(", ", lstDesc), "MakeList"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.ContainsMakeModel, String.Join(", ", lstDesc), "MakeList"));
             }
 
             if (!String.IsNullOrWhiteSpace(ModelName))
@@ -1128,7 +1127,7 @@ namespace MyFlightbook
                 {
                     sbModelName.Append(')');
                     szModelsTextQuery = sbModelName.ToString();
-                    Filters.Add(new QueryFilterItem(String.IsNullOrEmpty(szModelsIDQuery) ? Resources.FlightQuery.ContainsMakeModelText : Resources.FlightQuery.ContainsMakeModelTextOR, ModelName, "ModelName"));
+                    Filters.Add(new QueryFilterItem(String.IsNullOrEmpty(szModelsIDQuery) ? FlightQueries.Properties.FlightQuery.ContainsMakeModelText : FlightQueries.Properties.FlightQuery.ContainsMakeModelTextOR, ModelName, "ModelName"));
                 }
             }
 
@@ -1138,7 +1137,7 @@ namespace MyFlightbook
                 {
                     // special case: single empty typename = "No type."
                     szModelsTypeQuery = " (typename='') ";
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsType, Resources.FlightQuery.ContainsTypeNone, "TypeNames"));
+                    Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.ContainsType, FlightQueries.Properties.FlightQuery.ContainsTypeNone, "TypeNames"));
                 }
                 else
                 {
@@ -1158,7 +1157,7 @@ namespace MyFlightbook
                     {
                         sbTypes.Append(')');
                         szModelsTypeQuery = sbTypes.ToString();
-                        Filters.Add(new QueryFilterItem(TypeNames.Count == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
+                        Filters.Add(new QueryFilterItem(TypeNames.Count == 1 ? FlightQueries.Properties.FlightQuery.ContainsType : FlightQueries.Properties.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
                     }
                 }
 
@@ -1170,7 +1169,7 @@ namespace MyFlightbook
             }
 
             // If both ID's and free text are specified, OR them.  Otherwise, just do whatever is specified
-            if (!String.IsNullOrEmpty(szModelsIDQuery) && !String.IsNullOrEmpty(szModelsTextQuery)) 
+            if (!String.IsNullOrEmpty(szModelsIDQuery) && !String.IsNullOrEmpty(szModelsTextQuery))
             {
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "(({0}) OR ({1})) ", szModelsIDQuery, szModelsTextQuery));
             }
@@ -1200,16 +1199,16 @@ namespace MyFlightbook
             AddClause(sbQuery, "(models.fMultiHelicopter <> 0)", IsMultiEngineHeli);
 
             StringBuilder sbType = new StringBuilder();
-            AppendIfChecked(sbType, IsComplex, Resources.FlightQuery.AircraftFeatureComplex);
-            AppendIfChecked(sbType, HasFlaps, Resources.FlightQuery.AircraftFeatureFlaps);
-            AppendIfChecked(sbType, IsHighPerformance, Resources.FlightQuery.AircraftFeatureHighPerformance);
-            AppendIfChecked(sbType, IsConstantSpeedProp, Resources.FlightQuery.AircraftFeatureConstantSpeedProp);
-            AppendIfChecked(sbType, IsRetract, Resources.FlightQuery.AircraftFeatureRetractableGear);
-            AppendIfChecked(sbType, IsTailwheel, Resources.FlightQuery.AircraftFeatureTailwheel);
-            AppendIfChecked(sbType, IsGlass, Resources.FlightQuery.AircraftFeatureGlass);
-            AppendIfChecked(sbType, IsTechnicallyAdvanced, Resources.FlightQuery.AircraftFeatureTAA);
-            AppendIfChecked(sbType, IsMotorglider, Resources.FlightQuery.AircraftFeatureMotorGlider);
-            AppendIfChecked(sbType, IsMultiEngineHeli, Resources.FlightQuery.AircraftFeatureMultiEngineHelicopter);
+            AppendIfChecked(sbType, IsComplex, FlightQueries.Properties.FlightQuery.AircraftFeatureComplex);
+            AppendIfChecked(sbType, HasFlaps, FlightQueries.Properties.FlightQuery.AircraftFeatureFlaps);
+            AppendIfChecked(sbType, IsHighPerformance, FlightQueries.Properties.FlightQuery.AircraftFeatureHighPerformance);
+            AppendIfChecked(sbType, IsConstantSpeedProp, FlightQueries.Properties.FlightQuery.AircraftFeatureConstantSpeedProp);
+            AppendIfChecked(sbType, IsRetract, FlightQueries.Properties.FlightQuery.AircraftFeatureRetractableGear);
+            AppendIfChecked(sbType, IsTailwheel, FlightQueries.Properties.FlightQuery.AircraftFeatureTailwheel);
+            AppendIfChecked(sbType, IsGlass, FlightQueries.Properties.FlightQuery.AircraftFeatureGlass);
+            AppendIfChecked(sbType, IsTechnicallyAdvanced, FlightQueries.Properties.FlightQuery.AircraftFeatureTAA);
+            AppendIfChecked(sbType, IsMotorglider, FlightQueries.Properties.FlightQuery.AircraftFeatureMotorGlider);
+            AppendIfChecked(sbType, IsMultiEngineHeli, FlightQueries.Properties.FlightQuery.AircraftFeatureMultiEngineHelicopter);
 
             const string szPoweredAircraftTemplate = "((IF (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) in (1, 2, 3, 4, 7, 8, 9, 13, 14, 17, 18) OR models.fMotorglider <> 0) AND {0})";
             switch (EngineType)
@@ -1219,23 +1218,23 @@ namespace MyFlightbook
                     break;
                 case EngineTypeRestriction.AnyTurbine:
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine in (1, 2, 3))"), true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureTurbine);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureTurbine);
                     break;
                 case EngineTypeRestriction.Piston:
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 0)"), true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeaturePiston);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeaturePiston);
                     break;
                 case EngineTypeRestriction.Turboprop:
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 1)"), true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureTurboprop);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureTurboprop);
                     break;
                 case EngineTypeRestriction.Jet:
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 2)"), true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureJet);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureJet);
                     break;
                 case EngineTypeRestriction.Electric:
                     AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 4)"), true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureElectric);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureElectric);
                     break;
             }
 
@@ -1247,16 +1246,16 @@ namespace MyFlightbook
                     break;
                 case AircraftInstanceRestriction.RealOnly:
                     AddClause(sbQuery, "(aircraft.instancetype = 1)", true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureReal);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureReal);
                     break;
                 case AircraftInstanceRestriction.TrainingOnly:
                     AddClause(sbQuery, "(aircraft.instancetype <> 1)", true);
-                    AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureTrainingDevice);
+                    AppendIfChecked(sbType, true, FlightQueries.Properties.FlightQuery.AircraftFeatureTrainingDevice);
                     break;
             }
 
             if (sbType.Length > 0)
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.AircraftFeatureType, sbType.ToString(), "HasAircraftFeatures"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.AircraftFeatureType, sbType.ToString(), "HasAircraftFeatures"));
         }
 
         private void UpdateFlightCharacteristics(StringBuilder sbQ)
@@ -1289,29 +1288,29 @@ namespace MyFlightbook
 
             StringBuilder sbFlight = new StringBuilder();
 
-            AppendIfChecked(sbFlight, HasNightLandings, Resources.FlightQuery.FlightFeatureFSNightLanding);
-            AppendIfChecked(sbFlight, HasFullStopLandings, Resources.FlightQuery.FlightFeatureFSLanding);
-            AppendIfChecked(sbFlight, HasLandings, Resources.FlightQuery.FlightFeatureAnyLandings);
-            AppendIfChecked(sbFlight, HasApproaches, Resources.FlightQuery.FlightFeatureApproaches);
-            AppendIfChecked(sbFlight, HasHolds, Resources.FlightQuery.FlightFeatureHolds);
-            AppendIfChecked(sbFlight, HasXC, Resources.FlightQuery.FlightFeatureXC);
-            AppendIfChecked(sbFlight, HasSimIMCTime, Resources.FlightQuery.FlightFeatureSimIMC);
-            AppendIfChecked(sbFlight, HasGroundSim, Resources.FlightQuery.FlightFeatureGroundsim);
-            AppendIfChecked(sbFlight, HasIMC, Resources.FlightQuery.FlightFeatureIMC);
-            AppendIfChecked(sbFlight, HasAnyInstrument, Resources.FlightQuery.FlightFeatureAnyInstrument);
-            AppendIfChecked(sbFlight, HasNight, Resources.FlightQuery.FlightFeatureNight);
-            AppendIfChecked(sbFlight, HasDual, Resources.FlightQuery.FlightFeatureDual);
-            AppendIfChecked(sbFlight, HasCFI, Resources.FlightQuery.FlightFeatureCFI);
-            AppendIfChecked(sbFlight, HasSIC, Resources.FlightQuery.FlightFeatureSIC);
-            AppendIfChecked(sbFlight, HasPIC, Resources.FlightQuery.FlightFeaturePIC);
-            AppendIfChecked(sbFlight, HasTotalTime, Resources.FlightQuery.FlightFeatureTotalTime);
-            AppendIfChecked(sbFlight, IsPublic, Resources.FlightQuery.FlightFeaturePublic);
-            AppendIfChecked(sbFlight, IsSigned, Resources.FlightQuery.FlightFeatureIsSigned);
-            AppendIfChecked(sbFlight, HasTelemetry, Resources.FlightQuery.FlightFeatureHasTelemetry);
-            AppendIfChecked(sbFlight, HasImages, Resources.FlightQuery.FlightFeatureHasImages);
+            AppendIfChecked(sbFlight, HasNightLandings, FlightQueries.Properties.FlightQuery.FlightFeatureFSNightLanding);
+            AppendIfChecked(sbFlight, HasFullStopLandings, FlightQueries.Properties.FlightQuery.FlightFeatureFSLanding);
+            AppendIfChecked(sbFlight, HasLandings, FlightQueries.Properties.FlightQuery.FlightFeatureAnyLandings);
+            AppendIfChecked(sbFlight, HasApproaches, FlightQueries.Properties.FlightQuery.FlightFeatureApproaches);
+            AppendIfChecked(sbFlight, HasHolds, FlightQueries.Properties.FlightQuery.FlightFeatureHolds);
+            AppendIfChecked(sbFlight, HasXC, FlightQueries.Properties.FlightQuery.FlightFeatureXC);
+            AppendIfChecked(sbFlight, HasSimIMCTime, FlightQueries.Properties.FlightQuery.FlightFeatureSimIMC);
+            AppendIfChecked(sbFlight, HasGroundSim, FlightQueries.Properties.FlightQuery.FlightFeatureGroundsim);
+            AppendIfChecked(sbFlight, HasIMC, FlightQueries.Properties.FlightQuery.FlightFeatureIMC);
+            AppendIfChecked(sbFlight, HasAnyInstrument, FlightQueries.Properties.FlightQuery.FlightFeatureAnyInstrument);
+            AppendIfChecked(sbFlight, HasNight, FlightQueries.Properties.FlightQuery.FlightFeatureNight);
+            AppendIfChecked(sbFlight, HasDual, FlightQueries.Properties.FlightQuery.FlightFeatureDual);
+            AppendIfChecked(sbFlight, HasCFI, FlightQueries.Properties.FlightQuery.FlightFeatureCFI);
+            AppendIfChecked(sbFlight, HasSIC, FlightQueries.Properties.FlightQuery.FlightFeatureSIC);
+            AppendIfChecked(sbFlight, HasPIC, FlightQueries.Properties.FlightQuery.FlightFeaturePIC);
+            AppendIfChecked(sbFlight, HasTotalTime, FlightQueries.Properties.FlightQuery.FlightFeatureTotalTime);
+            AppendIfChecked(sbFlight, IsPublic, FlightQueries.Properties.FlightQuery.FlightFeaturePublic);
+            AppendIfChecked(sbFlight, IsSigned, FlightQueries.Properties.FlightQuery.FlightFeatureIsSigned);
+            AppendIfChecked(sbFlight, HasTelemetry, FlightQueries.Properties.FlightQuery.FlightFeatureHasTelemetry);
+            AppendIfChecked(sbFlight, HasImages, FlightQueries.Properties.FlightQuery.FlightFeatureHasImages);
 
             if (sbFlight.Length > 0)
-                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightCharacteristics, FlightCharacteristicsConjunction.ToDisplayString()), sbFlight.ToString(), "HasFlightFeatures"));
+                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, FlightQueries.Properties.FlightQuery.FlightCharacteristics, FlightCharacteristicsConjunction.ToDisplayString()), sbFlight.ToString(), "HasFlightFeatures"));
         }
 
         private void UpdateFlightProperties(StringBuilder sbQuery)
@@ -1343,7 +1342,7 @@ namespace MyFlightbook
                         throw new NotImplementedException("Unkown properties conjunction: " + PropertiesConjunction.ToString());
                 }
 
-                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightHasProperties, PropertiesConjunction.ToDisplayString()), String.Join(", ", lstCPTDesc), "PropertyTypes"));
+                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, FlightQueries.Properties.FlightQuery.FlightHasProperties, PropertiesConjunction.ToDisplayString()), String.Join(", ", lstCPTDesc), "PropertyTypes"));
             }
         }
 
@@ -1361,7 +1360,7 @@ namespace MyFlightbook
                 }
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "((flights.idCatClassOverride = 0 AND models.idcategoryclass IN ({0})) OR flights.idCatClassOverride IN ({0}))", String.Join(", ", lstIds)));
 
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.CategoryClass, String.Join(", ", lstDesc), "CatClasses"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.CategoryClass, String.Join(", ", lstDesc), "CatClasses"));
             }
         }
 
@@ -1370,7 +1369,7 @@ namespace MyFlightbook
             if (EnumeratedFlights != null && EnumeratedFlights.Count != 0)
             {
                 AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", EnumeratedFlights)));
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.EnumeratedFlights, string.Empty, "EnumeratedFlights"));
+                Filters.Add(new QueryFilterItem(FlightQueries.Properties.FlightQuery.EnumeratedFlights, string.Empty, "EnumeratedFlights"));
             }
         }
         #endregion
@@ -1566,634 +1565,6 @@ namespace MyFlightbook
         #endregion
     }
 
-    /// <summary>
-    /// Represents a stored query.
-    /// </summary>
-    [Serializable]
-    public class CannedQuery : FlightQuery, IComparable
-    {
-        const string szUserQueriesKey = "queriesForUser";
-
-        #region Properties
-        /// <summary>
-        /// Name of the query.  Not serialized in the JSON itself because there's not need to do so (and screws up IsDefault hack anyhow)
-        /// </summary>
-        [JsonIgnore]
-        public string QueryName { get; set; }
-
-        /// <summary>
-        /// Optional string representation for flightcoloring
-        /// </summary>
-        public string ColorString { get; set; }
-        #endregion
-
-        #region Constructors
-        public CannedQuery() : base()
-        {
-            QueryName = string.Empty;
-        }
-
-        public CannedQuery(string szName) : base(szName)
-        {
-            QueryName = string.Empty;
-        }
-
-        public CannedQuery(FlightQuery fq, string szName) : base(fq)
-        {
-            QueryName = szName;
-        }
-        #endregion
-
-        #region Overrides
-        protected override FlightQuery Clone()
-        {
-            return new CannedQuery(this, QueryName);
-        }
-
-        public override bool IsDefault
-        {
-            get
-            {
-                // Use base IsDefault, but colorstring shouldn't factor if otherwise default.
-                string szColor = ColorString;
-                ColorString = null;
-                bool fResult = base.IsDefault;
-                ColorString = szColor;
-                return fResult;
-            }
-        }
-        #endregion
-
-        #region database
-        /// <summary>
-        /// Retrieve the canned queries for a given user
-        /// </summary>
-        /// <param name="szUser">Username for whom to retrieve</param>
-        /// <returns>A set of canned queries.</returns>
-        public static IEnumerable<CannedQuery> QueriesForUser(string szUser)
-        {
-            if (szUser == null)
-                throw new ArgumentNullException(nameof(szUser));
-
-            if (String.IsNullOrWhiteSpace(szUser))
-                return Array.Empty<CannedQuery>();
-
-            Profile pf = Profile.GetUser(szUser);
-            List<CannedQuery> lst = (List<CannedQuery>) pf.CachedObject(szUserQueriesKey);
-            if (lst != null)
-                return lst;
-            else
-                lst = new List<CannedQuery>();
-
-            // Important - preserve "ORDER BY name ASC" so that multiple canned queries can work for flight coloring.
-            DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT * FROM storedQueries WHERE username=?uname ORDER BY name ASC");
-            dba.AddWithValue("uname", szUser);
-            DBHelper dbh = new DBHelper(dba);
-            dbh.ReadRows((comm) => { }, (dr) =>
-            {
-                CannedQuery cq = JsonConvert.DeserializeObject<CannedQuery>((string)dr["queryjson"], new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
-                cq.QueryName = (string)dr["name"];
-                lst.Add(cq);
-            });
-            pf.AssociatedData[szUserQueriesKey] = lst;    // cache 'em!
-            return lst;
-        }
-
-        private void FlushCachedQueries()
-        {
-            Profile.GetUser(UserName).AssociatedData.Remove(szUserQueriesKey);
-        }
-
-        /// <summary>
-        /// Saves this cannedquery to the database
-        /// </summary>
-        public void Commit(bool fPreserveColor = true)
-        {
-            if (String.IsNullOrWhiteSpace(QueryName) || IsDefault)
-                return;
-
-            if (String.IsNullOrEmpty(UserName))
-                throw new MyFlightbookValidationException("No username provided for canned query!");
-
-            if (fPreserveColor && String.IsNullOrWhiteSpace(ColorString))
-            {
-                List<CannedQuery> lst = new List<CannedQuery>(CannedQuery.QueriesForUser(UserName));
-                CannedQuery cq = lst.FirstOrDefault(cq2 => cq2.QueryName.CompareCurrentCultureIgnoreCase(QueryName) == 0);
-                if (cq != null)
-                    ColorString = cq.ColorString;
-            }
-
-            DBHelperCommandArgs dba = new DBHelperCommandArgs("REPLACE INTO storedQueries SET username=?uname, name=?qname, queryjson=?fqjson");
-            dba.AddWithValue("uname", UserName);
-            dba.AddWithValue("qname", QueryName);
-            dba.AddWithValue("fqjson", ToJSONString());
-            new DBHelper(dba).DoNonQuery();
-
-            FlushCachedQueries();
-        }
-
-        public void Delete()
-        {
-            DBHelperCommandArgs dba = new DBHelperCommandArgs("DELETE FROM storedQueries WHERE username=?uname AND name=?qname");
-            dba.AddWithValue("uname", UserName);
-            dba.AddWithValue("qname", QueryName);
-            new DBHelper(dba).DoNonQuery();
-            FlushCachedQueries();
-
-            // Delete any sharekeys that reference this too
-            ShareKey.DeleteForQueryName(UserName, QueryName);
-        }
-
-        /// <summary>
-        /// Returns the specified named query for the specified named user, or null if not found.  Case sensitive.
-        /// </summary>
-        /// <param name="szUser"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static CannedQuery QueryForUser(string szUser, string name)
-        {
-            if (String.IsNullOrEmpty(name))
-                return null;
-            return new List<CannedQuery>(QueriesForUser(szUser)).FirstOrDefault(cq => cq.QueryName.CompareCurrentCulture(name) == 0);
-        }
-        #endregion
-
-        #region IComparable
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
-            CannedQuery cq = obj as CannedQuery;
-            return (UserName + QueryName).CompareCurrentCultureIgnoreCase(cq.UserName + cq.QueryName);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = 1285204636;
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(UserName);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(QueryName);
-                return hashCode;
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            if (obj is null || !(obj is CannedQuery))
-                return false;
-
-            return CompareTo(obj) == 0;
-        }
-
-        public static bool operator ==(CannedQuery left, CannedQuery right)
-        {
-            if (left is null)
-                return right is null;
-
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(CannedQuery left, CannedQuery right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(CannedQuery left, CannedQuery right)
-        {
-            return left is null ? right is object : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(CannedQuery left, CannedQuery right)
-        {
-            return 
-                left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(CannedQuery left, CannedQuery right)
-        {
-            return left is object && left != null && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(CannedQuery left, CannedQuery right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
-        #endregion
-
-        #region Matching LogbookEntry Objects
-        #region Handling conjuctives
-        private static void AddResultIfCondition(List<bool> lst, bool condition, bool result)
-        {
-            if (condition)
-                lst.Add(result);
-        }
-
-        private static bool TestConditionsForConjunction(GroupConjunction groupConjunction, List<bool> lst)
-        {
-            // empty list is always a match
-            if (lst == null || lst.Count == 0)
-                return true;
-
-            // count the number of true elements
-            int cTrue = 0;
-            lst.ForEach((b) => { if (b) cTrue++; });
-
-            switch (groupConjunction)
-            {
-                case GroupConjunction.All:
-                    return cTrue == lst.Count;
-                case GroupConjunction.Any:
-                    return cTrue > 0;
-                case GroupConjunction.None:
-                    return cTrue == 0;
-                default:
-                    throw new InvalidOperationException("Unknown conjunction: " + groupConjunction.ToString());
-            }
-        }
-        #endregion
-
-        private bool IsDateMatch(LogbookEntryCore le)
-        {
-            switch (DateRange)
-            {
-                case DateRanges.AllTime:
-                    return true;
-                case DateRanges.Tailing6Months:
-                    return le.Date.CompareTo(DateTime.Now.AddMonths(-6)) >= 0;
-                case DateRanges.Trailing12Months:
-                    return le.Date.CompareTo(DateTime.Now.AddYears(-1)) >= 0;
-                case DateRanges.Trailing30:
-                    return le.Date.CompareTo(DateTime.Now.AddDays(-30)) >= 0;
-                case DateRanges.Trailing90:
-                    return le.Date.CompareTo(DateTime.Now.AddDays(-90)) >= 0;
-                case DateRanges.YTD:
-                    return le.Date.CompareTo(dtStartOfYear) >= 0;
-                case DateRanges.ThisMonth:
-                    return le.Date.CompareTo(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) >= 0;
-                case DateRanges.PrevMonth:
-                    DateTime dtPrevMonthEnd = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
-                    DateTime dtPrevMonthStart = new DateTime(dtPrevMonthEnd.Year, dtPrevMonthEnd.Month, 1);
-                    return le.Date.CompareTo(dtPrevMonthStart.Date) >= 0 && le.Date.Date.CompareTo(dtPrevMonthEnd.Date) <= 0;
-                case DateRanges.PrevYear:
-                    DateTime dtPrevYearStart = new DateTime(DateTime.Now.Year - 1, 1, 1);
-                    DateTime dtPrevYearEnd = new DateTime(DateTime.Now.Year - 1, 12, 31);
-                    return le.Date.CompareTo(dtPrevYearStart.Date) >= 0 && le.Date.Date.CompareTo(dtPrevYearEnd.Date) <= 0;
-                case DateRanges.Custom:
-                    bool fHasStartDate = DateMin.HasValue();
-                    bool fHasEndDate = DateMax.HasValue();
-                    if (!fHasStartDate && fHasEndDate)
-                        return le.Date.Date.CompareTo(DateMax.Date) <= 0;
-                    else if (fHasStartDate & !fHasEndDate)
-                        return le.Date.Date.CompareTo(DateMin.Date) >= 0;
-                    else
-                        return le.Date.Date.CompareTo(DateMin.Date) >= 0 && le.Date.Date.CompareTo(DateMax.Date) <= 0;
-                default:
-                    throw new MyFlightbookValidationException("Unknown date range!");
-            }
-        }
-
-        private bool IsAircraftMatch(LogbookEntryCore le)
-        {
-            return AircraftList.Count == 0 || (AircraftList.FirstOrDefault(ac => ac.AircraftID == le.AircraftID) != null);
-        }
-
-        public bool IsAirportMatch(LogbookEntryCore le)
-        {
-            if (le == null)
-                throw new ArgumentNullException(nameof(le));
-            if (String.IsNullOrWhiteSpace(le.Route) && (Distance != FlightDistance.AllFlights || AirportList.Count != 0))
-                return false;
-
-            string szRoute = le.Route.ToUpper(CultureInfo.CurrentCulture).Trim();
-
-            switch (Distance)
-            {
-                case FlightDistance.AllFlights:
-                    break;
-                case FlightDistance.LocalOnly:
-                    if (!RegexUtility.LocalFlight.IsMatch(szRoute))
-                        return false;
-                    break;
-                case FlightDistance.NonLocalOnly:
-                    if (RegexUtility.LocalFlight.IsMatch(szRoute))
-                        return false;
-                    break;
-                default:
-                    break;
-            }
-
-            foreach (string szAirport in AirportList)
-            {
-                if (String.IsNullOrWhiteSpace(szAirport))
-                    continue;
-
-                string szTerm = szAirport.ToUpper(CultureInfo.CurrentCulture).Replace(SearchFullStopAnchor, string.Empty);
-                string szAltTerm = Airports.airport.USPrefixConvenienceAlias(szTerm);
-
-                if (szAirport.StartsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase) && !szRoute.StartsWith(szTerm) && !szRoute.StartsWith(szAltTerm))
-                    return false;
-                else if (szAirport.EndsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase) && !szRoute.EndsWith(szTerm) && !szRoute.EndsWith(szAltTerm))
-                    return false;
-                else if (!szRoute.Contains(szTerm) && !szRoute.Contains(szAltTerm))
-                    return false;
-            }
-
-            return true;
-        }
-
-        private bool IsModelMatch(LogbookEntry le)
-        {
-            if (MakeList.Count != 0 && MakeList.FirstOrDefault(mm => le.ModelID == mm.MakeModelID) == null)
-                return false;
-
-            string[] rgModelFragment = RegexUtility.ModelFragmentBoundary.Split(ModelName);
-            foreach (string sz in rgModelFragment)
-            {
-                string szSearch = sz.Trim().ToUpper(CultureInfo.CurrentCulture);
-                bool fICAO = szSearch.StartsWith(szICAOPrefix, StringComparison.CurrentCultureIgnoreCase);
-                if (fICAO)
-                    szSearch = szSearch.Substring(szICAOPrefix.Length).Trim();
-                if (szSearch.Length > 0)
-                {
-                    // ICAO has to match the icao, exactly
-                    if (fICAO && le.FamilyName.CompareCurrentCultureIgnoreCase(szSearch) != 0)
-                        return false;
-                    // Otherwise, must contain the words
-                    if (!le.FamilyName.Contains(szSearch) && !le.ModelDisplay.ToUpper(CultureInfo.CurrentCulture).Contains(szSearch))
-                        return false;
-                }
-            }
-
-            if (TypeNames.Count != 0)
-            {
-                // Need to get the actual model to do this.
-                MakeModel mm = MakeModel.GetModel(le.ModelID);
-                if (String.IsNullOrEmpty(TypeNames.ElementAt(0)) && !String.IsNullOrWhiteSpace(mm.TypeName))
-                    return false;
-
-                foreach (string szType in TypeNames)
-                    if (!String.IsNullOrWhiteSpace(szType) && !mm.TypeName.ToUpperInvariant().Contains(szType.ToUpperInvariant()))
-                        return false;
-            }
-
-            return true;
-        }
-
-        private bool IsInstanceTypeMatch(Aircraft ac)
-        {
-            switch (AircraftInstanceTypes)
-            {
-                default:
-                case AircraftInstanceRestriction.AllAircraft:
-                    break;
-                case AircraftInstanceRestriction.RealOnly:
-                    if (ac.InstanceType != MyFlightbook.AircraftInstanceTypes.RealAircraft)
-                        return false;
-                    break;
-                case AircraftInstanceRestriction.TrainingOnly:
-                    if (ac.InstanceType == MyFlightbook.AircraftInstanceTypes.RealAircraft)
-                        return false;
-                    break;
-            }
-            return true;
-        }
-
-        private bool IsEngineTypeMatch(MakeModel mm, LogbookEntry le)
-        {
-            if (CategoryClass.IsPowered(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID) || mm.IsMotorGlider)
-            {
-                switch (EngineType)
-                {
-                    default:
-                    case EngineTypeRestriction.AllEngines:
-                        return true;
-                    case EngineTypeRestriction.AnyTurbine:
-                        return mm.EngineType == MakeModel.TurbineLevel.Jet || mm.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || mm.EngineType == MakeModel.TurbineLevel.TurboProp;
-                    case EngineTypeRestriction.Piston:
-                        return mm.EngineType == MakeModel.TurbineLevel.Piston;
-                    case EngineTypeRestriction.Turboprop:
-                        return mm.EngineType == MakeModel.TurbineLevel.TurboProp;
-                    case EngineTypeRestriction.Jet:
-                        return mm.EngineType == MakeModel.TurbineLevel.Jet;
-                    case EngineTypeRestriction.Electric:
-                        return mm.EngineType == MakeModel.TurbineLevel.Electric;
-                }
-            }
-            else
-                return EngineType == EngineTypeRestriction.AllEngines;  // if unpowered, then it's not a match unless "allengines" is specified; issue #1305
-        }
-
-        private bool IsAircraftCharacteristicsMatch(LogbookEntry le)
-        {
-            UserAircraft ua = new UserAircraft(le.User);
-            Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
-
-            if (!IsInstanceTypeMatch(ac))
-                return false;
-
-            MakeModel mm = MakeModel.GetModel(ac.ModelID);
-
-            List<bool> lst = new List<bool>();
-            AddResultIfCondition(lst, IsTailwheel, mm.IsTailWheel); 
-            AddResultIfCondition(lst, IsHighPerformance, mm.IsHighPerf || (mm.Is200HP && le.Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
-            AddResultIfCondition(lst, IsGlass, mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.None || (ac.AvionicsTechnologyUpgrade != MakeModel.AvionicsTechnologyType.None && le.Date.CompareTo(ac.GlassUpgradeDate ?? DateTime.MinValue) >= 0));
-            AddResultIfCondition(lst, IsTechnicallyAdvanced, mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA || (ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && le.Date.CompareTo(ac.GlassUpgradeDate ?? DateTime.MinValue) >= 0));
-            AddResultIfCondition(lst, IsComplex, mm.IsComplex);
-            AddResultIfCondition(lst,IsMotorglider, mm.IsMotorGlider);
-            AddResultIfCondition(lst, IsMultiEngineHeli, mm.IsMultiEngineHelicopter);
-            AddResultIfCondition(lst, HasFlaps, mm.HasFlaps);
-            AddResultIfCondition(lst, IsConstantSpeedProp, mm.IsConstantProp);
-            AddResultIfCondition(lst, IsRetract, mm.IsRetract);
-
-            if (!TestConditionsForConjunction(GroupConjunction.All, lst))
-                return false;
-
-            if (!IsEngineTypeMatch(mm, le))
-                return false;
-
-            // Do category class here, since we have aircraft already loaded
-            if (CatClasses != null && CatClasses.Count != 0 && !CatClasses.Contains(CategoryClass.CategoryClassFromID(le.IsOverridden ? (CategoryClass.CatClassID)le.CatClassOverride : mm.CategoryClassID)))
-                return false;
-
-            return true;
-        }
-
-        private bool IsFlightCharacteristicsMatch(LogbookEntryBase le)
-        {
-            List<bool> lst = new List<bool>();
-            AddResultIfCondition(lst, HasNightLandings, le.NightLandings != 0);
-            AddResultIfCondition(lst, HasFullStopLandings, le.FullStopLandings != 0);
-            AddResultIfCondition(lst, HasLandings, le.Landings != 0);
-            AddResultIfCondition(lst, HasApproaches, le.Approaches != 0);
-            AddResultIfCondition(lst, HasHolds, le.fHoldingProcedures);
-            AddResultIfCondition(lst, HasXC, le.CrossCountry != 0);
-            AddResultIfCondition(lst, HasSimIMCTime, le.SimulatedIFR != 0);
-            AddResultIfCondition(lst, HasGroundSim, le.GroundSim != 0);
-            AddResultIfCondition(lst, HasIMC, le.IMC != 0);
-            AddResultIfCondition(lst, HasAnyInstrument, le.IMC + le.SimulatedIFR > 0);
-            AddResultIfCondition(lst, HasNight, le.Nighttime != 0);
-            AddResultIfCondition(lst, HasDual, le.Dual != 0);
-            AddResultIfCondition(lst, HasCFI, le.CFI != 0);
-            AddResultIfCondition(lst, HasSIC, le.SIC != 0);
-            AddResultIfCondition(lst, HasPIC, le.PIC != 0);
-            AddResultIfCondition(lst, HasTotalTime, le.TotalFlightTime != 0);
-            AddResultIfCondition(lst, IsPublic, le.fIsPublic);
-            AddResultIfCondition(lst, IsSigned, le.CFISignatureState != LogbookEntryCore.SignatureState.None);
-            AddResultIfCondition(lst, HasTelemetry, le.HasFlightData);
-            AddResultIfCondition(lst, HasImages, le.FlightImages.Count != 0);
-
-            return TestConditionsForConjunction(FlightCharacteristicsConjunction, lst);
-        }
-
-        private bool IsPropertiesMatch(LogbookEntryCore le)
-        {
-            if (PropertyTypes == null || PropertyTypes.Count == 0)
-                return true;
-
-            List<bool> lst = new List<bool>();
-            foreach (CustomPropertyType cpt in PropertyTypes)
-                AddResultIfCondition(lst, true, le.CustomProperties.GetEventWithTypeID(cpt.PropTypeID) != null);
-
-            return TestConditionsForConjunction(PropertiesConjunction, lst);
-        }
-
-        private bool IsEnumerated(LogbookEntryCore le)
-        {
-            return (EnumeratedFlights == null || EnumeratedFlights.Count == 0 || EnumeratedFlights.Contains(le.FlightID));
-        }
-
-        private bool IsGeneralTextMatch(LogbookEntry le)
-        {
-            // This is the most complicated to match what the database does.
-            if (String.IsNullOrWhiteSpace(GeneralText))
-                return true;
-
-            string szGeneral = GeneralText; // so that we can modify this without modifying the underlying query.
-
-            // First, look for trailing ##.
-            MatchCollection mcTrailing = RegexUtility.QueryTrailingDate.Matches(szGeneral);
-            if (mcTrailing.Count > 0)
-            {
-                string szType = mcTrailing[0].Groups["rangetype"].Value;
-                if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
-                {
-                    switch (szType.ToUpperInvariant())
-                    {
-                        case "D":
-                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddDays(-count)) < 0)
-                                return false;
-                            break;
-                        case "CM":
-                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddCalendarMonths(-count)) < 0)
-                                return false;
-                            break;
-                        case "M":
-                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddMonths(-count)) < 0)
-                                return false;
-                            break;
-                        case "W":
-                            if (le.Date.Date.CompareTo(DateTime.Now.Date.AddDays(-count * 7)) < 0)
-                                return false;
-                            break;
-                    }
-
-                    // Now remove this from szGeneral because we're not actually searching for the text.
-                    szGeneral = RegexUtility.QueryTrailingDate.Replace(szGeneral, string.Empty);
-                }
-            }
-
-            UserAircraft ua = new UserAircraft(le.User);
-            Aircraft ac = ua.GetUserAircraftByID(le.AircraftID);
-
-            // OK, now we're on to general search.  First, generate - once - the string to search
-            string szMatch = le.SearchStringForFlight(ac.PrivateNotes);
-
-            // Split phrases at OR, everything within them is an AND.  E.g., "cat dog or horse buggy" should be treated as "cat and dog" OR "horse and buggy".
-            // So each PHRASE is an "AND", and the phrases themselves will be OR'd together.
-            string[] phrases = RegexUtility.QueryORPhrases.Split(GeneralText.Trim()).Where(s => !String.IsNullOrWhiteSpace(s)).ToArray();
-
-            // No phrases = no condition = call it a match
-            if (phrases.Length == 0)
-                return true;
-
-            foreach (string phrase in phrases)
-            {
-                MatchCollection mTerms = RegexUtility.QuerySearchTerms.Matches(phrase);
-                bool matchesWholePhrase = true;
-                foreach (Match mTerm in mTerms)
-                {
-                    string szTerm = mTerm.Groups["term"].Value.Trim();
-                    bool fNegate = !String.IsNullOrEmpty(mTerm.Groups["negate"].Value);
-
-                    if (string.IsNullOrWhiteSpace(szTerm))
-                        continue;
-
-                    if (!(fNegate ^ IsPhraseMatch(szTerm, szMatch, le)))
-                    {
-                        matchesWholePhrase = false;
-                        break;
-                    }
-                }
-
-                if (matchesWholePhrase)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private static bool IsPhraseMatch(string szPhrase, string szMatch, LogbookEntryBase le)
-        {
-            if (String.IsNullOrEmpty(szMatch))
-                return false;
-
-            // Issue #802 - Quick hack to direct a specific query to comment or route
-            MatchCollection mcSpecific = RegexUtility.QuerySpecificField.Matches(szPhrase);
-            if (mcSpecific.Count > 0)    // user is requesting a specific match on a specific field
-            {
-                GroupCollection gc = mcSpecific[0].Groups;
-                string szValue = gc["value"].Value.Trim();
-                // Convert the wildcards to something unique, escape, the put the wildcards back
-                string rMatch = String.IsNullOrEmpty(szValue) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "^{0}$", szValue.ConvertToRegexWildcards());
-                string szTest;
-                switch (gc["field"].Value.ToUpperInvariant())
-                {
-                    case RegexUtility.szPrefixLimitComments:
-                        szTest = le.Comment;
-                        break;
-                    case RegexUtility.szPrefixLimitRoute:
-                        szTest = le.Route;
-                        break;
-                    default:
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown prefix '{0}' matched RegexUtility.QuerySpecificField", gc["field"].Value));
-                }
-                return Regex.IsMatch(szTest.Trim(), rMatch, RegexOptions.IgnoreCase);
-            }
-            else
-                return Regex.IsMatch(szMatch.Trim(), szPhrase.ConvertToRegexWildcards(), RegexOptions.IgnoreCase);
-        }
-
-        public bool MatchesFlight(LogbookEntry le)
-        {
-            if (le == null)
-                return false;
-
-            return IsEnumerated(le) &&
-                IsAircraftMatch(le) && 
-                IsPropertiesMatch(le) &&
-                IsDateMatch(le) &&
-                IsAirportMatch(le) &&
-                IsGeneralTextMatch(le) && 
-                IsFlightCharacteristicsMatch(le) &&
-                IsAircraftCharacteristicsMatch(le) &&
-                IsModelMatch(le);
-        }
-        #endregion
-    }
 
     /// <summary>
     /// Represents an element of the flight query object which contains a description and a value which can be removed
@@ -2225,18 +1596,6 @@ namespace MyFlightbook
             FilterName = szFName;
             FilterValue = szFValue;
             PropertyName = szPropName;
-        }
-    }
-
-    public class FilterItemClickedEventArgs
-        : EventArgs
-    {
-        public QueryFilterItem FilterItem { get; set; }
-
-        public FilterItemClickedEventArgs(QueryFilterItem qfi = null)
-            : base()
-        {
-            FilterItem = qfi ?? new QueryFilterItem();
         }
     }
 }

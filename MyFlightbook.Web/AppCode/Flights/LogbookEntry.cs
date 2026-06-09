@@ -5032,7 +5032,7 @@ WHERE f1.username = ?uName ");
                 case "CATEGORYCLASS":
                     return MakeModel.GetModel(ModelID).CategoryClassDisplay.ToUpper(CultureInfo.CurrentCulture);
                 case "INSTANCETYPE":
-                    return (InstanceType == AircraftInstanceTypes.RealAircraft ? Resources.FlightQuery.AircraftFeatureReal : AircraftInstance.ShortNameForInstanceType(InstanceType)).ToUpper(CultureInfo.CurrentCulture);
+                    return (InstanceType == AircraftInstanceTypes.RealAircraft ? FlightQueries.Properties.FlightQuery.AircraftFeatureReal : AircraftInstance.ShortNameForInstanceType(InstanceType)).ToUpper(CultureInfo.CurrentCulture);
                 default:
                     if (Int32.TryParse(bucketSelectorName, out int idPropType))
                     {

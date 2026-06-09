@@ -1685,7 +1685,7 @@
     <Compile Include="AppCode\Flights\Currency\TailwheelCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\UASCurrency.cs" />
     <Compile Include="AppCode\Flights\FlightLint.cs" />
-    <Compile Include="AppCode\Flights\FlightQuery.cs" />
+    <Compile Include="AppCode\Flights\CannedQuery.cs" />
     <Compile Include="AppCode\Flights\FlightStats.cs" />
     <Compile Include="AppCode\Flights\Import\AAScheduler.cs" />
     <Compile Include="AppCode\Flights\Import\CloudAhoyFlight.cs" />
@@ -1817,11 +1817,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FlightLint.resx</DependentUpon>
-    </Compile>
-    <Compile Include="App_GlobalResources\FlightQuery.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FlightQuery.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\LocalizedText.designer.cs">
       <AutoGen>True</AutoGen>
@@ -2068,11 +2063,6 @@
       <LastGenOutput>FlightData.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_GlobalResources\FlightQuery.resx">
-      <Generator>GlobalResourceProxyGenerator</Generator>
-      <LastGenOutput>FlightQuery.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="App_GlobalResources\LocalizedText.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LocalizedText.fr.designer.cs</LastGenOutput>
@@ -2207,6 +2197,10 @@
     <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj">
       <Project>{c9a0ed02-c864-4371-bb7e-1846bae90659}</Project>
       <Name>MyFlightbook.FlightProperties</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.FlightQueries\MyFlightbook.FlightQueries.csproj">
+      <Project>{b28290a0-eaf3-4da7-b332-5ab73e3dfd92}</Project>
+      <Name>MyFlightbook.FlightQueries</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj">
       <Project>{e44b743c-99dd-4ae6-8a87-53475e545c20}</Project>

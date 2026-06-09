@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -12,7 +12,7 @@
 
         Options you MUST specify:
          - invalidDateMessage - error message for invalid dates (should be @Resources.LocalizedText.TypeInDateInvalidDate)
-         - saveQueryManage - title for the canned query box (should be @Resources.FlightQuery.SaveQueryManage)
+         - saveQueryManage - title for the canned query box (should be @MyFlightbook.FlightQueries.Properties.FlightQuery.SaveQueryManage)
 
          - targetDeleteCanned - RELATIVE url for DeleteCannedQuery (should be '@Url.Action("DeleteCannedQuery", "Search")')
          - targetAddCanned - RELATIVE url for AddCannedQuery (should be @Url.Action("AddCannedQuery", "Search"))

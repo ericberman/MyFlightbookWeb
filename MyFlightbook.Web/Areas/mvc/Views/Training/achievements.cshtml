@@ -48,14 +48,14 @@
         <span id="lblRecentAchievementsTitle">@String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentStatsTitle, ra.StartDate, ra.EndDate)</span>
         <select id="cmbAchievementDates" name="recentAchievementsDateRange" onchange="javascript: refreshRecentAchievements();">
             <option @(range.CompareCurrentCultureIgnoreCase("AllTime") == 0 ? "selected" : string.Empty) value="AllTime">@Resources.LocalizedText.DatesAll</option>
-            <option @(range.CompareCurrentCultureIgnoreCase("Tailing6Months") == 0 ? "selected" : string.Empty) value="Tailing6Months">@Resources.FlightQuery.DatesPrev6Month</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("Trailing12Months") == 0 ? "selected" : string.Empty) value="Trailing12Months">@Resources.FlightQuery.DatesPrev12Month</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("Trailing30") == 0 ? "selected" : string.Empty) value="Trailing30">@Resources.FlightQuery.DatesPrev30Days</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("Trailing90") == 0 ? "selected" : string.Empty) value="Trailing90">@Resources.FlightQuery.DatesPrev90Days</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("YTD") == 0 ? "selected" : string.Empty) value="YTD">@Resources.FlightQuery.DatesYearToDate</option>
-            <option @(range.CompareCurrentCultureIgnoreCase("ThisMonth") == 0 ? "selected" : string.Empty) value="ThisMonth">@Resources.FlightQuery.DatesThisMonth</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("PrevMonth") == 0 ? "selected" : string.Empty) value="PrevMonth">@Resources.FlightQuery.DatesPrevMonth</option>>
-            <option @(range.CompareCurrentCultureIgnoreCase("PrevYear") == 0 ? "selected" : string.Empty) value="PrevYear">@Resources.FlightQuery.DatesPrevYear</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Tailing6Months") == 0 ? "selected" : string.Empty) value="Tailing6Months">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrev6Month</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing12Months") == 0 ? "selected" : string.Empty) value="Trailing12Months">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrev12Month</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing30") == 0 ? "selected" : string.Empty) value="Trailing30">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrev30Days</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("Trailing90") == 0 ? "selected" : string.Empty) value="Trailing90">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrev90Days</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("YTD") == 0 ? "selected" : string.Empty) value="YTD">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesYearToDate</option>
+            <option @(range.CompareCurrentCultureIgnoreCase("ThisMonth") == 0 ? "selected" : string.Empty) value="ThisMonth">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesThisMonth</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("PrevMonth") == 0 ? "selected" : string.Empty) value="PrevMonth">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrevMonth</option>>
+            <option @(range.CompareCurrentCultureIgnoreCase("PrevYear") == 0 ? "selected" : string.Empty) value="PrevYear">@MyFlightbook.FlightQueries.Properties.FlightQuery.DatesPrevYear</option>>
             <option @(range.CompareCurrentCultureIgnoreCase("Custom") == 0 ? "selected" : string.Empty) value="Custom">@Resources.Achievements.RecentAchievementCustomDates</option>>
         </select>
         <img style="vertical-align:text-bottom;" src="@VirtualPathUtility.ToAbsolute("~/images/copyflight.png")" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"

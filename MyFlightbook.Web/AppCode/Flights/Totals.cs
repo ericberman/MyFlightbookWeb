@@ -1908,18 +1908,18 @@ GROUP BY f.familyDisplay WITH ROLLUP";
                             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
                             const string cssDateRange = "totalsDateRange";
                             AddTextCellToRow(tw, string.Empty, true); // no header above the total description itself.
-                            AddTextCellToRow(tw, SuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
+                            AddTextCellToRow(tw, SuppliedQueryHasDates ? string.Empty : FlightQueries.Properties.FlightQuery.DatesAll, true, cssDateRange);
                             AddTextCellToRow(tw, Resources.Profile.EmailWeeklyTotalsLabel, IncludeLast7Days, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesThisMonth, IncludeMonthToDate, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesThisMonth, IncludeMonthToDate, cssDateRange);
                             AddTextCellToRow(tw, szPreviousMonth, IncludePreviousMonth, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesYearToDate, IncludeYearToDate, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev30Days, IncludeTrailing30, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev60Days, IncludeTrailing60, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev90Days, IncludeTrailing90, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev120Days, IncludeTrailing120, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev180Days, IncludeTrailing180, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev12Month, IncludeTrailing12, cssDateRange);
-                            AddTextCellToRow(tw, Resources.FlightQuery.DatesPrev24Month, IncludeTrailing24, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesYearToDate, IncludeYearToDate, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev30Days, IncludeTrailing30, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev60Days, IncludeTrailing60, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev90Days, IncludeTrailing90, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev120Days, IncludeTrailing120, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev180Days, IncludeTrailing180, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev12Month, IncludeTrailing12, cssDateRange);
+                            AddTextCellToRow(tw, FlightQueries.Properties.FlightQuery.DatesPrev24Month, IncludeTrailing24, cssDateRange);
                             AddTextCellToRow(tw, szPreviousYear, IncludePreviousYear, cssDateRange);
                             tw.RenderEndTag();  // tr
 

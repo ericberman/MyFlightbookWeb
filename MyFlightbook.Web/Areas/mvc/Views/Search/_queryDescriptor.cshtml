@@ -13,6 +13,6 @@ else
     }
     if (rgqfe.Count() > 1)
     {
-        Html.RenderAction("QueryDescriptorItem", "Search", new { qfe = new QueryFilterItem(Resources.FlightQuery.ClearAllCriteria, string.Empty, string.Empty), onClientClick = ViewBag.onClientClick });
+        Html.RenderAction("QueryDescriptorItem", "Search", new { qfe = new QueryFilterItem(MyFlightbook.FlightQueries.Properties.FlightQuery.ClearAllCriteria, string.Empty, string.Empty), onClientClick = ViewBag.onClientClick });
     }
 }

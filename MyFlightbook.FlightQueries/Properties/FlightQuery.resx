@@ -123,6 +123,12 @@
   <data name="AircraftFeatureConstantSpeedProp" xml:space="preserve">
     <value>Controllable pitch prop</value>
   </data>
+  <data name="AircraftFeatureElectric" xml:space="preserve">
+    <value>Electric</value>
+  </data>
+  <data name="AircraftFeatureEngineAny" xml:space="preserve">
+    <value>Any Engine</value>
+  </data>
   <data name="AircraftFeatureFlaps" xml:space="preserve">
     <value>Flaps</value>
   </data>
@@ -132,20 +138,68 @@
   <data name="AircraftFeatureHighPerformance" xml:space="preserve">
     <value>High performance</value>
   </data>
+  <data name="AircraftFeatureJet" xml:space="preserve">
+    <value>Jet</value>
+  </data>
+  <data name="AircraftFeatureMotorGlider" xml:space="preserve">
+    <value>Motor Glider or TMG</value>
+  </data>
+  <data name="AircraftFeatureMultiEngineHelicopter" xml:space="preserve">
+    <value>Multi-engine Helicopter</value>
+  </data>
+  <data name="AircraftFeaturePiston" xml:space="preserve">
+    <value>Piston</value>
+  </data>
+  <data name="AircraftFeatureReal" xml:space="preserve">
+    <value>Real Aircraft</value>
+  </data>
   <data name="AircraftFeatureRetractableGear" xml:space="preserve">
     <value>Retractable gear</value>
+  </data>
+  <data name="AircraftFeatureSimOrReal" xml:space="preserve">
+    <value>All Aircraft</value>
+  </data>
+  <data name="AircraftFeatureTAA" xml:space="preserve">
+    <value>Technically Advanced Aircraft (TAA)</value>
+  </data>
+  <data name="AircraftFeatureTAAShort" xml:space="preserve">
+    <value>TAA</value>
   </data>
   <data name="AircraftFeatureTailwheel" xml:space="preserve">
     <value>Tailwheel</value>
   </data>
+  <data name="AircraftFeatureTrainingDevice" xml:space="preserve">
+    <value>Training Device (FTD/ATD/Sim)</value>
+  </data>
   <data name="AircraftFeatureTurbine" xml:space="preserve">
     <value>Turbine (Any)</value>
+  </data>
+  <data name="AircraftFeatureTurboprop" xml:space="preserve">
+    <value>Turboprop</value>
   </data>
   <data name="AircraftFeatureType" xml:space="preserve">
     <value>Aircraft type</value>
   </data>
   <data name="CategoryClass" xml:space="preserve">
     <value>Category/class is one of</value>
+  </data>
+  <data name="ClearAllCriteria" xml:space="preserve">
+    <value>(Clear All Search Criteria)</value>
+  </data>
+  <data name="ConjunctionAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ConjunctionAny" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="ConjunctionNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ConjunctionPrompt1" xml:space="preserve">
+    <value>Flight has </value>
+  </data>
+  <data name="ConjunctionPrompt2" xml:space="preserve">
+    <value>of the following:</value>
   </data>
   <data name="ContainsAircraft" xml:space="preserve">
     <value>Aircraft</value>
@@ -156,8 +210,23 @@
   <data name="ContainsMakeModel" xml:space="preserve">
     <value>Model</value>
   </data>
+  <data name="ContainsMakeModelText" xml:space="preserve">
+    <value>Model name contains</value>
+  </data>
+  <data name="ContainsMakeModelTextOR" xml:space="preserve">
+    <value>OR model name contains</value>
+  </data>
   <data name="ContainsText" xml:space="preserve">
     <value>Matches search terms</value>
+  </data>
+  <data name="ContainsType" xml:space="preserve">
+    <value>Type is</value>
+  </data>
+  <data name="ContainsTypeMultiple" xml:space="preserve">
+    <value>Type is one of</value>
+  </data>
+  <data name="ContainsTypeNone" xml:space="preserve">
+    <value>(none)</value>
   </data>
   <data name="DatesAfter" xml:space="preserve">
     <value>After {0}</value>
@@ -171,11 +240,32 @@
   <data name="DatesBetween" xml:space="preserve">
     <value>Between {0} and {1}</value>
   </data>
-  <data name="DatesPrev12Month" xml:space="preserve">
-    <value>Trailing 12 months</value>
+  <data name="DatesFrom" xml:space="preserve">
+    <value>From:</value>
   </data>
   <data name="DatesPrev6Month" xml:space="preserve">
     <value>Trailing 6 months</value>
+  </data>
+  <data name="DatesPrev12Month" xml:space="preserve">
+    <value>Trailing 12 months</value>
+  </data>
+  <data name="DatesPrev24Month" xml:space="preserve">
+    <value>Trailing 24 months</value>
+  </data>
+  <data name="DatesPrev30Days" xml:space="preserve">
+    <value>Trailing 30 days</value>
+  </data>
+  <data name="DatesPrev60Days" xml:space="preserve">
+    <value>Trailing 60 days</value>
+  </data>
+  <data name="DatesPrev90Days" xml:space="preserve">
+    <value>Trailing 90 days</value>
+  </data>
+  <data name="DatesPrev120Days" xml:space="preserve">
+    <value>Trailing 120 days</value>
+  </data>
+  <data name="DatesPrev180Days" xml:space="preserve">
+    <value>Trailing 180 days</value>
   </data>
   <data name="DatesPrevMonth" xml:space="preserve">
     <value>Previous month</value>
@@ -186,15 +276,36 @@
   <data name="DatesThisMonth" xml:space="preserve">
     <value>This month</value>
   </data>
+  <data name="DatesTo" xml:space="preserve">
+    <value>To:</value>
+  </data>
   <data name="DatesYearToDate" xml:space="preserve">
     <value>Year to date</value>
+  </data>
+  <data name="EnumeratedFlights" xml:space="preserve">
+    <value>Explicitly selected flights</value>
+  </data>
+  <data name="FilterDate" xml:space="preserve">
+    <value>Dates</value>
+  </data>
+  <data name="FilterFlightRange" xml:space="preserve">
+    <value>Flight range</value>
+  </data>
+  <data name="FilterNone" xml:space="preserve">
+    <value>All Flights</value>
+  </data>
+  <data name="FlightAircraftShowAll" xml:space="preserve">
+    <value>Show All Aircraft</value>
   </data>
   <data name="FlightCharacteristics" xml:space="preserve">
     <value>Flight has characteristics ({0})</value>
     <comment>Has all of the flight features.</comment>
   </data>
-  <data name="FlightFeatureHolds" xml:space="preserve">
-    <value>Holding procedures</value>
+  <data name="FlightFeatureAnyInstrument" xml:space="preserve">
+    <value>Instrument time</value>
+  </data>
+  <data name="FlightFeatureAnyLandings" xml:space="preserve">
+    <value>Landings</value>
   </data>
   <data name="FlightFeatureApproaches" xml:space="preserve">
     <value>Instrument Approaches</value>
@@ -214,11 +325,23 @@
   <data name="FlightFeatureGroundsim" xml:space="preserve">
     <value>Ground sim time</value>
   </data>
+  <data name="FlightFeatureHasImages" xml:space="preserve">
+    <value>Images or videos</value>
+  </data>
   <data name="FlightFeatureHasTelemetry" xml:space="preserve">
     <value>Has telemetry</value>
   </data>
+  <data name="FlightFeatureHolds" xml:space="preserve">
+    <value>Holding procedures</value>
+  </data>
   <data name="FlightFeatureIMC" xml:space="preserve">
     <value>Actual IMC time</value>
+  </data>
+  <data name="FlightFeatureIMCOrSimIMC" xml:space="preserve">
+    <value>IMC OR Simulated Instr.</value>
+  </data>
+  <data name="FlightFeatureIsSigned" xml:space="preserve">
+    <value>Signed</value>
   </data>
   <data name="FlightFeatureNight" xml:space="preserve">
     <value>Night flight</value>
@@ -232,8 +355,17 @@
   <data name="FlightFeatureSIC" xml:space="preserve">
     <value>SIC time</value>
   </data>
+  <data name="FlightFeatureSignedShort" xml:space="preserve">
+    <value>Instructor signature</value>
+  </data>
   <data name="FlightFeatureSimIMC" xml:space="preserve">
     <value>Simulated IMC time</value>
+  </data>
+  <data name="FlightFeatureTelemetryShort" xml:space="preserve">
+    <value>Telemetry</value>
+  </data>
+  <data name="FlightFeatureTotalTime" xml:space="preserve">
+    <value>Total time</value>
   </data>
   <data name="FlightFeatureXC" xml:space="preserve">
     <value>Cross-country time</value>
@@ -241,146 +373,14 @@
   <data name="FlightHasProperties" xml:space="preserve">
     <value>Flight has these properties ({0})</value>
   </data>
+  <data name="FlightRangeAll" xml:space="preserve">
+    <value>All Flights</value>
+  </data>
   <data name="FlightRangeLocal" xml:space="preserve">
     <value>Local flights only</value>
   </data>
   <data name="FlightRangeNonLocal" xml:space="preserve">
     <value>Non-local flights only</value>
-  </data>
-  <data name="AircraftFeatureMotorGlider" xml:space="preserve">
-    <value>Motor Glider or TMG</value>
-  </data>
-  <data name="DatesPrev30Days" xml:space="preserve">
-    <value>Trailing 30 days</value>
-  </data>
-  <data name="DatesPrev90Days" xml:space="preserve">
-    <value>Trailing 90 days</value>
-  </data>
-  <data name="FlightFeatureIsSigned" xml:space="preserve">
-    <value>Signed</value>
-  </data>
-  <data name="AircraftFeatureJet" xml:space="preserve">
-    <value>Jet</value>
-  </data>
-  <data name="AircraftFeaturePiston" xml:space="preserve">
-    <value>Piston</value>
-  </data>
-  <data name="AircraftFeatureReal" xml:space="preserve">
-    <value>Real Aircraft</value>
-  </data>
-  <data name="AircraftFeatureTrainingDevice" xml:space="preserve">
-    <value>Training Device (FTD/ATD/Sim)</value>
-  </data>
-  <data name="AircraftFeatureTurboprop" xml:space="preserve">
-    <value>Turboprop</value>
-  </data>
-  <data name="AircraftFeatureMultiEngineHelicopter" xml:space="preserve">
-    <value>Multi-engine Helicopter</value>
-  </data>
-  <data name="AircraftFeatureElectric" xml:space="preserve">
-    <value>Electric</value>
-  </data>
-  <data name="ContainsMakeModelText" xml:space="preserve">
-    <value>Model name contains</value>
-  </data>
-  <data name="ContainsMakeModelTextOR" xml:space="preserve">
-    <value>OR model name contains</value>
-  </data>
-  <data name="FilterDate" xml:space="preserve">
-    <value>Dates</value>
-  </data>
-  <data name="FilterFlightRange" xml:space="preserve">
-    <value>Flight range</value>
-  </data>
-  <data name="FilterNone" xml:space="preserve">
-    <value>All Flights</value>
-  </data>
-  <data name="ContainsType" xml:space="preserve">
-    <value>Type is</value>
-  </data>
-  <data name="ContainsTypeMultiple" xml:space="preserve">
-    <value>Type is one of</value>
-  </data>
-  <data name="FlightFeatureAnyInstrument" xml:space="preserve">
-    <value>Instrument time</value>
-  </data>
-  <data name="FlightFeatureAnyLandings" xml:space="preserve">
-    <value>Landings</value>
-  </data>
-  <data name="FlightFeatureTotalTime" xml:space="preserve">
-    <value>Total time</value>
-  </data>
-  <data name="SaveQueryNamePrompt" xml:space="preserve">
-    <value>Name this search:</value>
-  </data>
-  <data name="SaveQueryPrompt" xml:space="preserve">
-    <value>Save and Search</value>
-  </data>
-  <data name="SaveQueryNoSavedQueries" xml:space="preserve">
-    <value>You have no saved searches</value>
-  </data>
-  <data name="FlightFeatureHasImages" xml:space="preserve">
-    <value>Images or videos</value>
-  </data>
-  <data name="ContainsTypeNone" xml:space="preserve">
-    <value>(none)</value>
-  </data>
-  <data name="AircraftFeatureTAA" xml:space="preserve">
-    <value>Technically Advanced Aircraft (TAA)</value>
-  </data>
-  <data name="ConjunctionAll" xml:space="preserve">
-    <value>All</value>
-  </data>
-  <data name="ConjunctionAny" xml:space="preserve">
-    <value>Any</value>
-  </data>
-  <data name="ConjunctionNone" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="ConjunctionPrompt1" xml:space="preserve">
-    <value>Flight has </value>
-  </data>
-  <data name="ConjunctionPrompt2" xml:space="preserve">
-    <value>of the following:</value>
-  </data>
-  <data name="ClearAllCriteria" xml:space="preserve">
-    <value>(Clear All Search Criteria)</value>
-  </data>
-  <data name="EnumeratedFlights" xml:space="preserve">
-    <value>Explicitly selected flights</value>
-  </data>
-  <data name="DatesPrev24Month" xml:space="preserve">
-    <value>Trailing 24 months</value>
-  </data>
-  <data name="AircraftFeatureEngineAny" xml:space="preserve">
-    <value>Any Engine</value>
-  </data>
-  <data name="AircraftFeatureSimOrReal" xml:space="preserve">
-    <value>All Aircraft</value>
-  </data>
-  <data name="AircraftFeatureTAAShort" xml:space="preserve">
-    <value>TAA</value>
-  </data>
-  <data name="DatesFrom" xml:space="preserve">
-    <value>From:</value>
-  </data>
-  <data name="DatesTo" xml:space="preserve">
-    <value>To:</value>
-  </data>
-  <data name="FlightAircraftShowAll" xml:space="preserve">
-    <value>Show All Aircraft</value>
-  </data>
-  <data name="FlightFeatureIMCOrSimIMC" xml:space="preserve">
-    <value>IMC OR Simulated Instr.</value>
-  </data>
-  <data name="FlightFeatureSignedShort" xml:space="preserve">
-    <value>Instructor signature</value>
-  </data>
-  <data name="FlightFeatureTelemetryShort" xml:space="preserve">
-    <value>Telemetry</value>
-  </data>
-  <data name="FlightRangeAll" xml:space="preserve">
-    <value>All Flights</value>
   </data>
   <data name="FlightRangeNonLocalLong" xml:space="preserve">
     <value>Non-local (basic 61.1 XC) flights only</value>
@@ -406,6 +406,18 @@
   <data name="HeaderModels" xml:space="preserve">
     <value>Flight is in one of these models</value>
   </data>
+  <data name="SaveQueryManage" xml:space="preserve">
+    <value>Saved Searches</value>
+  </data>
+  <data name="SaveQueryNamePrompt" xml:space="preserve">
+    <value>Name this search:</value>
+  </data>
+  <data name="SaveQueryNoSavedQueries" xml:space="preserve">
+    <value>You have no saved searches</value>
+  </data>
+  <data name="SaveQueryPrompt" xml:space="preserve">
+    <value>Save and Search</value>
+  </data>
   <data name="SearchFindNow" xml:space="preserve">
     <value>Find Matching Flights</value>
   </data>
@@ -417,17 +429,5 @@
   </data>
   <data name="SearchTipsToolTip" xml:space="preserve">
     <value>Searching Tips</value>
-  </data>
-  <data name="SaveQueryManage" xml:space="preserve">
-    <value>Saved Searches</value>
-  </data>
-  <data name="DatesPrev60Days" xml:space="preserve">
-    <value>Trailing 60 days</value>
-  </data>
-  <data name="DatesPrev120Days" xml:space="preserve">
-    <value>Trailing 120 days</value>
-  </data>
-  <data name="DatesPrev180Days" xml:space="preserve">
-    <value>Trailing 180 days</value>
   </data>
 </root>
