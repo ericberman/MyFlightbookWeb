@@ -156,5 +156,25 @@ namespace MyFlightbook.Currency
         void ExamineFlight(ExaminerFlightRow cfr);
     }
 
+    /// <summary>
+    /// Interface to be implemented by currency objects.  Implements IFlightExaminer, plus the ability to retrieve results.
+    /// </summary>
+    public interface ICurrencyExaminer : IFlightExaminer
+    {
+        CurrencyState CurrentState { get; }
 
+        DateTime ExpirationDate { get; }
+
+        bool HasBeenCurrent { get; }
+
+        string DiscrepancyString { get; }
+
+        string StatusDisplay { get; }
+
+        string DisplayName { get; }
+
+        void Finalize(decimal totalTime, decimal picTime);
+
+        FlightQuery Query { get; set; }
+    }
 }

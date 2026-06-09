@@ -16,7 +16,7 @@ using System.Xml.Serialization;
 namespace MyFlightbook.Currency
 {
     /// <summary>
-    /// Represents a given state of currency for a given attribute; fairly generic
+    /// Concrete implementation of currencystatusitem.  Includes things that it doesn't know, like CSS styles, resource links, as well as other static utilities.
     /// </summary>
     [Serializable]
     [DataContract]
@@ -40,12 +40,6 @@ namespace MyFlightbook.Currency
             Discrepancy = szDiscrepancy;
         }
         #endregion
-
-        /// <summary>
-        /// The query that might return matching flights.
-        /// </summary>
-        [DataMember]
-        public FlightQuery Query { get; set; }
 
         #region default CSS classes
         [JsonIgnore]
@@ -94,7 +88,7 @@ namespace MyFlightbook.Currency
         /// <summary>
         /// URL (Link) to the underlying resource or options page
         /// </summary>
-        public string AssociatedResourceLink
+        public override string AssociatedResourceLink
         {
             get
             {
@@ -131,8 +125,8 @@ namespace MyFlightbook.Currency
         }
 
         // Keys for profile associated data
-        public const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
-        public const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
+        private const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
+        private const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
 
         /// <summary>
         /// Get the full set of known currencies for the specified user
@@ -218,28 +212,6 @@ namespace MyFlightbook.Currency
             }
             return dict2.Values;
         }
-    }
-
-    /// <summary>
-    /// Interface to be implemented by currency objects.  Implements IFlightExaminer, plus the ability to retrieve results.
-    /// </summary>
-    public interface ICurrencyExaminer : IFlightExaminer
-    {
-        CurrencyState CurrentState { get; }
-
-        DateTime ExpirationDate { get; }
-
-        bool HasBeenCurrent { get; }
-
-        string DiscrepancyString { get; }
-
-        string StatusDisplay { get; }
-
-        string DisplayName { get; }
-
-        void Finalize(decimal totalTime, decimal picTime);
-
-        FlightQuery Query { get; set; }
     }
 
     internal class ComputeCurrencyContext

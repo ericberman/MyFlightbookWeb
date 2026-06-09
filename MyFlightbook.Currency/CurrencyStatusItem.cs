@@ -57,6 +57,14 @@ namespace MyFlightbook.Currency
         /// </summary>
         [DataMember]
         public CurrencyGroups CurrencyGroup { get; set; }
+
+        /// <summary>
+        /// The query that might return matching flights.
+        /// </summary>
+        [DataMember]
+        public FlightQuery Query { get; set; }
+
+        public abstract string AssociatedResourceLink { get; }
         #endregion
 
         #region Constructors
