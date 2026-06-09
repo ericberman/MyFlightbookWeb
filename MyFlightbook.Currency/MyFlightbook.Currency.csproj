@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyFlightbook.AircraftSupport\MyFlightbook.AircraftSupport.csproj" />
+    <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
     <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj" />
   </ItemGroup>
