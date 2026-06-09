@@ -21,89 +21,26 @@ namespace MyFlightbook.Currency
     /// </summary>
     [Serializable]
     [DataContract]
-    public class CurrencyStatusItem : IComparable, IEquatable<CurrencyStatusItem>
+    public class CurrencyStatusItem : CurrencyStatusItemBase
     {
-        public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, AircraftDeadline, Certificates, Medical, Deadline, CustomCurrency }
-
-        // Keys for profile associated data
-        public const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
-        public const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
-
-        #region properties
-        /// <summary>
-        /// The specific currency attribute (e.g., "Instrument flight", "BFR Due," or "VOR Check"
-        /// </summary>
-        [DataMember]
-        public string Attribute { get; set; }
-
-        /// <summary>
-        /// The value or description of the state
-        /// </summary>
-        [DataMember]
-        public string Value { get; set; }
-
-        /// <summary>
-        /// Everything OK?  Expired?  Close to expiration?
-        /// </summary>
-        [DataMember]
-        public CurrencyState Status { get; set; }
-
-        /// <summary>
-        /// What is the gap between current state and some bad state (e.g., how long ago did it expire?  How soon will an inspection be due?
-        /// </summary>
-        [DataMember]
-        public string Discrepancy { get; set; }
-
-        /// <summary>
-        /// URL (Link) to the underlying resource or options page
-        /// </summary>
-        public string AssociatedResourceLink
+        #region Constructors
+        public CurrencyStatusItem() : base()
         {
-            get
-            {
-                string szResult;
-                switch (CurrencyGroup)
-                {
-                    default:
-                    case CurrencyGroups.None:
-                    case CurrencyGroups.FlightExperience:
-                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Query.ToBase64CompressedJSONString()).ToAbsolute();
-                    case CurrencyGroups.FlightReview:
-                        szResult = "~/mvc/prefs/pilotinfo?pane=flightreviews".ToAbsolute();
-                        break;
-                    case CurrencyGroups.Aircraft:
-                    case CurrencyGroups.AircraftDeadline:
-                        szResult = AircraftUtility.EditLink(AssociatedResourceID);
-                        break;
-                    case CurrencyGroups.Certificates:
-                        szResult = "~/mvc/prefs/pilotinfo?pane=certs".ToAbsolute();
-                        break;
-                    case CurrencyGroups.Medical:
-                        szResult = "~/mvc/prefs/pilotinfo?pane=medical".ToAbsolute();
-                        break;
-                    case CurrencyGroups.Deadline:
-                        szResult = "~/mvc/prefs?pane=deadlines".ToAbsolute();
-                        break;
-                    case CurrencyGroups.CustomCurrency:
-                        szResult = (Query == null ? "~/mvc/prefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString())).ToAbsolute();
-                        break;
-                }
-
-                return String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, szResult);
-            }
+            Query = null;
         }
 
-        /// <summary>
-        /// The ID of the resource to which this is linked (typically aircraft)
-        /// </summary>
-        [DataMember]
-        public int AssociatedResourceID { get; set; }
-
-        /// <summary>
-        /// The kind of resource to which this 
-        /// </summary>
-        [DataMember]
-        public CurrencyGroups CurrencyGroup { get; set; }
+        /// <param name="szAttribute">The specific currency attribute (e.g., "Instrument flight," "BFR Due," etc.</param>
+        /// <param name="szValue">The value or description of the state</param>
+        /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
+        /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
+        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null) : this()
+        {
+            Attribute = szAttribute;
+            Value = szValue;
+            Status = cs;
+            Discrepancy = szDiscrepancy;
+        }
+        #endregion
 
         /// <summary>
         /// The query that might return matching flights.
@@ -154,38 +91,49 @@ namespace MyFlightbook.Currency
             return "currencyok";
         }
         #endregion
-        #endregion
 
-        #region Constructors
         /// <summary>
-        /// Creates a currency status item in-place
+        /// URL (Link) to the underlying resource or options page
         /// </summary>
-        public CurrencyStatusItem()
+        public string AssociatedResourceLink
         {
-            Attribute = Value = Discrepancy = string.Empty;
-            Status = CurrencyState.OK;
-            Query = null;
-            AssociatedResourceID = 0;
-            CurrencyGroup = CurrencyGroups.None;
+            get
+            {
+                string szResult;
+                switch (CurrencyGroup)
+                {
+                    default:
+                    case CurrencyGroups.None:
+                    case CurrencyGroups.FlightExperience:
+                        return Query == null ? null : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?fq={0}", Query.ToBase64CompressedJSONString()).ToAbsolute();
+                    case CurrencyGroups.FlightReview:
+                        szResult = "~/mvc/prefs/pilotinfo?pane=flightreviews".ToAbsolute();
+                        break;
+                    case CurrencyGroups.Aircraft:
+                    case CurrencyGroups.AircraftDeadline:
+                        szResult = AircraftUtility.EditLink(AssociatedResourceID);
+                        break;
+                    case CurrencyGroups.Certificates:
+                        szResult = "~/mvc/prefs/pilotinfo?pane=certs".ToAbsolute();
+                        break;
+                    case CurrencyGroups.Medical:
+                        szResult = "~/mvc/prefs/pilotinfo?pane=medical".ToAbsolute();
+                        break;
+                    case CurrencyGroups.Deadline:
+                        szResult = "~/mvc/prefs?pane=deadlines".ToAbsolute();
+                        break;
+                    case CurrencyGroups.CustomCurrency:
+                        szResult = (Query == null ? "~/mvc/prefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", Query.ToBase64CompressedJSONString())).ToAbsolute();
+                        break;
+                }
+
+                return String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, szResult);
+            }
         }
 
-        /// <param name="szAttribute">The specific currency attribute (e.g., "Instrument flight," "BFR Due," etc.</param>
-        /// <param name="szValue">The value or description of the state</param>
-        /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
-        /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
-        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null) : this()
-        {
-            Attribute = szAttribute;
-            Value = szValue;
-            Status = cs;
-            Discrepancy = szDiscrepancy;
-        }
-        #endregion
-
-        public override string ToString()
-        {
-            return String.Format(CultureInfo.CurrentCulture, "{0} - {1} ({2}, {3})", Attribute, Value, Status.ToString(), Discrepancy);
-        }
+        // Keys for profile associated data
+        public const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
+        public const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
 
         /// <summary>
         /// Get the full set of known currencies for the specified user
@@ -224,7 +172,7 @@ namespace MyFlightbook.Currency
                 throw new MyFlightbookValidationException("No such user: " + szUser);
 
             IEnumerable<CurrencyStatusItem> priorItems = (state == null) ? Array.Empty<CurrencyStatusItem>() : Newtonsoft.Json.JsonConvert.DeserializeObject<CurrencyStatusItem[]>(state);
-            IEnumerable<CurrencyStatusItem> newItems = GetCurrencyItemsForUser(szUser);
+            IEnumerable<CurrencyStatusItem> newItems = CurrencyStatusItem.GetCurrencyItemsForUser(szUser);
             newState = Newtonsoft.Json.JsonConvert.SerializeObject(newItems);
 
             IEnumerable<CurrencyStatusItem> expiringItems = NeedsNotification(priorItems, newItems);
@@ -244,7 +192,7 @@ namespace MyFlightbook.Currency
         /// <param name="rgcsi1">Set of previous status items</param>
         /// <param name="rgcsi2">Set of current status items</param>
         /// <returns></returns>
-        static protected IEnumerable<CurrencyStatusItem> NeedsNotification(IEnumerable<CurrencyStatusItem> rgcsi1, IEnumerable<CurrencyStatusItem> rgcsi2)
+        static private IEnumerable<CurrencyStatusItem> NeedsNotification(IEnumerable<CurrencyStatusItem> rgcsi1, IEnumerable<CurrencyStatusItem> rgcsi2)
         {
             if (rgcsi2 == null)
                 throw new ArgumentNullException(nameof(rgcsi2));
@@ -271,110 +219,6 @@ namespace MyFlightbook.Currency
             }
             return dict2.Values;
         }
-
-        #region IComparable
-
-        /// <summary>
-        /// When sorting, we can group custom currencies together and we can group aircraft deadlines with aircraft maintenance
-        /// </summary>
-        /// <param name="cg"></param>
-        /// <returns></returns>
-        protected static int GroupSortBucket(CurrencyGroups cg)
-        {
-            switch (cg)
-            {
-                case CurrencyGroups.None:
-                    return 0;
-                case CurrencyGroups.FlightExperience:
-                case CurrencyGroups.CustomCurrency:
-                    return 1;
-                case CurrencyGroups.Aircraft:
-                case CurrencyGroups.AircraftDeadline:
-                    return 2;
-                case CurrencyGroups.FlightReview:
-                    return 3;
-                case CurrencyGroups.Certificates:
-                    return 4;
-                case CurrencyGroups.Medical:
-                    return 5;
-                case CurrencyGroups.Deadline:
-                    return 6;
-                default:
-                    return (int)cg;
-            }
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
-            if (!(obj is CurrencyStatusItem csi))
-                throw new InvalidCastException("obj is not currencystatusitem, it is " + obj.GetType().ToString());
-
-            int gspThis = GroupSortBucket(CurrencyGroup);
-            int gspThat = GroupSortBucket(csi.CurrencyGroup);
-            return gspThis.CompareTo(gspThat);  // don't subsort on name because the ordering of that is fine as is.
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as CurrencyStatusItem);
-        }
-
-        public bool Equals(CurrencyStatusItem other)
-        {
-            return other != null &&
-                   Attribute == other.Attribute &&
-                   Value == other.Value &&
-                   Status == other.Status &&
-                   Discrepancy == other.Discrepancy &&
-                   CurrencyGroup == other.CurrencyGroup;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = -1537879147;
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Attribute);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
-                hashCode = hashCode * -1521134295 + Status.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Discrepancy);
-                hashCode = hashCode * -1521134295 + CurrencyGroup.GetHashCode();
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return EqualityComparer<CurrencyStatusItem>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return left is null ? right is object : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return left is object && left != null && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(CurrencyStatusItem left, CurrencyStatusItem right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
-        #endregion
     }
 
     /// <summary>
