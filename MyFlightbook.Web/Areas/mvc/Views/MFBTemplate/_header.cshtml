@@ -1,5 +1,5 @@
-﻿<div class="noprint" style="width: 100%">
-    <div id="headerBar" style="width: 100%">
+﻿<div class="noprint w100">
+    <div id="headerBar" class="w100">
         <div id="headerLogo">
             <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub")'>
                 <img src="@VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.LogoHRef)" />
@@ -32,7 +32,7 @@
                                 @using (Html.BeginForm("SignOut", "MFBTemplate", FormMethod.Post))
                                 {
                                     <div id="signOutRow"><a href="javascript:signOut();">@Resources.LocalizedText.LoginStatusSignOut</a></div>
-                                    <input type="submit" style="display:none;" id="signOut" />
+                                    <input type="submit" class="dn" id="signOut" />
                                 }
                             </div>
                         }
@@ -41,8 +41,8 @@
                         @{
                             if (User.Identity.IsAuthenticated)
                             {
-                                <div style="padding: 2px; margin-top: 2px; width: 180px"><span style="vertical-align:middle">@ViewBag.Greeting</span></div>
-                                <div style="padding:2px; font-weight: bold;"><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Donate")">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></div>
+                                <div style="padding: 2px; margin-top: 2px; width: 180px"><span class="imgMiddle">@ViewBag.Greeting</span></div>
+                                <div class="b" style="padding:2px;"><a href="@VirtualPathUtility.ToAbsolute("~/mvc/Donate")">@Branding.ReBrand(Resources.LocalizedText.DonateSolicitation)</a></div>
                             }
                             else
                             {
@@ -61,12 +61,12 @@
                 DateTime dtEndOfYear = ViewBag.dtYearInReview;
                 if (!String.IsNullOrEmpty(ViewBag.WebinarText))
                 {
-                    <div class="calloutSmall calloutBackground shadowed" style="height: 32px; line-height: 32px; text-align: center;">
-                        <span onclick="showWebinar();" class="displayPop" style="vertical-align:middle">@Html.Raw(ViewBag.WebinarText)</span>
+                    <div class="calloutSmall calloutBackground shadowed c" style="height: 32px; line-height: 32px;">
+                        <span onclick="showWebinar();" class="displayPop imgMiddle">@Html.Raw(ViewBag.WebinarText)</span>
                     </div>
-                    <div id="webinarPop" style="display: none;">
-                        <div style="text-align: left; white-space: pre-line;">@Html.Raw(ViewBag.WebinarDetails)</div>
-                        <div style="text-align:center"><button class="closePop" onclick="javascript:dismissDlg('#webinarPop');" />Close</div>
+                    <div id="webinarPop" class="dn">
+                        <div class="wsprel">@Html.Raw(ViewBag.WebinarDetails)</div>
+                        <div class="c"><button class="closePop" onclick="javascript:dismissDlg('#webinarPop');" />Close</div>
                     </div>
                     <script type="text/javascript">
                         function showWebinar() {
@@ -76,7 +76,7 @@
                 }
                 else if (User.Identity.IsAuthenticated && dtEndOfYear.Month == 12 && dtEndOfYear.Day > 14)
                 {
-                    <div class="calloutSmall calloutBackground shadowed" style="line-height: 18pt; font-size: larger; text-align: center;">
+                    <div class="calloutSmall calloutBackground shadowed l c" style="line-height: 18pt;">
                         <img src="@("~/images/BadgeOverlays/calendar.png".ToAbsolute())" style="vertical-align: middle; height: 18pt; width: 18pt;" />
                         <a href="@("~/mvc/pub/yearinreview".ToAbsolute())">@Html.Raw(String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Achievements.YearInReviewHeaderBanner, dtEndOfYear.Year).Trim().Linkify())</a>
                         <img src="@("~/images/BadgeOverlays/calendar.png".ToAbsolute())" style="vertical-align: middle; height: 18pt; width: 18pt;" />
@@ -85,7 +85,7 @@
                 else
                 {
                     <div id="headerMobileCrossSell">
-                        <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' style="vertical-align:middle" />
+                        <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' class="imgMiddle" />
                         @{
                             if (Request != null && Request.UserAgent != null)
                             {
