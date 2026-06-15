@@ -61,10 +61,14 @@
 </script>
 @if (!printView)
 {
-    <div style="float:right"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
+    <div class="flR"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
 }
 <h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
 <p><a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a></p>
+@if (!printView)
+{
+    <p class="noprint"><img src="@("~/images/add.png".ToAbsolute())" class="imgMiddle" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
+}
 <div>
     @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
 </div>
@@ -76,7 +80,7 @@
         {
             <div>
                 <img style="max-width:100%" alt="@mfbii.Comment" src="@mfbii.URLFullImage" />
-                <p style="text-align:center">@mfbii.Comment</p>
+                <p class="c">@mfbii.Comment</p>
             </div>
         }
     }
@@ -84,15 +88,14 @@
 else
 {
     <div class="noprint">
-        <p><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align:middle;" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
         <hr />
         <h2>@Resources.SignOff.EndorsementScannedImagesHeader</h2>
         <p>@Resources.SignOff.EndorsementsScannedImagesDescription</p>
         <div>
-            <span style="font-weight:bold;">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
+            <span class="b">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
         </div>
     </div>
-    <div style="display: inline-block">
+    <div class="dib">
         <div class="noprint" id="divUploadEndorsements"></div>
     </div>
     <div id="divEndorsementList" style="display: inline;">

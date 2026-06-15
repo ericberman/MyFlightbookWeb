@@ -501,7 +501,7 @@
     <value>Record an endorsement given to a student off-line</value>
   </data>
   <data name="EndorsementsAddEndorsement" xml:space="preserve">
-    <value>Add an endorsement...</value>
+    <value>Add an endorsement</value>
   </data>
   <data name="EndorsementScannedImagesHeader" xml:space="preserve">
     <value>Images of physical (paper) endorsements</value>
