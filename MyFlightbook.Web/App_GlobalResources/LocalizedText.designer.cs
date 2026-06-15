@@ -2828,6 +2828,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trusted by pilots since 2006.
+        /// </summary>
+        internal static string HeaderTrustedByPilots {
+            get {
+                return ResourceManager.GetString("HeaderTrustedByPilots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View Aircraft.
         /// </summary>
         internal static string HomePageMiniActionAircraft {

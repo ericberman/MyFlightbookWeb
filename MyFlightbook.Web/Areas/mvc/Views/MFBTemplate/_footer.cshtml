@@ -34,27 +34,35 @@
             @{
                 if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Facebook) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].IsVisible)
                 {
-                    <li style="padding: 2px;">
-                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                    <li>
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].ImageRef" class="imgMiddle footerSocial" />
                         <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Facebook].Name</a>
                     </li>
                 }
                 if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.Twitter) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].IsVisible)
                 {
-                    <li style="padding: 2px;">
-                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                    <li>
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].ImageRef" class="imgMiddle footerSocial" />
                         <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Twitter].Name</a>
                     </li>
                 }
                 if (ViewBag.FooterLinks.ContainsKey(MyFlightbook.Brand.FooterLinkKey.RSS) && ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].IsVisible)
                 {
-                    <li style="padding: 2px;">
-                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].ImageRef" style="vertical-align: middle; margin-right: .5em;" />
+                    <li>
+                        <img src="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].ImageRef" class="imgMiddle footerSocial" />
                         <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.RSS].Name</a>
                     </li>
                 }
             }
         </ul>
     </div>
-    <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</div>
+    <p class="c">
+        <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
+            <img src="@("~/images/google-play-badge.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadAndroid" class="imgMiddle footerAppImage" />
+        </a>
+        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank">
+            <img src="@("~/images/AppleAppStore.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadIOS" class="imgMiddle footerAppImage" />
+        </a>
+    </p>
+    <p>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</p>
 </div>

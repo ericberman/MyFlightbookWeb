@@ -2117,4 +2117,7 @@
     <value>&lt;p&gt;To conserve ink, background shading that displays on the screen is, by default, excluded from the PDF or when you print from your browser.&lt;/p&gt;
 &lt;p&gt;This option includes an alternating light-gray background for flight rows both on-screen and on the printed page/PDF.&lt;/p&gt;&lt;p&gt;If you use flight coloring, then the color for the flight will override any such shading.&lt;/p&gt;</value>
   </data>
+  <data name="HeaderTrustedByPilots" xml:space="preserve">
+    <value>Trusted by pilots since 2006</value>
+  </data>
 </root>

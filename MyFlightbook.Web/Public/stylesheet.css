@@ -1142,6 +1142,15 @@ ul.nextStep li {
     padding-bottom: 4pt;
 }
 
+.footerAppImage {
+    padding: 3pt;
+    width: 140px;
+}
+
+.footerSocial {
+    margin-right: .5em;
+}
+
 .footerContainer hr {
     display: none;
 }

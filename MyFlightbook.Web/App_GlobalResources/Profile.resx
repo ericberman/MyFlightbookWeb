@@ -917,7 +917,7 @@
     <value>Access your logbook securely from any device anywhere, backup to cloud storage providers, push flights to debriefing services, or pull schedules from airline scheduling systems.</value>
   </data>
   <data name="HomePageMostPopular" xml:space="preserve">
-    <value>The most popular FREE logbook for pilots worldwide, created by pilots, for pilots. Trusted since 2006!</value>
+    <value>The most popular FREE logbook worldwide, created by pilots, for pilots</value>
   </data>
   <data name="MetaDescription" xml:space="preserve">
     <value>%APP_NAME%  is the most popular digital pilot logbook worldwide that helps you track flights, stay current, and securely access your logbook from anywhere. Sign up in seconds and focus on your flying, not your logging!</value>

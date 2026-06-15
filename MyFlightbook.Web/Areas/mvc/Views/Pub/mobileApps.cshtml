@@ -3,7 +3,7 @@
     ViewBag.Title = Branding.ReBrand(Resources.LocalizedText.MobileAppsPromoHeader);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
-<div style="display: inline-block; vertical-align: top;">
+<div class="dib topAlign">
     @Html.Raw(Branding.ReBrand(Resources.LocalizedText.MobileAppPromo))
 
     <h2>
@@ -20,13 +20,15 @@
         }
     </h2>
 </div>
-<div style="display: inline-block; vertical-align: top; margin-left: 30px;">
+<div class="dib topAlign" style="margin-left: 30px;">
     <p>
-        <object data="@VirtualPathUtility.ToAbsolute("~/images/AppleAppStore.svg")" type="image/svg+xml" width="150"></object>
+        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank">
+            <img src="@("~/images/AppleAppStore.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadIOS" class="imgMiddle" style="padding: 3px; width: 150px;" />
+        </a>
     </p>
     <p>
         <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/google-play-badge.png")" alt="Get it on Google Play" style="width: 150px" />
+            <img src="@("~/images/google-play-badge.svg".ToAbsolute())" alt="Get it on Google Play" style="width: 150px" />
         </a>
     </p>
 </div>
@@ -34,9 +36,9 @@
 @if (ViewBag.SelectedOS == "iPhone")
 {
     <p class="c">
-        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank" style="font-weight:bold;">@Resources.LocalizedText.MobileAppDownloadiOS</a>
-        <br />
-        <object data="@VirtualPathUtility.ToAbsolute("~/images/AppleAppStore.svg")" type="image/svg+xml"></object>
+        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank">
+            <img src="@("~/images/AppleAppStore.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadIOS" class="imgMiddle" style="padding: 3px; width: 150px;" />
+        </a>
     </p>
     <div>
         <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/Full/iPhone1.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPhoneImages/iPhone1.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
@@ -51,11 +53,11 @@
 }
 else if (ViewBag.SelectedOS == "iPad")
 {
-    <p class="c">
-        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank" style="font-weight:bold">@Resources.LocalizedText.MobileAppDownloadiOS</a>
-        <br />
-        <object data="@VirtualPathUtility.ToAbsolute("~/images/AppleAppStore.svg")" type="image/svg+xml"></object>
-    </p>
+<p class="c">
+    <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank">
+        <img src="@("~/images/AppleAppStore.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadIOS" class="imgMiddle" style="padding: 3px; width: 150px;" />
+    </a>
+</p>
     <div>
         <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad1.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad1.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
         <a href="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/Full/iPad2.png")" target="_blank"><img src="@VirtualPathUtility.ToAbsolute("~/Public/iPadImages/iPad2.png")" alt="@Resources.LocalizedText.MobileAppSampleImageAltText" title="@Resources.LocalizedText.MobileAppSampleImageAltText" /></a>
@@ -70,10 +72,8 @@ else if (ViewBag.SelectedOS == "iPad")
 else if (ViewBag.SelectedOS == "Android")
 {
     <p class="c">
-        <a href="https://market.android.com/details?id=com.myflightbook.android" target="_blank" style="font-weight: bold">@Resources.LocalizedText.MobileAppDownloadAndroid</a>
-        <br />
         <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
-            <img src="@VirtualPathUtility.ToAbsolute("~/images/google-play-badge.png")" alt="Get it on Google Play" ImageAlign="Middle" Style="padding:3px;" />
+            <img src="@("~/images/google-play-badge.svg".ToAbsolute())" alt="Get it on Google Play" ImageAlign="Middle" Style="padding:3px; width: 150px;" />
         </a>
     </p>
     <div>

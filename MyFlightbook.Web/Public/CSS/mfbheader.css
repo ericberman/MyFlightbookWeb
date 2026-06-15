@@ -1,6 +1,6 @@
 ﻿/****************************************************
 *
-* Copyright (c) 2007-2025 MyFlightbook LLC
+* Copyright (c) 2007-2026 MyFlightbook LLC
 * Contact myflightbook-at-gmail.com for more information
 *
 *******************************************************/ 
@@ -33,9 +33,12 @@
 }
 
 #headerMobileCrossSell {
-    text-align: center;
     padding: 3px;
-    line-height: 40px;
+    line-height: 30pt;
+    font-family: roboto_bold;
+    font-size: 20pt;
+    text-transform: uppercase;
+    color: var(--theme-color);
 }
 
 #headerProfile {

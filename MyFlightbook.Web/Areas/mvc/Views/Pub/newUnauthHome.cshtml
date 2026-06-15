@@ -9,8 +9,8 @@
 }
 <div class="homePageUnauth centered80">
     <div class="centered80"><img class="w100" src="@("~/images/mfblogonew-large.png".ToAbsolute())" alt="@Branding.CurrentBrand.AppName" title="@Branding.CurrentBrand.AppName" /></div>
-    <h2>@Branding.ReBrand(Resources.Profile.HomePageMostPopular)</h2>
-    <h3 class="headline c"><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a href="@("~/mvc/auth/newuser".ToAbsolute())">@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity) - @Html.Raw(Resources.LocalizedText.ItsFree.Linkify())</a></h3>
+    <h2 class="headline">@Branding.ReBrand(Resources.Profile.HomePageMostPopular)</h2>
+    <h3 class="headline c"><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a href="@("~/mvc/auth/newuser".ToAbsolute())">@Branding.ReBrand(Resources.Profile.HomePromoJoinCommunity)</a></h3>
     <div class="c l">@Resources.Profile.NewUserExistingAccount <img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a class="b" href="@("~/mvc/auth".ToAbsolute())">@Resources.LocalizedText.SignInButtonTitle</a></div>
     <br />
     <br />

@@ -84,33 +84,7 @@
                 }
                 else
                 {
-                    <div id="headerMobileCrossSell">
-                        <img src='@VirtualPathUtility.ToAbsolute("~/images/Smartphone.png")' class="imgMiddle" />
-                        @{
-                            if (Request != null && Request.UserAgent != null)
-                            {
-                                string s = Request.UserAgent.ToUpperInvariant();
-
-                                if (s.Contains("IPHONE"))
-                                {
-                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPhone")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
-                                }
-                                else if (s.Contains("IPAD"))
-                                {
-                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=iPad")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS)</a>
-                                }
-                                else if (s.Contains("DROID"))
-                                {
-                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps?selectedOS=Android")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid)</a>
-                                }
-                                else
-                                {
-                                    <a href='@VirtualPathUtility.ToAbsolute("~/mvc/pub/MobileApps")'>@Branding.ReBrand(Resources.LocalizedText.HeaderDownload)</a>
-                                    @Html.Raw(Resources.LocalizedText.HeaderDownloadIsFree)
-                                }
-                            }
-                        }
-                    </div>
+                    <div id="headerMobileCrossSell">@Resources.LocalizedText.HeaderTrustedByPilots</div>
                 }
             }
             <div id="headerMenuContainer">

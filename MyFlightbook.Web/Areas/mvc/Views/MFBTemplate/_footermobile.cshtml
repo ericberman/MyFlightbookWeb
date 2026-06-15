@@ -1,7 +1,15 @@
 ﻿@using MyFlightbook
 <div class="footerContainer">
-    <a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].Name</a>
-    <div>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</div>
+    <p><a href="@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].LinkRef">@ViewBag.FooterLinks[MyFlightbook.Brand.FooterLinkKey.Classic].Name</a></p>
+    <p class="c">
+        <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
+            <img src="@("~/images/google-play-badge.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadAndroid" class="imgMiddle footerAppImage" />
+        </a>
+        <a href="https://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8" target="_blank">
+            <img src="@("~/images/AppleAppStore.svg".ToAbsolute())" alt="@Resources.LocalizedText.HeaderDownloadIOS" class="imgMiddle footerAppImage" />
+        </a>
+    </p>
+    <p>@String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year)</p>
 </div>
 
 

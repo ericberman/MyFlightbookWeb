@@ -1519,7 +1519,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The most popular FREE logbook for pilots worldwide, created by pilots, for pilots. Trusted since 2006!.
+        ///   Looks up a localized string similar to The most popular FREE logbook worldwide, created by pilots, for pilots.
         /// </summary>
         internal static string HomePageMostPopular {
             get {
