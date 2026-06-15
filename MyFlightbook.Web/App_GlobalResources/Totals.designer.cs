@@ -367,7 +367,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (PIC/SIC).
+        ///   Looks up a localized string similar to (PIC/SIC/&lt;br /&gt;PIC w/o&lt;br /&gt;Instr).
         /// </summary>
         internal static string RollupPICSIC {
             get {

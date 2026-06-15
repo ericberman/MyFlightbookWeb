@@ -270,7 +270,7 @@
                         <td class="PaddedCell ra">@row.XC.FormatDecimal(fUseHHMM, false)</td>
                         <td class="PaddedCell ra">@row.Landings.FormatInt()</td>
                         <td class="PaddedCell ra">@((new int[] { row.approaches, row._6MonthApproaches, row._12MonthApproaches }).FormatMulti())</td>
-                        <td class="PaddedCell ra">@((new decimal[] { row.PIC, row.SIC }).FormatMulti(fUseHHMM))</td>
+                        <td class="PaddedCell ra">@((new decimal[] { row.PIC, row.SIC, row.PICNoCFI }).FormatMulti(fUseHHMM))</td>
                         <td class="PaddedCell ra">@((new decimal[] { row.TurboPropPIC, row.TurboPropSIC }).FormatMulti(fUseHHMM))</td>
                         <td class="PaddedCell ra">@((new decimal[] { row.JetPIC, row.JetSIC }).FormatMulti(fUseHHMM))</td>
                         <td class="PaddedCell ra">@((new decimal[] { row.MultiPIC, row.MultiSIC }).FormatMulti(fUseHHMM))</td>

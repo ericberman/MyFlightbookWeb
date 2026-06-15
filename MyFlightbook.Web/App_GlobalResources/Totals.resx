@@ -343,7 +343,7 @@
     <value>Multi&lt;br  /&gt;(PIC/SIC)</value>
   </data>
   <data name="RollupPICSIC" xml:space="preserve">
-    <value>(PIC/SIC)</value>
+    <value>(PIC/SIC/&lt;br /&gt;PIC w/o&lt;br /&gt;Instr)</value>
   </data>
   <data name="RollupPICSICTurboprop" xml:space="preserve">
     <value>TurboProp&lt;br /&gt;(PIC/SIC)</value>

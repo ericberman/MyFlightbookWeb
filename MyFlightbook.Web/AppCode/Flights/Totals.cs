@@ -1436,6 +1436,7 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
             _6MonthApproaches = Convert.ToInt32(util.ReadNullableField(dr, "_6MonthApproaches", 0.0M), CultureInfo.InvariantCulture);
             _12MonthApproaches = Convert.ToInt32(util.ReadNullableField(dr, "_12MonthApproaches", 0.0M), CultureInfo.InvariantCulture);
             PIC = Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture);
+            PICNoCFI = Convert.ToDecimal(util.ReadNullableField(dr, "PICNoCFI", 0.0M), CultureInfo.InvariantCulture);
             SIC = Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture);
             TurboPropPIC = Convert.ToDecimal(util.ReadNullableField(dr, "TurboPropPIC", 0.0M), CultureInfo.InvariantCulture);
             TurboPropSIC = Convert.ToDecimal(util.ReadNullableField(dr, "TurboPropSIC", 0.0M), CultureInfo.InvariantCulture);
@@ -1496,6 +1497,7 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
         public int _6MonthApproaches { get; private set; }
         public int _12MonthApproaches { get; private set; }
         public decimal PIC { get; private set; }
+        public decimal PICNoCFI { get; private set; }
         public decimal SIC { get; private set; }
         public decimal TurboPropPIC { get; private set; }
         public decimal TurboPropSIC { get; private set; }
@@ -1578,6 +1580,7 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
     familydisplay,
     ModelDisplay,
     IF(InstanceTypeID=1, SUM(ROUND(PIC * ?qf))/?qf, 0) AS PIC,
+    IF(InstanceTypeID=1, SUM(ROUND(IF(PIC >= CFI, PIC - CFI, 0) * ?qf)) / ?qf, 0) AS PICNoCFI,
     IF(InstanceTypeID=1, SUM(ROUND(SIC * ?qf))/?qf, 0) AS SIC,
     SUM(ROUND(dualReceived * ?qf))/?qf AS DualReceived,
     IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 1, PIC, 0) * ?qf))/?qf, 0) AS TurboPropPIC,
