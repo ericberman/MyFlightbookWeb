@@ -125,8 +125,8 @@ namespace MyFlightbook.Currency
         }
 
         // Keys for profile associated data
-        private const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
-        private const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
+        public const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
+        public const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
 
         /// <summary>
         /// Get the full set of known currencies for the specified user
