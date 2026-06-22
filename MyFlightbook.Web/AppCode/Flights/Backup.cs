@@ -980,7 +980,7 @@ namespace MyFlightbook
             using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
                 WriteZipOfImagesToStream(fs, activeBrand);
-                GoogleDriveResultDictionary result = await gd.PutFile(BackupImagesFilename(activeBrand, true), fs, "application/zip").ConfigureAwait(true);
+                GoogleDriveResultDictionary result = await gd.PutFile(BackupImagesFilename(activeBrand), fs, "application/zip").ConfigureAwait(true);
                 return result;
             }
         }
