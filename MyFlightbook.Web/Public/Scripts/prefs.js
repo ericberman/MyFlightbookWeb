@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Contains functions for managing prefs in javascript
@@ -23,7 +23,7 @@
 function prefsFlightEntryEditor(localPrefEndPoint, options) {
     // set up drag/drop
     var pe = this;
-    this.setLocalPref = function(name, value) {
+    this.setLocalPref = function(name, value, oncomplete) {
         var params = new Object();
         params.prefName = name;
         params.prefValue = value;
@@ -35,7 +35,7 @@ function prefsFlightEntryEditor(localPrefEndPoint, options) {
                 window.alert(xhr.responseText);
             },
             complete: function () { },
-            success: function () { }
+            success: function () { if (oncomplete) oncomplete(); }
         });
     }
 
@@ -58,12 +58,12 @@ function prefsFlightEntryEditor(localPrefEndPoint, options) {
         });
     }
 
-    this.setLocalPrefValue = function(name, sender) {
-        this.setLocalPref(name, sender.value);
+    this.setLocalPrefValue = function(name, sender, oncomplete) {
+        this.setLocalPref(name, sender.value, oncomplete);
     }
 
-    this.setLocalPrefChecked = function(name, sender) {
-        this.setLocalPref(name, sender.checked);
+    this.setLocalPrefChecked = function(name, sender, oncomplete) {
+        this.setLocalPref(name, sender.checked, oncomplete);
     }
 
     this.move = function (event, append) {

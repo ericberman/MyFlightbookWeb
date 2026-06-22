@@ -41,9 +41,12 @@
             break;
     }
 }
-<script type="text/javascript" src="~/Public/Scripts/accordionproxy.js?v=1"></script>
-<script type="text/javascript" src="~/Public/Scripts/printing.js?v=7"></script>
+<script type="text/javascript" src=@("~/Public/Scripts/accordionproxy.js?v=1".ToAbsolute())"></script>
+<script type="text/javascript" src=@("~/Public/Scripts/printing.js?v=7".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/prefs.js?v=8".ToAbsolute())"></script>
 <script type="text/javascript">
+    var tcEditor = new prefsFlightEntryEditor("@("~/mvc/prefs/setLocalPref".ToAbsolute())", {});
+
     function doSearch(fq) {
         $("#hdnQuery").val(JSON.stringify(fq));
         $("#hdnQFEClicked").val(false);
@@ -219,6 +222,11 @@
             <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
                 <div><label><input type="radio" id="rbFlat" name="totalsMode" @((!groupedMode).ToChecked()) value="false" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeFlat</label></div>
                 <div><label><input type="radio" id="rbGrouped" name="totalsMode" @((groupedMode).ToChecked()) value="true" onchange="javascript: updateTotals(true);" />@Resources.Totals.TotalsModeGrouped</label></div>
+                <hr />
+                <div><label><input type="radio" id="rbTotalsModeCatClass" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'CatClass', () => {updateTotals(false); });" @((pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.CatClass).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupCatClass</label></div>
+                <div><label><input type="radio" id="rbTotalsModeModel" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'Model', () => {updateTotals(false); });" @((pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.Model).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupModel</label></div>
+                <div><label><input type="radio" id="rbTotalsModeICAO" name="rbTotalsMode" onclick="javascript: tcEditor.setLocalPref('TotalsMode', 'Family', () => {updateTotals(false); });" @((pf.TotalsGroupingMode == MyFlightbook.Currency.TotalsGrouping.Family).ToChecked()) />@Resources.Currency.CurrencyOptionsGroupICAO</label></div>
+                <div><label><input type="checkbox" id="ckIncludeModelFeatureTotals" @((!pf.SuppressModelFeatureTotals).ToChecked()) onclick="javascript: tcEditor.setLocalPrefChecked('totalsIncludeMF', this, () => {updateTotals(false); });" />@Resources.Currency.CurrencyOptionsTotalsModelFeatures</label></div>
             </div>
         </div>
     </div>
