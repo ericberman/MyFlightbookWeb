@@ -41,8 +41,8 @@
             break;
     }
 }
-<script type="text/javascript" src=@("~/Public/Scripts/accordionproxy.js?v=1".ToAbsolute())"></script>
-<script type="text/javascript" src=@("~/Public/Scripts/printing.js?v=7".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/accordionproxy.js?v=1".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/printing.js?v=7".ToAbsolute())"></script>
 <script type="text/javascript" src="@("~/Public/Scripts/prefs.js?v=8".ToAbsolute())"></script>
 <script type="text/javascript">
     var tcEditor = new prefsFlightEntryEditor("@("~/mvc/prefs/setLocalPref".ToAbsolute())", {});
@@ -159,7 +159,7 @@
         });
     });
 </script>
-<div style="display:none;">
+<div class="dn">
     @using (Html.BeginForm("Index", "Flights", new { }, FormMethod.Post, new { id = "frmUpdateQuery", name = "frmUpdateQuery" }))
     {
         @Html.AntiForgeryToken();
@@ -170,8 +170,8 @@
         <input type="hidden" value="" name="propToDelete" id="hdnPropToDelete" />
     }
 </div>
-<div class="calloutSmall" id="divPendingReminder" style="display:none;">
-    <div style="float:right"><a href="#" onclick="javascript: $('#divPendingReminder').hide(); return false;">@Resources.LocalizedText.Close</a></div>
+<div class="calloutSmall dn" id="divPendingReminder">
+    <div class="flR"><a href="#" onclick="javascript: $('#divPendingReminder').hide(); return false;">@Resources.LocalizedText.Close</a></div>
     <div>
         <h2 style="display: inline;">@Resources.LogbookEntry.PendingFlightsNoticeHeader</h2>
         @Resources.LogbookEntry.PendingFlightsNoticeDesc
@@ -188,7 +188,7 @@
         @Html.AntiForgeryToken()
     }
 </div>
-<div id="accordionproxycontainer" style="display: none;">
+<div id="accordionproxycontainer" class="dn">
     <div id="apcNewFlight">@Resources.LocalizedText.LogTabNewFlight</div>
     <div id="apcFilter">@Resources.LocalizedText.LogTabFilter</div>
     <div id="apcTotals">@Resources.LocalizedText.LogTabTotals</div>
@@ -209,14 +209,14 @@
         </script>
     </div>
 }
-<div id="targetNewFlight" style="display: none">
+<div id="targetNewFlight" class="dn">
     @{ Html.RenderAction("FlightEditor", "FlightEdit", new { targetUser = pf.UserName, le = (LogbookEntry)null, onSave = "onSave" }); }
 </div>
-<div id="targetFilter" style="display: none">
+<div id="targetFilter" class="dn">
     @{ Html.RenderAction("SearchForm", "Search", new { fq = fq, onClientSearch = "doSearch", onClientReset = "doSearch" }); }
 </div>
-<div id="targetTotals" style="display: none">
-    <div style="float:right;">
+<div id="targetTotals" class="dn">
+    <div class="flR">
         <div class="popContainer">
             <div class="ctxtMenuIcon popTrigger"></div>
             <div class="popMenuContent popMenuHidden" style="margin-top: -5px; margin-left: -5px">
@@ -231,46 +231,46 @@
         </div>
     </div>
     <div id="totalsContainer">
-        <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+        <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
     </div>
 </div>
-<div id="targetCurrency" style="display: none">
-    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+<div id="targetCurrency" class="dn">
+    <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
 </div>
-<div id="targetAnalysis" style="display: none">
-    <div style="text-align: center;"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
+<div id="targetAnalysis" class="dn">
+    <div class="c"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
 </div>
-<div id="targetPrintView" style="display: none">
-    <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
+<div id="targetPrintView" class="dn">
+    <div class="hc w50" style="padding:5px;" >
         <h3>@Resources.LocalizedText.PrintViewTabFilter</h3>
         @{ Html.RenderAction("PrintPrefsSections", "Print", new { fq = fq, includeFlightsSection = false, po = (MyFlightbook.Printing.PrintingOptions)null }); }
     </div>
 </div>
-    <div id="targetMore" style="display: none;">
+    <div id="targetMore" class="dn">
         <table style="border-spacing: 10px;">
             <tr>
-                <td style="text-align:center;"><img src="@("~/images/download.png".ToAbsolute())" alt="@Resources.Tabs.LogbookDownload" /></td>
-                <td><a id="lnkDownload" style="font-weight: bold;" href="@("~/mvc/flights/download".ToAbsolute())">@Resources.Tabs.LogbookDownload</a></td>
+                <td class="c"><img src="@("~/images/download.png".ToAbsolute())" alt="@Resources.Tabs.LogbookDownload" /></td>
+                <td><a id="lnkDownload" class="b" href="@("~/mvc/flights/download".ToAbsolute())">@Resources.Tabs.LogbookDownload</a></td>
                 <td>@Resources.LocalizedText.LogbookDownloadDescription</td>
             </tr>
             <tr>
-                <td style="text-align:center;"><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.Tabs.LogbookImport" /></td>
-                <td><a id="lnkImport" style="font-weight: bold;" href="@("~/mvc/import".ToAbsolute())">@Resources.Tabs.LogbookImport</a></td>
+                <td class="c"><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.Tabs.LogbookImport" /></td>
+                <td><a id="lnkImport" class="b" href="@("~/mvc/import".ToAbsolute())">@Resources.Tabs.LogbookImport</a></td>
                 <td>@Branding.ReBrand(Resources.LocalizedText.LogbookImportDescription)</td>
             </tr>
             <tr>
-                <td style="text-align:center;"><img src="@("~/images/CheckFlights.png".ToAbsolute())" alt="@Resources.FlightLint.TitleCheckFlights" class="darkSensitive" /></td>
-                <td><a id="lnkCheckFlights" style="font-weight: bold;" href="@("~/mvc/checkflight".ToAbsolute())">@Resources.FlightLint.TitleCheckFlights</a></td>
+                <td class="c"><img src="@("~/images/CheckFlights.png".ToAbsolute())" alt="@Resources.FlightLint.TitleCheckFlights" class="darkSensitive" /></td>
+                <td><a id="lnkCheckFlights" class="b" href="@("~/mvc/checkflight".ToAbsolute())">@Resources.FlightLint.TitleCheckFlights</a></td>
                 <td>@Branding.ReBrand(Resources.FlightLint.CheckFlightsShortDescription)</td>
             </tr>
             <tr>
-                <td style="text-align:center;"><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.StartingTotalsLink" class="darkSensitive" /></td>
-                <td><a id="lnkStartingTotals" style="font-weight: bold;" href="@("~/mvc/import/startingtotals".ToAbsolute())">@Resources.LocalizedText.StartingTotalsLink</a></td>
+                <td class="c"><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.StartingTotalsLink" class="darkSensitive" /></td>
+                <td><a id="lnkStartingTotals" class="b" href="@("~/mvc/import/startingtotals".ToAbsolute())">@Resources.LocalizedText.StartingTotalsLink</a></td>
                 <td>@Branding.ReBrand(Resources.LocalizedText.LogbookStartingTotalsDescription)</td>
             </tr>
             <tr>
-                <td style="text-align:center;"><img src="@("~/images/pendingflights.png".ToAbsolute())" alt="@Resources.LocalizedText.PendingFlightsLink" /></td>
-                <td><a id="lnkPendingFlights" style="font-weight: bold;" href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LocalizedText.PendingFlightsLink</a></td>
+                <td class="c"><img src="@("~/images/pendingflights.png".ToAbsolute())" alt="@Resources.LocalizedText.PendingFlightsLink" /></td>
+                <td><a id="lnkPendingFlights" class="b" href="@("~/mvc/flightedit/pending".ToAbsolute())">@Resources.LocalizedText.PendingFlightsLink</a></td>
                 <td>@Branding.ReBrand(Resources.LocalizedText.LogbookPendingFlightsDescription)</td>
             </tr>
         </table>
@@ -286,7 +286,7 @@ $(() => {
     showModalById('pnlWelcomeNewUser', '@Resources.LocalizedText.WelcomeHeader', '320');
 });
         </script>
-        <div id="pnlWelcomeNewUser" style="display:none;">
+        <div id="pnlWelcomeNewUser" class="dn">
             <p>@Resources.LocalizedText.WelcomeThanks</p>
             <p>@Resources.LocalizedText.WelcomeNextSteps</p>
             <table style="border-spacing: 10px;">
@@ -294,22 +294,22 @@ $(() => {
                     <td><img src="@("~/Public/tabimages/logbookTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterFlights" /></td>
                     <td>@Resources.LocalizedText.WelcomeEnterFlights</td>
                 </tr>
-                <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
+                <tr><td colspan="2" class="b c">@Resources.LocalizedText.ORSeparator</td></tr>
                 <tr>
                     <td><img src="@("~/Public/tabimages/AircraftTab.png".ToAbsolute())" style="width: 24px;" alt="@Resources.LocalizedText.WelcomeEnterAircraft" /></td>
                     <td><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LocalizedText.WelcomeEnterAircraft</a></td>
                 </tr>
-                <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
+                <tr><td colspan="2" class="b c">@Resources.LocalizedText.ORSeparator</td></tr>
                 <tr>
                     <td><img src="@("~/images/import.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeImportFlights" class="darkSensitive" /></td>
                     <td><a href="@("~/mvc/import".ToAbsolute())">@Resources.LocalizedText.WelcomeImportFlights</a></td>
                 </tr>
-                <tr><td colspan="2" style="font-weight: bold; text-align: center">@Resources.LocalizedText.ORSeparator</td></tr>
+                <tr><td colspan="2" class="b c">@Resources.LocalizedText.ORSeparator</td></tr>
                 <tr>
                     <td><img src="@("~/images/startingtotals.png".ToAbsolute())" alt="@Resources.LocalizedText.WelcomeSetStartingTotals" /></td>
                     <td><a href="@("~/mvc/import/startingtotals".ToAbsolute())">@Resources.LocalizedText.WelcomeSetStartingTotals</a></td>
                 </tr>
             </table>
-            <div style="text-align:center"><button type="button" onclick="javascript: dismissDlg('#' + 'pnlWelcomeNewUser'); return false;">@Resources.LocalizedText.Close</button></div>
+            <div class="c"><button type="button" onclick="javascript: dismissDlg('#' + 'pnlWelcomeNewUser'); return false;">@Resources.LocalizedText.Close</button></div>
         </div>
     }
