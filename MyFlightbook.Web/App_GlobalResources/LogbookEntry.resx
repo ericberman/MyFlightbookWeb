@@ -1964,4 +1964,7 @@ Proceed with import?</value>
   <data name="SACAAReportHeader" xml:space="preserve">
     <value>SACAA style report</value>
   </data>
+  <data name="PrintHeaderBasicXC" xml:space="preserve">
+    <value>Basic XC</value>
+  </data>
 </root>

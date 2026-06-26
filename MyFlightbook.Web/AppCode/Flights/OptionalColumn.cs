@@ -4,7 +4,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,7 +61,8 @@ namespace MyFlightbook.Printing
         JetPIC,
         JetSIC,
         TurboPropPIC,
-        TurboPropSIC
+        TurboPropSIC,
+        BasicXC
     }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
@@ -167,6 +168,7 @@ namespace MyFlightbook.Printing
             { OptionalColumnType.FTD, OptionalColumnType.FTD.ToString() },
             { OptionalColumnType.FFS, OptionalColumnType.FFS.ToString() },
             { OptionalColumnType.CrossCountry, Resources.LogbookEntry.PrintHeaderCrossCountry },
+            { OptionalColumnType.BasicXC, Resources.LogbookEntry.PrintHeaderBasicXC },
             { OptionalColumnType.XCInstruction, Resources.LogbookEntry.ComboXCInstruction },
             { OptionalColumnType.XCSolo, Resources.LogbookEntry.ComboXCSolo },
             { OptionalColumnType.XCPIC, Resources.LogbookEntry.ComboXCPIC},

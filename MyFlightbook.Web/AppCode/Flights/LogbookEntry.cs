@@ -177,6 +177,8 @@ namespace MyFlightbook
         /// </summary>
         public String Route { get; set; } = string.Empty;
 
+        public bool IsLocalFlight { get { return RegexUtility.LocalFlight.IsMatch(Route.ToUpper(CultureInfo.CurrentCulture).Trim()); } }
+
         /// <summary>
         /// Any comments about the flight
         /// </summary>
@@ -4822,6 +4824,8 @@ WHERE f1.username = ?uName ");
                     return Math.Min(Nighttime, SIC);
                 case OptionalColumnType.NightPIC:
                     return Math.Min(Nighttime, PIC);
+                case OptionalColumnType.BasicXC:
+                    return IsLocalFlight ? 0.0M : TotalFlightTime;
                 case OptionalColumnType.XCInstruction:
                     return Math.Min(CrossCountry, Dual);
                 case OptionalColumnType.XCSolo:

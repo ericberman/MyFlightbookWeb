@@ -3102,6 +3102,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Basic XC.
+        /// </summary>
+        internal static string PrintHeaderBasicXC {
+            get {
+                return ResourceManager.GetString("PrintHeaderBasicXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Carrier.
         /// </summary>
         internal static string PrintHeaderCarrier {
