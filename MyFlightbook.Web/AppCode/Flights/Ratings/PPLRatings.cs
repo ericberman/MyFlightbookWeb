@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2023 MyFlightbook LLC
+ * Copyright (c) 2013-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,6 +63,7 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public abstract class PPL61109Base : MilestoneProgress
     {
+        protected bool LongXCNeedsFullStop { get; set; } = true;
         protected MilestoneItem miMinTime { get; set; }
         protected MilestoneItem miMinTraining { get; set; }
         protected MilestoneItem miMinSolo { get; set; }
@@ -351,7 +352,8 @@ namespace MyFlightbook.RatingsProgress
                 if (al == null)
                     al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
-                if (!miMinXCDistance.IsSatisfied && al.DistanceForRoute() >= MinXCSoloDistance && al.MaxSegmentForRoute() >= MinXCSoloSegment && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= MinXCSoloFSLandings)
+                int landings = LongXCNeedsFullStop ? cfr.cFullStopLandings + cfr.cFullStopNightLandings : cfr.cLandingsThisFlight;
+                if (!miMinXCDistance.IsSatisfied && al.DistanceForRoute() >= MinXCSoloDistance && al.MaxSegmentForRoute() >= MinXCSoloSegment && landings >= MinXCSoloFSLandings)
                     miMinXCDistance.MatchFlightEvent(cfr);
 
                 int cToweredTakeoffs = 0;
@@ -405,6 +407,8 @@ namespace MyFlightbook.RatingsProgress
             BaseFAR = "61.109(c)";
             Title = Resources.MilestoneProgress.Title61109C;
             RatingSought = RatingType.PPLHelicopter;
+            FARLink = "https://www.law.cornell.edu/cfr/text/14/61.109";
+            LongXCNeedsFullStop = false;
 
             MinXCSoloDistance = 100;
             MinXCSoloSegment = 25;
@@ -944,9 +948,8 @@ namespace MyFlightbook.RatingsProgress
 
             decimal soloTime = 0.0M;
             decimal instructorOnBoardTime = 0.0M;
-            bool fInstructorOnBoard = false;
-            decimal dutiesOfPICTime = 0.0M;
-            decimal cToweredTakeoffs = 0.0M;
+            int cToweredTakeoffs = 0;
+            int cToweredLandings = 0;
             int nightTakeoffs = 0;
 
             miTotalTime.AddEvent(cfr.Total);
@@ -954,18 +957,19 @@ namespace MyFlightbook.RatingsProgress
 
             if (fCatClassMatches)
             {
+                bool fInstructorOnBoard = cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorOnBoard);
+                decimal dutiesOfPICTime = cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC);
+
                 cfr.FlightProps.ForEachEvent(pf =>
                 {
                     if (pf.PropertyType.IsSolo)
                         soloTime += pf.DecValue;
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInstructorOnBoard && !pf.IsDefaultValue)
-                        fInstructorOnBoard = true;    // instructor-on-board time only counts if you are acting as PIC
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC && !pf.IsDefaultValue)
-                        dutiesOfPICTime += pf.DecValue;
                     if (pf.PropertyType.IsNightTakeOff)
                         nightTakeoffs += pf.IntValue;
                     if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffTowered || pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight)
                         cToweredTakeoffs += pf.IntValue;
+                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLandingTowered || pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLandingToweredNight)
+                        cToweredLandings += pf.IntValue;
                 });
 
                 if (fInstructorOnBoard && AllowDPICInsteadOfSolo)
@@ -1026,7 +1030,7 @@ namespace MyFlightbook.RatingsProgress
                     }
                     // i)(5)2)
                     miSoloTakeoffs.AddEvent(cToweredTakeoffs);
-                    miSoloLandings.AddEvent(cfr.cFullStopLandings + cfr.cFullStopNightLandings);
+                    miSoloLandings.AddEvent(Math.Min(cfr.cFullStopLandings + cfr.cFullStopNightLandings, cToweredLandings));
                 }
             }
         }
