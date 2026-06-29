@@ -400,7 +400,7 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
                             {
                                 // create a synthetic deadline for this item.
                                 if (ecs.HoursDue > 0)
-                                    externalDeadlines.Add(new DeadlineCurrency(szUser, $"{ecs.Name} {sourceAttribution}", DateTime.MinValue, 0, DeadlineCurrency.RegenUnit.Hours, ar.AircraftID, ecs.HoursDue) { HighWaterTach = highWaterTach, TailNumber = ar.TailNumber });
+                                    externalDeadlines.Add(new DeadlineCurrency(szUser, $"{ecs.Name} {sourceAttribution}", DateTime.MinValue, 0, DeadlineCurrency.RegenUnit.Hours, ar.AircraftID, ecs.HoursDue) { HighWaterTach = highWaterTach, TailNumber = ar.TailNumber, Username = null });
                             }
                             else if (ecs.DateDue.HasValue)
                                 AddPendingInspection(arcs, $"{ar.TailNumber} - {ecs.Name} {sourceAttribution}", ecs.DateDue.Value, ar.AircraftID, 30, maxWindow);

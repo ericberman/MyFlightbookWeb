@@ -196,7 +196,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to External Aircraft Maintenance Systems.
+        ///   Looks up a localized string similar to Airframe Logbooks.
         /// </summary>
         internal static string AircraftMaintenanceHeader {
             get {

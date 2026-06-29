@@ -701,7 +701,7 @@
     <value>Add a new sharing link</value>
   </data>
   <data name="AircraftMaintenanceHeader" xml:space="preserve">
-    <value>External Aircraft Maintenance Systems</value>
+    <value>Airframe Logbooks</value>
   </data>
   <data name="ExternalMaintenanceNameTachTime" xml:space="preserve">
     <value>TachTime</value>
