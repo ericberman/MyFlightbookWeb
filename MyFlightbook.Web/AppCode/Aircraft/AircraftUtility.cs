@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Currency;
+﻿using MyFlightbook.AircraftSupport.Maintenance;
+using MyFlightbook.Currency;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -75,9 +76,27 @@ namespace MyFlightbook
                 return 0.0M;
 
             decimal val = 0.0M;
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
-(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
-ORDER BY f.date DESC LIMIT 10) tach", (int)CustomPropertyType.KnownProperties.IDPropTachEnd));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(highWater) AS highWater
+FROM (
+    SELECT MAX(tach.decvalue) AS highWater
+    FROM (
+        SELECT decvalue
+        FROM flightproperties fp
+        INNER JOIN flights f ON fp.idflight = f.idflight
+        WHERE f.username = ?user
+          AND f.idaircraft = ?id
+          AND fp.idproptype = {0}
+        ORDER BY f.date DESC
+        LIMIT 10
+    ) tach
+
+    UNION ALL
+
+    SELECT MAX(em.highWaterTach)
+    FROM externalmaintenance em
+    WHERE em.username = ?user
+      AND em.idaircraft = ?id
+) combined;", (int)CustomPropertyType.KnownProperties.IDPropTachEnd));
             dbh.ReadRow((comm) =>
             {
                 comm.Parameters.AddWithValue("user", szUser);
@@ -346,6 +365,9 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             IEnumerable<Aircraft> rgar = AircraftMaintainedByUser(szUser);
             List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
 
+            // Get any external maintenance that may apply
+            IEnumerable<ExternalMaintenanceRecord> rgemr = ExternalMaintenanceRecord.GetExternalMaintenanceRecords(rgar.Select(a => a.AircraftID));
+
             List<DeadlineCurrency> lstDeadlines = new List<DeadlineCurrency>(aircraftDeadlines ?? Array.Empty<DeadlineCurrency>());
 
             if (rgar != null)
@@ -364,6 +386,26 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
                     AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, ar.AircraftID, 30, maxWindow);
 
                     arcs.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstDeadlines.FindAll(dc => ar.AircraftID == dc.AircraftID && (maxWindow < 0 || dc.Expiration.Subtract(DateTime.Now).TotalDays <= maxWindow))));
+
+                    decimal highWaterTach = -1;
+                    // Add in externally generated inspections
+                    List<DeadlineCurrency> externalDeadlines = new List<DeadlineCurrency>();
+                    foreach (ExternalMaintenanceRecord emr in rgemr.Where(e => e.AircraftID == ar.AircraftID))
+                        foreach (IExternalCurrencyStatus ecs in emr.GetExternalCurrencies())
+                        {
+                            if (highWaterTach < 0 && ecs.UsesHours)
+                                highWaterTach = HighWaterMarkTachForUserInAircraft(ar.AircraftID, szUser);
+                            string sourceAttribution = String.Format(CultureInfo.CurrentCulture, AircraftSupport.Properties.ExternalMaintenance.SourceAttribution, emr.SourceName);
+                            if (ecs.UsesHours)
+                            {
+                                // create a synthetic deadline for this item.
+                                if (ecs.HoursDue > 0)
+                                    externalDeadlines.Add(new DeadlineCurrency(szUser, $"{ecs.Name} {sourceAttribution}", DateTime.MinValue, 0, DeadlineCurrency.RegenUnit.Hours, ar.AircraftID, ecs.HoursDue) { HighWaterTach = highWaterTach, TailNumber = ar.TailNumber });
+                            }
+                            else if (ecs.DateDue.HasValue)
+                                AddPendingInspection(arcs, $"{ar.TailNumber} - {ecs.Name} {sourceAttribution}", ecs.DateDue.Value, ar.AircraftID, 30, maxWindow);
+                        }
+                    arcs.AddRange(DeadlineCurrency.CurrencyForDeadlines(externalDeadlines, maxWindow));
                 }
             }
 

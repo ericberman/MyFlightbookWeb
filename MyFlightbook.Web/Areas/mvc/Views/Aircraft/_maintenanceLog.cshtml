@@ -20,7 +20,7 @@
                 <tr>
                     <td>@ml.ChangeDate.ToShortDateString()</td>
                     <td>
-                        <div><span style="font-weight: bold">@ml.FullDisplayName</span> @ml.Description</div>
+                        <div><span class="b">@ml.FullDisplayName</span> @ml.Description</div>
                         <div>@ml.Comment</div>
                     </td>
                 </tr>
@@ -29,14 +29,14 @@
                 <td colspan="2" style="text-align: center; border: none;">
                     @if (ViewBag.start > 0)
                     {
-                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript: getMaintenancePage(@idAircraft, 0, @pageSize, $(this).closest('table').parent()); return false;">&lt;&lt;</a>@:&nbsp;&nbsp;
-                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @(start - pageSize), @pageSize, $(this).closest('table').parent()); return false;">&lt;</a>@:&nbsp;
+                        <a href="#" class="b l" onclick="javascript: getMaintenancePage(@idAircraft, 0, @pageSize, $(this).closest('table').parent()); return false;">&lt;&lt;</a>@:&nbsp;&nbsp;
+                        <a href="#" class="b l" onclick="javascript:getMaintenancePage(@idAircraft, @(start - pageSize), @pageSize, $(this).closest('table').parent()); return false;">&lt;</a>@:&nbsp;
                     }
                     @String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCountWithTotals, (start + pageSize) / pageSize, (fullCount + pageSize - 1) / pageSize)&nbsp;
                     @if (start + pageSize < fullCount)
                     {
-                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @(start + pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;</a>@:&nbsp;&nbsp;
-                        <a href="#" style="font-weight: bold; font-size: larger;" onclick="javascript:getMaintenancePage(@idAircraft, @((fullCount / pageSize) * pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;&gt;</a>
+                        <a href="#" class="b l" onclick="javascript:getMaintenancePage(@idAircraft, @(start + pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;</a>@:&nbsp;&nbsp;
+                        <a href="#" class="b l" onclick="javascript:getMaintenancePage(@idAircraft, @((fullCount / pageSize) * pageSize), @pageSize, $(this).closest('table').parent()); return false;">&gt;&gt;</a>
                     }
                 </td>
             </tr>

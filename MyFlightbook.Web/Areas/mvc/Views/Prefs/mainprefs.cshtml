@@ -13,10 +13,10 @@
 <div id="prefsAccordion">
     @if ((Request["nolocalprefs"] ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") != 0)
     {
-    <h3 id="flightentry">@Resources.Preferences.PrefSectFlightEntryHeader</h3>
-    <div class="prefSectionRow">
-        @{ Html.RenderPartial("_prefFlightEntry"); }
-    </div>
+        <h3 id="flightentry">@Resources.Preferences.PrefSectFlightEntryHeader</h3>
+        <div class="prefSectionRow">
+            @{ Html.RenderPartial("_prefFlightEntry"); }
+        </div>
     }
     <h3 id="flightcoloring">@Resources.Preferences.FlightColoringHeader</h3>
     <div>
@@ -58,6 +58,11 @@
     <h3 id="sched">@Resources.Preferences.ScheduleServiceHeader</h3>
     <div>
         @{ Html.RenderPartial("_prefAirlineScheduling"); }
+    </div>
+    <h3 id="maint">@Resources.Preferences.AircraftMaintenanceHeader</h3>
+    <div>
+        @{ Html.RenderPartial("_prefExternalMaint"); }
+
     </div>
     <h3 id="oauth">@Resources.Preferences.HeaderOAuthApps</h3>
     <div>

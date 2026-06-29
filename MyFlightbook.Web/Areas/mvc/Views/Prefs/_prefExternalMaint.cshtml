@@ -1,0 +1,22 @@
+﻿@using MyFlightbook.OAuth.TachTime
+@{ 
+    MyFlightbook.Profile m_pf = ViewBag.pf;
+}
+
+<table style="border-spacing: 10px; border-collapse: separate;">
+    <tr class="imgMiddle">
+        <td class="imgMiddle"><img style="height:95px; width:259px;" src='@("~/images/tachtime.svg".ToAbsolute())' alt="@Resources.Preferences.ExternalMaintenanceNameTachTime" /></td>
+        <td>
+            @if (m_pf.PreferenceExists(TachTimeClient.TokenPrefKey))
+            {
+                <p>@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceTachTimeIsAuthed)</p>
+                <a href="@Url.Action("TachTimeRevoke", "oAuth")">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceDeAuthorizeTachTime)</a>
+            }
+            else
+            {
+                Uri authLink = new TachTimeClient(Request.Url.Host).AuthorizationUri(Url.Action("TachTimeRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), string.Empty, m_pf);
+                <a href="@(authLink)">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceAuthorizeTachTime)</a>
+            }
+        </td>
+    </tr>
+</table>

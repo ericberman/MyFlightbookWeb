@@ -150,11 +150,11 @@
         {
             <tr>
                 <td>Code Challenge (generated)</td>
-                <td>@currentClient.CodeChallenge <input type="hidden" name="code_challenge" value="@currentClient.CodeChallenge" /> <input type="hidden" name="pkce" value="true" /></td>
+                <td>@currentClient.PKCE.CodeChallenge <input type="hidden" name="code_challenge" value="@currentClient.PKCE.CodeChallenge" /> <input type="hidden" name="pkce" value="true" /></td>
             </tr>
             <tr>
                 <td>Code Verifier (generated)</td>
-                <td>@currentClient.CodeVerifier <input type="hidden" name="code_verifier" value="@currentClient.CodeVerifier" /><input type="hidden" name="clientSecret" class="w100" value="abc123" /></td>
+                <td>@currentClient.PKCE.CodeVerifier <input type="hidden" name="code_verifier" value="@currentClient.PKCE.CodeVerifier" /><input type="hidden" name="clientSecret" class="w100" value="abc123" /></td>
             </tr>
         }
         else

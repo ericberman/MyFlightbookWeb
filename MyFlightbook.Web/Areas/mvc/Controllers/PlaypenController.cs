@@ -331,20 +331,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     string codeVerifier = Request["code_verifier"] ?? string.Empty;
                     string codeChallenge = Request["code_challenge"] ?? string.Empty;
 
-                    if (fUsePKCS && String.IsNullOrEmpty(codeVerifier) || String.IsNullOrEmpty(codeChallenge))
-                    {
-                        OAuth2AdHocClient c = new OAuth2AdHocClient(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, Array.Empty<string>(), ClientType.Public);
-                        codeVerifier = c.CodeVerifier;
-                        codeChallenge = c.CodeChallenge;
-                    }
+                    PKCEPair pkce = (fUsePKCS && String.IsNullOrEmpty(codeVerifier) || String.IsNullOrEmpty(codeChallenge)) ? new PKCEPair() : new PKCEPair(codeVerifier, codeChallenge);
 
                     string clientID = Request["clientID"] ?? defaultClient?.ClientIdentifier ?? string.Empty;
                     string clientSecret = Request["clientSecret"] ?? defaultClient?.ClientSecret ?? string.Empty;
-                    string authURL = Request["authTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/AuthorizePKCE?code_challenge={codeChallenge}&code_challenge_method=S256" : "~/mvc/oAuth/Authorize").ToAbsoluteURL(Request).ToString();
-                    string tokenURL = Request["tokenTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/OAuthToken?code_verifier={codeVerifier}" : "~/mvc/oAuth/OAuthToken").ToAbsoluteURL(Request).ToString();
+                    string authURL = Request["authTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/AuthorizePKCE?code_challenge={pkce.CodeChallenge}&code_challenge_method=S256" : "~/mvc/oAuth/Authorize").ToAbsoluteURL(Request).ToString();
+                    string tokenURL = Request["tokenTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/OAuthToken?code_verifier={pkce.CodeVerifier}" : "~/mvc/oAuth/OAuthToken").ToAbsoluteURL(Request).ToString();
                     string redirectURL = Request["targetRedir"] ?? Request.Url.GetLeftPart(UriPartial.Path);
                     string scope = Request["scopes"] ?? "currency totals addflight readflight addaircraft readaircraft visited namedqueries images";
-                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray(), fUsePKCS ? ClientType.Public : ClientType.Confidential) { CodeVerifier = codeVerifier, CodeChallenge = codeChallenge };
+                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray(), fUsePKCS ? ClientType.Public : ClientType.Confidential) { PKCE = pkce };
                 }
                 return client;
             }

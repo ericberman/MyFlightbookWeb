@@ -1,0 +1,15 @@
+﻿@{ 
+    Dictionary<string, IEnumerable<string>> d = (Dictionary<string, IEnumerable<string>>)ViewBag.summaryLog;
+    foreach (string key in d.Keys)
+    {
+        <h2>@key</h2>
+        <ul>
+            @foreach (string s in d[key])
+            {
+            <li><div class="wsprel">@s</div></li>
+            }
+        </ul>
+    }
+}
+
+

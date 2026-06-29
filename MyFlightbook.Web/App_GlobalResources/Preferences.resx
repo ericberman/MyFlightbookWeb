@@ -700,4 +700,19 @@
   <data name="SharingShareKeyAddNewLink" xml:space="preserve">
     <value>Add a new sharing link</value>
   </data>
+  <data name="AircraftMaintenanceHeader" xml:space="preserve">
+    <value>External Aircraft Maintenance Systems</value>
+  </data>
+  <data name="ExternalMaintenanceNameTachTime" xml:space="preserve">
+    <value>TachTime</value>
+  </data>
+  <data name="ExternalMaintenanceAuthorizeTachTime" xml:space="preserve">
+    <value>Authorize %APP_NAME% to pull aircraft data from TachTime</value>
+  </data>
+  <data name="ExternalMaintenanceDeAuthorizeTachTime" xml:space="preserve">
+    <value>De-authorize %APP_NAME% on TachTime</value>
+  </data>
+  <data name="ExternalMaintenanceTachTimeIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to pull maintenance data from TachTime</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MyFlightbook.AircraftSupport.Maintenance;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -167,7 +168,7 @@ namespace MyFlightbook
         /// <summary>
         /// The full (first/last) name of the user, if known.  Does not get committed.
         /// </summary>
-        public string UserFullName { get; private set; }
+        public string UserFullName { get; set; }
 
         /// <summary>
         /// The full display name (username + display name, if known).  Does not get committed.
@@ -273,6 +274,13 @@ namespace MyFlightbook
             dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", aircraftid); },
                 (dr) => { AddLogToArray(lst, dr); });
+
+            // splice in any external inspections
+            IEnumerable<ExternalMaintenanceRecord> rgemr = ExternalMaintenanceRecord.GetExternalMaintenanceRecords(aircraftid);
+            foreach (ExternalMaintenanceRecord emr in rgemr)
+                lst.AddRange(emr.GetMaintenanceLog());
+
+            lst.Sort((mr1, mr2) => mr2.ChangeDate.CompareTo(mr1.ChangeDate));
 
             return lst.ToArray();
         }

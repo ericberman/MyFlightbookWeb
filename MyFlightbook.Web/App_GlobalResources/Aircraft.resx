@@ -163,7 +163,7 @@
     <comment>{0} is the name of the app</comment>
   </data>
   <data name="ImportTitle" xml:space="preserve">
-    <value>Bulk import aircraft from a spreadsheet</value>
+    <value>Import</value>
   </data>
   <data name="AircraftEditAdd" xml:space="preserve">
     <value>Add</value>
@@ -330,7 +330,7 @@
     <value>To reduce clutter in the list of aircraft for new flights, you have indicated that this aircraft is "inactive". </value>
   </data>
   <data name="DownloadCSV" xml:space="preserve">
-    <value>Download all of your aircraft in a spreadsheet.</value>
+    <value>Download your aircraft</value>
   </data>
   <data name="editAircraftClone" xml:space="preserve">
     <value>I need a bigger edit</value>
@@ -659,5 +659,17 @@ Do you still want to delete?</value>
   </data>
   <data name="MaintenanceChangeHistoryPrompt" xml:space="preserve">
     <value>Change History</value>
+  </data>
+  <data name="TachTimeRefreshAuthFailed" xml:space="preserve">
+    <value>Unable to refresh access to TachTime; please revoke/regrant permissions</value>
+  </data>
+  <data name="TachTimeSyncTitle" xml:space="preserve">
+    <value>Update from TachTime</value>
+  </data>
+  <data name="TachTimeUnknownAircraft" xml:space="preserve">
+    <value>Aircraft from TachTime not active in your account</value>
+  </data>
+  <data name="TachTimeSyncResult" xml:space="preserve">
+    <value>Results from TachTime</value>
   </data>
 </root>

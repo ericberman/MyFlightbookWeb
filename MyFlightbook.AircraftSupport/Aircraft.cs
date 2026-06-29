@@ -355,6 +355,11 @@ namespace MyFlightbook
         /// </summary>
         private IEnumerable<MaintenanceLog> MaintenanceChanges { get; set; }
 
+        public IEnumerable<MaintenanceLog> GetMaintenanceChanges()
+        {
+            return MaintenanceChanges;
+        }
+
         /// <summary>
         /// The instancetype of the aircraft (i.e., real airplane or simulator type), expressed as an integer (for webservice)
         /// </summary>

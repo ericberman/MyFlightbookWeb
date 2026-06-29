@@ -357,13 +357,12 @@ namespace MyFlightbook.OAuth.RosterBuster
             pf.AssociatedData[szCachedPrefStateKey] = szState;  // save state so we can check it later.
 
             // Build a code_verifier
-            string szCodeVerifier = RegexUtility.NonAlphaNumeric.Replace(Guid.NewGuid().ToString() + Guid.NewGuid().ToString(), string.Empty);
-            pf.AssociatedData[szCachedCodeVerifier] = szCodeVerifier;
-
+            PKCEPair pkcepair = new PKCEPair();
+            pf.AssociatedData[szCachedCodeVerifier] = pkcepair;
 
             UriBuilder uriBuilder = new UriBuilder(oAuth2AuthorizeEndpoint);
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
-            nvc["code_challenge"] = GenerateCodeChallenge(szCodeVerifier);
+            nvc["code_challenge"] = pkcepair.CodeChallenge;
             nvc["code_challenge_method"] = "S256";
             nvc["response_type"] = "code";
             nvc["consumer_key"] = AppKey;
@@ -455,7 +454,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                 throw new ArgumentNullException(nameof(szUser));
 
             Profile pf = Profile.GetUser(szUser);
-            if (!pf.AssociatedData.TryGetValue(szCachedPrefStateKey, out object oState) || !pf.AssociatedData.TryGetValue(szCachedCodeVerifier, out object oCodeVerifier))
+            if (!pf.AssociatedData.TryGetValue(szCachedPrefStateKey, out object oState) || !pf.AssociatedData.TryGetValue(szCachedCodeVerifier, out object pkcePair))
                 throw new InvalidOperationException("No pending authorization request for user.");
             string szSavedState = oState as string;
             if (szSavedState.CompareTo(szState) != 0)
@@ -467,7 +466,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                 { "grant_type", "authorization_code" },
                 { "state", szSavedState },
                 { "code", szAuthCode },
-                { "code_verifier", (string) oCodeVerifier },
+                { "code_verifier", ((PKCEPair)pkcePair).CodeVerifier },
                 { "redirect_uri", szRedir }
             };
 

@@ -40,6 +40,35 @@ namespace MyFlightbook.OAuth
         Task<string> ImportFlights(string username, DateTime? startDate, DateTime? endDate, bool fAutofill, HttpRequestBase request = null);
     }
 
+    public class PKCEPair
+    {
+        public string CodeVerifier { get; private set; }
+        public string CodeChallenge { get; private set; }
+
+        public PKCEPair()
+        {
+            // 32 bytes = 256 bits of entropy
+            byte[] bytes = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(bytes);
+            }
+
+            CodeVerifier = bytes.ToBase64URL();
+
+            using (var sha256 = SHA256.Create())
+            {
+                CodeChallenge = sha256.ComputeHash(Encoding.ASCII.GetBytes(CodeVerifier)).ToBase64URL();
+            }
+        }
+
+        public PKCEPair(string verifier, string challenge)
+        {
+            CodeVerifier = verifier;
+            CodeChallenge = challenge;
+        }
+    }
+
     /// <summary>
     /// A standard interface for finding and describing any oAuth source that can be a source for flights.
     /// </summary>
@@ -444,8 +473,7 @@ namespace MyFlightbook.OAuth
                 string result = (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(oAuth2TokenEndpoint), null, HttpMethod.Post, c, (response) =>
                 {
                     string szResult = response.Content.ReadAsStringAsync().Result;
-                    response.EnsureSuccessStatusCode();
-                    return szResult;
+                    return response.IsSuccessStatusCode ? szResult : throw new InvalidOperationException($"Error response from token endpoint: {szResult}, response code: {response.StatusCode}");
                 });
 
                 return ParseAuthResponse(result, redirEndpoint);
@@ -479,7 +507,7 @@ namespace MyFlightbook.OAuth
             }
         }
 
-        public async Task<bool> RevokeTokeBasicAuth()
+        public async Task<bool> RevokeTokenBasicAuth()
         {
             if (string.IsNullOrEmpty(oAuthTokenDisableEndpoint) || string.IsNullOrEmpty(AuthState.RefreshToken))
                 return true;    // nothing to do.
@@ -551,15 +579,6 @@ namespace MyFlightbook.OAuth
         /// <returns></returns>
 
         private static readonly char[] trimChars = new char[] { '=' };
-
-        protected static string GenerateCodeChallenge(string codeVerifier)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
-                return Convert.ToBase64String(hash).TrimEnd(trimChars).Replace('+', '-').Replace('/', '_');
-            }
-        }
     }
 
     public class OAuth2AdHocClient : OAuthClientBase
@@ -581,9 +600,7 @@ namespace MyFlightbook.OAuth
 
         public ClientType OAuthClientType { get; set; } = ClientType.Confidential;
 
-        public string CodeChallenge { get; set; } = string.Empty;
-
-        public string CodeVerifier { get; set; } = string.Empty;
+        public PKCEPair PKCE { get; set; } = null;
         #endregion
 
         public OAuth2AdHocClient(string clientID, string clientSecret, string authEndpoint, string tokenEndpoint, string redirEndpoint, string[] scopes = null, ClientType clientType = ClientType.Confidential) : base(string.Empty, string.Empty, authEndpoint, tokenEndpoint, scopes)
@@ -593,24 +610,7 @@ namespace MyFlightbook.OAuth
             _redirEndpoint = redirEndpoint;
             OAuthClientType = clientType;
             if (OAuthClientType == ClientType.Public)
-                RefreshChallengeVerifier();
-        }
-
-        public void RefreshChallengeVerifier()
-        {
-            // 32 bytes = 256 bits of entropy
-            byte[] bytes = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(bytes);
-            }
-
-            CodeVerifier = bytes.ToBase64URL();
-
-            using (var sha256 = SHA256.Create())
-            {
-                CodeChallenge = sha256.ComputeHash(Encoding.ASCII.GetBytes(CodeVerifier)).ToBase64URL();
-            }
+                PKCE = new PKCEPair();
         }
 
         /// <summary>
