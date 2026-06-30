@@ -389,7 +389,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download all of your aircraft in a spreadsheet..
+        ///   Looks up a localized string similar to Download your aircraft.
         /// </summary>
         internal static string DownloadCSV {
             get {
@@ -1419,7 +1419,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bulk import aircraft from a spreadsheet.
+        ///   Looks up a localized string similar to Import.
         /// </summary>
         internal static string ImportTitle {
             get {
@@ -1586,6 +1586,42 @@ namespace Resources {
         internal static string SharedDeadlineIndicator {
             get {
                 return ResourceManager.GetString("SharedDeadlineIndicator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to refresh access to TachTime; please revoke/regrant permissions.
+        /// </summary>
+        internal static string TachTimeRefreshAuthFailed {
+            get {
+                return ResourceManager.GetString("TachTimeRefreshAuthFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results from TachTime.
+        /// </summary>
+        internal static string TachTimeSyncResult {
+            get {
+                return ResourceManager.GetString("TachTimeSyncResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update from TachTime.
+        /// </summary>
+        internal static string TachTimeSyncTitle {
+            get {
+                return ResourceManager.GetString("TachTimeSyncTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft from TachTime not active in your account.
+        /// </summary>
+        internal static string TachTimeUnknownAircraft {
+            get {
+                return ResourceManager.GetString("TachTimeUnknownAircraft", resourceCulture);
             }
         }
         

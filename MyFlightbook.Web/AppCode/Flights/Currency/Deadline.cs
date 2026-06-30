@@ -127,7 +127,7 @@ namespace MyFlightbook.Currency
         /// <summary>
         /// Cached tailnumber for the aircraft to which this applies
         /// </summary>
-        protected string TailNumber { get; set; }
+        public string TailNumber { get; set; }
 
         /// <summary>
         /// The hours at which this is due (for aircraft)
@@ -169,12 +169,12 @@ namespace MyFlightbook.Currency
         /// <summary>
         /// High water mark hobbs that *you* have recorded in this aircraft (requires username to be > 0)
         /// </summary>
-        protected decimal HighWaterHobbs { get; set; }
+        public decimal HighWaterHobbs { get; set; }
 
         /// <summary>
         /// High water mark tach that *you* have recorded in this aircraft (requires username to be > 0)
         /// </summary>
-        protected decimal HighWaterTach { get; set; }
+        public decimal HighWaterTach { get; set; }
         #endregion
 
         #region Initialization
@@ -323,12 +323,13 @@ namespace MyFlightbook.Currency
             const string szQBase = @"SELECT 
 	d.*, 
     ac.tailnumber,
-	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
-	COALESCE(MAX(fp.decValue), 0) AS maxTach
+	GREATEST(COALESCE(MAX(f.hobbsEnd), 0), COALESCE(MAX(em.highWaterHobbs), 0)) AS maxHobbs,
+	GREATEST(COALESCE(MAX(fp.decValue), 0), COALESCE(MAX(em.highWaterTach), 0)) AS maxTach
 FROM deadlines d 
 LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft 
 LEFT JOIN flights f on (f.username=?user and f.idaircraft=d.aircraftid)
 LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
+LEFT JOIN externalMaintenance em on d.aircraftID = em.idaircraft
 WHERE {0}
 GROUP BY d.iddeadlines";
 
@@ -374,8 +375,8 @@ GROUP BY d.iddeadlines";
             string szQ = @"SELECT 
 	d.*, 
     ac.tailnumber,
-	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
-	COALESCE(MAX(fp.decValue), 0) AS maxTach
+	GREATEST(COALESCE(MAX(f.hobbsEnd), 0), COALESCE(MAX(em.highWaterHobbs), 0)) AS maxHobbs,
+	GREATEST(COALESCE(MAX(fp.decValue), 0), COALESCE(MAX(em.highWaterTach), 0)) AS maxTach
 FROM
     useraircraft ua
         INNER JOIN
@@ -386,6 +387,7 @@ FROM
     aircraft ac ON ua.idaircraft = ac.idaircraft
 	LEFT JOIN flights f on (f.username=ua.username and f.idaircraft=ua.idaircraft)
 	LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
+    LEFT JOIN externalMaintenance em on d.aircraftID = em.idaircraft
 WHERE ua.username = ?user AND d.username is null AND (ua.Flags & 0x0008) = 0
 GROUP BY d.iddeadlines";
 

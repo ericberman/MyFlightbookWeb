@@ -7,6 +7,7 @@ using MyFlightbook.OAuth;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
+using MyFlightbook.OAuth.TachTime;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
@@ -337,7 +338,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     try
                     {
-                        var _ = await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokeBasicAuth();
+                        var _ = await new FlightCrewViewClient(pf.GetPreferenceForKey<AuthorizationState>(FlightCrewViewClient.AccessTokenPrefKey)).RevokeTokenBasicAuth();
                     }
                     catch (HttpRequestException) { }
                     pf.SetPreferenceForKey(FlightCrewViewClient.AccessTokenPrefKey, null, true);
@@ -674,6 +675,42 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return Redirect("~/mvc/prefs?pane=debrief");
         }
         #endregion
+        #endregion
+
+        #region External Maintenance apps
+        [Authorize]
+        public async Task<ActionResult> TachTimeRedir(string code)
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            PKCEPair pkce = TachTimeClient.PendingCodeVerifier(pf);
+            IAuthorizationState authorizationState = await new TachTimeClient(Request.Url.Host).ConvertToken(Url.Action("TachTimeRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
+            pf.SetPreferenceForKey(TachTimeClient.TokenPrefKey, authorizationState);
+            return Redirect("~/mvc/Prefs?pane=maint");
+        }
+
+        [Authorize]
+        public ActionResult TachTimeRevoke()
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            if (!pf.PreferenceExists(TachTimeClient.TokenPrefKey))
+                throw new InvalidOperationException("Can't revoke a non-existent authtoken!");
+            TachTimeClient.Revoke(User.Identity.Name);
+            pf.SetPreferenceForKey(TachTimeClient.TokenPrefKey, null, true);
+            return Redirect("~/mvc/Prefs?pane=maint");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> TachTimeRefresh()
+        {
+            return await SafeOp(async () =>
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (!pf.PreferenceExists(TachTimeClient.TokenPrefKey))
+                    throw new UnauthorizedAccessException();
+                ViewBag.summaryLog = await new TachTimeClient(pf.GetPreferenceForKey<AuthorizationState>(TachTimeClient.TokenPrefKey), Request.Url.Host).UpdateMaintenanceFromTachTime(User.Identity.Name);
+                return PartialView("_actionSummary");
+            });
+        }
         #endregion
 
         #region Client apps

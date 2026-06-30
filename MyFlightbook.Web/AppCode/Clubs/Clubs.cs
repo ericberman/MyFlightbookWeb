@@ -1621,13 +1621,26 @@ namespace MyFlightbook.Clubs
             if (!lst.Any())
                 return;
 
-            DBHelper dbh = new DBHelper(@"SELECT ca.idaircraft, MAX(f.hobbsend) AS MaxHobbs, MAX(fp.decvalue) AS MaxTach
-FROM clubaircraft ca
-INNER JOIN clubs c ON ca.idclub=c.idclub
-LEFT JOIN flights f ON ca.idaircraft=f.idaircraft
-LEFT JOIN flightproperties fp ON (f.idflight=fp.idflight AND fp.idPropType=96)
-WHERE c.idclub=?idClub
-GROUP BY idaircraft");
+            DBHelper dbh = new DBHelper(@"SELECT 
+    ca.idaircraft,
+    GREATEST(COALESCE(MAX(fp.decvalue), 0),
+            COALESCE(MAX(em.highWaterTach), 0)) AS MaxTach,
+    GREATEST(COALESCE(MAX(f.hobbsEnd), 0),
+            COALESCE(MAX(em.highWaterHobbs), 0)) AS MaxHobbs
+FROM
+    clubaircraft ca
+        INNER JOIN
+    clubs c ON ca.idclub = c.idclub
+        LEFT JOIN
+    flights f ON ca.idaircraft = f.idaircraft
+        LEFT JOIN
+    flightproperties fp ON (f.idflight = fp.idflight
+        AND fp.idPropType = 96)
+        LEFT JOIN
+    externalmaintenance em ON ca.idaircraft = em.idaircraft
+WHERE
+    c.idclub = ?idclub
+GROUP BY ca.idaircraft");
 
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("idClub", idclub); },
                 (dr) =>

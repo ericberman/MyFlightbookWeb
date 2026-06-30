@@ -196,6 +196,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airframe Logbooks.
+        /// </summary>
+        internal static string AircraftMaintenanceHeader {
+            get {
+                return ResourceManager.GetString("AircraftMaintenanceHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this image or PDF?  It CANNOT be undone!.
         /// </summary>
         internal static string BasicMedConfirmDeleteImage {
@@ -480,6 +489,42 @@ namespace Resources {
         internal static string errAccountQAPasswordRequired {
             get {
                 return ResourceManager.GetString("errAccountQAPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to pull aircraft data from TachTime.
+        /// </summary>
+        internal static string ExternalMaintenanceAuthorizeTachTime {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceAuthorizeTachTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to De-authorize %APP_NAME% on TachTime.
+        /// </summary>
+        internal static string ExternalMaintenanceDeAuthorizeTachTime {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceDeAuthorizeTachTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TachTime.
+        /// </summary>
+        internal static string ExternalMaintenanceNameTachTime {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceNameTachTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to pull maintenance data from TachTime.
+        /// </summary>
+        internal static string ExternalMaintenanceTachTimeIsAuthed {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceTachTimeIsAuthed", resourceCulture);
             }
         }
         
