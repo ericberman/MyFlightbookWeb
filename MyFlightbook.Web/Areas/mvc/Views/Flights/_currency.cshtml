@@ -49,12 +49,21 @@
             text-indent: 0;
             text-align: left;
         }
+
+        table.currencyTable {
+            border-collapse: collapse;
+        }
+
+        table.currencyTable tr:not(:last-child) th,
+        table.currencyTable tr:not(:last-child) td {
+            border-bottom: 1px solid lightgray;
+        }
     </style>
 }
 <div class="=fineprint"><a target="_blank" href="@("~/mvc/pub/CurrencyNotes".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString())">@Resources.Currency.DisclaimerLink</a></div>
 @if (rgcsi.Any())
 {
-    <table cellpadding="2" cellspacing="1">
+    <table class="currencyTable">
         <tbody>
             @foreach (CurrencyStatusItem csi in rgcsi)
             {

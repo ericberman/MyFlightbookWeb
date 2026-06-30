@@ -22,16 +22,18 @@ else
         foreach (TotalsItem ti in tic.Items)
         {
             <div class="totalsBox @(fGrouped ? "dib" : string.Empty)">
-                <div class="totalsValue">@ti.ValueString(fUseHHMM)</div>
-                <div class="totalsLabel">
-                    @if (fLinked && ti.Query != null)
-                    {
-                        <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
-                    }
-                    else
-                    {
-                        <div>@ti.Description</div>
-                    }
+                <div class="totalsItemContainer">
+                    <div class="totalsValue">@ti.ValueString(fUseHHMM)</div>
+                    <div class="totalsLabel">
+                        @if (fLinked && ti.Query != null)
+                        {
+                            <div><a href="@String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, "~/mvc/flights".ToAbsolute(), ti.JSONSerializedQuery.ToSafeParameter())" target="_blank">@ti.Description</a></div>
+                        }
+                        else
+                        {
+                            <div>@ti.Description</div>
+                        }
+                    </div>
                 </div>
                 @if (!String.IsNullOrEmpty(ti.SubDescription))
                 {
