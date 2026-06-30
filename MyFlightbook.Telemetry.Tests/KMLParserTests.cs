@@ -75,5 +75,43 @@ namespace MyFlightbook.Telemetry.Tests
             Assert.AreEqual(47.621, Convert.ToDouble(parser.ParsedData.Rows[1][KnownColumnNames.LAT], CultureInfo.InvariantCulture), 0.0001);
             Assert.AreEqual(-122.3501, Convert.ToDouble(parser.ParsedData.Rows[1][KnownColumnNames.LON], CultureInfo.InvariantCulture), 0.0001);
         }
+
+        [TestMethod]
+        public void Parse_GxTrackAcrossMultiplePlacemarks_ParsesAllTracks()
+        {
+            const string kml = """
+                <?xml version="1.0" encoding="utf-8"?>
+                <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+                  <Placemark>
+                    <gx:Track>
+                      <when>2025-03-14T19:09:26Z</when>
+                      <when>2025-03-14T19:10:26Z</when>
+                      <gx:coord>-122.3493 47.6205 376.2756</gx:coord>
+                      <gx:coord>-122.3501 47.6210 400</gx:coord>
+                    </gx:Track>
+                  </Placemark>
+                  <Placemark>
+                    <gx:Track>
+                      <when>2025-03-14T19:11:26Z</when>
+                      <gx:coord>-122.3510 47.6215 420</gx:coord>
+                    </gx:Track>
+                  </Placemark>
+                </kml>
+                """;
+
+            KMLParser parser = new KMLParser
+            {
+                ParsedData = new TelemetryDataTable()
+            };
+
+            bool parsed = parser.Parse(kml);
+
+            Assert.IsTrue(parsed, parser.ErrorString);
+            Assert.AreEqual(3, parser.ParsedData.Rows.Count);
+            Assert.AreEqual(DateTime.Parse("2025-03-14T19:11:26Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                (DateTime)parser.ParsedData.Rows[2][KnownColumnNames.TIME]);
+            Assert.AreEqual(47.6215, Convert.ToDouble(parser.ParsedData.Rows[2][KnownColumnNames.LAT], CultureInfo.InvariantCulture), 0.0001);
+            Assert.AreEqual(-122.3510, Convert.ToDouble(parser.ParsedData.Rows[2][KnownColumnNames.LON], CultureInfo.InvariantCulture), 0.0001);
+        }
     }
 }

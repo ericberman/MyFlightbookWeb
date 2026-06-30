@@ -296,22 +296,26 @@ namespace MyFlightbook.Telemetry
         private bool ParseKMLv2(KMLElements k)
         {
             List<Position> lstSamples = new List<Position>();
-            using (IEnumerator<XElement> timestampEnumerator = k.ele22.Descendants(k.ns + "when").GetEnumerator())
+
+            foreach (XElement track in k.xmlDoc.Descendants(k.ns + "Placemark").Descendants(k.ns22 + "Track"))
             {
-                foreach (XElement coord in k.ele22.Descendants(k.ns22 + "coord"))
+                using (IEnumerator<XElement> timestampEnumerator = track.Descendants(k.ns + "when").GetEnumerator())
                 {
-                    string[] rgRow = coord.Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    Position sample = new Position(rgRow);
-
-                    if (timestampEnumerator.MoveNext())
+                    foreach (XElement coord in track.Descendants(k.ns22 + "coord"))
                     {
-                        sample.TypeOfSpeed = Position.SpeedType.Derived;
-                        string szTimeStamp = timestampEnumerator.Current.Value;
-                        if (!String.IsNullOrEmpty(szTimeStamp))
-                            sample.Timestamp = szTimeStamp.ParseUTCDate();
-                    }
+                        string[] rgRow = coord.Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        Position sample = new Position(rgRow);
 
-                    lstSamples.Add(sample);
+                        if (timestampEnumerator.MoveNext())
+                        {
+                            sample.TypeOfSpeed = Position.SpeedType.Derived;
+                            string szTimeStamp = timestampEnumerator.Current.Value;
+                            if (!String.IsNullOrEmpty(szTimeStamp))
+                                sample.Timestamp = szTimeStamp.ParseUTCDate();
+                        }
+
+                        lstSamples.Add(sample);
+                    }
                 }
             }
 
