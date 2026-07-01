@@ -1,12 +1,11 @@
 ﻿using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2023 MyFlightbook LLC
+ * Copyright (c) 2018-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -258,6 +257,11 @@ namespace MyFlightbook.Achievements
         public string Privilege { get; set; }
 
         /// <summary>
+        /// What was the category/class in which this checkride was earned?  (Doesn't include type!)
+        /// </summary>
+        public CategoryClass.CatClassID EarnedInCatClassID {  get; set; }
+
+        /// <summary>
         /// Level of the rating, for hierarchical ones like PPL/Commercial
         /// </summary>
         public RatingLevel Level { get; set; } 
@@ -404,6 +408,8 @@ namespace MyFlightbook.Achievements
         private readonly Dictionary<string, Checkride> dictCFII = new Dictionary<string, Checkride>();
 
         private readonly Dictionary<string, Checkride> dictNight = new Dictionary<string, Checkride>();
+
+        private readonly HashSet<CategoryClass.CatClassID> hsATPRatingCatClasses = new HashSet<CategoryClass.CatClassID>();
         #endregion
 
         #region Properties
@@ -510,13 +516,15 @@ namespace MyFlightbook.Achievements
                         DescribeLevelRating(er, RatingLevel.Commercial);
                         break;
                     case CustomPropertyType.KnownProperties.IDPropCheckrideATP:
+                        hsATPRatingCatClasses.Add(er.EarnedInCatClassID);
                         DescribeLevelRating(er, RatingLevel.ATP);
                         break;
 
                     // the following two are just unspecified checkrides, so they use the highest rating described above.
                     case CustomPropertyType.KnownProperties.IDPropCheckrideNewCatClassType:
                     case CustomPropertyType.KnownProperties.IDPropCheckRide:
-                        DescribeLevelRating(er, currentLevel);
+                        // Issue #1551: new category/class is NOT generally to ATP standards unless it is an ATP checkride.  E.g., if you earn an ATP in AMEL and then add an ASES rating, that's done to commercial standards.
+                        DescribeLevelRating(er, (currentLevel == RatingLevel.ATP && !hsATPRatingCatClasses.Contains(er.EarnedInCatClassID)) ? RatingLevel.Commercial : currentLevel);
                         break;
 
                     case CustomPropertyType.KnownProperties.IDPropCheckrideCFI:
@@ -607,12 +615,26 @@ namespace MyFlightbook.Achievements
             AddCheckridesForPrivileges(d, dictATP.Values);
 
             // At this point d should hold the highest-privilege certificate for each privilege
+            // Issue #1551: 61.157(d): if you have an ATP in a particular category/class, yank up any type-ratings in that category/class as well
+            Dictionary<string, Checkride>[] sourcesToHoist = new Dictionary<string, Checkride>[] { dictPrivate, dictCommercial };
+            foreach (Checkride cr in dictATP.Values)
+            {
+                foreach (Dictionary<string, Checkride> dsource in sourcesToHoist)
+                {
+                    foreach (Checkride cr2 in dsource.Values)
+                    {
+                        if (cr2.EarnedInCatClassID == cr.EarnedInCatClassID && cr2.LicenseKind != LicenseKind.ATP)
+                            cr2.LicenseKind = LicenseKind.ATP;
+                    }
+                }
+            }
+
             // Segregate them into individual lists by license kind
             Dictionary<LicenseKind, List<Checkride>> dlevels = new Dictionary<LicenseKind, List<Checkride>>();
             foreach (Checkride cr in d.Values)
             {
-                if (dlevels.ContainsKey(cr.LicenseKind))
-                    dlevels[cr.LicenseKind].Add(cr);
+                if (dlevels.TryGetValue(cr.LicenseKind, out List<Checkride> value))
+                    value.Add(cr);
                 else
                     dlevels[cr.LicenseKind] = new List<Checkride>() { cr };
             }
@@ -670,6 +692,7 @@ namespace MyFlightbook.Achievements
                     {
                         FlightID = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture),
                         DateEarned = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture),
+                        EarnedInCatClassID = (CategoryClass.CatClassID) Convert.ToInt32(dr["idCatClass"], CultureInfo.InvariantCulture),
                         CheckrideProperty = (CustomPropertyType.KnownProperties)Convert.ToInt32(dr["idproptype"], CultureInfo.InvariantCulture)
                     };
 
@@ -755,7 +778,7 @@ namespace MyFlightbook.Achievements
 
         public override string BadgeImageOverlay { get { return "~/images/BadgeOverlays/certificate.png"; } }
 
-        public CheckrideBadge(Checkride cr) : base()
+        protected CheckrideBadge(Checkride cr) : base()
         {
             m_cr = cr;
             if (cr != null)
