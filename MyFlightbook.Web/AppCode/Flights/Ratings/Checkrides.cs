@@ -627,6 +627,10 @@ namespace MyFlightbook.Achievements
                             cr2.LicenseKind = LicenseKind.ATP;
                     }
                 }
+                // Issue #1556: 61.167(a)(1): ATP supercedes an instrument rating as well
+                CategoryClass ccATP = CategoryClass.CategoryClassFromID(cr.EarnedInCatClassID);
+                if (dictInstrument.ContainsKey(ccATP.Category))
+                        dictInstrument.Remove(ccATP.Category);
             }
 
             // Segregate them into individual lists by license kind
@@ -707,8 +711,7 @@ namespace MyFlightbook.Achievements
                         case CustomPropertyType.KnownProperties.IDPropCheckrideMEI:
                             {
                                 // CFI ratings are category/class, but not land/sea class, just single/multi.
-                                CategoryClass.CatClassID ccid = (CategoryClass.CatClassID)Convert.ToInt32(dr["idCatClass"], CultureInfo.InvariantCulture);
-                                switch (ccid)
+                                switch (cr.EarnedInCatClassID)
                                 {
                                     case CategoryClass.CatClassID.AMEL:
                                     case CategoryClass.CatClassID.AMES:
