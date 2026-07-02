@@ -137,13 +137,16 @@
 
 @if (!String.IsNullOrEmpty(ViewBag.Airports))
 {
-    if (!ViewBag.staticMap)
+    if (!Request.IsBot())
     {
+        if (!ViewBag.staticMap)
+        {
         <p><a href="javascript:mfbMapForContainerID('@ViewBag.Map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomOut</a></p>
+        }
+        <div id="divResultsContainer" style="height: 400px; width:80%">
+            @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
+        </div>
     }
-    <div id="divResultsContainer" style="height: 400px; width:80%">
-        @{ Html.RenderAction("MapDiv", "Airport", new { map = ViewBag.Map }); }
-    </div>
     <script type="text/javascript">
             $("#@ViewBag.Map.Options.divContainer")[0].style.height = "95%";
             $("#divResultsContainer").resizable();

@@ -477,6 +477,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return Redirect("Game?SkipIntro=true&anon=false");
         }
 
+        [Authorize]
         public ActionResult Game(bool SkipIntro = false, bool anon = false, int bluffCount = 4, int questionCount = 10)
         {
             ViewBag.bluffCount = Math.Min(Math.Max(bluffCount, 4), 10);

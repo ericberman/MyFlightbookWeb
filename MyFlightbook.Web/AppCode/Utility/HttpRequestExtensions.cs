@@ -54,6 +54,14 @@ namespace MyFlightbook
               s.Contains("PORTABLE"));
         }
 
+        public static bool IsBot(this HttpRequestBase r)
+        {
+            if (r == null || r.UserAgent == null)
+                return false;
+            string s = r.UserAgent.ToUpperInvariant();
+            return s.Contains("BOT") || s.Contains("CRAWLER") || s.Contains("SPIDER");
+        }
+
         /// <summary>
         /// IsMobileDevice OR iPad OR Android
         /// </summary>
