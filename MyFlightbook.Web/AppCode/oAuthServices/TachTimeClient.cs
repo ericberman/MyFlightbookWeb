@@ -254,7 +254,7 @@ namespace MyFlightbook.OAuth.TachTime
 
             while (ttmecr.has_more)
             {
-                ttmecr = (TachTimeMaintenanceEventCollectionResponse)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/maintenance-events"), AuthState.AccessToken, HttpMethod.Get, (response) =>
+                ttmecr = (TachTimeMaintenanceEventCollectionResponse)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/maintenance-events?cursor={WebUtility.UrlEncode(ttmecr.next_cursor)}"), AuthState.AccessToken, HttpMethod.Get, (response) =>
                 {
                     string szResult = response.Content.ReadAsStringAsync().Result;
                     if (!response.IsSuccessStatusCode)
@@ -306,8 +306,10 @@ namespace MyFlightbook.OAuth.TachTime
             }
             catch (Exception e) when (!(e is OutOfMemoryException))
             {
-                dResult["error"] = new string[] { e.Message };
+                dResult[Resources.Aircraft.TachTimeError] = new string[] { e.Message };
             }
+            if (dResult.Count == 0)
+                dResult[Resources.Aircraft.TachTimeSuccess] = new string[] { Resources.Aircraft.TachTimeNothingImported };
             return dResult;
         }
 

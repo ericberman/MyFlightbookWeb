@@ -20,7 +20,7 @@ namespace MyFlightbook.AircraftSupport.Maintenance
         TachTime = 1,
     }
 
-    public delegate ExternalMaintenanceRecord MaintenanceSourceFactory(string user, int aircraftID, string json, double highWaterTach, double highWaterHobbs, DateTime timestamp);
+    public delegate ExternalMaintenanceRecord MaintenanceSourceFactory(string user, int aircraftID, string json, decimal highWaterTach, decimal highWaterHobbs, DateTime timestamp);
 
     internal static class ExternalMaintenanceRegistry
     {
@@ -30,7 +30,7 @@ namespace MyFlightbook.AircraftSupport.Maintenance
             {  ExternalMaintenanceSourceID.TachTime, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new TachTimeRecord(user, aircraftID, json) { HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } },
         };
 
-        public static ExternalMaintenanceRecord Create(ExternalMaintenanceSourceID sourceID, string user, int aircraftID, string json, double highWaterTach, double highWaterHobbs, DateTime timestamp)
+        public static ExternalMaintenanceRecord Create(ExternalMaintenanceSourceID sourceID, string user, int aircraftID, string json, decimal highWaterTach, decimal highWaterHobbs, DateTime timestamp)
             => _map.TryGetValue(sourceID, out var factory)
                 ? factory(user, aircraftID, json, highWaterTach, highWaterHobbs, timestamp)
                 : throw new InvalidOperationException($"Unknown external maintenance source: {(int) sourceID} ({sourceID}");
@@ -86,12 +86,12 @@ namespace MyFlightbook.AircraftSupport.Maintenance
         /// <summary>
         /// The hobbs, if known, at the time of this record
         /// </summary>
-        public double HighWaterHobbs { get; set; }
+        public decimal HighWaterHobbs { get; set; }
 
         /// <summary>
         /// The tach, if known, at the time of this record
         /// </summary>
-        public double HighWaterTach { get; set; }
+        public decimal HighWaterTach { get; set; }
 
         /// <summary>
         /// The timestamp when this record was recorded/updated
@@ -157,8 +157,8 @@ namespace MyFlightbook.AircraftSupport.Maintenance
                     (string)dr["username"],
                     Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture),
                     (string)dr["jsonData"],
-                    Convert.ToDouble(dr["highWaterTach"], CultureInfo.InvariantCulture),
-                    Convert.ToDouble(dr["highWaterHobbs"], CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(dr["highWaterTach"], CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(dr["highWaterHobbs"], CultureInfo.InvariantCulture),
                     DateTime.SpecifyKind(Convert.ToDateTime(dr["lastUpdated"], CultureInfo.InvariantCulture), DateTimeKind.Utc));
         }
 

@@ -34,9 +34,11 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
         public string serial_number { get; set; } = string.Empty;
         public object registration_type { get; set; } = null;
 
-        public double current_tach_time { get; set; }
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal current_tach_time { get; set; }
         public object current_hobbs_time { get; set; }
-        public double current_total_time { get; set; }
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal current_total_time { get; set; }
         public bool tach_equals_airframe { get; set; } = true;
         public DateTime? last_entry_at { get; set; }
         public int needs_review_count { get; set; }
@@ -63,11 +65,17 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
     {
         #region properties
         public DateTime? last_completed_at { get; set; }
-        public double last_completed_tach { get; set; }
+
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal last_completed_tach { get; set; }
         public DateTime? due_at { get; set; }
-        public double due_at_tach { get; set; }
+
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal due_at_tach { get; set; }
         public TachTimeMaintenanceDeadlineType due_type { get; set; } = TachTimeMaintenanceDeadlineType.calendar;
-        public double remaining_hours { get; set; }
+
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal remaining_hours { get; set; }
         public DateTime? battery_replacement_due_at { get; set; }
         public TachTimeMaintenanceStatus status { get; set; } = TachTimeMaintenanceStatus.current;
         #endregion
@@ -107,18 +115,21 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
         public DateTime? DateDone { get; set; }
 
         [JsonProperty("last_completed_tach")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))] 
         public decimal TachDone { get; set; }
 
         [JsonProperty("due_at")]
         public DateTime? DateDue { get; set; }
 
         [JsonProperty("due_at_tach")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal TachDue { get; set; }
 
         [JsonProperty("due_type")]
         public TachTimeMaintenanceDeadlineType Due_Type { get; set; } = TachTimeMaintenanceDeadlineType.calendar;
 
         [JsonProperty("remaining_hours")]
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
         public decimal RemainingHours { get; set; }
 
         [JsonProperty("status")]
@@ -162,9 +173,11 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
         public string aircraft_id { get; set; }
         public string n_number { get; set; }
         public DateTime? as_of { get; set; }
-        public double current_tach_time { get; set; }
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal current_tach_time { get; set; }
         public object current_hobbs_time { get; set; }
-        public double current_total_time { get; set; }
+        [JsonConverter(typeof(FlexibleDecimalConverter))] 
+        public decimal current_total_time { get; set; }
         public int needs_review_count { get; set; }
         public int total_entry_count { get; set; }
         public TachTimeStandardInspections standard_inspections { get; set; }
@@ -186,7 +199,7 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
         {
             MaintenanceRecord r = new MaintenanceRecord(mr);
 
-            r.Last100 = standard_inspections.inspection_100hr.last_completed_tach > (double)(mr?.Last100 ?? 0) ? (decimal)standard_inspections.inspection_100hr.last_completed_tach : r.Last100;
+            r.Last100 = standard_inspections.inspection_100hr.last_completed_tach > (mr?.Last100 ?? 0) ? standard_inspections.inspection_100hr.last_completed_tach : r.Last100;
             r.LastAnnual = DateIfLater(standard_inspections.annual_inspection.last_completed_at, r.LastAnnual);
             r.LastAltimeter = DateIfLater(standard_inspections.altimeter_check.last_completed_at, r.LastAltimeter);
             r.LastELT = DateIfLater(standard_inspections.elt_inspection.last_completed_at, r.LastELT);
@@ -202,9 +215,13 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
     {
         public string id { get; set; } = string.Empty;
         public DateTime date { get; set; }
-        public double tach_time { get; set; }
+
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal tach_time { get; set; }
         public object hobbs_time { get; set; }
-        public double total_time { get; set; }
+
+        [JsonConverter(typeof(FlexibleDecimalConverter))]
+        public decimal total_time { get; set; }
         public TachTimeMaintenanceEventType kind { get; set; } = TachTimeMaintenanceEventType.airframe;
         public string description { get; set; } = string.Empty;
         public string signed_by { get; set; } = string.Empty;

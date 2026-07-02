@@ -672,4 +672,13 @@ Do you still want to delete?</value>
   <data name="TachTimeSyncResult" xml:space="preserve">
     <value>Results from TachTime</value>
   </data>
+  <data name="TachTimeNothingImported" xml:space="preserve">
+    <value>(No data imported)</value>
+  </data>
+  <data name="TachTimeSuccess" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="TachTimeError" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

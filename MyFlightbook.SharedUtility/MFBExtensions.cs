@@ -1233,6 +1233,9 @@ namespace MyFlightbook
     {
         public override decimal ReadJson(JsonReader reader, Type objectType, decimal existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
+            if (reader.TokenType == JsonToken.Null)
+                return 0M;
+
             if (reader.TokenType == JsonToken.Float || reader.TokenType == JsonToken.Integer)
                 return Convert.ToDecimal(reader.Value);
             else if (reader.TokenType == JsonToken.String)

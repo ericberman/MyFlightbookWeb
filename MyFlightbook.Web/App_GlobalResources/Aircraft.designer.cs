@@ -1590,11 +1590,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string TachTimeError {
+            get {
+                return ResourceManager.GetString("TachTimeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (No data imported).
+        /// </summary>
+        internal static string TachTimeNothingImported {
+            get {
+                return ResourceManager.GetString("TachTimeNothingImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to refresh access to TachTime; please revoke/regrant permissions.
         /// </summary>
         internal static string TachTimeRefreshAuthFailed {
             get {
                 return ResourceManager.GetString("TachTimeRefreshAuthFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        internal static string TachTimeSuccess {
+            get {
+                return ResourceManager.GetString("TachTimeSuccess", resourceCulture);
             }
         }
         
