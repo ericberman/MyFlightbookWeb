@@ -738,6 +738,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="hist">Admin feature - loads any history if non-zero</param>
         /// <param name="sm">Non-zero for a static map</param>
         /// <returns></returns>
+        [Authorize]
         public ActionResult MapRoute(string Airports = "", int tsp = 0, int hist = 0, int sm = 0)
         {
             ViewBag.Airports = Airports;
@@ -821,6 +822,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return PartialView("_foundAirportTable");
         }
 
+        [Authorize]
         public ActionResult FindAirports(string searchText = null)
         {
             AirportList al = AirportsForTerm(searchText);
