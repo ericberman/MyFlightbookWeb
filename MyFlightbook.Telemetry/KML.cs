@@ -293,12 +293,13 @@ namespace MyFlightbook.Telemetry
             return fResult;
         }
 
-        private bool ParseKMLv2(KMLElements k)
+        private static List<Position> ParseTrack(KMLElements k, XElement track)
         {
             List<Position> lstSamples = new List<Position>();
-            using (IEnumerator<XElement> timestampEnumerator = k.ele22.Descendants(k.ns + "when").GetEnumerator())
+
+            using (IEnumerator<XElement> timestampEnumerator = track.Descendants(k.ns + "when").GetEnumerator())
             {
-                foreach (XElement coord in k.ele22.Descendants(k.ns22 + "coord"))
+                foreach (XElement coord in track.Descendants(k.ns22 + "coord"))
                 {
                     string[] rgRow = coord.Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     Position sample = new Position(rgRow);
@@ -315,40 +316,62 @@ namespace MyFlightbook.Telemetry
                 }
             }
 
-            // Derive speed or see if it is available in extended data.
-            bool fHasSpeed = false;
-
-            var extendedData = k.xmlDoc.Descendants(k.ns22 + "SimpleArrayData");
-            if (extendedData != null)
+            // See if speed is available in this track's extended data; if so, it lines up by position with this track's own coordinates.
+            foreach (XElement e in track.Descendants(k.ns22 + "SimpleArrayData"))
             {
-                // Go through the items to find speed
-                foreach (XElement e in extendedData)
+                var attr = e.Attribute("name");
+                if (attr != null && (String.Compare(attr.Value, "speedKts", StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(attr.Value, "speed_kts", StringComparison.OrdinalIgnoreCase) == 0))
                 {
-                    var attr = e.Attribute("name");
-                    if (attr != null && (String.Compare(attr.Value, "speedKts", StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(attr.Value, "speed_kts", StringComparison.OrdinalIgnoreCase) == 0))
+                    int i = 0;
+                    int maxSample = lstSamples.Count;
+                    foreach (XElement speedval in e.Descendants())
                     {
-                        int i = 0;
-                        int maxSample = lstSamples.Count;
-                        foreach (XElement speedval in e.Descendants())
+                        string szVal = speedval.Value;
+                        if (i < maxSample && double.TryParse(szVal, out double sp))
                         {
-                            string szVal = speedval.Value;
-                            if (i < maxSample && double.TryParse(szVal, out double sp))
-                            {
-                                Position p = lstSamples[i++];
-                                p.Speed = sp;
-                                p.TypeOfSpeed = Position.SpeedType.Reported;
-                                fHasSpeed = true;
-                            }
-                            else
-                                break;
+                            Position p = lstSamples[i++];
+                            p.Speed = sp;
+                            p.TypeOfSpeed = Position.SpeedType.Reported;
                         }
-                        break;  // no need to go through any other elements in extended data
+                        else
+                            break;
                     }
+                    break;  // no need to go through any other elements in extended data
                 }
             }
 
-            // derive speed if we didn't find it above
-            if (!fHasSpeed)
+            return lstSamples;
+        }
+
+        private bool ParseKMLv2(KMLElements k)
+        {
+            // A document can contain more than one track (e.g., a merged file).  Parse each one on its own so its timestamps and reported speeds stay aligned with its own coordinates.
+            List<List<Position>> lstTracks = new List<List<Position>>();
+            foreach (XElement track in k.xmlDoc.Descendants(k.ns + "Placemark").Descendants(k.ns22 + "Track"))
+            {
+                List<Position> lstTrack = ParseTrack(k, track);
+                if (lstTrack.Count >= 2)    // ignore single-point (or empty) placemarks; they aren't a path
+                    lstTracks.Add(lstTrack);
+            }
+
+            List<Position> lstSamples = new List<Position>();
+            if (lstTracks.Count > 0)
+            {
+                // Only merge tracks that match the first one found: mixing timestamped with un-timestamped (or speed-carrying with speed-less) samples would force us down to the least common denominator, losing time and speed (and thus landing detection).
+                List<Position> firstTrack = lstTracks[0];
+                bool fTimed = firstTrack.TrueForAll(p => p.HasTimeStamp);
+                bool fSpeed = firstTrack.TrueForAll(p => p.HasSpeed);
+
+                IEnumerable<List<Position>> tracksToMerge = lstTracks.Where(t => t.TrueForAll(p => p.HasTimeStamp) == fTimed && t.TrueForAll(p => p.HasSpeed) == fSpeed);
+                if (fTimed)     // when timestamped, order the tracks chronologically (they can be out of order in the file)
+                    tracksToMerge = tracksToMerge.OrderBy(t => t[0].Timestamp);
+
+                foreach (List<Position> t in tracksToMerge)
+                    lstSamples.AddRange(t);
+            }
+
+            // Derive speed if no track reported it.
+            if (!lstSamples.Any(p => p.HasSpeed))
                 Position.DeriveSpeed(lstSamples);
 
             // And put it into a data table
