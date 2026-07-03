@@ -571,7 +571,7 @@ namespace MyFlightbook.Currency
          models.fTurbine,
          models.fCertifiedSinglePilot,
          models.fMotorGlider,
-         IF(models.fTAA <> 0 OR (aircraft.HasTAAUpgrade  <> 0 AND (aircraft.GlassUpgradeDate IS NULL OR flights.date >= aircraft.GlassUpgradeDate)), 1, 0) AS IsTAA,
+         IF((models.fTAA <> 0 OR (aircraft.HasTAAUpgrade  <> 0 AND (aircraft.GlassUpgradeDate IS NULL OR flights.date >= aircraft.GlassUpgradeDate)) AND comments NOT LIKE '%#NOTAA%'), 1, 0) AS IsTAA,
          IF(YEAR(flights.dtEngineStart) < 100, NULL, flights.dtEngineStart) AS dtEngineStart,
          IF(YEAR(flights.dtEngineEnd) < 100, NULL, flights.dtEngineEnd) AS dtEngineEnd,
          IF(YEAR(flights.dtFlightStart) < 100, NULL, flights.dtFlightStart) AS dtFlightStart,
