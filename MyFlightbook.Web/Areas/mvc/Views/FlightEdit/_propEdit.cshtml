@@ -66,17 +66,17 @@
     string idCptTitle = String.Format(CultureInfo.InvariantCulture, "cptTitleLbl{0}", fp.PropTypeID);
     string idCptTip = String.Format(CultureInfo.InvariantCulture, "cptTitleTip{0}", fp.PropTypeID);
 }
-<div class="propItemFlow" style="@(ViewBag.hideByDefault ? Html.Raw("display: none;") : string.Empty)">
-    <div style="display: none;" id="@idCptTip">
-        <p style="font-weight:bold;">@fp.PropertyType.Title</p>
+<div class="propItemFlow @(ViewBag.hideByDefault ? "dn" : string.Empty)">
+    <div class="dn" id="@idCptTip">
+        <p class="b">@fp.PropertyType.Title</p>
         <p>@description</p>
         @if (!string.IsNullOrEmpty(propTT))
         {
-            <p style="font-weight: bold;">@propTT</p>
+            <p>@propTT</p>
         }
     </div>
-    <div style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap; width: 100%">
-        <span class="itemlabel" style="font-size: smaller;" title="" id="@idCptTitle">@propTitle</span>
+    <div class="propItemTitle">
+        <span class="itemlabel sm" title="" id="@idCptTitle">@propTitle</span>
     </div>
     <div>
         <input type="hidden" value="@fp.PropID" />
@@ -108,8 +108,8 @@
                     break;
                 case CFPPropertyType.cfpString:
                     {
-                        <div class="dib" style="position:relative;">
-                            <input type="text" style="width: 100%;" id="@propValID" value="@fp.TextValue" />
+                        <div class="grow-input-container autoInsertContainer">
+                            <input type="text" class="grow-input" id="@propValID" value="@fp.TextValue" />
                         </div>
                         if (!fp.PropertyType.IsNoAutocomplete)
                         {

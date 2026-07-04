@@ -11,7 +11,10 @@
     HashSet<int> hoistedProps = MyFlightbook.Profile.GetUser(User.Identity.Name).HoistedProps;
 } 
 <script type="text/javascript">
-    $(() => { CacheItems($("#cmbPropsToAdd")[0]); });
+    $(() => {
+        CacheItems($("#cmbPropsToAdd")[0]);
+        initGrowInputs('.grow-input');
+    });
 </script>
 <div style="margin-bottom: 3px;">
     <input type="hidden" id="hdnPropTuples" name="flightPropTuples" />

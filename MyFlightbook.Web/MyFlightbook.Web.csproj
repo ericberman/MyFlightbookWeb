@@ -772,6 +772,7 @@
     <Content Include="Public\Scripts\aircraftedit.js" />
     <Content Include="Public\Scripts\ajaxUpload.js" />
     <Content Include="Public\Scripts\flightedit.js" />
+    <Content Include="Public\Scripts\GrowSLInput.js" />
     <Content Include="Public\Scripts\import.js" />
     <Content Include="Public\Scripts\jquery.passwordRequirements.min.js" />
     <Content Include="Public\Scripts\listDragNew.js" />

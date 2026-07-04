@@ -278,6 +278,17 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
     color: var(--textbox-text-color);
 }
 
+input[type=text].grow-input {
+    width: 100%;
+    box-sizing: border-box;
+    transition: width 0.15s ease;
+    font: inherit; /* important so measurement matches rendering */
+}
+
+.grow-input-container {
+    position: relative;
+}
+
 input[type=text], input[type=password], input[type=number], input[type=email], input[type=date], textarea {
     padding: 2px;
 }
@@ -652,6 +663,11 @@ td.totalsDateRange:last-of-type {
 }
 
 /* Autocomplete AJAX.  Insert Training uses "autoInsertxxx */
+.autoInsertContainer {
+    position: relative;
+    display: inline-block;
+}
+
 .AutoExtender, .autoInsertItems {
     font-weight: normal;
     font-size: smaller;
@@ -991,6 +1007,13 @@ a img
     padding: 3px;
     border-style: none;
     max-height: 200px;
+}
+
+.propItemTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%
 }
 
 /* Data that we want to call out */
