@@ -604,4 +604,7 @@ Anywhere that you see an expiration date, use either your certificate's expirati
   <data name="RequestEndorsementSuccess" xml:space="preserve">
     <value>The request has been sent.</value>
   </data>
+  <data name="EditEndorsementWingsActivityPrompt" xml:space="preserve">
+    <value>WINGS Activities ("[" for autocompletion)</value>
+  </data>
 </root>

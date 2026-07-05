@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright (c) 2020-2025 MyFlightbook LLC
+ * Copyright (c) 2020-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,13 +85,11 @@ function autoInsert(inp, uri, triggerChar) {
                         // create a DIV element for each matching element:
                         b = document.createElement("li");
                         b.setAttribute("class", "autoInsertItem")
-                        // make the matching letters bold:
                         b.innerHTML = arr[i];
-                        // b.innerHTML = "<strong>" + arr[i].substr(0, prefix.length) + "</strong>";
-                        // b.innerHTML += arr[i].substr(prefix.length);
-                        // insert a input field that will hold the current array item's value:
-                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                        // execute a function when someone clicks on the item value (DIV element):
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.value = arr[i];
+                        b.appendChild(input);
                         b.addEventListener("click", function (e) {
                             var val = this.getElementsByTagName("input")[0].value;
                             replaceRangeInInput(inp, startPos, endPos, val);

@@ -197,6 +197,21 @@
     width: 10pt;
 }
 
+.m1em {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.mHem {
+    margin-left: .5em;
+    margin-right: .5em;
+}
+
+.p1em {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
 /* Basic HTML */
 .mfbDefault {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -279,7 +294,6 @@ input[type=text], input[type=password], input[type=number], input[type=email], i
 }
 
 input[type=text].grow-input {
-    width: 100%;
     box-sizing: border-box;
     transition: width 0.15s ease;
     font: inherit; /* important so measurement matches rendering */

@@ -5,14 +5,31 @@
     ViewBag.defaultTab = tabID.tabAdmin;
 
 }
+<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=5".ToAbsolute())"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=11")"></script>
 <script type="text/javascript">
-    $(function () {
+    $(() => {
         $('#divEditEndorsement').keydown(function (e) {
             if (e.keyCode == 13) {
                 $('#btnUpdate')[0].click();
                 return false;
             }
         });
+        ajaxFileUpload($("#dragContainer"), {
+            uploadURL: "@Url.Action("UploadWingsActivities", "Admin")",
+            allowedTypes: "csv",
+            onFileUploaded: function (s, r) {
+                $("#importStatus").append("<div>" + r + "</div>");
+            },
+            onUpload: function () {
+                $(".fileInQueueContainer").hide();
+            },
+            dropPrompt: "Drag WINGS activities CSV",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+
     });
 
     function updateEndorsement(id, title, farref, templateText) {
@@ -30,13 +47,14 @@
         updateEndorsement(-1, "", "", "");
     }
 </script>
-<div id="divEditEndorsement" style="display:none;">
+<div id="divEditEndorsement" class="dn">
     <p>To edit: </p>
     <ul>
         <li>{x} for a single-line entry with watermark &quot;x&quot;</li>
         <li>{Freeform} for freeform multi-line text (no watermark prompt)</li>
         <li>{Date} for the date (prefilled)</li>
         <li>{Student} for the Student&#39;s name (pre-filled)</li>
+        <li>{WINGS Activity} for autocompleting WINGS activities, triggered by "["</li>
         <li>{x/y/z} for a drop-down of choices x, y, and z</li>
     </ul>
     @using (Html.BeginForm("Endorsements", "Admin", FormMethod.Post))
@@ -44,32 +62,44 @@
         @Html.AntiForgeryToken();
         @model EndorsementType
         <input type="hidden" id="hdnIDToEdit" name="id" value="" />
-    <table>
-        <tr>
-            <td>Title:</td>
-            <td>
-                @Html.EditorFor(e => e.Title, new { htmlAttributes = new { @id="txtEndorsementTitle", @name="Title", @style = "width: 400px;" } })
-                @Html.ValidationMessageFor(cpt => cpt.Title, "Title is required", new { @class = "error" }, "div")
-            </td>
-        </tr>
-        <tr>
-            <td>FARRef:</td>
-            <td><input type="text" id="txtEndorsementFAR" name="FARRef" style="width: 400px" /></td>
-        </tr>
-        <tr>
-            <td>Template Text:</td>
-            <td>
-                @Html.TextAreaFor(e => e.BodyTemplate, 4, 60, new { @id = "txtEndorsementTemplate", @name = "BodyTemplate", htmlAttributes = new { @style = "width: 400px;" } })
-                @Html.ValidationMessageFor(cpt => cpt.BodyTemplate, "Template body is required", new { @class = "error" }, "div")
-            </td>
-        </tr>
-    </table>
-    <div style="width: 500px; text-align: center">
-        <button type="button" onclick="javascript: $('#divEditEndorsement').dialog('close');">Cancel</button>
-        <button type="submit" id="btnUpdate">Add EndorsementTemplate</button>
-    </div>
+        <table>
+            <tr>
+                <td>Title:</td>
+                <td>
+                    @Html.EditorFor(e => e.Title, new { htmlAttributes = new { @id = "txtEndorsementTitle", @name = "Title", @style = "width: 400px;" } })
+                    @Html.ValidationMessageFor(cpt => cpt.Title, "Title is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+            <tr>
+                <td>FARRef:</td>
+                <td><input type="text" id="txtEndorsementFAR" name="FARRef" style="width: 400px" /></td>
+            </tr>
+            <tr>
+                <td>Template Text:</td>
+                <td>
+                    @Html.TextAreaFor(e => e.BodyTemplate, 4, 60, new { @id = "txtEndorsementTemplate", @name = "BodyTemplate", htmlAttributes = new { @style = "width: 400px;" } })
+                    @Html.ValidationMessageFor(cpt => cpt.BodyTemplate, "Template body is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+        </table>
+        <div style="width: 500px; text-align: center">
+            <button type="button" onclick="javascript: $('#divEditEndorsement').dialog('close');">Cancel</button>
+            <button type="submit" id="btnUpdate">Add EndorsementTemplate</button>
+        </div>
     }
 </div>
+<h2>Refresh WINGS database</h2>
+<p>CSV(s) from <a href="https://www.faasafety.gov/WINGS/pub/accreditedactivities/activitySearch.aspx">FAASafety.gov</a>. MUST have these 4 columns:</p>
+<ul>
+    <li>AccreditedActivityID</li>
+    <li>ActivityNumber</li>
+    <li>ActivityName</li>
+    <li>SyllabiNumbersString</li>
+</ul>
+<div>
+    <div id="dragContainer"></div>
+</div>
+<div id="importStatus"></div>
 <h2>Add a new Endorsement</h2>
 <div><button type="button" onclick="newEndorsement();">Add a new endorsement</button></div>
 <h2>Existing Endorsements</h2>
@@ -123,11 +153,11 @@
                             <tr>
                                 <td colspan="2">
                                     <hr />
-                                    <div style="line-height: 180%">
+                                    <div>
                                         @Html.Raw(EndorsementType.RenderBody(et, false, null))
                                     </div>
                                     <div>
-                                        
+
                                     </div>
                                     <hr />
                                 </td>

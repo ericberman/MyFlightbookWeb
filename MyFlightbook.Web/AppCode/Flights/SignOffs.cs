@@ -772,15 +772,16 @@ namespace MyFlightbook.Instruction
             {
                 tw.AddAttribute("placeholder", HttpUtility.HtmlEncode(szName));
                 tw.AddAttribute("type", "text");
+                tw.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input");
+                tw.AddAttribute(HtmlTextWriterAttribute.Style, "max-width: 100%;");
                 tw.AddAttribute(HtmlTextWriterAttribute.Value, HttpUtility.HtmlEncode(szDefault));
                 tw.RenderBeginTag(HtmlTextWriterTag.Input);
             }
             tw.RenderEndTag();
         }
 
-        private static void NewSpan(HtmlTextWriter htmlTW, string idNewControl, string text)
+        private static void NewSpan(HtmlTextWriter htmlTW, string text)
         {
-            htmlTW.AddAttribute("id", idNewControl);
             htmlTW.RenderBeginTag(HtmlTextWriterTag.Span);
             htmlTW.Write(HttpUtility.HtmlEncode(text));
             htmlTW.RenderEndTag();
@@ -816,7 +817,7 @@ namespace MyFlightbook.Instruction
                         string idNewControl = String.Format(CultureInfo.InvariantCulture, "endrsTemplCtl{0}", iControl++);
 
                         if (m.Index > cursor) // need to catch up on some literal text
-                            NewSpan(htmlTW, idNewControl, et.BodyTemplate.Substring(cursor, m.Index - cursor));
+                            NewSpan(htmlTW, et.BodyTemplate.Substring(cursor, m.Index - cursor));
 
                         string szMatch = m.Captures[0].Value;
 
@@ -837,6 +838,24 @@ namespace MyFlightbook.Instruction
                                 break;
                             case "{Student}":
                                 NewTextBox(htmlTW, targetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : targetUser.UserFullName, false, !fPreviewMode, Resources.SignOff.EditEndorsementStudentNamePrompt);
+                                break;
+                            case "{WINGS Activity}":
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input-container dib");
+                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Div);
+                                if (!fPreviewMode)
+                                    htmlTW.AddAttribute("required", "required");
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Id, idNewControl);
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "width: 20em; max-width: 30em;");
+                                htmlTW.AddAttribute("placeholder", Resources.SignOff.EditEndorsementWingsActivityPrompt);
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input");
+                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Input);
+                                htmlTW.RenderEndTag();
+                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Type, "text/javascript");
+                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Script);
+                                htmlTW.Write($"$(() => {{ autoInsert($('#{idNewControl}')[0], '{"~/mvc/Training/WINGSAutoCompletion".ToAbsolute()}', '['); }});");
+                                htmlTW.RenderEndTag();
+                                htmlTW.RenderEndTag();
                                 break;
                             default:
                                 // straight textbox, unless it is strings separated by slashes, in which case it's a drop-down
@@ -869,7 +888,7 @@ namespace MyFlightbook.Instruction
                     }
 
                     if (cursor < et.BodyTemplate.Length)
-                        NewSpan(htmlTW, String.Format(CultureInfo.InvariantCulture, "endrsTemplCtl{0}", iControl++), et.BodyTemplate.Substring(cursor));
+                        NewSpan(htmlTW, et.BodyTemplate.Substring(cursor));
                 }
             }
             return sb.ToString();

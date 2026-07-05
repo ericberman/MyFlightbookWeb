@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Achievements;
+using MyFlightbook.Currency.WINGS;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Subscriptions;
@@ -534,6 +535,18 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 LogbookEntry le = new LogbookEntry(idFlight, User.Identity.Name, LogbookEntryCore.LoadTelemetryOption.None, true);
                 return Json(new { href = AircraftUtility.EditLink(le.AircraftID, true), text = le.TailNumDisplay });
+            });
+        }
+        #endregion
+
+        #region Endorsements/WINGS
+        [HttpPost]
+        [Authorize]
+        public ActionResult UploadWingsActivities()
+        {
+            return SafeOp(() =>
+            {
+                return Content($"Upload complete; {Request.Files[0].FileName}, {WINGSActivity.AdminUpdateWingsActivitiesFromCSV(Request.Files[0].InputStream)} rows imported"); 
             });
         }
         #endregion

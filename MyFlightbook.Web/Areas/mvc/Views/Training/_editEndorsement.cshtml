@@ -10,6 +10,7 @@
     List<EndorsementType> templates = ViewBag.templates;
     int idTemplateRequested = ViewBag.idTemplate;
 }
+<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=5".ToAbsolute())"></script>
 <script type="text/javascript">
     function templateSelected(idTemplate, idSrc) {
         var params = new Object();
@@ -27,6 +28,7 @@
             complete: function (response) { },
             success: function (response) {
                 $("#divNewEndorsement").html(response);
+                initGrowInputs('.grow-input');
             }
         });
     }
@@ -62,8 +64,8 @@
         if (form.valid()) {
             var body = "";
 
-            $('#templateBody').children().each(function () {
-                body += (this.tagName == "SPAN" || this.tagName == "DIV") ? this.innerText : this.value;
+            $('#templateBody').find('span, input, select').each(function () {
+                body += (this.tagName == "SPAN" || this.tagName == "DIV") ? this.textContent : this.value;
             });
             $("#hdnCompiledBody").val(body);
 

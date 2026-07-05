@@ -111,18 +111,26 @@
                         <div class="grow-input-container autoInsertContainer">
                             <input type="text" class="grow-input" id="@propValID" value="@fp.TextValue" />
                         </div>
-                        if (!fp.PropertyType.IsNoAutocomplete)
-                        {
-                            <script type="text/javascript">
-                    $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
-                            </script>
-                        }
-                        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMetar)
+                        if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMetar)
                         {
                             <script type="text/javascript">
                                 $(() => {
                                     autoInsert($("@("#" + propValID)")[0], "@("~/mvc/Airport/METARAutoCompletion".ToAbsolute())", '[');
                                 });
+                            </script>
+                        }
+                        else if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted)
+                        {
+                            <script type="text/javascript">
+                                $(() => {
+                                    autoInsert($("@("#" + propValID)")[0], "@("~/mvc/Training/WINGSAutoCompletion".ToAbsolute())", '[');
+                                });
+                            </script>
+                        }
+                        else if (!fp.PropertyType.IsNoAutocomplete)
+                        {
+                            <script type="text/javascript">
+                    $("@("#" + propValID)").autocomplete({ source: @Html.Raw(Json.Encode(fp.PropertyType.PreviousValues)), minLength: 2, classes: { "ui-autocomplete": "AutoExtender AutoExtenderList" } });
                             </script>
                         }
                     }

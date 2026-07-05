@@ -322,6 +322,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to WINGS Activities (&quot;[&quot; for autocompletion).
+        /// </summary>
+        internal static string EditEndorsementWingsActivityPrompt {
+            get {
+                return ResourceManager.GetString("EditEndorsementWingsActivityPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} on behalf of {1}.
         /// </summary>
         internal static string EmailSenderAddress {

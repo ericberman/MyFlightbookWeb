@@ -51,30 +51,19 @@
         <input type="hidden" name="studentType" value="@studentType" />
         <input type="hidden" name="compiledBody" id="hdnCompiledBody" />
         <input type="hidden" name="endorsementFAR" value="@(source?.FARReference ?? template.FARReference)" />
+        <div class="mHem"><input type="text" id="txtTitle" name="endorsementTitle" class="w100" required maxlength="90" placeholder="@Resources.SignOff.EndorsementTitleWatermark" value="@(source?.FullTitleAndFar ?? template.Title)" /></div>
+        <div class="mHem"><span class="b">@Resources.SignOff.EditEndorsementFARPrompt</span> @(source?.FARReference ?? template.FARReference)</div>
+        <hr />
+        <div class="mHem">
+            <div id="templateBody">
+                @Html.Raw(EndorsementType.RenderBody(template, false, pfTargetUser))
+            </div>
+            <script type="text/javascript">
+                $(() => { $("textarea[name='@EndorsementType.FreeFormTextControlName']").val("@(source?.EndorsementText ?? string.Empty)"); });
+            </script>
+        </div>
+        <hr />
         <table class="w100">
-            <tr>
-                <td colspan="2"><input type="text" id="txtTitle" name="endorsementTitle" required class="w100" maxlength="90" placeholder="@Resources.SignOff.EndorsementTitleWatermark" value="@(source?.FullTitleAndFar ?? template.Title)" /></td>
-            </tr>
-            <tr>
-                <td class="b">@Resources.SignOff.EditEndorsementFARPrompt</td>
-                <td>@(source?.FARReference ?? template.FARReference)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <hr />
-                    <div style="line-height: 180%">
-                        <div id="templateBody">
-                            @Html.Raw(EndorsementType.RenderBody(template, false, pfTargetUser))
-                        </div>
-                        <script type="text/javascript">
-                            $(() => {
-                                $("textarea[name='@EndorsementType.FreeFormTextControlName']").val("@(source?.EndorsementText ?? string.Empty)");
-                            });
-                        </script>
-                    </div>
-                    <hr />
-                </td>
-            </tr>
             <tr>
                 <td class="b">@Resources.SignOff.EditEndorsementDatePrompt</td>
                 <td><input type="date" required name="endorsementDate" value="@DateTime.Now.YMDString()" max="@DateTime.Now.AddDays(1).YMDString()" /></td>

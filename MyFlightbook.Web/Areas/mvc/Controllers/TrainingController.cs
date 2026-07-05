@@ -1,5 +1,6 @@
 ﻿using MyFlightbook.Achievements;
 using MyFlightbook.CSV;
+using MyFlightbook.Currency.WINGS;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -259,6 +260,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Endorsements
+        [HttpPost]
+        [Authorize]
+        public ActionResult WINGSAutoCompletion(string prefixText, int count)
+        {
+            return SafeOp(() =>
+            {
+                List<string> lst = new List<string>();
+                if ((prefixText ?? string.Empty).Length > 3)
+                {
+                    IEnumerable<WINGSActivity> rgWings = WINGSActivity.ActivitiesForPrefix(prefixText.Substring(1));
+                    foreach (WINGSActivity w in rgWings)
+                    {
+                        lst.Add($"{w.ActivityNumber} - {w.ActivityName}");
+                        if (lst.Count >= count)
+                            break;
+                    }
+                }
+                return Json(lst);
+            });
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult> UploadEndorsement(string szKey = null)

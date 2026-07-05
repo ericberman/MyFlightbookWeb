@@ -142,7 +142,7 @@
     </div>
     <div class="itemtime">
         <div class="itemlabel">@Resources.LogbookEntry.FieldRoute @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipMapNavaid", tipTextHTML = Resources.Airports.MapNavaidTip }); }</div>
-        <div class="itemdata"><input id="txtRoute" name="flightRoute" style="font-size: small; width: @(Request.IsMobileDevice() ? "130px" : "90%;")" type="text" value="@le.Route" /></div>
+        <div class="itemdata"><input id="txtRoute" name="flightRoute" class="grow-input sm" style="width: @(Request.IsMobileDevice() ? "130px" : "90%;")" type="text" value="@le.Route" /></div>
     </div>
     <div class="itemtime">
         <div class="itemlabel">@Resources.LogbookEntry.FieldComments</div>
