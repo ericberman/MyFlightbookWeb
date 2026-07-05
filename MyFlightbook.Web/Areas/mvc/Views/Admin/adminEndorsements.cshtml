@@ -107,7 +107,7 @@
 <input type="hidden" id="hdnSortDir" value="ASC" />
 <table border="1" cellpadding="4" cellspacing="0" style="border-collapse: collapse">
     <thead>
-        <tr style="font-weight:bold;">
+        <tr class="b">
             <th></th>
             <th>Endorsement Template Data</th>
             <th>Preview</th>
@@ -121,19 +121,19 @@
                 <td>
                     <table>
                         <tr>
-                            <td style="font-weight: bold;">ID:</td>
+                            <td class="b">ID:</td>
                             <td>@et.ID</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: bold;">Title:</td>
+                            <td class="b">Title:</td>
                             <td>@et.Title</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: bold;">FAR:</td>
+                            <td class="b">FAR:</td>
                             <td>@et.FARReference</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: bold;">Template:</td>
+                            <td class="b">Template:</td>
                             <td>@et.BodyTemplate</td>
                         </tr>
                     </table>
@@ -147,14 +147,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="font-weight: bold;">@Resources.SignOff.EditEndorsementFARPrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementFARPrompt</td>
                                 <td>@et.FARReference</td>
                             </tr>
                             <tr>
                                 <td colspan="2">
                                     <hr />
                                     <div>
-                                        @Html.Raw(EndorsementType.RenderBody(et, false, null))
+                                        @{ Html.RenderAction("RenderEditableEndorsement", "Training", new { endorsementType = et });}
                                     </div>
                                     <div>
 
@@ -163,23 +163,23 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementDatePrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementDatePrompt</td>
                                 <td><input type="date" value="@DateTime.Now.YMDString()" /></td>
                             </tr>
                             <tr>
-                                <td style="font-weight:bold;">@Resources.SignOff.EditEndorsementStudentPrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementStudentPrompt</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
                                 <td>@MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName</td>
                             </tr>
                             <tr>
-                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementCFIPrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementCFIPrompt</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="font-weight:bold">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
+                                <td class="b">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
                                 <td><input type="date" /></td>
                             </tr>
                         </table>

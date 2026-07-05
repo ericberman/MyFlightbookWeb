@@ -476,6 +476,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region endorsements
         [ChildActionOnly]
+        public ActionResult RenderEditableEndorsement(EndorsementType endorsementType, string targetUserName, Endorsement source = null)
+        {
+            ViewBag.template = endorsementType;
+            ViewBag.targetUser = String.IsNullOrEmpty(targetUserName) ? string.Empty : MyFlightbook.Profile.GetUser(targetUserName).UserFullName;
+            ViewBag.source = source;
+            return PartialView("_endorsementTemplate");
+        }
+
+        [ChildActionOnly]
         public ActionResult RenderScribble(string saveFunc = null, string cancelFunc = null, string colorRef = "#0000ff", string watermarkRef = null)
         {
             ViewBag.watermarkRef = watermarkRef ?? string.Empty;

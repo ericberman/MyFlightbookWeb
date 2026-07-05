@@ -1,5 +1,5 @@
-﻿@using System.Globalization
-@using MyFlightbook.Instruction
+﻿@using MyFlightbook.Instruction
+@using System.Globalization
 @{
     string targetUser = ViewBag.targetUser;
     string sourceUser = ViewBag.sourceUser;
@@ -56,11 +56,8 @@
         <hr />
         <div class="mHem">
             <div id="templateBody">
-                @Html.Raw(EndorsementType.RenderBody(template, false, pfTargetUser))
+                @{ Html.RenderAction("RenderEditableEndorsement", "Training", new { endorsementType = template, targetUserName = pfTargetUser.UserName, source = source }); }
             </div>
-            <script type="text/javascript">
-                $(() => { $("textarea[name='@EndorsementType.FreeFormTextControlName']").val("@(source?.EndorsementText ?? string.Empty)"); });
-            </script>
         </div>
         <hr />
         <table class="w100">

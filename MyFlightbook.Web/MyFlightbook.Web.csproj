@@ -1637,6 +1637,7 @@
     <Content Include="Areas\mvc\Views\Print\USAFacing.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_prefExternalMaint.cshtml" />
     <Content Include="Areas\mvc\Views\oAuth\_actionSummary.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_endorsementTemplate.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />

@@ -244,6 +244,11 @@ namespace MyFlightbook.Instruction
 
             SetDigitizedSig(rgb);
         }
+
+        /// <summary>
+        /// Do not use - meant only for passing parameters
+        /// </summary>
+        public Endorsement() :this(string.Empty) { }
         #endregion
 
         protected void Validate()
@@ -754,144 +759,6 @@ namespace MyFlightbook.Instruction
                 if (et.ID == id)
                     return et;
             return null;
-        }
-
-        private static void NewTextBox(HtmlTextWriter tw, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
-        {
-            if (fRequired)
-                tw.AddAttribute("required", "required");
-            tw.AddAttribute(HtmlTextWriterAttribute.Name, szName);
-
-            if (fMultiline)
-            {
-                tw.AddAttribute(HtmlTextWriterAttribute.Rows, "4");
-                tw.AddAttribute(HtmlTextWriterAttribute.Style, "width: 100%;");
-                tw.RenderBeginTag(HtmlTextWriterTag.Textarea);
-            }
-            else
-            {
-                tw.AddAttribute("placeholder", HttpUtility.HtmlEncode(szName));
-                tw.AddAttribute("type", "text");
-                tw.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input");
-                tw.AddAttribute(HtmlTextWriterAttribute.Style, "max-width: 100%;");
-                tw.AddAttribute(HtmlTextWriterAttribute.Value, HttpUtility.HtmlEncode(szDefault));
-                tw.RenderBeginTag(HtmlTextWriterTag.Input);
-            }
-            tw.RenderEndTag();
-        }
-
-        private static void NewSpan(HtmlTextWriter htmlTW, string text)
-        {
-            htmlTW.RenderBeginTag(HtmlTextWriterTag.Span);
-            htmlTW.Write(HttpUtility.HtmlEncode(text));
-            htmlTW.RenderEndTag();
-        }
-
-        public const string FreeFormTextControlName = "Free-form text";
-
-        /// <summary>
-        /// Renders the endorsement template to HTML, converting bracketed items into appropriate HTML 5 inputs and enforcing validation
-        /// </summary>
-        /// <param name="et">The template to render</param>
-        /// <param name="fPreviewMode">In preview mode, no validation is added</param>
-        /// <returns>Raw HTML for the BodyTemplate of the endorsement.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static string RenderBody(EndorsementType et, bool fPreviewMode, Profile targetUser)
-        {
-            if (et == null) 
-                throw new ArgumentNullException(nameof(et));
-
-            int iControl = 0;
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
-            {
-                using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
-                {
-                    // Find each of the substitutions
-                    MatchCollection matches = RegexUtility.EndorsementTemplateField.Matches(et.BodyTemplate);
-
-                    int cursor = 0;
-                    foreach (Match m in matches)
-                    {
-                        // compute the base ID for a control that we create here, before anything gets added, since the result depends on how many controls are in the placeholder already
-                        string idNewControl = String.Format(CultureInfo.InvariantCulture, "endrsTemplCtl{0}", iControl++);
-
-                        if (m.Index > cursor) // need to catch up on some literal text
-                            NewSpan(htmlTW, et.BodyTemplate.Substring(cursor, m.Index - cursor));
-
-                        string szMatch = m.Captures[0].Value;
-
-                        switch (szMatch)
-                        {
-                            case "{Date}":
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Type, "date");
-                                htmlTW.AddAttribute("required", "required");
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Value, DateTime.Now.YMDString());
-                                htmlTW.AddAttribute("placeholder", DateTime.Now.YMDString());
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "border: 1px solid black;");
-                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Input);
-                                htmlTW.RenderEndTag();
-                                break;
-                            case "{FreeForm}":
-                                NewTextBox(htmlTW, string.Empty, true, !fPreviewMode, FreeFormTextControlName);
-                                break;
-                            case "{Student}":
-                                NewTextBox(htmlTW, targetUser == null ? Resources.SignOff.EditEndorsementStudentNamePrompt : targetUser.UserFullName, false, !fPreviewMode, Resources.SignOff.EditEndorsementStudentNamePrompt);
-                                break;
-                            case "{WINGS Activity}":
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input-container dib");
-                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Div);
-                                if (!fPreviewMode)
-                                    htmlTW.AddAttribute("required", "required");
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Id, idNewControl);
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "width: 20em; max-width: 30em;");
-                                htmlTW.AddAttribute("placeholder", Resources.SignOff.EditEndorsementWingsActivityPrompt);
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Class, "grow-input");
-                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Input);
-                                htmlTW.RenderEndTag();
-                                htmlTW.AddAttribute(HtmlTextWriterAttribute.Type, "text/javascript");
-                                htmlTW.RenderBeginTag(HtmlTextWriterTag.Script);
-                                htmlTW.Write($"$(() => {{ autoInsert($('#{idNewControl}')[0], '{"~/mvc/Training/WINGSAutoCompletion".ToAbsolute()}', '['); }});");
-                                htmlTW.RenderEndTag();
-                                htmlTW.RenderEndTag();
-                                break;
-                            default:
-                                // straight textbox, unless it is strings separated by slashes, in which case it's a drop-down
-                                {
-                                    string szMatchInner = szMatch.Substring(1, szMatch.Length - 2);  // get the inside bits - i.e., strip off the curly braces
-                                    if (szMatchInner.Contains("/"))
-                                    {
-                                        string[] rgItems = szMatchInner.Split('/');
-                                        htmlTW.AddAttribute(HtmlTextWriterAttribute.Name, idNewControl);
-                                        htmlTW.AddAttribute("required", "required");
-                                        htmlTW.AddAttribute(HtmlTextWriterAttribute.Style, "border: 1px solid black;");
-                                        htmlTW.RenderBeginTag(HtmlTextWriterTag.Select);
-                                        foreach (string szItem in rgItems)
-                                        {
-                                            string sz = HttpUtility.HtmlEncode(szItem);
-                                            htmlTW.AddAttribute(HtmlTextWriterAttribute.Value, sz);
-                                            htmlTW.RenderBeginTag(HtmlTextWriterTag.Option);
-                                            htmlTW.WriteEncodedText(sz);
-                                            htmlTW.RenderEndTag();
-                                        }
-                                        htmlTW.RenderEndTag();  // select
-                                    }
-                                    else
-                                        NewTextBox(htmlTW, String.Empty, false, !fPreviewMode, szMatchInner);
-                                }
-                                break;
-                        }
-
-                        cursor = m.Captures[0].Index + m.Captures[0].Length;
-                    }
-
-                    if (cursor < et.BodyTemplate.Length)
-                        NewSpan(htmlTW, et.BodyTemplate.Substring(cursor));
-                }
-            }
-            return sb.ToString();
         }
     }
 

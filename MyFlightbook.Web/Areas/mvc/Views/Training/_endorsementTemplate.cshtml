@@ -1,0 +1,79 @@
+﻿@using MyFlightbook.Instruction
+@using System.Globalization
+@using System.Text.RegularExpressions
+@{
+    const string FreeFormTextControlName = "Free-formText";
+    EndorsementType template = ViewBag.template;
+    Endorsement source = ViewBag.source;
+    int iControl = 0;
+    int cursor = 0;
+    MatchCollection matches = RegexUtility.EndorsementTemplateField.Matches(template.BodyTemplate);
+    foreach (Match m in matches)
+    {
+        // compute the base ID for a control that we create here, before anything gets added, since the result depends on how many controls are in the placeholder already
+        string idNewControl = String.Format(CultureInfo.InvariantCulture, "endrsTemplCtl{0}", iControl++);
+        if (m.Index > cursor) // need to catch up on some literal text
+        {
+            <span>@template.BodyTemplate.Substring(cursor, m.Index - cursor)</span>
+        }
+        string szMatch = m.Captures[0].Value;
+
+        switch (szMatch)
+        {
+            case "{Date}":
+                {
+                    <input required type="date" name="@idNewControl" value="@DateTime.Now.YMDString()" placeholder="@DateTime.Now.YMDString()" />
+                }
+                break;
+            case "{FreeForm}":
+                {
+                    <textarea required name="@FreeFormTextControlName" rows="4" class="w100">@(source?.EndorsementText ?? string.Empty)</textarea>
+                }
+                break;
+            case "{Student}":
+                {
+                    <div class="grow-input-container dib">
+                        <input required class="grow-input" type="text" name="@idNewControl" value="@ViewBag.targetUser" placeholder="@Resources.SignOff.EditEndorsementStudentNamePrompt" />
+                    </div>
+                }
+                break;
+            case "{WINGS Activity}":
+                {
+                    <div class="grow-input-container dib">
+                        <input required class="grow-input" style="width: 20em; max-width: 30em;" id="@idNewControl" placeholder="@Resources.SignOff.EditEndorsementWingsActivityPrompt" />
+                        <script>
+                            $(() => { autoInsert($('#@idNewControl')[0], '@("~/mvc/Training/WINGSAutoCompletion".ToAbsolute())', '['); });
+                        </script>
+                    </div>
+                }
+                break;
+            default:
+                // straight textbox, unless it is strings separated by slashes, in which case it's a drop-down
+                string szMatchInner = szMatch.Substring(1, szMatch.Length - 2);  // get the inside bits - i.e., strip off the curly braces
+                if (szMatchInner.Contains("/"))
+                {
+                    string[] rgItems = szMatchInner.Split('/');
+                    {
+                        <select required name="@idNewControl">
+                            @foreach (string szItem in rgItems)
+                            {
+                                <option value="@szItem">@szItem</option>
+                            }
+                        </select>
+                    }
+                }
+                else
+                {
+                    <input type="text" required name="@idNewControl" placeholder="@szMatchInner" />
+                }
+                break;
+        }
+
+        cursor = m.Captures[0].Index + m.Captures[0].Length;
+    }
+
+    if (cursor < template.BodyTemplate.Length)
+    {
+        <span>@template.BodyTemplate.Substring(cursor)</span>
+    }
+}

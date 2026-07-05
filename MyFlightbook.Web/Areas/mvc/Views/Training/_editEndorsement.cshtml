@@ -64,7 +64,7 @@
         if (form.valid()) {
             var body = "";
 
-            $('#templateBody').find('span, input, select').each(function () {
+            $('#templateBody').find('span, input, select, textarea').each(function () {
                 body += (this.tagName == "SPAN" || this.tagName == "DIV") ? this.textContent : this.value;
             });
             $("#hdnCompiledBody").val(body);
