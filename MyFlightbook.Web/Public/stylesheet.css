@@ -590,14 +590,14 @@ table.currencyTable tr:not(:last-child) td {
     content: " ";
     white-space: pre;
     flex-grow: 1; /* Tells the dots to take up all available middle space */
-    margin: 0 1pt; /* Adds a clean gap between the text and the dots */
+    margin: 0 1em; /* Adds a clean gap between the text and the dots */
     order: 2; /* Forces the dots to sit physically between the label and value */
     /* 1. Spacing Control: Change '12px' to make dots further apart or closer */
     background-image: linear-gradient(to right, var(--text-dim) 15%, rgba(255,255,255,0) 0%);
     background-size: 12px 2px;
     background-repeat: repeat-x;
     /* 2. Baseline Alignment: Adjusts the vertical position of the dots */
-    background-position: left 0.95em;
+    background-position: left 0.9em;
 }
 
 .totalsLabel {
