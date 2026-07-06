@@ -476,7 +476,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region endorsements
         [ChildActionOnly]
-        public ActionResult RenderEditableEndorsement(EndorsementType endorsementType, string targetUserName, Endorsement source = null)
+        public ActionResult RenderEndorsementTemplateBody(EndorsementType endorsementType, string targetUserName, Endorsement source = null)
         {
             ViewBag.template = endorsementType;
             ViewBag.targetUser = String.IsNullOrEmpty(targetUserName) ? string.Empty : MyFlightbook.Profile.GetUser(targetUserName).UserFullName;

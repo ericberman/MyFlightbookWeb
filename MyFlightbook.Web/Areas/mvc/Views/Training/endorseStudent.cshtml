@@ -17,6 +17,13 @@
 <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=11")"></script>
 <script type="text/javascript">
     $(() => {
+        $(() => {
+            if (sessionStorage.getItem('promptWINGS') === 'show_follow_up') {
+                $("#divWINGSFollowUp").show();
+            }
+            sessionStorage.removeItem('promptWINGS');
+        });
+
         ajaxFileUpload($("#divUploadEndorsements"), {
             additionalParams: [{ name: "szKey", value: "@szTargetUser" }],
             uploadURL: "@Url.Action("UploadEndorsement", "Training")",
@@ -47,6 +54,14 @@
         });
     });
 </script>
+<div id="divWINGSFollowUp" class="dn">
+    <div class="hc w90" style="margin-top: 12pt; margin-bottom: 12pt;">
+        <div class="calloutSmall calloutBackground shadowed">
+            <p>@Resources.LogbookEntry.WINGSActivityOrPhaseNotedEndorsement</p>
+            <div class="c"><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a class="b" href="@MyFlightbook.Currency.WINGS.WINGSActivity.FAAGrantWINGSCreditEndpoint" target="_blank">@Resources.LogbookEntry.WINGSGoToFAASafety</a></div>
+        </div>
+    </div>
+</div>
 @if (!String.IsNullOrEmpty(szTargetUser) || studentType == Endorsement.StudentTypes.External)
 {
     Html.RenderAction("RenderEndorsementEditor", "Training", new
@@ -62,7 +77,7 @@
     <br />
     @if (!String.IsNullOrEmpty(szTargetUser))
     {
-    <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, pfStudent.UserFullName)</h2>
+        <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, pfStudent.UserFullName)</h2>
     }
     <p>
         <a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a>

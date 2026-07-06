@@ -219,7 +219,7 @@ else
             $("#txtCFIExpiration").attr("required", @Json.Encode(!le.IsGroundOnly));
         });
     </script>
-    <p><span style="font-weight: bold;">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>
+    <p><span class="b">@Resources.LocalizedText.Note</span> <span class="fineprint">@Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer)</span></p>
     <div id="divSignFlight">
         <div class="signFlightFlightToSign" id="divFlightSummary">
             @{ Html.RenderAction("ReadOnlyFlightPreview", "Flights", new { idFlight = le.FlightID }); }
@@ -234,30 +234,30 @@ else
                 <input type="hidden" name="cfiUserName" value="@(pfSigner?.UserName ?? string.Empty)" />
                 if (fAdhoc)
                 {
-                    <div style="font-weight: bold;">@Resources.SignOff.EditEndorsementInstructorPrompt</div>
+                    <div class="b">@Resources.SignOff.EditEndorsementInstructorPrompt</div>
                     <div><input type="text" style="width: 280px;" id="txtCFIName" name="cfiName" value="@ViewBag.cfiName" required /></div>
-                    <div style="font-weight: bold;">@Resources.SignOff.CFIEmail</div>
+                    <div class="b">@Resources.SignOff.CFIEmail</div>
                     <div><input type="email" style="width: 280px;" id="txtCFIEmail" name="cfiEmail" value="@ViewBag.cfiEmail" required /></div>
                 }
                 if (fAdhoc || !fValidCFIInfo)
                 {
-                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementCFIPrompt</span> @(fAdhoc || !fValidCFIInfo ? string.Empty : ViewBag.cfiCert)</div>
+                    <div><span class="b">@Resources.SignOff.EditEndorsementCFIPrompt</span> @(fAdhoc || !fValidCFIInfo ? string.Empty : ViewBag.cfiCert)</div>
                     <div><input type="text" required style="width: 280px;" id="txtCFICert" name="cfiCert" value="@ViewBag.cfiCert" /></div>
-                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span></div>
+                    <div><span class="b">@Resources.SignOff.EditEndorsementExpirationPrompt</span></div>
                     <div><label><input type="checkbox" id="ckATP" name="ckATP" onchange="javascript: updateDateState(this);" />@Resources.SignOff.SignFlightATP</label></div>
                     <div>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtCFIExpiration", name = "cfiExpiration", value = ViewBag.cfiExpiration }); }</div>
                 }
                 else
                 {
-                    <div style="font-weight: bold;">@Resources.SignOff.EditEndorsementCFIPrompt @ViewBag.cfiCert</div>
-                    <div><span style="font-weight: bold;">@Resources.SignOff.EditEndorsementExpirationPrompt</span> @(ViewBag.cfiExpiration?.ToShortDateString() ?? string.Empty)</div>
+                    <div class="b">@Resources.SignOff.EditEndorsementCFIPrompt @ViewBag.cfiCert</div>
+                    <div><span class="b">@Resources.SignOff.EditEndorsementExpirationPrompt</span> @(ViewBag.cfiExpiration?.ToShortDateString() ?? string.Empty)</div>
                 }
                 if (!String.IsNullOrEmpty(pfSigner?.UserName ?? string.Empty) && pfSigner.UserName.CompareCurrentCulture(User.Identity.Name) != 0)
                 {
-                    <div style="font-weight: bold;">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSigner.PreferredGreeting)</div>
+                    <div class="b">@String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, pfSigner.PreferredGreeting)</div>
                     <input type="password" required id="txtPassConfirm" name="cfiPass" style="width: 280px;" autocomplete="off" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
                 }
-                <div style="width: 280px;"><span style="font-weight: bold;">@Resources.SignOff.CFIComments</span> <span class="fineprint" style="float:right" id="lblCharCount">0/250</span></div>
+                <div style="width: 280px;"><span class="b">@Resources.SignOff.CFIComments</span> <span class="fineprint" style="float:right" id="lblCharCount">0/250</span></div>
                 if (fSICEndorsementEligible)
                 {
                     <div><label><input type="checkbox" name="ckSIC" onchange="javascript: changeSICMode(this);" />@Resources.SignOff.PromptUseAC13543ForSIC</label></div>
@@ -265,8 +265,8 @@ else
                 <div id="vwEditComments"><textarea id="txtCFIComments" name="cfiComments" rows="3" style="width: 280px;" oninput="javascript: updateCharCount();" maxlength="250">@(ViewBag.cfiComments ?? string.Empty)</textarea></div>
                 if (fAdhoc)
                 {
-                    <div style="font-weight: bold;">@Resources.SignOff.PromptSignature</div>
-                    <div id="newScribble" style="display:inline-block;">
+                    <div class="b">@Resources.SignOff.PromptSignature</div>
+                    <div id="newScribble" class="dib">
                         @{ Html.RenderAction("RenderScribble", "Training", new { colorRef = "#0000ff" }); }
                     </div>
                 }
@@ -284,7 +284,7 @@ else
                         <div><label><input type="radio" name="copyOpt" value="live" @((copyPref == 2).ToChecked()) />@Resources.SignOff.SignFlightCopyLive</label></div>
                     </div>
                 }
-                <div style="text-align:center; margin-top: 20pt;">
+                <div class="c" style="margin-top: 20pt;">
                     @if (!String.IsNullOrEmpty(szReturnURL))
                     {
                         <button type="button" onclick="javascript: window.location = '@szReturnURL';">@Resources.SignOff.CancelSignFlight</button>
@@ -297,6 +297,16 @@ else
                 </div>
             }
         </div>
+        @if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted) || le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted))
+        {
+            <hr />
+            <div class="hc" style="margin-top: 2em; max-width: 30em;">
+                <div class="calloutSmall calloutBackground shadowed">
+                    <p>@Resources.LogbookEntry.WINGSActivityOrPhaseNotedFlight</p>
+                    <div class="c"><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a class="b" href="@MyFlightbook.Currency.WINGS.WINGSActivity.FAAGrantWINGSCreditEndpoint" target="_blank">@Resources.LogbookEntry.WINGSGoToFAASafety</a></div>
+                </div>
+            </div>
+        }
     </div>
     <div id="vwEditFlight"></div>
     <div id="lblErr" class="error">@(ViewBag.error ?? string.Empty)</div>

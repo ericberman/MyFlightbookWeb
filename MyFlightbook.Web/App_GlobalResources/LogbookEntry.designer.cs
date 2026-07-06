@@ -5555,5 +5555,32 @@ namespace Resources {
                 return ResourceManager.GetString("TemplateYours", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You just issued an endorsement that indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!.
+        /// </summary>
+        internal static string WINGSActivityOrPhaseNotedEndorsement {
+            get {
+                return ResourceManager.GetString("WINGSActivityOrPhaseNotedEndorsement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This flight indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!.
+        /// </summary>
+        internal static string WINGSActivityOrPhaseNotedFlight {
+            get {
+                return ResourceManager.GetString("WINGSActivityOrPhaseNotedFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to the FAASafety website.
+        /// </summary>
+        internal static string WINGSGoToFAASafety {
+            get {
+                return ResourceManager.GetString("WINGSGoToFAASafety", resourceCulture);
+            }
+        }
     }
 }

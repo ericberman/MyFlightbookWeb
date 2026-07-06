@@ -40,6 +40,14 @@
             @:v.settings.ignore = ":hidden:not('#hdnSigData')";
         }
     });
+
+    function submitClicked() {
+        var templateID = +$("#hdnTemplateID").val();
+        if (templateID == 28 || templateID == 29)
+            sessionStorage.setItem('promptWINGS', 'show_follow_up');
+
+        submitEndorsement();
+    }
 </script>
 <div id="pnlEditEndorsement" class="endorsement endorsementEdit">
     @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmEditEndorsement", name = "frmEditEndorsement" }))
@@ -49,6 +57,7 @@
         <input type="hidden" name="targetUser" value="@targetUser" />
         <input type="hidden" name="sourceUser" value="@sourceUser" />
         <input type="hidden" name="studentType" value="@studentType" />
+        <input type="hidden" name="templateID" id="hdnTemplateID" value="@template.ID" />
         <input type="hidden" name="compiledBody" id="hdnCompiledBody" />
         <input type="hidden" name="endorsementFAR" value="@(source?.FARReference ?? template.FARReference)" />
         <div class="mHem"><input type="text" id="txtTitle" name="endorsementTitle" class="w100" required maxlength="90" placeholder="@Resources.SignOff.EndorsementTitleWatermark" value="@(source?.FullTitleAndFar ?? template.Title)" /></div>
@@ -56,7 +65,7 @@
         <hr />
         <div class="mHem">
             <div id="templateBody">
-                @{ Html.RenderAction("RenderEditableEndorsement", "Training", new { endorsementType = template, targetUserName = pfTargetUser.UserName, source = source }); }
+                @{ Html.RenderAction("RenderEndorsementTemplateBody", "Training", new { endorsementType = template, targetUserName = pfTargetUser.UserName, source = source }); }
             </div>
         </div>
         <hr />
@@ -133,7 +142,7 @@
             </div>
         </div>
         <div class="ra">
-            <button type="button" id="btnAddEndorsement" onclick="javascript: submitEndorsement();">@Resources.SignOff.EditEndorsementAddEndorsement</button>
+            <button type="button" id="btnAddEndorsement" onclick="javascript: submitClicked();">@Resources.SignOff.EditEndorsementAddEndorsement</button>
         </div>
     }
 </div>

@@ -47,6 +47,12 @@
         });
     }
 
+    $(() => {
+        if (sessionStorage.getItem('promptWINGS') === 'show_follow_up') {
+            $("#divWINGSFollowUp").show();
+        }
+        sessionStorage.removeItem('promptWINGS');
+    });
 
     function requestEndorsement() {
         var form = $("#frmRequestEndorsement");
@@ -59,9 +65,17 @@
         });
     }
 </script>
+<div id="divWINGSFollowUp" class="dn">
+    <div class="hc w90" style="margin-top: 12pt; margin-bottom: 12pt;">
+        <div class="calloutSmall calloutBackground shadowed">
+            <p>@Resources.LogbookEntry.WINGSActivityOrPhaseNotedEndorsement</p>
+            <div class="c"><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /> <a class="b" href="@MyFlightbook.Currency.WINGS.WINGSActivity.FAAGrantWINGSCreditEndpoint" target="_blank">@Resources.LogbookEntry.WINGSGoToFAASafety</a></div>
+        </div>
+    </div>
+</div>
 @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmSelectInstr", name = "frmSelectInstr" }))
 {
-    <div id="vwPickInstructor" style="display: @(sm.Instructors.Any() ? "block" : "none")">
+    <div id="vwPickInstructor" class="@(sm.Instructors.Any() ? string.Empty : "dn")">
         @Resources.SignOff.ChooseInstructorsPrompt
         <input type="hidden" id="hdnCfiName" name="cfiName" />
         <input type="hidden" id="hdnCfiCert" name="cfiCert" />
@@ -111,21 +125,19 @@
             </div>
             if (fShowMore)
             {
-                <div style="font-weight: bold; margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
+                <div class="b" style="margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
             }
         }
     </div>
-    <div id="vwAcceptTerms" style="display: @(sm.Instructors.Any() ? "none" : "block")">
+    <div id="vwAcceptTerms" class="@(sm.Instructors.Any() ? "dn" : string.Empty)">
         <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
-        <p style="font-weight:bold">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
+        <p class="b">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
         <p><label><input type="checkbox" name="acceptSelfSign" id="ckAccept" />@Resources.SignOff.SignAcceptResponsibility</label></p>
-        <p style="text-align:center"><button type="button" onclick="javascript: selectInstructor('', $('#ckAccept')[0].checked);">@Resources.LocalizedText.NextPrompt</button></p>
+        <p class="c"><button type="button" onclick="javascript: selectInstructor('', $('#ckAccept')[0].checked);">@Resources.LocalizedText.NextPrompt</button></p>
     </div>
     @Html.AntiForgeryToken();
 }
-<div id="vwEndorse">
-
-</div>
+<div id="vwEndorse"></div>
 <div class="error" id="lblErr"></div>
 <div style="margin-top: 18pt;">&nbsp;</div>
 <hr />
