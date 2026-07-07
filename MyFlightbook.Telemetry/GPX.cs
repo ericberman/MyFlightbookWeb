@@ -41,76 +41,37 @@ namespace MyFlightbook.Telemetry
             get { return SpeedUnitTypes.MetersPerSecond; }
         }
 
-        private class GPXPathRoot
+        /// <summary>
+        /// Finds descendants matching a local name, ignoring namespace entirely.
+        /// GPX files in the wild are frequently inconsistent about namespacing
+        /// (e.g., some elements prefixed, some not, prefixes bound to different
+        /// GPX schema versions within the same document), so matching purely on
+        /// local name is far more robust than trying to track "the" namespace.
+        /// </summary>
+        private static IEnumerable<XElement> DescendantsByLocalName(XContainer container, string localName)
         {
-            public XNamespace xnamespace { get; set;}
-            public IEnumerable<XElement> elements { get; set; }
+            return container.Descendants().Where(e => e.Name.LocalName == localName);
         }
 
-        private static GPXPathRoot FindRoot(XDocument xml)
+        private static IEnumerable<XElement> FindRoot(XDocument xml)
         {
             if (xml == null)
                 return null;
 
-            XNamespace ns = XNamespace.Get("http://www.topografix.com/GPX/1/0");
+            XElement trk = DescendantsByLocalName(xml, "trk").FirstOrDefault();
 
-            IEnumerable<XElement> ele = null;
-
-            try
-            {
-                ele = xml.Descendants(ns + "trk").First().Descendants(ns + "trkseg");
-            }
-            catch (Exception ex) when (ex is InvalidOperationException)
-            {
-                try
-                {
-                    ele = xml.Descendants("trk").First().Descendants("trkseg");
-                    if (ele != null)
-                        ns = "";
-                }
-                catch (Exception ex2) when (ex2 is InvalidOperationException)
-                {
-                    try
-                    {
-                        // XNamespace ns11 = XNamespace.Get("http://www.topografix.com/GPX/1/1");
-                        XNamespace ns11 = xml.Document.Root.Name.Namespace.NamespaceName;
-                        ele = xml.Descendants(ns11 + "trk");
-                        ele = ele.First().Descendants(ns11 + "trkseg");
-                        if (ele != null)
-                            ns = ns11;
-                    }
-                    catch (Exception ex3) when (!(ex3 is OutOfMemoryException))
-                    {
-                    }
-                }
-            }
-
-            return new GPXPathRoot { xnamespace = ns, elements = ele };
+            return trk == null ? null : DescendantsByLocalName(trk, "trkseg");
         }
 
-        private XNamespace _badElfExtensionNamespace;
-        private XNamespace BadElfExtensionNamespace
+        private static XElement SpeedElement(XElement coord)
         {
-            get
-            {
-                if (_badElfExtensionNamespace == null)
-                    _badElfExtensionNamespace = "http://bad-elf.com/xmlschemas/GpxExtensionsV1";
-                return _badElfExtensionNamespace;
-            }
-        }
-
-        private XElement SpeedElement(XElement coord, GPXPathRoot root)
-        {
-            XElement xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
+            XElement xSpeed = DescendantsByLocalName(coord, "speed").FirstOrDefault();
             if (xSpeed != null)
                 return xSpeed;
 
-            XElement xSpeedAlternative = coord.Descendants(root.xnamespace + "extensions").FirstOrDefault();
+            XElement xExtensions = DescendantsByLocalName(coord, "extensions").FirstOrDefault();
 
-            if (xSpeedAlternative == null)
-                return null;
-
-            return xSpeedAlternative.Descendants(BadElfExtensionNamespace + "speed").FirstOrDefault();
+            return xExtensions == null ? null : DescendantsByLocalName(xExtensions, "speed").FirstOrDefault();
         }
 
         /// <summary>
@@ -136,12 +97,11 @@ namespace MyFlightbook.Telemetry
                     {
                         XDocument xml = XDocument.Load(sr);
 
-                        GPXPathRoot root = FindRoot(xml);
+                        IEnumerable<XElement> trkSegs = FindRoot(xml);
 
-                        if (root == null)
-                            return false;
+                        if (trkSegs == null)
+                            throw new MyFlightbookException(TelemetryResources.errGPXNoPath);
 
-                        if (root.elements != null)
                         {
                             int iRow = 0;
                             bool fHasAlt = false;
@@ -151,26 +111,25 @@ namespace MyFlightbook.Telemetry
 
                             List<Position> lst = new List<Position>();
 
-                            foreach (XElement e in root.elements)
+                            foreach (XElement e in trkSegs)
                             {
-                                foreach (XElement coord in e.Descendants(root.xnamespace + "trkpt"))
+                                foreach (XElement coord in DescendantsByLocalName(e, "trkpt"))
                                 {
                                     XAttribute xLat = null;
                                     XAttribute xLon = null;
                                     XElement xAlt = null;
                                     XElement xTime = null;
                                     XElement xSpeed = null;
-                                    XElement xBadElfSpeed = null;
 
                                     xLat = coord.Attribute("lat");
                                     xLon = coord.Attribute("lon");
-                                    xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
-                                    xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
-                                    xSpeed = SpeedElement(coord, root);
+                                    xAlt = DescendantsByLocalName(coord, "ele").FirstOrDefault();
+                                    xTime = DescendantsByLocalName(coord, "time").FirstOrDefault();
+                                    xSpeed = SpeedElement(coord);
 
                                     fHasAlt = (xAlt != null);
                                     fHasDate = (xTime != null);
-                                    fHasSpeed = (xSpeed != null || xBadElfSpeed != null);
+                                    fHasSpeed = (xSpeed != null);
                                     fHasLatLon = (xLat != null && xLon != null);
 
                                     if (!fHasAlt && !fHasDate && !fHasSpeed && !fHasLatLon)
@@ -210,8 +169,6 @@ namespace MyFlightbook.Telemetry
                                 Position.DeriveSpeed(lst);
                             ToDataTable(lst);
                         }
-                        else
-                            throw new MyFlightbookException(TelemetryResources.errGPXNoPath);
                     }
                 }
                 catch (System.Xml.XmlException ex)
