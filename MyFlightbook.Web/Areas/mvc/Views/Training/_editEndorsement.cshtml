@@ -29,6 +29,9 @@
             success: function (response) {
                 $("#divNewEndorsement").html(response);
                 initGrowInputs('.grow-input');
+                $("input[name='cfiName'").val($("#hdnCfiName").val());
+                $("input[name='cfiCert'").val($("#hdnCfiCert").val());
+                $("input[name='cfiCertExpiration'").val($("#hdnCfiExpiration").val());
             }
         });
     }
