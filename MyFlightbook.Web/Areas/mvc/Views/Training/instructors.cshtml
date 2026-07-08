@@ -2,6 +2,14 @@
 @using MyFlightbook.Instruction
 @{
     CFIStudentMap sm = ViewBag.instructorMap;
+
+    FlightQuery fq = new FlightQuery(User.Identity.Name) { PropertiesConjunction = GroupConjunction.Any };
+    fq.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted));
+    fq.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted));
+    FlightResult fr = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
+    ViewBag.WINGSFlights = fr.Flights;
+
+    IEnumerable<LogbookEntryDisplay> wingsFlights = ViewBag.WINGSFlights;
     ViewBag.defaultTab = tabID.tabTraining;
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
@@ -17,6 +25,22 @@
                 error: function (xhr, status, error) { alert(xhr.responseText); },
                 success: function (r) {
                     $(sender).parents("tr").hide();
+                }
+            });
+        }
+    }
+
+    function requestWINGSCredit() {
+        var frm = $("#frmReqWINGS");
+        if (frm.valid()) {
+            var f = frm.serialize();
+            $.ajax({
+                url: "@Url.Action("RequestWINGSCredit", "Training")",
+                type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                error: function (xhr, status, error) { alert(xhr.responseText); },
+                success: function (r) {
+                    $("#divRequestWINGS").dialog('close');
+                    window.alert(r);
                 }
             });
         }
@@ -60,50 +84,96 @@
 
     $(() => {
         defaultButtonForDiv("pnlAddInstructor", "btnAddInstructor");
+        validateForm($("#frmReqWINGS"), { wingsFlightID: { required: true, minlength: 1 } }, { wingsFlightID: "@Resources.SignOff.wingsErrNoActivityFlightsSelected" });
     });
 </script>
-<h2>@Resources.SignOff.RoleYourInstructors</h2>
-@using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmInstructorManage", name = "frmInstructorManage" }))
-{
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="username" id="hdnInstructor" />
-    <input type="hidden" name="canView" id="hdnCanView" />
-    <input type="hidden" name="canAdd" id="hdnCanAdd" />
-}
-@if (sm.Instructors.Any())
-{
-    <table cellpadding="3" style="border-collapse: collapse;">
-        @foreach (InstructorStudent instructor in sm.Instructors)
-        {
-            <tr>
-                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.Profile.EditProfileDeleteCFITooltip" title="@Resources.Profile.EditProfileDeleteCFITooltip"
-                         onclick="javascript: deleteInstructor(this, '@instructor.UserName');" />
-                </td>
-                <td style="font-weight: bold;">@instructor.UserFullName</td>
-                <td>
-                    <label><input type="checkbox" name="ckView" @(instructor.CanViewLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowLogbook</label>
-                    <label><input type="checkbox" name="ckAdd" @(instructor.CanViewLogbook ? string.Empty : "disabled") @(instructor.CanAddLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowAddFlights</label>
-                </td>
-            </tr>
-        }
-    </table>
-}
-else
-{
-    <div class="success">@Resources.SignOff.RoleNoInstructors</div>
-}
-<div id="pnlAddInstructor">
-    <div>&nbsp;</div>
-    <div>@Resources.SignOff.RoleAddInstructorPrompt</div>
-    <div style="font-weight:bold">@Resources.SignOff.RoleAddEmailDisclaimer</div>
+<div id="instructorAccordion">
+    <h3>@Resources.SignOff.RoleYourInstructors</h3>
     <div>
-        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddInstructor", name = "frmAddInstructor" }))
+        @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmInstructorManage", name = "frmInstructorManage" }))
         {
             @Html.AntiForgeryToken()
-            <input type="email" required name="instructorEmail" id="txtInstructorEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" />
-            <button type="button" onclick="javascript: addInstructor();" id="btnAddInstructor">@Resources.SignOff.RoleAddInstructor</button>
-            <div id="lblAddInstructorResult" class="success"></div>
+            <input type="hidden" name="username" id="hdnInstructor" />
+            <input type="hidden" name="canView" id="hdnCanView" />
+            <input type="hidden" name="canAdd" id="hdnCanAdd" />
+        }
+        @if (sm.Instructors.Any())
+        {
+            <table cellpadding="3" style="border-collapse: collapse;">
+                @foreach (InstructorStudent instructor in sm.Instructors)
+                {
+                    <tr>
+                        <td>
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" alt="@Resources.Profile.EditProfileDeleteCFITooltip" title="@Resources.Profile.EditProfileDeleteCFITooltip"
+                                 onclick="javascript: deleteInstructor(this, '@instructor.UserName');" />
+                        </td>
+                        <td class="b">@instructor.UserFullName</td>
+                        <td>
+                            <label><input type="checkbox" name="ckView" @(instructor.CanViewLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowLogbook</label>
+                            <label><input type="checkbox" name="ckAdd" @(instructor.CanViewLogbook ? string.Empty : "disabled") @(instructor.CanAddLogbook.ToChecked()) onchange="javascript: setInstructorPermissions(this, '@instructor.UserName');" />@Resources.SignOff.RoleAllowAddFlights</label>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div class="success">@Resources.SignOff.RoleNoInstructors</div>
+        }
+        <div id="pnlAddInstructor">
+            <div>&nbsp;</div>
+            <div>@Resources.SignOff.RoleAddInstructorPrompt</div>
+            <div class="b">@Resources.SignOff.RoleAddEmailDisclaimer</div>
+            <div>
+                @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmAddInstructor", name = "frmAddInstructor" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="email" required name="instructorEmail" id="txtInstructorEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" />
+                    <button type="button" onclick="javascript: addInstructor();" id="btnAddInstructor">@Resources.SignOff.RoleAddInstructor</button>
+                    <div id="lblAddInstructorResult" class="success"></div>
+                }
+            </div>
+        </div>
+    </div>
+    <h3>@Resources.SignOff.WINGSCreditTitle</h3>
+    <div>
+        @Html.Raw(Branding.ReBrand(Resources.SignOff.WINGSStudentDescription))
+        @if (wingsFlights.Any() && sm.Instructors.Any())
+        {
+            <p><a class="b" href="#" onclick="javascript: showModalById('divRequestWINGS', '@Resources.SignOff.WINGSRequestCredit', '30em'); $('#cmbCFIUser')[0].focus(); return false;">@Resources.SignOff.WINGSRequestCredit</a></p>
+            <div id="divRequestWINGS" class="dn">
+                @using (Html.BeginForm("RequestWINGSCredit", "Training", FormMethod.Post, new { id = "frmReqWINGS", name = "frmReqWINGS" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div>
+                        <p>@Resources.SignOff.WINGSSelectInstructor</p>
+                        <select name="cfiUser" id="cmbCFIUser">
+                            @foreach (InstructorStudent instructor in sm.Instructors)
+                            {
+                                <option value="@instructor.UserName">@instructor.UserFullName</option>
+                            }
+                        </select>
+                    </div>
+                    <p>@Resources.SignOff.WINGSSelectActivityFlights</p>
+                    <div style="max-height: 10em; overflow-y: auto; margin-bottom: 1em;">
+                        <table class="lbTable">
+                            @foreach (LogbookEntryDisplay led in ViewBag.WINGSFlights)
+                            {
+                                <tr class="logbookRow logbookRowEven">
+                                    <td><input name="wingsFlightID" type="checkbox" value="@led.FlightID" /></td>
+                                    <td>
+                                        <div><span class="l b">@led.Date.ToShortDateString()</span> <span class="b">@led.TailNumDisplay</span> <span class="i">@led.Route</span> @led.Comment</div>
+                                        <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted]?.DisplayString ?? string.Empty)</div>
+                                        <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted]?.DisplayString ?? string.Empty)</div>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="c"><button onclick="javascript: requestWINGSCredit(); return false;">@Resources.SignOff.WINGSRequestCredit</button></div>
+                }
+            </div>
         }
     </div>
 </div>
-
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "instructorAccordion", active = "0" }); }

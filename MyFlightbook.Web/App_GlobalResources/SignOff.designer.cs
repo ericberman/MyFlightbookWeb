@@ -1128,6 +1128,23 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  &lt;p&gt;
+        ///    &lt;span style=&quot;font-weight:bold; font-size: larger&quot;&gt;&lt;% Requestor %&gt;&lt;/span&gt; has asked you to ensure that the WINGS activities below are 
+        ///    reflected on the FAASafety Website (https://www.faasafety.gov/cfi/pub/cfiactivitygivecredit_1.aspx).
+        ///&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///    &lt;% FlightsList %&gt;
+        ///&lt;/ul&gt;
+        ///&lt;p&gt;If you have not yet recorded these activities, please click the link above to do so, and then let &lt;% Requestor %&gt; know that it has been done.&lt;/p&gt;
+        ///&lt;p&gt;If &lt;% Requestor %&gt; has completed a WINGS Phase, you may also wish t [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string RequestWINGSCreditEmail {
+            get {
+                return ResourceManager.GetString("RequestWINGSCreditEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This e-mail address will NOT be stored or used for any other purpose..
         /// </summary>
         internal static string RoleAddEmailDisclaimer {
@@ -1494,6 +1511,83 @@ namespace Resources {
         internal static string ViewStudentNoSuchStudent {
             get {
                 return ResourceManager.GetString("ViewStudentNoSuchStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAA WINGS Credit.
+        /// </summary>
+        internal static string WINGSCreditTitle {
+            get {
+                return ResourceManager.GetString("WINGSCreditTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [WINGS](https://www.faasafety.gov/wings/pub/learn_more.aspx) is an FAA program of ongoing learning and proficiency.  Completing WINGS phases can reset your flight review clock..
+        /// </summary>
+        internal static string WINGSDescriptionMarkdown {
+            get {
+                return ResourceManager.GetString("WINGSDescriptionMarkdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select at least one flight with a WINGS activity.
+        /// </summary>
+        internal static string wingsErrNoActivityFlightsSelected {
+            get {
+                return ResourceManager.GetString("wingsErrNoActivityFlightsSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request WINGS Credit.
+        /// </summary>
+        internal static string WINGSRequestCredit {
+            get {
+                return ResourceManager.GetString("WINGSRequestCredit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request has been sent.
+        /// </summary>
+        internal static string WINGSRequestSent {
+            get {
+                return ResourceManager.GetString("WINGSRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which flights do you want recorded for credit?.
+        /// </summary>
+        internal static string WINGSSelectActivityFlights {
+            get {
+                return ResourceManager.GetString("WINGSSelectActivityFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the instructor from whom you want to request credit.
+        /// </summary>
+        internal static string WINGSSelectInstructor {
+            get {
+                return ResourceManager.GetString("WINGSSelectInstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  &lt;p&gt;&lt;a href=&quot;https://www.faasafety.gov/wings/pub/learn_more.aspx&quot; target=&quot;_blank&quot;&gt;WINGS&lt;/a&gt; is an FAA program of ongoing learning and proficiency.  Completing WINGS phases can reset your flight review clock.&lt;/p&gt;
+        ///&lt;p&gt;The most important things you will want to do are:&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///    &lt;li&gt;(Optional) Complete an approved WINGS activity and log it in a flight entry&lt;/li&gt;
+        ///    &lt;li&gt;(Optional) Have your instructor sign that flight entry&lt;/li&gt;
+        ///    &lt;li&gt;&lt;span class=&quot;b&quot;&gt;(REQUIRED)&lt;/span&gt; Ask your instructor to register th [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string WINGSStudentDescription {
+            get {
+                return ResourceManager.GetString("WINGSStudentDescription", resourceCulture);
             }
         }
     }

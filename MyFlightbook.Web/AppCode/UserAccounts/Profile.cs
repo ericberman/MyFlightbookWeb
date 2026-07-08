@@ -2571,5 +2571,46 @@ LIMIT 200;";
                 util.SendMessage(msg);
             }
         }
+
+        private const int tidWINGSPhase = 29;   // this is the template ID for the WINGS Phase Completed template
+
+        public static void RequestWINGSCredit(string student, string instructor, IEnumerable<int> rgFlightIDs)
+        {
+            if (String.IsNullOrEmpty(student))
+                throw new ArgumentNullException(nameof(student));
+            if (String.IsNullOrEmpty(instructor))
+                throw new ArgumentNullException(nameof(instructor));
+            if (rgFlightIDs == null)
+                throw new ArgumentNullException(nameof(rgFlightIDs));
+            Profile pfInstr = GetUser(instructor) ?? throw new InvalidOperationException($"No such user '{instructor}'");
+            CFIStudentMap map = new CFIStudentMap(instructor);
+            InstructorStudent pfStudent = CFIStudentMap.GetInstructorStudent(map.Students, student) ?? throw new UnauthorizedAccessException();
+
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfStudent.UserFullName));
+                msg.ReplyToList.Add(new MailAddress(pfStudent.Email, pfStudent.UserFullName));
+                msg.To.Add(new MailAddress(pfInstr.Email, pfInstr.UserFullName));
+                msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorseRequestSubject, pfStudent.UserFullName, Branding.CurrentBrand.AppName);
+                msg.IsBodyHtml = true;
+                var nvc = HttpUtility.ParseQueryString(string.Empty);
+                nvc.Add("student", student);
+                nvc.Add("tid", tidWINGSPhase.ToString(CultureInfo.InvariantCulture));
+                string szURL = $"~/mvc/training/EndorseStudent?{nvc}".ToAbsoluteBrandedUri().ToString();
+
+                FlightQuery fq = new FlightQuery(student) { EnumeratedFlights = new HashSet<int>(rgFlightIDs) };
+                IEnumerable<LogbookEntryDisplay> rgLe = FlightResultManager.FlightResultManagerForUser(student).ResultsForQuery(fq).Flights;
+
+                StringBuilder sb = new StringBuilder();
+                foreach (LogbookEntryBase le in rgLe)
+                    sb.Append($"<li>{WebUtility.HtmlEncode($"{le.Date.ToShortDateString()} - ({le.TailNumDisplay}) {le.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted]?.DisplayString ?? string.Empty} {le.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted]?.DisplayString ?? string.Empty}")}</li>");
+
+                util.PopulateMessageContentWithTemplate(msg, Resources.SignOff.RequestWINGSCreditEmail.
+                    Replace("<% EndorseStudentLink %>", szURL).
+                    Replace("<% FlightsList %>", sb.ToString()).
+                    Replace("<% Requestor %>", WebUtility.HtmlEncode(pfStudent.UserFullName)));
+                util.SendMessage(msg);
+            }
+        }
     }
 }

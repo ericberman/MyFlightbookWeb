@@ -607,4 +607,32 @@ Anywhere that you see an expiration date, use either your certificate's expirati
   <data name="EditEndorsementWingsActivityPrompt" xml:space="preserve">
     <value>WINGS Activities ("[" for autocompletion)</value>
   </data>
+  <data name="RequestWINGSCreditEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\Email\RequestWINGSCredit.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="wingsErrNoActivityFlightsSelected" xml:space="preserve">
+    <value>Please select at least one flight with a WINGS activity</value>
+  </data>
+  <data name="WINGSCreditTitle" xml:space="preserve">
+    <value>FAA WINGS Credit</value>
+  </data>
+  <data name="WINGSDescriptionMarkdown" xml:space="preserve">
+    <value>[WINGS](https://www.faasafety.gov/wings/pub/learn_more.aspx) is an FAA program of ongoing learning and proficiency.  Completing WINGS phases can reset your flight review clock.</value>
+    <comment>This is markdown</comment>
+  </data>
+  <data name="WINGSStudentDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\WINGSStudentDescription.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="WINGSRequestCredit" xml:space="preserve">
+    <value>Request WINGS Credit</value>
+  </data>
+  <data name="WINGSSelectInstructor" xml:space="preserve">
+    <value>Select the instructor from whom you want to request credit</value>
+  </data>
+  <data name="WINGSSelectActivityFlights" xml:space="preserve">
+    <value>Which flights do you want recorded for credit?</value>
+  </data>
+  <data name="WINGSRequestSent" xml:space="preserve">
+    <value>The request has been sent</value>
+  </data>
 </root>

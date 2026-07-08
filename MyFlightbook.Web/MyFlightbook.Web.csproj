@@ -459,6 +459,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\DropboxFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\RequestWINGSCredit.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\EndorseInvitation.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
@@ -489,6 +490,7 @@
     <Content Include="App_GlobalResources\Content.en\TAADefinition.htm" />
     <Content Include="App_GlobalResources\Content.en\TermsAndConditions.htm" />
     <Content Include="App_GlobalResources\Content.en\WhyStartingFlights.txt" />
+    <Content Include="App_GlobalResources\Content.en\WINGSStudentDescription.txt" />
     <Content Include="App_GlobalResources\Content.en\wkhtmlnote.htm" />
     <Content Include="Content\jHtmlArea\jHtmlArea.ColorPickerMenu.css" />
     <Content Include="Content\jHtmlArea\jHtmlArea.css" />

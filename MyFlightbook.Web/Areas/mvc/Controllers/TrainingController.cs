@@ -646,6 +646,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
+        public ActionResult RequestWINGSCredit(string cfiUser, int[] wingsFlightID)
+        {
+            return SafeOp(() =>
+            {
+                if (string.IsNullOrEmpty(cfiUser))
+                    throw new InvalidOperationException("No instructor specified");
+                if (wingsFlightID == null || wingsFlightID.Length == 0)
+                    throw new InvalidOperationException("No WINGS activity flights specified");
+                InstructorStudent.RequestWINGSCredit(User.Identity.Name, cfiUser, wingsFlightID);
+                return Content(Resources.SignOff.WINGSRequestSent);
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmRelationship()
         {
             if (Request["btnCancel"] != null)
