@@ -45,15 +45,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Web Services
         [Authorize]
         [HttpPost]
-        public ActionResult DeleteImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, bool fAsAdmin = false)
+        public async Task<ActionResult> DeleteImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, bool fAsAdmin = false)
         {
-            return SafeOp(() =>
+            return await SafeOp(async () =>
             {
                 // First check if this is a pending image
                 // No need to do admin check on something that has yet to actually be committed
                 MFBPendingImage pf = new List<MFBPendingImage>(MFBPendingImage.PendingImagesInSession()).FirstOrDefault(mfbpf => mfbpf.ThumbnailFile.CompareOrdinal(szThumb) == 0);
                 if (pf != null)
-                    pf.DeleteImage();
+                    _ = await pf.DeleteImage();
                 else
                 {
                     MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(ic, key, szThumb);
@@ -62,7 +62,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
                     if (!fCanActAsAdmin)
                         ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete, true);
-                    mfbii.DeleteImage();
+                    _ = await mfbii.DeleteImage();
                 }
                 return new EmptyResult();
             });
@@ -264,7 +264,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     if (!String.IsNullOrEmpty(szLat) && !String.IsNullOrEmpty(szLon))
                         ll = LatLong.TryParse(szLat, szLon, CultureInfo.InvariantCulture);
                     MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture)).InitWithFile(mfbpf, txtComment ?? string.Empty, ll);
-                    mfbii.IdempotencyCheck();
+                    _ = await mfbii.IdempotencyCheck();
                 }
 
                 return Content("OK");
@@ -323,7 +323,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
 
                     MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture)).InitWithFile(mfbpf, txtComment ?? string.Empty, null);
-                    mfbii.IdempotencyCheck();
+                    _ = await mfbii.IdempotencyCheck();
                 }
 
                 return Content("OK");
@@ -341,7 +341,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
 
                     MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szUser).InitWithFile(mfbpf, txtComment ?? string.Empty, null);
-                    mfbii.IdempotencyCheck();
+                    _ = await mfbii.IdempotencyCheck();
                 }
 
                 return Content("OK");

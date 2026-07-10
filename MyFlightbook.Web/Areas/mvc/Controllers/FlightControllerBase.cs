@@ -380,7 +380,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                             foreach (MFBPendingImage pendingImage in MFBPendingImage.PendingImagesInSession())
                             {
                                 _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.Flight, le.FlightID.ToString(CultureInfo.InvariantCulture));
-                                pendingImage.DeleteImage();     // clean it up!
+                                _ = await pendingImage.DeleteImage();     // clean it up!
                             }
                         }
 

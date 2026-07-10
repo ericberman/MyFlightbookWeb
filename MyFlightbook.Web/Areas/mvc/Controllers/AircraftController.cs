@@ -429,7 +429,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     if (pendingImage.ImageType != MFBImageInfoBase.ImageFileType.S3VideoMP4)
                         _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
-                    pendingImage.DeleteImage();     // clean it up!
+                    _ = await pendingImage.DeleteImage();     // clean it up!
                 }
                 AircraftUtility.LastTail = ac.AircraftID;
                 return SafeRedirect(Request["returnURL"], "~/mvc/Aircraft");

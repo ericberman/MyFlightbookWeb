@@ -1123,7 +1123,7 @@ namespace MyFlightbook
             ImageAuthorization.ValidateAuth(mfbii, szUser, ImageAuthorization.ImageAction.Delete);
 
             EventRecorder.LogCall("DeleteImage - user {user}, thumb={thumb}", szUser, mfbii.URLThumbnail);
-            mfbii.DeleteImage();
+            mfbii.DeleteImageFireAndForget();
         }
 
         /// <summary>

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -299,6 +300,68 @@ namespace MyFlightbook
         public bool ReadRow(Action<MySqlCommand> initCommand, Action<MySqlDataReader> readRowAction)
         {
             return ReadRows(CommandArgs, initCommand, readRowAction, ReadRowMode.SingleRow);
+        }
+
+        /// <summary>
+        /// Async version of ReadRows; same semantics, but called asyncrhonously and can pass an async readRow
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="initCommand"></param>
+        /// <param name="readRowAsync"></param>
+        /// <param name="rowMode"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public async Task<bool> ReadRowsAsync(DBHelperCommandArgs args, Action<MySqlCommand> initCommand, Func<IDataReader, Task> readRowAsync, ReadRowMode rowMode = ReadRowMode.AllRows)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (readRowAsync == null)
+                throw new ArgumentNullException(nameof(readRowAsync));
+
+            bool fResult = true;
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                InitCommandObject(comm, args, CommandType);
+
+                using (comm.Connection = new MySqlConnection(ConnectionString))
+                {
+                    LastError = string.Empty;
+
+                    initCommand?.Invoke(comm);
+                    try
+                    {
+                        await comm.Connection.OpenAsync();
+                        using (var dr = await comm.ExecuteReaderAsync())
+                        {
+                            if (dr.HasRows)
+                            {
+                                while (await dr.ReadAsync())
+                                {
+                                    await readRowAsync(dr);
+                                    if (rowMode == ReadRowMode.SingleRow)
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        throw new MyFlightbookException($"MySQL error thrown in ReadRowsAsync; {ex.Message}, Query = {CommandText}", ex, string.Empty);
+                    }
+                    catch (MyFlightbookException ex)
+                    {
+                        LastError = ex.Message;
+                        fResult = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new MyFlightbookException($"Uncaught exception in ReadRowsAsync:\r\n:{comm.CommandText}", ex);
+                    }
+                }
+            }
+
+            return fResult;
         }
         #endregion
 

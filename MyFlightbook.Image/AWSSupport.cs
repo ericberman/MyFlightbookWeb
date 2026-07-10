@@ -128,75 +128,73 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Moves an image (well, any object, really) from one key to another.  FIRE AND FORGET - THE MOVE HAPPENS ASYNCHRONOUSLY.
+        /// Moves an image (well, any object, really) from one key to another.  
         /// </summary>
         /// <param name="szSrc">Source path (key)</param>
         /// <param name="szDst">Destination path (key)</param>
-        public static void MoveImageOnS3(string szSrc, string szDst)
+        public static async Task<bool> MoveImageOnS3(string szSrc, string szDst)
         {
-            _ = Task.Run(async () =>
+            bool fResult = false;
+            try
             {
-                try
+                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
                 {
-                    using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                    {
-                        CopyObjectRequest cor = new CopyObjectRequest();
-                        DeleteObjectRequest dor = new DeleteObjectRequest();
-                        cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
-                        cor.DestinationKey = szDst;
-                        cor.SourceKey = dor.Key = szSrc;
-                        cor.CannedACL = S3CannedACL.PublicRead;
-                        cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
+                    CopyObjectRequest cor = new CopyObjectRequest();
+                    DeleteObjectRequest dor = new DeleteObjectRequest();
+                    cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
+                    cor.DestinationKey = szDst;
+                    cor.SourceKey = dor.Key = szSrc;
+                    cor.CannedACL = S3CannedACL.PublicRead;
+                    cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
 
-                        // We do get some stray failures to move, so check for successful copy before deleting
-                        CopyObjectResponse coresp = await s3.CopyObjectAsync(cor);
-                        if (coresp != null && coresp.HttpStatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(coresp.ETag)) 
-                            _ = await s3.DeleteObjectAsync(dor);
-                    }
+                    // We do get some stray failures to move, so check for successful copy before deleting
+                    CopyObjectResponse coresp = await s3.CopyObjectAsync(cor);
+                    if (coresp != null && coresp.HttpStatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(coresp.ETag))
+                        _ = await s3.DeleteObjectAsync(dor);
+                    fResult = true;
                 }
-                catch (AmazonS3Exception ex)
-                {
-                    util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0} to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
-                }
-            });
+            }
+            catch (AmazonS3Exception ex)
+            {
+                util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0} to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
+            }
+            return fResult;
         }
 
         /// <summary>
         /// Deletes the image from S3.  The actual operation happens asynchronously; the result is not captured, and we return immediately.
         /// </summary>
         /// <param name="mfbii">The image to delete</param>
-        public static void DeleteImageOnS3(MFBImageInfo mfbii)
+        public static async Task<bool> DeleteImageOnS3(MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                return;
+                return false;
 
-            _ = Task.Run(async () =>
+            try
             {
-                try
+                DeleteObjectRequest dor = new DeleteObjectRequest()
                 {
-                    DeleteObjectRequest dor = new DeleteObjectRequest()
-                    {
-                        BucketName = AWSConfiguration.CurrentS3Bucket,
-                        Key = mfbii.S3Key
-                    };
+                    BucketName = AWSConfiguration.CurrentS3Bucket,
+                    Key = mfbii.S3Key
+                };
 
-                    using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+                {
+                    _ = await s3.DeleteObjectAsync(dor);
+                    if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
                     {
+                        // Delete the thumbnail too.
+                        string szs3Key = mfbii.S3Key;
+                        dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
                         _ = await s3.DeleteObjectAsync(dor);
-                        if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
-                        {
-                            // Delete the thumbnail too.
-                            string szs3Key = mfbii.S3Key;
-                            dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
-                            _ = await s3.DeleteObjectAsync(dor);
-                        }
                     }
                 }
-                catch (AmazonS3Exception ex)
-                {
-                    util.NotifyAdminEvent("Error moving image on S3", $"Error dleting {mfbii.PathThumbnail} from S3\r\n\r\n{WrapAmazonS3Exception(ex)}", ProfileRoles.maskSiteAdminOnly);
-                }
-            });
+            }
+            catch (AmazonS3Exception ex)
+            {
+                util.NotifyAdminEvent("Error moving image on S3", $"Error dleting {mfbii.PathThumbnail} from S3\r\n\r\n{WrapAmazonS3Exception(ex)}", ProfileRoles.maskSiteAdminOnly);
+            }
+            return true;
         }
 
         /// <summary>

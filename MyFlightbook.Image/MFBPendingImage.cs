@@ -135,12 +135,13 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Doesn't really delete (since nothing has been persisted), but removes the object from memory and invalidates it.
         /// </summary>
-        public override void DeleteImage()
+        public override Task<bool> DeleteImage()
         {
             PostedFile?.CleanUp();
             PostedFile = null;
             ThumbnailFile = string.Empty;
             util.RequestContext.SetSessionValue(SessionKey, null);
+            return Task.FromResult(true);
         }
 
         public override void UpdateAnnotation(string szText)

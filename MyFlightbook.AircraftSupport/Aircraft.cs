@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 /******************************************************
@@ -1591,13 +1592,13 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="ac">The aircraft to merge into this one</param>
         /// <param name="fIgnoreModelMismatch">whether to ignore mismatched model ID's</param>
-        public void MergeWith(Aircraft ac, bool fIgnoreModelMismatch)
+        public async Task<bool> MergeWith(Aircraft ac, bool fIgnoreModelMismatch)
         {
             if (ac == null)
                 throw new ArgumentNullException(nameof(ac));
             // do nothing if we're merging with self.
             if (this.AircraftID == ac.AircraftID)
-                return;
+                return true;
 
             if (!fIgnoreModelMismatch && ac.ModelID != this.ModelID)
                 throw new MyFlightbookException("Can't merge two aircraft that are not the same make/model");
@@ -1640,11 +1641,12 @@ namespace MyFlightbook
                 ilSrc.Refresh();
 
                 foreach (MFBImageInfo mfbii in ilSrc.ImageArray)
-                    mfbii.MoveImage(this.AircraftID.ToString(CultureInfo.InvariantCulture));
+                    _ = await mfbii.MoveImage(this.AircraftID.ToString(CultureInfo.InvariantCulture));
 
                 this.PopulateImages();
             }
             catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+            return true;
         }
         #endregion
 

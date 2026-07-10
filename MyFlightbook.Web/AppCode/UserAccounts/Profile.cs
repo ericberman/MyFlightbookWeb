@@ -1756,7 +1756,7 @@ namespace MyFlightbook
                         WHERE (i.VirtPathID=0 AND f.username=?uname)";
             dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
             foreach (MFBImageInfo mfbii in lstMfbii)
-                mfbii.DeleteImage();
+                mfbii.DeleteImageFireAndForget();
         }
 
         private static void DeleteUserFlights(DBHelper dbh)
@@ -1898,11 +1898,11 @@ namespace MyFlightbook
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, mu.UserName);
             il.Refresh(true);
             foreach (MFBImageInfo mfbii in il.ImageArray)
-                mfbii.DeleteImage();
+                mfbii.DeleteImageFireAndForget();
             il.Class = MFBImageInfo.ImageClass.OfflineEndorsement;
             il.Refresh(true);
             foreach (MFBImageInfo mfbii in il.ImageArray)
-                mfbii.DeleteImage();
+                mfbii.DeleteImageFireAndForget();
 
             // Delete basicmed records
             foreach (BasicMedEvent bme in BasicMedEvent.EventsForUser(mu.UserName))

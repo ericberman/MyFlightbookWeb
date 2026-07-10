@@ -870,7 +870,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     if (pendingImage.ImageType == MFBImageInfoBase.ImageFileType.JPEG || pendingImage.ImageType == MFBImageInfoBase.ImageFileType.PDF)
                     {
                         _ = await pendingImage.Commit(MFBImageInfoBase.ImageClass.BasicMed, bme.ID.ToString(CultureInfo.InvariantCulture));
-                        pendingImage.DeleteImage();
+                        _ = await pendingImage.DeleteImage();
                     }
                 }
 

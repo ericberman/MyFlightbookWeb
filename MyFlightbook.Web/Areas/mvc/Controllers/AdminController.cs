@@ -387,30 +387,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string DeleteOrphans()
+        public async Task<ActionResult> DeleteOrphans()
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 string key = Guid.NewGuid().ToString();
 
                 StringBuilder sb = new StringBuilder();
                 CacheProgress(key, sb);
 
-                new Thread(new ThreadStart(() =>
-                {
-                    sb.Append("Deleting orphaned flight images:\r\n");
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Flight));
-                    sb.Append("Deleting orphaned endorsement images:\r\n");
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Endorsement));
-                    sb.Append("Deleting orphaned offline endorsements:\r\n");
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.OfflineEndorsement));
-                    sb.Append("Deleting orphaned Aircraft images:\r\n");
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Aircraft));
-                    sb.Append("Deleting orphaned BasicMed images:\r\n");
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.BasicMed));
-                    util.GlobalCache.Remove(key); // clear it out to indicate success
-                })).Start();
-                return key;
+                sb.Append("Deleting orphaned flight images:\r\n");
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", await MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Flight));
+                sb.Append("Deleting orphaned endorsement images:\r\n");
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", await MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Endorsement));
+                sb.Append("Deleting orphaned offline endorsements:\r\n");
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", await MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.OfflineEndorsement));
+                sb.Append("Deleting orphaned Aircraft images:\r\n");
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", await MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.Aircraft));
+                sb.Append("Deleting orphaned BasicMed images:\r\n");
+                sb.AppendFormat(CultureInfo.CurrentCulture, "{0}\r\n", await MFBImageInfo.ADMINDeleteOrphans(MFBImageInfoBase.ImageClass.BasicMed));
+                util.GlobalCache.Remove(key); // clear it out to indicate success
+                return Content(key);
             });
         }
 

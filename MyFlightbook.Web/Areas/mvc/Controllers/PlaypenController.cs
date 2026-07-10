@@ -197,7 +197,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [ActionName("MergeFlights")]
-        public ActionResult MergeFlightsPostback()
+        public async Task<ActionResult> MergeFlightsPostback()
         {
             FlightQuery fq = new FlightQuery(User.Identity.Name) { EnumeratedFlights = ValidateFlightsToMerge(Request["idFlight"]) };
             List<LogbookEntry> lst = new List<LogbookEntry>();
@@ -218,7 +218,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             foreach (LogbookEntry le in lst)
                 le.PopulateImages();
 
-            target.MergeFrom(lst);
+            _ = await target.MergeFrom(lst);
             return Redirect("~/mvc/Flights");
         }
 

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static MyFlightbook.AircraftInstance;
 
 /******************************************************
@@ -70,17 +71,17 @@ OR (aircraft.tailnormal IN ('{5}'))";
         /// </summary>
         /// <param name="acMaster">The TARGET aircraft</param>
         /// <param name="ac">The aircraft being merged - this one will be DELETED (but a tombstone will remain)</param>
-        public static void AdminMergeDupeAircraft(Aircraft acMaster, Aircraft ac)
+        public static async Task<bool> AdminMergeDupeAircraft(Aircraft acMaster, Aircraft ac)
         {
             if (ac == null)
                 throw new ArgumentNullException(nameof(ac));
             if (acMaster == null)
                 throw new ArgumentNullException(nameof(acMaster));
             if (ac.AircraftID == acMaster.AircraftID)
-                return;
+                return false;
 
             // merge the aircraft into the master.  This will merge maintenance and images.
-            acMaster.MergeWith(ac, true);
+            _ = await acMaster.MergeWith(ac, true);
 
             // map all future references to this aircraft to the new master
             AircraftTombstone act = new AircraftTombstone(ac.AircraftID, acMaster.AircraftID);
@@ -132,6 +133,7 @@ OR (aircraft.tailnormal IN ('{5}'))";
             // Finally, it should now be safe to delete the aircraft
             dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
+            return true;
         }
 
         public static IEnumerable<Aircraft> AdminDupeAircraft()
@@ -240,7 +242,7 @@ ORDER BY aircraft.instancetype, aircraft.idmodel");
             return lst;
         }
 
-        public static IEnumerable<Aircraft> ResolveDupeSim(int idAircraft)
+        public static async Task<IEnumerable<Aircraft>> ResolveDupeSim(int idAircraft)
         {
             Aircraft acMaster = new Aircraft(idAircraft);
             if (acMaster.AircraftID < 0)
@@ -261,7 +263,7 @@ ORDER BY aircraft.instancetype, aircraft.idmodel");
             foreach (int acID in AircraftToMergeToThis)
             {
                 Aircraft acToMerge = new Aircraft(acID);
-                AdminMergeDupeAircraft(acMaster, acToMerge);
+                _ = await AdminMergeDupeAircraft(acMaster, acToMerge);
             }
 
             return AdminDupeSims();
@@ -445,7 +447,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
         /// </summary>
         /// <param name="acOriginal"></param>
         /// <returns>The ID of the new (mapped) aircraft; this is idAircraftUnknown if no mapping occurs.</returns>
-        public static int MapToSim(Aircraft acOriginal)
+        public static async Task<int> MapToSim(Aircraft acOriginal)
         {
             if (acOriginal == null)
                 throw new ArgumentNullException(nameof(acOriginal));
@@ -491,7 +493,7 @@ WHERE (tailnumber LIKE 'SIM%' OR tailnumber LIKE '#%' OR InstanceType <> 1) ";
 
             // set the original's instance type so that merge works.
             acOriginal.InstanceType = ait;
-            AdminMergeDupeAircraft(acNew, acOriginal);
+            _ = await AdminMergeDupeAircraft(acNew, acOriginal);
 
             return acNew.AircraftID;
         }
@@ -681,7 +683,7 @@ ORDER BY user ASC");
             Aircraft ac = new Aircraft(idAircraft);
             ac.PopulateImages();
             foreach (MFBImageInfo mfbii in ac.AircraftImages)
-                mfbii.DeleteImage();
+                mfbii.DeleteImageFireAndForget();
 
             ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
             DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());

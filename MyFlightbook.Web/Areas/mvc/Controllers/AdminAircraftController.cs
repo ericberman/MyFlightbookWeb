@@ -100,9 +100,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult MergeModels(int idToKeep, int idToKill)
+        public async Task<ActionResult> MergeModels(int idToKeep, int idToKill)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 if (idToKeep == idToKill)
                     throw new InvalidOperationException("Can't merge to self!");
@@ -118,7 +118,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.Compare(mmToDelete.Model.Replace(" ", string.Empty).Replace("-", string.Empty), mmToKeep.Model.Replace(" ", string.Empty).Replace("-", string.Empty), StringComparison.OrdinalIgnoreCase) != 0)
                     throw new InvalidOperationException("These don't look like dupes");
 
-                return Content(String.Join("\r\n", AdminMakeModel.AdminMergeDuplicateModels(idToKill, idToKeep)));
+                return Content(String.Join("\r\n", await AdminMakeModel.AdminMergeDuplicateModels(idToKill, idToKeep)));
             });
         }
 
@@ -227,11 +227,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult keepDupeSim(int idAircraft)
+        public async Task<ActionResult> keepDupeSim(int idAircraft)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
-                ViewBag.rgac = AdminAircraft.ResolveDupeSim(idAircraft);
+                ViewBag.rgac = await AdminAircraft.ResolveDupeSim(idAircraft);
                 return PartialView("_dupeSims");
             });
         }
@@ -496,9 +496,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult MigrateGeneric(int idAircraft)
+        public async Task<ActionResult> MigrateGeneric(int idAircraft)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 Aircraft ac = new Aircraft(idAircraft);
 
@@ -518,23 +518,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     acGeneric.Commit();
                 }
 
-                AdminAircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
+                _ = await AdminAircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
                 return new EmptyResult();
             });
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult MigratePsuedoSim(int idAircraft)
+        public async Task<ActionResult> MigratePsuedoSim(int idAircraft)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 Aircraft ac = new Aircraft(idAircraft);
 
                 if (String.IsNullOrWhiteSpace(ac.TailNumber) || ac.AircraftID <= 0)
                     throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "No aircraft with ID {0}", idAircraft));
 
-                if (AdminAircraft.MapToSim(ac) < 0)
+                if (await AdminAircraft.MapToSim(ac) < 0)
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to map aircraft {0}", ac.TailNumber));
                 return new EmptyResult();
             });
@@ -610,9 +610,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult MergeAircraft(int idAircraftToMerge, int idTargetAircraft)
+        public async Task<ActionResult> MergeAircraft(int idAircraftToMerge, int idTargetAircraft)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 if (idAircraftToMerge <= 0)
                     throw new ArgumentOutOfRangeException(nameof(idAircraftToMerge), "Invalid id for aircraft to merge");
@@ -627,7 +627,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (!acClone.IsValid())
                     throw new InvalidOperationException("Invalid source aircraft for merge");
 
-                AdminAircraft.AdminMergeDupeAircraft(acMaster, acClone);
+                _ = await AdminAircraft.AdminMergeDupeAircraft(acMaster, acClone);
                 return new EmptyResult();
             });
         }

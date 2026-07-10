@@ -1915,7 +1915,7 @@ ORDER BY flights.date {4}, COALESCE(blockOut, '0001-01-01') {4}, COALESCE(dtEngi
                     ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString(CultureInfo.InvariantCulture));
                     il.Refresh(true);
                     foreach (MFBImageInfo mfbii in il.ImageArray)
-                        mfbii.DeleteImage();
+                        mfbii.DeleteImageFireAndForget();
 
                     DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
                     di.Delete(true);
@@ -3445,13 +3445,14 @@ WHERE f1.username = ?uName ");
             }
         }
 
-        private void MergeImagesFrom(LogbookEntry le)
+        private async Task<bool> MergeImagesFrom(LogbookEntry le)
         {
             if (le.FlightImages != null)
             {
                 foreach (MFBImageInfo mfbii in le.FlightImages)
-                    mfbii.MoveImage(FlightID.ToString(CultureInfo.InvariantCulture));
+                    _ = await mfbii.MoveImage(FlightID.ToString(CultureInfo.InvariantCulture));
             }
+            return true;
         }
 
         /// <summary>
@@ -3459,10 +3460,10 @@ WHERE f1.username = ?uName ");
         /// THIS IS DESTRUCTIVE - the other flights will be deleted!!!
         /// </summary>
         /// <param name="lst">The enumerable of other flights with which to merge</param>
-        public void MergeFrom(IEnumerable<LogbookEntry> lst)
+        public async Task<bool> MergeFrom(IEnumerable<LogbookEntry> lst)
         {
             if (lst == null || !lst.Any())
-                return;
+                return false;
 
             List<CustomFlightProperty> lstCfpThis = new List<CustomFlightProperty>(CustomProperties);
 
@@ -3487,7 +3488,7 @@ WHERE f1.username = ?uName ");
                 FlightEnd = FlightEnd.LaterDate(le.FlightEnd);
 
                 MergePropertiesFrom(lstCfpThis, le);
-                MergeImagesFrom(le);
+                _ = await MergeImagesFrom(le);
                 if (le.HasFlightData)
                     lstPaths.Add(le.Telemetry);
             }
@@ -3503,6 +3504,8 @@ WHERE f1.username = ?uName ");
             // And delete the input flights
             foreach (LogbookEntry le in lst)
                 LogbookEntry.FDeleteEntry(le.FlightID, le.User);
+
+            return true;
         }
         #endregion
 

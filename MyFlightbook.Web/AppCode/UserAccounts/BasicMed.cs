@@ -330,7 +330,7 @@ namespace MyFlightbook.BasicmedTools
                 ImageList il = new ImageList(MFBImageInfo.ImageClass.BasicMed, ImageKey);
                 il.Refresh();
                 foreach (MFBImageInfo mfbii in il.ImageArray)
-                    mfbii.DeleteImage();
+                    mfbii.DeleteImageFireAndForget();
 
                 DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
                 di.Delete(true);

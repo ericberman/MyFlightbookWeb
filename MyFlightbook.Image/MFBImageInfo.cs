@@ -805,9 +805,9 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Deletes this image file.  If it has been moved to S3, the image on S3 also gets deleted ASYNCHRONOUSLY.  
+        /// Deletes this image file.  If it has been moved to S3, the image on S3 also gets deleted ASYNCHRONOUSLY.
         /// </summary>
-        public virtual void DeleteImage()
+        public virtual async Task<bool> DeleteImage()
         {
             try
             {
@@ -822,7 +822,7 @@ namespace MyFlightbook.Image
                     if (IsLocal)
                         File.Delete(szLocalPath);
                     else
-                        AWSS3ImageManager.DeleteImageOnS3(this);    // fire and forget.  Note that this could fail, or even happen before the original move to S3 completes...
+                        _ = await AWSS3ImageManager.DeleteImageOnS3(this);
                 }
             }
             catch (Exception ex)
@@ -837,13 +837,23 @@ namespace MyFlightbook.Image
                 // ALWAYS delete from the DB to avoid orphans; this is no-op if it doesn't exist.
                 DeleteFromDB();
             }
+            return true;
+        }
+
+        /// <summary>
+        /// When order of operation doesn't matter, can call this.  Makes the async call synchronous but observes exceptions.  ORDER OF OPERATION - OR SUCCESS - IS NOT GUARANTEED
+        /// </summary>
+
+        public void DeleteImageFireAndForget()
+        {
+            _ = DeleteImage().ContinueWith(t => { _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         /// <summary>
         /// Move the image from one key to another
         /// </summary>
         /// <param name="szPathDest">The new key</param>
-        public void MoveImage(string szKeyNew)
+        public async Task<bool> MoveImage(string szKeyNew)
         {
             string s3KeyOld = S3Key;
             string szVirtPathOld = VirtualPath;
@@ -862,6 +872,7 @@ namespace MyFlightbook.Image
                 diDest.Create();
 
             FileInfo[] rgfi;
+            bool fResult = false;
 
             // Move the full image before the thumbnail
             if (isLocalOld)
@@ -871,7 +882,7 @@ namespace MyFlightbook.Image
                     rgfi[0].MoveTo(szDirDest + FullImageFile);
             }
             else
-               AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);   // Fire and forget.
+                fResult = await AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);
 
             rgfi = diSrc.GetFiles(ThumbnailFile);
             if ((rgfi?.Length ?? 0)  > 0)
@@ -882,6 +893,7 @@ namespace MyFlightbook.Image
                 diSrc.Delete();
 
             ToDB();
+            return fResult;
         }
 
         #region pseudo-Idempotency
@@ -925,45 +937,45 @@ namespace MyFlightbook.Image
 
         /// <summary>
         /// Deletes this image if it is a dupe of another file in the folder.
-        /// RUNS ASYNC
+        /// <returns>True if the file was deleted</returns>
         /// </summary>
-        public void IdempotencyCheck()
+        public async Task<bool> IdempotencyCheck()
         {
             DirectoryInfo dir = new DirectoryInfo(PhysicalPath);
             if (dir != null && dir.Exists)
             {
-                new Thread(new ThreadStart(() =>
+                bool fShouldDelete = false;
+                Thread.Sleep(1000); // wait a second for any pending operations to finish.
+                lock (idempotencyLock)  // Only allow one object to do an idempotency check at a time.
                 {
-                    Thread.Sleep(1000); // wait a second for any pending operations to finish.
-                    lock (idempotencyLock)  // Only allow one object to do an idempotency check at a time.
+                    FileInfo[] rgfiThis = dir.GetFiles(ThumbnailFile);
+                    FileInfo[] rgfi = dir.GetFiles();
+
+                    // rgfiThis should have exactly one file - this one
+                    if (rgfiThis == null || rgfiThis.Length != 1)
+                        return false;
+
+                    FileInfo fiThis = rgfiThis[0];
+
+                    foreach (FileInfo fi in rgfi)
                     {
-                        FileInfo[] rgfiThis = dir.GetFiles(ThumbnailFile);
-                        FileInfo[] rgfi = dir.GetFiles();
+                        // skip full-image files, skip this file
+                        if (String.Compare(fi.Name, ThumbnailFile, StringComparison.CurrentCultureIgnoreCase) == 0)
+                            continue;
+                        if (this.ImageType == ImageFileType.JPEG && !fi.Name.StartsWith(ThumbnailPrefix, StringComparison.CurrentCultureIgnoreCase))
+                            continue;
 
-                        // rgfiThis should have exactly one file - this one
-                        if (rgfiThis == null || rgfiThis.Length != 1)
-                            return;
-
-                        FileInfo fiThis = rgfiThis[0];
-
-                        foreach (FileInfo fi in rgfi)
-                        {
-                            // skip full-image files, skip this file
-                            if (String.Compare(fi.Name, ThumbnailFile, StringComparison.CurrentCultureIgnoreCase) == 0)
-                                continue;
-                            if (this.ImageType == ImageFileType.JPEG && !fi.Name.StartsWith(ThumbnailPrefix, StringComparison.CurrentCultureIgnoreCase))
-                                continue;
-
-                            // test to see if the bytes are the same
-                            if (CompareImageFiles(fi, fiThis))
-                            {
-                                DeleteImage();
-                                return; // we're done - no need to compare against more images.
-                            }
-                        }
+                        // test to see if the bytes are the same
+                        fShouldDelete = CompareImageFiles(fi, fiThis);
                     }
-                })).Start();
+                }
+                if (fShouldDelete)  // do this outside of the lock
+                {
+                    await DeleteImage();
+                    return true; // we're done - no need to compare against more images.
+                }
             }
+            return false;
         }
         #endregion
 
@@ -1838,7 +1850,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="ic">The image class</param>
         /// <returns>A log of changes</returns>
-        public static string ADMINDeleteOrphans(ImageClass ic)
+        public static async Task<string> ADMINDeleteOrphans(ImageClass ic)
         {
             if (ic == ImageClass.Unknown)
                 return "Unknown class";
@@ -1867,9 +1879,10 @@ namespace MyFlightbook.Image
             StringBuilder sbLog = new StringBuilder();
             string szPixDir = BasePathFromClass(ic);
             DBHelper dbh = new DBHelper(szQ);
-            dbh.ReadRows(
+            _ = await dbh.ReadRowsAsync(
+                dbh.CommandArgs,
                 (comm) => { },
-                (dr) =>
+                async (dr) =>
                 {
                     string szIDOrphan = dr["idPic"].ToString();
                     DirectoryInfo dirOrphan = new DirectoryInfo(String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", szPixDir, szIDOrphan).MapAbsoluteFilePath());
@@ -1879,11 +1892,12 @@ namespace MyFlightbook.Image
                     foreach (MFBImageInfo mfbii in il.ImageArray)
                     {
                         sbLog.AppendFormat(CultureInfo.CurrentCulture, "Deleting: {0} and {1}\r\n<br />", mfbii.PathThumbnail.MapAbsoluteFilePath(), mfbii.IsLocal ? mfbii.PathFullImage.MapAbsoluteFilePath() : mfbii.PathFullImageS3);
-                        mfbii.DeleteImage();
+                        _ = await mfbii.DeleteImage();
                     }
 
-                // now delete the containing directory so it doesn't appear again.
-                dirOrphan.Delete(true);
+                    // now delete the containing directory so it doesn't appear again.
+                    if (dirOrphan.Exists)
+                        dirOrphan.Delete(true);
                 });
 
             sbLog.Append(dbh.LastError);

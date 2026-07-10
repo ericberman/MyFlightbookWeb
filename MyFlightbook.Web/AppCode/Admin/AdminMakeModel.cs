@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -26,7 +27,7 @@ namespace MyFlightbook.Admin
         /// <returns>Audit of the operations that occor</returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="MyFlightbookException"></exception>
-        public static IEnumerable<string> AdminMergeDuplicateModels(int idModelToDelete, int idModelToMergeInto)
+        public static async Task<IEnumerable<string>> AdminMergeDuplicateModels(int idModelToDelete, int idModelToMergeInto)
         {
             if (idModelToDelete < 0)
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Invalid model to delete: {0}", idModelToDelete));
@@ -51,7 +52,7 @@ namespace MyFlightbook.Admin
                 else
                 {
                     // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
-                    AdminAircraft.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
+                    _ = await AdminAircraft.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
                 }
             }
 
@@ -72,7 +73,7 @@ namespace MyFlightbook.Admin
                 else
                 {
                     // collision - do a merge instead!
-                    AdminAircraft.AdminMergeDupeAircraft(acDupe, ac);
+                    _ = await AdminAircraft.AdminMergeDupeAircraft(acDupe, ac);
                     lst.Add(string.Format(CultureInfo.CurrentCulture, "Aircraft {0} exists with both models!  Merged", ac.TailNumber));
                 }
             }
