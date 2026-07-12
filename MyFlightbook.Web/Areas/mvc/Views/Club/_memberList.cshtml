@@ -4,7 +4,7 @@
     Club club = ViewBag.club;
     int i = 0;
 }
-<table class="stickyHeaderTable stickyHeaderAlternate" style="width: 100%;">
+<table class="stickyHeaderTable stickyHeaderAlternate w100">
     <thead>
         <tr>
             <th></th>
@@ -28,39 +28,39 @@
             string idIns = String.Format(CultureInfo.InvariantCulture, "idIns{0}", i);
             string idInactive = String.Format(CultureInfo.InvariantCulture, "idInact{0}", i);
             string rbGroupName = String.Format(CultureInfo.InvariantCulture, "clubRole{0}", i++);
-            <tr style="vertical-align:middle;">
-                <td>
+            <tr>
+                <td class="imgMiddle">
                     <div class="displayCell">
-                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.genericEdit</a>
+                        <a href="#" onclick="javascript: $(this).parents('tr').toggleClass('editRow'); return false;">@Resources.LocalizedText.genericEdit</a>
                     </div>
                     <div class="editCell">
-                        <a style="cursor:pointer;" onclick="javascript: $(this).parents('tr').toggleClass('editRow');">@Resources.LocalizedText.Cancel</a>
-                        <a style="cursor:pointer;" onclick="javascript: updateMember('@m.UserName', $(this).parents('tr'), '@rbGroupName');">@Resources.LocalizedText.genericUpdate</a>
+                        <a href="#" onclick="javascript: $(this).parents('tr').toggleClass('editRow'); return false;">@Resources.LocalizedText.Cancel</a>
+                        <a href="#" onclick="javascript: updateMember('@m.UserName', $(this).parents('tr'), '@rbGroupName'); return false;">@Resources.LocalizedText.genericUpdate</a>
                     </div>
                 </td>
                 <td style="width: 60px;"><img src="@(VirtualPathUtility.ToAbsolute(club.ShowHeadshots ? m.HeadShotHRef : "~/Public/tabimages/ProfileTab.png"))" class="roundedImg" style="width: 60px; height:60px;" /></td>
-                <td>
+                <td class="imgMiddle">
                     @if (m.IsInactive)
                     {
-                        <span style="font-size: larger; font-style:italic;">
-                            @m.UserFullName" (@Resources.Club.RoleInactive)
+                        <span class="l i">
+                            @m.UserFullName (@Resources.Club.RoleInactive)
                         </span>
                     }
                     else
                     {
-                        <span style="font-weight: bold; font-size: larger">
+                        <span class="l b">
                             @m.UserFullName
                         </span>
                     }
                 </td>
-                <td>
+                <td class="imgMiddle">
                     @if (!String.IsNullOrEmpty(m.Certificate))
                     {
                         <span class="clubCFI">@Resources.Club.ClubStatusCFI</span>
                     }
                 </td>
-                <td>@m.JoinedDate.ToShortDateString()</td>
-                <td>
+                <td class="imgMiddle">@m.JoinedDate.ToShortDateString()</td>
+                <td class="imgMiddle">
                     <div class="displayCell">@m.DisplayRoleInClub @m.ClubOffice</div>
                     <div class="editCell">
                         <div><input type="radio" id="@idMember" name="@rbGroupName" @(m.RoleInClub == ClubMember.ClubMemberRole.Member ? "checked" : string.Empty) value="Member" /><label for="@idMember">@Resources.Club.RoleMember</label></div>
@@ -73,8 +73,8 @@
                         <div><input type="checkbox" name="isInactive" id="@idInactive" @(m.IsInactive ? "checked" : string.Empty) /><label for="@idInactive">@Resources.Club.RoleInactive</label></div>
                     </div>
                 </td>
-                <td>@m.MobilePhone</td>
-                <td><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick='javascript: deleteMember("@m.UserName");' /></td>
+                <td class="imgMiddle">@m.MobilePhone</td>
+                <td class="imgMiddle"><img src="@VirtualPathUtility.ToAbsolute("~/images/x.gif")" onclick='javascript: deleteMember("@m.UserName");' /></td>
             </tr>
         }
     </tbody>

@@ -179,7 +179,7 @@
 {
     case Club.ClubStatus.Promotional:
         string szTemplate = (cm?.RoleInClub ?? ClubMember.ClubMemberRole.Member) == ClubMember.ClubMemberRole.Owner ? Resources.Club.clubStatusTrialOwner : Resources.Club.clubStatusTrial;
-        <p style="font-weight:bold">@String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(szTemplate), club.ExpirationDate.Value.ToShortDateString())</p>
+        <p class="b">@String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(szTemplate), club.ExpirationDate.Value.ToShortDateString())</p>
         break;
     case Club.ClubStatus.Expired:
     case Club.ClubStatus.Inactive:
@@ -196,7 +196,7 @@
             <p>@Resources.Club.LabelNotAMember</p>
             <p>@Resources.Club.LabelSendMessage <a href="#" onclick="javascript:showModalById('divContactClub', '@Resources.Club.LabelMessagePrompt', 450);">@Resources.Club.LinkSendMessage</a></p>
         </div>
-        <div id="divContactClub" style="display:none; width: 450px;">
+        <div id="divContactClub" class="dn" style="width: 450px;">
             <p><textarea id="txtContactClub" rows="5" cols="20" style="width:400px; margin-left:auto; margin-right:auto;"></textarea></p>
             <table>
                 <tr style="vertical-align:top;">
@@ -211,7 +211,7 @@
                 </tr>
             </table>
         </div>
-        <div style="display:none;" id="lblMessageStatus" class="success">@Resources.Club.StatusMessageSent</div>
+        <div class="dn" id="lblMessageStatus" class="success">@Resources.Club.StatusMessageSent</div>
     </div>
 }
 <div id="lblErr" class="error"></div>
@@ -221,7 +221,7 @@
     <div>
         @if (cm?.IsManager ?? false)
         {
-            <div class="calloutSmall calloutBackground shadowed" id="pnlManage" style="text-align:center; font-weight:bold;">
+            <div class="calloutSmall calloutBackground shadowed c b" id="pnlManage" >
                 <p>@Resources.Club.LabelManageClub <a href="@VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/mvc/club/Manage/{0}", club.ID))">@Resources.Club.LabelManageNow</a></p>
             </div>
         }
@@ -241,7 +241,7 @@
     {
         <h3>@Resources.Club.TabClubMembers</h3>
         <div>
-            <table class="stickyHeaderTable stickyHeaderAlternate" style="width: 100%;">
+            <table class="stickyHeaderTable stickyHeaderAlternate w100">
                 <thead>
                     <tr>
                         <th style="width: 60px;"></th>
@@ -258,34 +258,34 @@
                 <tbody>
                     @foreach (ClubMember m in club.Members)
                     {
-                        <tr style="vertical-align:middle;">
-                            <td style="width: 60px;"><img src="@(VirtualPathUtility.ToAbsolute(club.ShowHeadshots ? m.HeadShotHRef : "~/Public/tabimages/ProfileTab.png"))" class="roundedImg" style="width: 60px; height:60px;" /></td>
-                            <td>
+                        <tr>
+                            <td class="imgMiddle" style="width: 60px;"><img src="@(VirtualPathUtility.ToAbsolute(club.ShowHeadshots ? m.HeadShotHRef : "~/Public/tabimages/ProfileTab.png"))" class="roundedImg" style="width: 60px; height:60px;" /></td>
+                            <td class="imgMiddle">
                                 @if (m.IsInactive)
                                 {
-                                    <span style="font-size: larger; font-style:italic;">
-                                        @m.UserFullName" (@Resources.Club.RoleInactive)
+                                    <span class="l i">
+                                        @m.UserFullName (@Resources.Club.RoleInactive)
                                     </span>
                                 }
                                 else
                                 {
-                                    <span style="font-weight: bold; font-size: larger">
+                                    <span class="l b">
                                         @m.UserFullName
                                     </span>
                                 }
                             </td>
-                            <td>
+                            <td class="imgMiddle">
                                 @if (!String.IsNullOrEmpty(m.Certificate))
                                 {
                                     <span class="clubCFI">@Resources.Club.ClubStatusCFI</span>
                                 }
                             </td>
-                            <td>@m.DisplayRoleInClub @m.ClubOffice</td>
+                            <td class="imgMiddle">@m.DisplayRoleInClub @m.ClubOffice</td>
                             @if (!club.HideMobileNumbers)
                             {
-                                <td>@m.MobilePhone</td>
+                                <td class="imgMiddle">@m.MobilePhone</td>
                             }
-                            <td>
+                            <td class="imgMiddle">
                                 <img src="@VirtualPathUtility.ToAbsolute("~/images/sendflight.png")"
                                      onclick='javascript:sendMsgClick("@m.UserName", "@String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelContactMember, m.UserFullName)")'
                                      alt="@Resources.Club.LinkSendMessage" />
@@ -298,11 +298,11 @@
         <h3>@Resources.Club.TabClubSchedules</h3>
         <div>
             <div>
-                <h2 style="display:inline">@Resources.Club.LabelAircraftSchedules</h2>
-                <span id="lblDownloadCSV" style="vertical-align:middle; float:right;" onclick="javascript: $('#pnlDownload').toggle(400);">
-                    <img id="imgDownloadCSV" src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px; vertical-align:middle" />
-                    <img id="imgCSVIcon" src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" style="padding-right: 5px; vertical-align:middle;" />
-                    <span style="vertical-align:middle">@Resources.Club.DownloadClubSchedulePrompt</span>
+                <h2 style="display: inline;">@Resources.Club.LabelAircraftSchedules</h2>
+                <span id="lblDownloadCSV" class="imgMiddle flR" float:right;" onclick="javascript: $('#pnlDownload').toggle(400);">
+                    <img id="imgDownloadCSV" src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" style="padding-right: 5px;" class="imgMiddle" />
+                    <img id="imgCSVIcon" src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" style="padding-right: 5px;" class="imgMiddle" />
+                    <span class="imgMiddle">@Resources.Club.DownloadClubSchedulePrompt</span>
                 </span>
             </div>
             <div id="pnlDownload" class="calloutSmall calloutBackground shadowed" style="display:none; overflow:hidden; max-width:350px; margin-left: auto; margin-right: auto;">
