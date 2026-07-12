@@ -4,6 +4,7 @@
     string contextParams = ViewBag.contextParams;
     string idCopy = String.Format(CultureInfo.InvariantCulture, "lblCopied{0}", le.FlightID);
     string idCopySrc = String.Format(CultureInfo.InvariantCulture, "hdnCopySrc{0}", le.FlightID);
+    string idSendSrc = $"hdnSendSrc{le.FlightID}";
     string szEdit = String.Format(CultureInfo.InvariantCulture, "~/mvc/flightedit/flight/{0}{1}", le.FlightID, String.IsNullOrEmpty(contextParams) ? string.Empty : "?" + contextParams).ToAbsolute();
     string szJoin = szEdit.Contains("?") ? "&" : "?";
     string szCheck = szEdit + szJoin + "Chk=1";
@@ -38,11 +39,12 @@
         <a href="#" onclick="@String.Format(CultureInfo.InvariantCulture, "javascript: copyClipboard('', '{0}', true, '{1}');", idCopySrc, idCopy)return false;" title="@Resources.LogbookEntry.CopyFlightLinkTip"><img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.CopyFlightLinkTip" />@Resources.LogbookEntry.CopyFlightLink</a>
     </div>
     <div>
-        <a href="#" onclick="javascript: sendFlight(@le.FlightID); return false;"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>
+        <a href="#" onclick="javascript: copyClipboard('', '@idSendSrc', true, '@idCopy'); return false;"><img src="@("~/images/sendflight.png".ToAbsolute())" alt="@Resources.LogbookEntry.SendFlight" />@Resources.LogbookEntry.SendFlight</a>
     </div>
     <div>
         <a href="@szCheck"><img src="@("~/images/CheckFlights.png".ToAbsolute())" style="width: 20px;" />@Resources.FlightLint.TitleCheckThisFlightShort</a>
     </div>
     <input type="hidden" id="@idCopySrc" value="@le.SocialMediaItemUri().ToString()" />
+    <input type="hidden" id="@idSendSrc" value="@le.SendFlightLink" />
     <span class="hintPopup dn largeBold" id="@idCopy">@Resources.LocalizedText.CopiedToClipboard</span>
 </div>

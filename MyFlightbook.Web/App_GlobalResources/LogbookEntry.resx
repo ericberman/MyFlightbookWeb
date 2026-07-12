@@ -457,7 +457,7 @@
     <value>Remove this video (doesn't delete the source video)</value>
   </data>
   <data name="SendFlight" xml:space="preserve">
-    <value>Send this flight</value>
+    <value>Send to a fellow pilot</value>
     <comment>For letting another user initialize this flight.</comment>
   </data>
   <data name="SendFlightButton" xml:space="preserve">

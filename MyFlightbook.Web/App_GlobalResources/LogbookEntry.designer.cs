@@ -4677,7 +4677,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send this flight.
+        ///   Looks up a localized string similar to Send to a fellow pilot.
         /// </summary>
         internal static string SendFlight {
             get {
