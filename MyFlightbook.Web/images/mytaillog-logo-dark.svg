@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="110" viewBox="0 0 420 110" role="img" aria-label="MyTailLog">
+  <!-- For dark backgrounds: light wordmark. Transparent background. -->
+  <defs>
+    <linearGradient id="mtl-mark-d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5aa9ff"/>
+      <stop offset="1" stop-color="#8ec8ff"/>
+    </linearGradient>
+  </defs>
+  <polygon points="47,26 83,90 11,90" fill="url(#mtl-mark-d)"/>
+  <text x="108" y="72" fill="#e9eef5"
+        font-family="'Space Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-size="52" font-weight="700" letter-spacing="0.2">MyTailLog</text>
+</svg>
