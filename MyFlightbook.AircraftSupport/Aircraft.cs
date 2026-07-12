@@ -1761,7 +1761,7 @@ namespace MyFlightbook
         /// </summary>
         private static string AircraftByTailQuery
         {
-            get { return String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", "WHERE UPPER(tailnormal)=?tailNum"); }
+            get { return String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", "WHERE tailnormal=?tailNum"); }
         }
 
         /// <summary>
@@ -1772,7 +1772,7 @@ namespace MyFlightbook
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, "WHERE UPPER(tailnormal) IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture, szAircraftForUserCore, 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, "WHERE tailnormal IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 
