@@ -800,7 +800,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Reports (8710 and rollups)
-        private ViewResult PopulateReports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        private async Task<ViewResult> PopulateReports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
         {
             FlightQuery fq = String.IsNullOrEmpty(fqJSON) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromJSON(fqJSON);
 
@@ -811,7 +811,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 fq.ClearRestriction(propToDelete ?? string.Empty);
 
             object o = Session[MFBConstants.keyMathRoundingUnits];
-            ViewBag.reports = Currency.TrainingReportsForUser.ReportsForUser(fq, o == null ? MyFlightbook.Profile.GetUser(fq.UserName).MathRoundingUnit : (int)o);
+            ViewBag.reports = await Currency.TrainingReportsForUser.ReportsForUser(fq, o == null ? MyFlightbook.Profile.GetUser(fq.UserName).MathRoundingUnit : (int)o);
             ViewBag.query = fq;
             ViewBag.defaultPane = id;
             return View("reports");
@@ -820,16 +820,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         [Authorize]
-        public ActionResult Reports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
+        public async Task<ActionResult> Reports(string id = null, string fqJSON = null, bool fPropDeleteClicked = false, string propToDelete = null)
         {
-            return PopulateReports(id, fqJSON, fPropDeleteClicked, propToDelete);
+            return await PopulateReports(id, fqJSON, fPropDeleteClicked, propToDelete);
         }
 
         [HttpGet]
         [Authorize]
-        public ActionResult Reports(string id = null)
+        public async Task<ActionResult> Reports(string id = null)
         {
-            return PopulateReports(id);
+            return await PopulateReports(id);
         }
         #endregion
 

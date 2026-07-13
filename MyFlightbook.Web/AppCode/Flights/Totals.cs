@@ -1963,7 +1963,7 @@ GROUP BY f.familyDisplay WITH ROLLUP";
         }
         #endregion
 
-        public TimeRollup Bind()
+        public async Task<TimeRollup> Bind()
         {
             if (String.IsNullOrEmpty(User))
                 throw new ArgumentNullException(nameof(User));
@@ -1992,7 +1992,7 @@ GROUP BY f.familyDisplay WITH ROLLUP";
             FlightQuery fqTrailing7 = new FlightQuery(fq) { DateRange = FlightQuery.DateRanges.Custom, DateMin = DateTime.Now.Date.AddDays(-7), DateMax = DateTime.Now.Date.AddDays(1) };
 
             // Get all of the results asynchronously, but block until they're all done.
-            Task.WaitAll(
+            await Task.WhenAll(
                 Task.Run(() => { ut.DataBind(); }),
                 Task.Run(() => { TotalsForQuery(fqThisMonth, IncludeMonthToDate, MonthToDate); }),
                 Task.Run(() => { TotalsForQuery(fqPrevMonth, IncludePreviousMonth, PrevMonth); }),
@@ -2052,7 +2052,7 @@ GROUP BY f.familyDisplay WITH ROLLUP";
 
         public TimeRollup ReportByTime { get; private set; }
 
-        public static TrainingReportsForUser ReportsForUser(FlightQuery fq, int roundingUnit)
+        public static async Task<TrainingReportsForUser> ReportsForUser(FlightQuery fq, int roundingUnit)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -2068,18 +2068,35 @@ GROUP BY f.familyDisplay WITH ROLLUP";
             TrainingReportsForUser trfu = new TrainingReportsForUser();
             TimeRollup tr = new TimeRollup(fq);
 
-            // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
             try
             {
-                Task.WaitAll(
-                    Task.Run(() => { trfu.ClassTotalsFor8710 = Form8710ClassTotal.ClassTotalsForQuery(fq, args); }),
-                    Task.Run(() => { trfu.Report8710 = Form8710Row.Form8710ForQuery(fq, args); }),
-                    Task.Run(() => { trfu.ReportByModel = ModelRollupRow.ModelRollupForQuery(fq, args, false); }),
-                    Task.Run(() => { trfu.ReportByModelTrailing12 = ModelRollupRow.ModelRollupForQuery(fq, args, true); }),
-                    Task.Run(() => { trfu.ReportByTime = tr.Bind(); })
+                // get the various reports.  This can be a bit slow, so do all of the queries in parallel asynchronously.
+                var tClassTotals = Task.Run(() => Form8710ClassTotal.ClassTotalsForQuery(fq, args));
+                var tReport8710 = Task.Run(() => Form8710Row.Form8710ForQuery(fq, args));
+                var tReportByModel = Task.Run(() => ModelRollupRow.ModelRollupForQuery(fq, args, false));
+                var tReportByModelTrailing12 = Task.Run(() => ModelRollupRow.ModelRollupForQuery(fq, args, true));
+                var tReportByTime = tr.Bind();   // already async, no Task.Run needed
+
+                await Task.WhenAll(
+                    tClassTotals,
+                    tReport8710,
+                    tReportByModel,
+                    tReportByModelTrailing12,
+                    tReportByTime
                 );
+
+                // Now assign results
+                trfu.ClassTotalsFor8710 = tClassTotals.Result;
+                trfu.Report8710 = tReport8710.Result;
+                trfu.ReportByModel = tReportByModel.Result;
+                trfu.ReportByModelTrailing12 = tReportByModelTrailing12.Result;
+                trfu.ReportByTime = tReportByTime.Result;
             }
             catch (MySqlException ex)
+            {
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", fq.UserName, ex.Message), ex, fq.UserName);
+            }
+            catch (AggregateException ex)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error getting 8710 data for user {0}: {1}", fq.UserName, ex.Message), ex, fq.UserName);
             }
