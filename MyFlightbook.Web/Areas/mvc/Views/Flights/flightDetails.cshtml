@@ -139,6 +139,11 @@
         });
     });
 </script>
+<style type="text/css">
+    .detailsSection table tr td {
+        padding: 3px;
+    }
+</style>
 <div>
     <a href="@ViewBag.returnLink"><img src="@("~/images/back.png".ToAbsolute())" /> @ViewBag.returnLinkText</a>
 </div>
@@ -154,10 +159,10 @@
             </td>
             <td>
                 <p>
-                    <span style="font-weight: bold; font-size: larger">@led.Date.ToShortDateString()</span> @led.TailNumDisplay
+                    <span class="b l">@led.Date.ToShortDateString()</span> @led.TailNumDisplay
                     <span class="@(led.IsOverridden ? "overriddenCatClass" : string.Empty)" title="@(led.IsOverridden ? Resources.LogbookEntry.LogbookAltCatClassTooltip : string.Empty)">(@led.CatClassDisplay)</span>
-                    <span style="font-weight: bold;">@led.Route.ToUpper(CultureInfo.CurrentCulture)</span>
-                    <span style="white-space:pre-line" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
+                    <span class="b">@led.Route.ToUpper(CultureInfo.CurrentCulture)</span>
+                    <span class="wsprel" dir="auto">@Html.Raw(led.CommentWithReplacedApproaches)</span>
                 </p>
                 @if (!fq.IsDefault)
                 {
@@ -176,57 +181,56 @@
         </tr>
     </table>
 </div>
-<div id="accordionproxycontainer" style="display:none;">
+<div id="accordionproxycontainer" class="dn">
     <div id="apcFlight">@Resources.Tabs.AnalysisFlight</div>
     <div id="apcAircraft">@Resources.Tabs.AnalysisAircraft</div>
     <div id="apcChart" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisChart </div>
     <div id="apcRaw" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisRaw </div>
     <div id="apcDownload" style="@(led.HasFlightData ? string.Empty : "display: none;")">@Resources.Tabs.AnalysisDownload </div>
-    <div style="display: inline-block">
+    <div class="dib">
         <div class="ctxtMenuIcon popTrigger"></div>
         <div class="popMenuContent popMenuHidden" style="margin-top: -5pt; margin-left: -120px; text-align: left;">
             @{ Html.RenderAction("FlightContextMenu", "Flights", new { le = led }); }
         </div>
     </div>
 </div>
-@{ Html.RenderPartial("_sendFlight"); }
-<div id="targetDetailsFlight" style="display:none;">
+<div id="targetDetailsFlight" class="dn">
     <div class="detailsSection">
         <table>
             <tr>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldApproaches</td>
-                <td style="padding: 3px; min-width: 1cm">@led.Approaches.FormatInt() </td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldHold</td>
-                <td class="b" style="padding: 3px; min-width: 1cm">@Html.Raw(led.fHoldingProcedures.FormatBoolean()) </td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldLanding</td>
-                <td style="padding: 3px; min-width: 1cm">@led.Landings.FormatInt() </td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldDayLandings</td>
-                <td style="padding: 3px; min-width: 1cm">@led.FullStopLandings.FormatInt() </td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldNightLandings</td>
-                <td style="padding: 3px; min-width: 1cm">@led.NightLandings.FormatInt() </td>
+                <td class="b">@Resources.LogbookEntry.FieldApproaches</td>
+                <td style="min-width: 1cm">@led.Approaches.FormatInt() </td>
+                <td class="b">@Resources.LogbookEntry.FieldHold</td>
+                <td class="b" style="min-width: 1cm">@Html.Raw(led.fHoldingProcedures.FormatBoolean()) </td>
+                <td class="b">@Resources.LogbookEntry.FieldLanding</td>
+                <td style="min-width: 1cm">@led.Landings.FormatInt() </td>
+                <td class="b">@Resources.LogbookEntry.FieldDayLandings</td>
+                <td style="min-width: 1cm">@led.FullStopLandings.FormatInt() </td>
+                <td class="b">@Resources.LogbookEntry.FieldNightLandings</td>
+                <td style="min-width: 1cm">@led.NightLandings.FormatInt() </td>
             </tr>
             <tr>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldXCountry</td>
+                <td class="b">@Resources.LogbookEntry.FieldXCountry</td>
                 <td style="padding: 3px">@led.CrossCountry.FormatDecimal(fUseHHMM)</td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldNight</td>
+                <td class="b">@Resources.LogbookEntry.FieldNight</td>
                 <td style="padding: 3px">@led.Nighttime.FormatDecimal(fUseHHMM)</td>
-                <td style="padding: 3px; font-weight: bold">@Resources.Totals.SimIMC</td>
+                <td class="b">@Resources.Totals.SimIMC</td>
                 <td style="padding: 3px">@led.SimulatedIFR.FormatDecimal(fUseHHMM)</td>
-                <td style="padding: 3px; font-weight: bold">@Resources.LogbookEntry.FieldIMC</td>
+                <td class="b">@Resources.LogbookEntry.FieldIMC</td>
                 <td style="padding: 3px">@led.IMC.FormatDecimal(fUseHHMM)</td>
-                <td style="padding: 3px; font-weight: bold">@Resources.Totals.Ground</td>
+                <td class="b">@Resources.Totals.Ground</td>
                 <td style="padding: 3px">@led.GroundSim.FormatDecimal(fUseHHMM)</td>
             </tr>
             <tr>
-                <td style="font-weight: bold">@Resources.LogbookEntry.FieldDual</td>
+                <td class="b">@Resources.LogbookEntry.FieldDual</td>
                 <td>@led.Dual.FormatDecimal(fUseHHMM)</td>
-                <td style="font-weight: bold">@Resources.LogbookEntry.FieldCFI</td>
+                <td class="b">@Resources.LogbookEntry.FieldCFI</td>
                 <td>@led.CFI.FormatDecimal(fUseHHMM)</td>
-                <td style="font-weight: bold">@Resources.LogbookEntry.FieldSIC</td>
+                <td class="b">@Resources.LogbookEntry.FieldSIC</td>
                 <td>@led.SIC.FormatDecimal(fUseHHMM)</td>
-                <td style="font-weight: bold">@Resources.LogbookEntry.FieldPIC</td>
+                <td class="b">@Resources.LogbookEntry.FieldPIC</td>
                 <td>@led.PIC.FormatDecimal(fUseHHMM)</td>
-                <td style="font-weight: bold">@Resources.LogbookEntry.FieldTotal</td>
+                <td class="b">@Resources.LogbookEntry.FieldTotal</td>
                 <td>@led.TotalFlightTime.FormatDecimal(fUseHHMM)</td>
             </tr>
         </table>
@@ -298,25 +302,25 @@
         </tr>
     </table>
 </div>
-<div id="targetDetailsChart" style="display: none;">
+<div id="targetDetailsChart" class="dn">
     <div id="analysisContainer">
-        <div style="text-align: center;"><img id="imgAnalysisInProgress" src="@("~/images/progress.gif".ToAbsolute())" /></div>
+        <div class="c"><img id="imgAnalysisInProgress" src="@("~/images/progress.gif".ToAbsolute())" /></div>
     </div>
 </div>
-<div id="targetDetailsRaw" style="display:none;">
+<div id="targetDetailsRaw" class="dn">
     <div style="height: 400px; overflow: auto;">
         <div id="divRawData">
             <img src="@("~/images/progress.gif".ToAbsolute())" />
         </div>
     </div>
 </div>
-<div id="targetDetailsDownload" style="display:none;">
+<div id="targetDetailsDownload" class="dn">
     @using (Html.BeginForm("DownloadTelemetry", "Flights", FormMethod.Post, new { id = "frmDownload", name = "frmDownload" }))
     {
         @Html.AntiForgeryToken()
         <input type="hidden" name="idFlight" value="@led.FlightID" />
         <input type="hidden" name="asAdmin" value="@(((bool) ViewBag.fIsAdmin) ? "true" : "false")" />
-        <table style="margin-left:auto; margin-right:auto;">
+        <table class="hc">
             <tr>
                 <td>@Resources.FlightData.FlightDataOriginalFormat</td>
                 <td>@dst.DisplayName</td>

@@ -1492,7 +1492,6 @@
     <Content Include="Areas\mvc\Views\Flights\_logbookTable.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_logbookTableContents.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_flightContextMenu.cshtml" />
-    <Content Include="Areas\mvc\Views\Flights\_sendFlight.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\myFlights.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_publicFlights.cshtml" />
     <Content Include="Areas\mvc\Views\Flights\_telemetryAnalysis.cshtml" />

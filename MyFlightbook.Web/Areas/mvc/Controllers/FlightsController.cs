@@ -352,36 +352,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return Content(led.ToJSON());
             });
         }
-
-        /// <summary>
-        /// Sends the specified flight to the target email address.
-        /// </summary>
-        /// <param name="idFlight">ID of the flight to send</param>
-        /// <param name="szTargetEmail">Recipient email address</param>
-        /// <param name="szMessage">An optional message from the sender</param>
-        /// <param name="szSendPageTarget"></param>
-        /// <exception cref="ArgumentException"></exception>
-        [HttpPost]
-        [Authorize]
-        public ActionResult SendFlight(int idFlight, string szTargetEmail, string szMessage, string szSendPageTarget)
-        {
-            return SafeOp(() => {
-
-                string szUser = User.Identity.Name;
-                LogbookEntryDisplay le = new LogbookEntryDisplay(idFlight, User.Identity.Name);
-                if (le.FlightID != idFlight)
-                    throw new UnauthorizedAccessException();
-
-                Profile pfSender = MyFlightbook.Profile.GetUser(szUser);
-                le.SendFlightViaEmail(szMessage, 
-                    pfSender, 
-                    Branding.CurrentBrand.EmailAddress, 
-                    String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfSender.UserFullName),
-                    szTargetEmail, szSendPageTarget);
-
-                return new EmptyResult();
-            });
-        }
         #endregion
 
         #region Child views

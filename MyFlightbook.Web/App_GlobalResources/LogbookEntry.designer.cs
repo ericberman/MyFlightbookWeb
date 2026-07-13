@@ -4686,22 +4686,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
-        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;title&gt;Flight from %APP_NAME%&lt;/title&gt;
-        ///    &lt;link href=&quot;https://%APP_URL%%APP_ROOT%/Public/CSS/day.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///    &lt;link href=&quot;https://%APP_URL%%APP_CSS%&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///&lt;/head&gt;
-        ///&lt;body style=&quot;font-family: Arial; font-size: 9pt; margin-left: auto; margin-right: auto; min-width: 300 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string SendFlightBody {
-            get {
-                return ResourceManager.GetString("SendFlightBody", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Send.
         /// </summary>
         internal static string SendFlightButton {
