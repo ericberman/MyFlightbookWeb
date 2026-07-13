@@ -363,7 +363,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("contact");
             }
 
-            util.ContactUs(User.Identity.Name, name, email, subject, message, score, (LocalConfig.SettingForKey("UseOOF") ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0, (msg, addStream) =>
+            await util.ContactUs(User.Identity.Name, name, email, subject, message, score, (LocalConfig.SettingForKey("UseOOF") ?? string.Empty).CompareCurrentCultureIgnoreCase("yes") == 0, (msg, addStream) =>
             {
                 for (int i = 0; i < Request.Files.Count; i++)
                 {

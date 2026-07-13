@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -73,6 +74,11 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="msg"></param>
         void SendEmail(MailMessage msg);
+
+        /// <summary>
+        /// Sends the specified email message asynchronously
+        /// </summary>
+        Task SendEmailAsync(MailMessage msg);
 
         /// <summary>
         /// Add admins to the message that match the specified role mask
@@ -358,7 +364,7 @@ namespace MyFlightbook
         /// <param name="fRespondOOF">True to respond with an out-of-office message</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        static public void ContactUs(string userName, string displayName, string email, string subject, string message, double captchaScore, bool fRespondOOF, Action<MailMessage, Action<Stream, string, string>> addAttachments)
+        static public async Task ContactUs(string userName, string displayName, string email, string subject, string message, double captchaScore, bool fRespondOOF, Action<MailMessage, Action<Stream, string, string>> addAttachments)
         {
             if (String.IsNullOrWhiteSpace(displayName))
                 throw new ArgumentNullException(SharedUtilityResources.ValidationNameRequired);
@@ -368,13 +374,13 @@ namespace MyFlightbook
                 throw new InvalidOperationException(SharedUtilityResources.ValidationEmailFormat);
             if (string.IsNullOrWhiteSpace(subject))
                 throw new ArgumentNullException(SharedUtilityResources.ValidationSubjectRequired);
-            
+
             MailAddress ma = new MailAddress(email, displayName ?? string.Empty);
 
-            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}\r\nScore: {4}</pre></body></html>", 
-                (message ?? string.Empty).Replace("\r\n", "<br />").Replace("\n", "<br />"), 
-                (String.IsNullOrEmpty(userName) ? "anonymous" : userName), 
-                email, 
+            string szBody = String.Format(CultureInfo.InvariantCulture, "<html><body><div>{0}</div><pre>\r\n\r\nUser = {1}\r\n{2}\r\nSent: {3}\r\nScore: {4}</pre></body></html>",
+                (message ?? string.Empty).Replace("\r\n", "<br />").Replace("\n", "<br />"),
+                (String.IsNullOrEmpty(userName) ? "anonymous" : userName),
+                email,
                 DateTime.Now.ToLongDateString(),
                 captchaScore);
             string szSubject = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", Branding.CurrentBrand.AppName, subject);
@@ -389,24 +395,14 @@ namespace MyFlightbook
                 addAttachments?.Invoke(msg, (stream, fname, contentType) => { msg.Attachments.Add(new Attachment(stream, fname, contentType)); });
                 msg.ReplyToList.Add(ma);
                 AddAdminsToMessage(msg, true, ProfileRoles.maskCanContact);
-                SendMessage(msg);
+                await SendMessageAsync(msg);
+                if (fRespondOOF)
+                    NotifyUser(szSubject, ApplyHtmlEmailTemplate(SharedUtilityResources.ContactMeResponse, false), ma, false, false);
             }
-
-            if (fRespondOOF)
-                NotifyUser(szSubject, ApplyHtmlEmailTemplate(SharedUtilityResources.ContactMeResponse, false), ma, false, false);
         }
 
-        /// <summary>
-        /// Sends a message, setting enableSSL appropriately
-        /// </summary>
-        /// <param name="msg"></param>
-        static public void SendMessage(MailMessage msg)
+        static private void FinalizeMsg(MailMessage msg)
         {
-            if (msg == null)
-                throw new ArgumentNullException(nameof(msg));
-            if (EmailSender == null)
-                throw new InvalidOperationException("Email sender not initialized.");
-
             if (msg.IsBodyHtml && msg.AlternateViews.Count == 0)
             {
                 string szHTML = msg.Body;
@@ -433,8 +429,34 @@ namespace MyFlightbook
                     msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(szHTML, new System.Net.Mime.ContentType("text/html")));
                 }
             }
+        }
 
-            EmailSender?.SendEmail(msg);
+        /// <summary>
+        /// Sends a message, setting enableSSL appropriately.  Returns immediately (fire-and-forget)
+        /// </summary>
+        /// <param name="msg"></param>
+        static public void SendMessage(MailMessage msg)
+        {
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+            if (EmailSender == null)
+                throw new InvalidOperationException("Email sender not initialized.");
+
+            FinalizeMsg(msg);
+
+            EmailSender.SendEmail(msg);
+        }
+
+        static public Task SendMessageAsync(MailMessage msg)
+        {
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+            if (EmailSender == null)
+                throw new InvalidOperationException("Email sender not initialized.");
+
+            FinalizeMsg(msg);
+
+            return EmailSender.SendEmailAsync(msg);
         }
 
         /// <summary>
@@ -467,7 +489,7 @@ namespace MyFlightbook
             if (szMessage == null)
                 throw new ArgumentNullException(nameof(szMessage));
 
-            new System.Threading.Thread(() =>
+            Task.Run(async () =>
             {
                 try
                 {
@@ -491,13 +513,13 @@ namespace MyFlightbook
                         if (fCcAdmins)
                             AddAdminsToMessage(msg, (maUser == null), RoleMask);
 
-                        SendMessage(msg);
+                        await SendMessageAsync(msg);
                     }
                 }
                 catch (ArgumentNullException) { }
                 catch (InvalidOperationException) { }
                 catch (Exception ex) when (ex is SmtpException) { }
-            }).Start();
+            });
         }
 
         /// <summary>
@@ -588,30 +610,6 @@ namespace MyFlightbook
             msg.Body = ApplyHtmlEmailTemplate(szContent, msg.IsBodyHtml);
             msg.IsBodyHtml = true;
             // Don't set an alternate - it will be created and set by util.sendMsg
-        }
-
-        static public void SendEmail(string szFrom, string szFromDisplay, string szTo, string szToDisplay, string szReply, string szReplyDisplay, string szSubject, string szBody, bool fIsHtml)
-        {
-            if (String.IsNullOrWhiteSpace(szTo))
-                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
-            if (!RegexUtility.Email.IsMatch(szTo))
-                throw new ArgumentException(SharedUtilityResources.ValidationEmailFormat);
-            if (String.IsNullOrWhiteSpace(szFrom))
-                throw new ArgumentException(SharedUtilityResources.ValidationEmailRequired);
-            if (!RegexUtility.Email.IsMatch(szFrom))
-                throw new ArgumentException(SharedUtilityResources  .ValidationEmailFormat);
-
-            using (MailMessage msg = new MailMessage())
-            {
-                msg.From = new MailAddress(szFrom, szFromDisplay ?? szFrom);
-                msg.To.Add(new MailAddress(szTo, szToDisplay ?? szTo));
-                if (!String.IsNullOrEmpty(szReply))
-                    msg.ReplyToList.Add(new MailAddress(szReply, szReplyDisplay ?? szReply));
-                msg.Subject = szSubject;
-                msg.Body = Branding.ReBrand(szBody);
-                msg.IsBodyHtml = fIsHtml;
-                SendMessage(msg);
-            }
         }
         #endregion
 

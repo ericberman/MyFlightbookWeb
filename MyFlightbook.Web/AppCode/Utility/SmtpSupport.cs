@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -25,6 +26,21 @@ namespace MyFlightbook.Injection
                 System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
 
                 smtpClient.Send(msg);
+            }
+        }
+
+        public async Task SendEmailAsync(MailMessage msg)
+        {
+            if (msg == null)
+                throw new ArgumentNullException(nameof(msg));
+
+            using (SmtpClient smtpClient = new SmtpClient())
+            {
+                if (!smtpClient.Host.Contains("local"))
+                    smtpClient.EnableSsl = true;
+                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
+
+                await smtpClient.SendMailAsync(msg);
             }
         }
 
