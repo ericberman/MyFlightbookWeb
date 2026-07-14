@@ -1,11 +1,13 @@
-﻿@using System.Globalization
+﻿@using MyFlightbook.AircraftSupport.Maintenance
+@using System.Globalization
 @{
     bool fAdminMode = ViewBag.fAdminMode;
     IEnumerable<Aircraft> rgac = ViewBag.sourceAircraft;
     IEnumerable<AircraftGroup> rgGroups = ViewBag.groupedAircraft;
     AircraftGroup.GroupMode groupingMode = ViewBag.groupMode;
     Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-    bool fHasTachTime = pf.PreferenceExists(MyFlightbook.OAuth.TachTime.TachTimeClient.TokenPrefKey);
+    bool fHasTachTime = pf.PreferenceExists(ExternalMaintenanceSourceID.TachTime.TokenPreferenceKey());
+    bool fHasMyTailLog = pf.PreferenceExists(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey());
 
     ViewBag.Title = Resources.LocalizedText.MyAircraftHeader + (fAdminMode ? " - ADMIN MODE (No images or delete)" : string.Empty);
     ViewBag.defaultTab = tabID.tabAircraft;
@@ -67,7 +69,23 @@
             },
             success: function (r) {
                 $("#pnlSyncMaintResult").html(r);
-                showModalById('pnlSyncMaintResult', '@Resources.Aircraft.TachTimeSyncResult', 450);
+                showModalById('pnlSyncMaintResult', '@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceResultTitle, ExternalMaintenanceSourceID.TachTime.SourceName())', 450);
+            }
+        });
+    }
+
+    function importMTL() {
+        $("#imgMTLProgress").show();
+        $.ajax({
+            url: "@Url.Action("MyTailLogRefresh", "oAuth")",
+            type: "POST", data: JSON.stringify(new Object()), dataType: "html", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            complete: function (r) {
+                $("#imgMTLProgress").hide();
+            },
+            success: function (r) {
+                $("#pnlSyncMaintResult").html(r);
+                showModalById('pnlSyncMaintResult', '@String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceResultTitle, ExternalMaintenanceSourceID.MyTailLog.SourceName())', 450);
             }
         });
     }
@@ -93,12 +111,12 @@
                 <span style="flex: 1">
                     @using (Html.BeginForm("DownloadAircraft", "Aircraft", FormMethod.Post, new { id = "frmDownloadAircraft", name = "frmDownloadAircraft" }))
                     {
-                    @Html.AntiForgeryToken()
-                    <a class="imgMiddle" href="#" onclick="javascript: $('#frmDownloadAircraft')[0].submit(); return false;">
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
-                        <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
-                        @Resources.Aircraft.DownloadCSV
-                    </a>
+                        @Html.AntiForgeryToken()
+                        <a class="imgMiddle" href="#" onclick="javascript: $('#frmDownloadAircraft')[0].submit(); return false;">
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/csvicon_sm.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
+                            @Resources.Aircraft.DownloadCSV
+                        </a>
                     }
                 </span>
                 if (fHasTachTime)
@@ -106,7 +124,16 @@
                     <div style="flex: 1;">
                         <a class="imgMiddle" href="#" onclick="javascript: importTT(); return false;">
                             <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
-                            @Resources.Aircraft.TachTimeSyncTitle <img class="imgMiddle dn" id="imgTTProgress" src="@("~/images/progress.gif".ToAbsolute())" style="height:16pt; width:16pt;" />
+                            @String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceSyncTitle, ExternalMaintenanceSourceID.TachTime.SourceName()) <img class="imgMiddle dn" id="imgTTProgress" src="@("~/images/progress.gif".ToAbsolute())" style="height:16pt; width:16pt;" />
+                        </a>
+                    </div>
+                }
+                if (fHasMyTailLog)
+                {
+                    <div style="flex: 1;">
+                        <a class="imgMiddle" href="#" onclick="javascript: importMTL(); return false;">
+                            <img src="@VirtualPathUtility.ToAbsolute("~/images/download.png")" class="imgMiddle" style="margin-right: 5px; margin-left:5px;" />
+                            @String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceSyncTitle, ExternalMaintenanceSourceID.MyTailLog.SourceName()) <img class="imgMiddle dn" id="imgMTLProgress" src="@("~/images/progress.gif".ToAbsolute())" style="height:16pt; width:16pt;" />
                         </a>
                     </div>
                 }

@@ -1,13 +1,30 @@
-﻿@using MyFlightbook.OAuth.TachTime
+﻿@using MyFlightbook.AircraftSupport.Maintenance;
+@using MyFlightbook.OAuth.TachTime
+@using MyFlightbook.OAuth.MyTailLog
 @{ 
     MyFlightbook.Profile m_pf = ViewBag.pf;
 }
 
 <table style="border-spacing: 10px; border-collapse: separate;">
     <tr class="imgMiddle">
+        <td class="imgMiddle"><img style="height:95px; width:259px;" src='@(((bool)(Session[MFBConstants.keyIsNightSession] ?? false) ? "~/images/mytaillog-logo-dark.svg" : "~/images/mytaillog-logo-light.svg").ToAbsolute())' alt="@Resources.Preferences.ExternalMaintenanceNameMyTailLog" /></td>
+        <td>
+            @if (m_pf.PreferenceExists(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey()))
+            {
+                <p>@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceMyTailLogAuthed)</p>
+                <a href="@Url.Action("MyTailLogRevoke", "oAuth")">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceDeAuthorizeTachTime)</a>
+            }
+            else
+            {
+                Uri authLink = new MyTailLogClient().AuthorizationUri(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), string.Empty, m_pf);
+                <a href="@(authLink)">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceAuthorizeMyTailLog)</a>
+            }
+        </td>
+    </tr>
+    <tr class="imgMiddle">
         <td class="imgMiddle"><img style="height:95px; width:259px;" src='@("~/images/tachtime.svg".ToAbsolute())' alt="@Resources.Preferences.ExternalMaintenanceNameTachTime" /></td>
         <td>
-            @if (m_pf.PreferenceExists(TachTimeClient.TokenPrefKey))
+            @if (m_pf.PreferenceExists(ExternalMaintenanceSourceID.TachTime.TokenPreferenceKey()))
             {
                 <p>@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceTachTimeIsAuthed)</p>
                 <a href="@Url.Action("TachTimeRevoke", "oAuth")">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceDeAuthorizeTachTime)</a>

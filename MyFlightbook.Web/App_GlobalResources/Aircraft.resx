@@ -660,25 +660,25 @@ Do you still want to delete?</value>
   <data name="MaintenanceChangeHistoryPrompt" xml:space="preserve">
     <value>Change History</value>
   </data>
-  <data name="TachTimeRefreshAuthFailed" xml:space="preserve">
-    <value>Unable to refresh access to TachTime; please revoke/regrant permissions</value>
+  <data name="ExternalMaintenanceRefreshAuthFailed" xml:space="preserve">
+    <value>Unable to refresh access to {0}; please revoke/regrant permissions</value>
   </data>
-  <data name="TachTimeSyncTitle" xml:space="preserve">
-    <value>Update from TachTime</value>
+  <data name="ExternalMaintenanceSyncTitle" xml:space="preserve">
+    <value>Update from {0}</value>
   </data>
-  <data name="TachTimeUnknownAircraft" xml:space="preserve">
-    <value>Aircraft from TachTime not active in your account</value>
+  <data name="ExternalMaintenanceUnknownAircraft" xml:space="preserve">
+    <value>Aircraft from {0} not active in your account</value>
   </data>
-  <data name="TachTimeSyncResult" xml:space="preserve">
-    <value>Results from TachTime</value>
+  <data name="ExternalMaintenanceResultTitle" xml:space="preserve">
+    <value>Results from {0}</value>
   </data>
-  <data name="TachTimeNothingImported" xml:space="preserve">
+  <data name="ExternalMaintenanceNothingImported" xml:space="preserve">
     <value>(No data imported)</value>
   </data>
-  <data name="TachTimeSuccess" xml:space="preserve">
+  <data name="ExternalMaintenanceSuccess" xml:space="preserve">
     <value>Success</value>
   </data>
-  <data name="TachTimeError" xml:space="preserve">
+  <data name="ExternalMaintenanceError" xml:space="preserve">
     <value>Error</value>
   </data>
 </root>

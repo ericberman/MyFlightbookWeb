@@ -395,7 +395,7 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
                         {
                             if (highWaterTach < 0 && ecs.UsesHours)
                                 highWaterTach = HighWaterMarkTachForUserInAircraft(ar.AircraftID, szUser);
-                            string sourceAttribution = String.Format(CultureInfo.CurrentCulture, AircraftSupport.Properties.ExternalMaintenance.SourceAttribution, emr.SourceName);
+                            string sourceAttribution = String.Format(CultureInfo.CurrentCulture, AircraftSupport.Properties.ExternalMaintenance.SourceAttribution, emr.DataSource.SourceName());
                             if (ecs.UsesHours)
                             {
                                 // create a synthetic deadline for this item.

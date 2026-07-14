@@ -428,7 +428,7 @@ namespace MyFlightbook.OAuth
             string scopes = d.scope;
             AuthorizationState authstate = new AuthorizationState(scopes != null ? OAuthUtilities.SplitScopes(scopes) : null)
             {
-                AccessToken = (string) d.access_token ?? string.Empty,
+                AccessToken = (string)d.access_token ?? string.Empty,
                 AccessTokenIssueDateUtc = DateTime.UtcNow
             };
 
@@ -579,6 +579,20 @@ namespace MyFlightbook.OAuth
         /// <returns></returns>
 
         private static readonly char[] trimChars = new char[] { '=' };
+
+        protected async Task<T> GetJson<T>(Uri uri, HttpMethod method) =>
+            (T)await SharedHttpClient.GetResponseForAuthenticatedUri(uri, AuthState.AccessToken, method, response =>
+            {
+                string s = response.Content.ReadAsStringAsync().Result;
+                if (!response.IsSuccessStatusCode)
+                    throw new InvalidOperationException($"Error fetching {uri}: {response.StatusCode}, message: {s}");
+                return JsonConvert.DeserializeObject<T>(s);
+            });
+
+        protected Task<T> GetJson<T>(Uri uri)
+        {
+            return GetJson<T>(uri, HttpMethod.Get);
+        }
     }
 
     public class OAuth2AdHocClient : OAuthClientBase

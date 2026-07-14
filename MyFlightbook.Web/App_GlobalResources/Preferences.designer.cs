@@ -493,6 +493,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to pull aircraft data from MyTailLog.
+        /// </summary>
+        internal static string ExternalMaintenanceAuthorizeMyTailLog {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceAuthorizeMyTailLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorize %APP_NAME% to pull aircraft data from TachTime.
         /// </summary>
         internal static string ExternalMaintenanceAuthorizeTachTime {
@@ -502,11 +511,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to De-authorize %APP_NAME% on MyTailLog.
+        /// </summary>
+        internal static string ExternalMaintenanceDeAuthorizeMyTailLog {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceDeAuthorizeMyTailLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to De-authorize %APP_NAME% on TachTime.
         /// </summary>
         internal static string ExternalMaintenanceDeAuthorizeTachTime {
             get {
                 return ResourceManager.GetString("ExternalMaintenanceDeAuthorizeTachTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to pull maintenance data from MyTailLog.
+        /// </summary>
+        internal static string ExternalMaintenanceMyTailLogAuthed {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceMyTailLogAuthed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MyTailLog.
+        /// </summary>
+        internal static string ExternalMaintenanceNameMyTailLog {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceNameMyTailLog", resourceCulture);
             }
         }
         

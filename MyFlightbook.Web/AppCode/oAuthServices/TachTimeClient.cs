@@ -1,13 +1,12 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using MyFlightbook.AircraftSupport.Maintenance;
 using MyFlightbook.AircraftSupport.Maintenance.TachTime;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -30,9 +29,10 @@ namespace MyFlightbook.OAuth.TachTime
         private const string tokenEndpoint = "https://auth.tachtime.app/oauth/token";
         private const string revokeEndpoint = "https://auth.tachtime.app/oauth/revoke";
         private static readonly string[] scopes = new string[] { "tachtime:me:read", "tachtime:aircraft:read", "tachtime:compliance:read", "tachtime:maintenance-events:read" };
-        public const string TokenPrefKey = "TachTimeToken";
         private const string szCachedCodeVerifier = "tachTimeCodeVerifier";
         private const string dataEndpointBase = "https://auth.tachtime.app/v1/";
+
+        private string TokenPrefKey => ExternalMaintenanceSourceID.TachTime.TokenPreferenceKey();
 
         private static bool UseSandbox(string host)
         {
@@ -112,7 +112,7 @@ namespace MyFlightbook.OAuth.TachTime
                 catch (UnauthorizedAccessException)
                 {
                     pf.SetPreferenceForKey(TokenPrefKey, null, true);
-                    throw new UnauthorizedAccessException(Branding.ReBrand(Resources.Aircraft.TachTimeRefreshAuthFailed));
+                    throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Aircraft.ExternalMaintenanceRefreshAuthFailed), ExternalMaintenanceSourceID.TachTime.SourceName()));
                 }
             }
             return true;
@@ -134,16 +134,8 @@ namespace MyFlightbook.OAuth.TachTime
             List<TachTimeAircraft> lst = new List<TachTimeAircraft>();
             while (ttacr.has_more)
             {
-                ttacr = (TachTimeAircraftCollectionResponse)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft?cursor={WebUtility.UrlEncode(ttacr.next_cursor)}"), AuthState.AccessToken, HttpMethod.Get, (response) =>
-                {
-                    string szResult = response.Content.ReadAsStringAsync().Result;
-                    if (!response.IsSuccessStatusCode)
-                        throw new InvalidOperationException($"Error getting user aircraft from TachTime: {response.StatusCode}, message: {szResult}");
-
-                    ttacr = JsonConvert.DeserializeObject<TachTimeAircraftCollectionResponse>(szResult);
-                    lst.AddRange(ttacr.data);
-                    return ttacr;
-                });
+                ttacr = await GetJson<TachTimeAircraftCollectionResponse>(new Uri(dataEndpointBase + $"aircraft?cursor={WebUtility.UrlEncode(ttacr.next_cursor)}"));
+                lst.AddRange(ttacr.data);
             }
 
             return lst;
@@ -217,14 +209,7 @@ namespace MyFlightbook.OAuth.TachTime
         /// <exception cref="InvalidOperationException"></exception>
         private async Task<TachTimeAircraft> GetAircraftDetail(string tachTimeAircraftID)
         {
-            return (TachTimeAircraft) await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}"), AuthState.AccessToken, HttpMethod.Get, (response) =>
-            {
-                string szResult = response.Content.ReadAsStringAsync().Result;
-                if (!response.IsSuccessStatusCode)
-                    throw new InvalidOperationException($"Error getting aircraft details from TachTime: {response.StatusCode}, message: {szResult}");
-
-                return JsonConvert.DeserializeObject<TachTimeAircraft>(szResult);
-            });
+            return await GetJson<TachTimeAircraft>(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}"));
         }
 
         /// <summary>
@@ -237,14 +222,7 @@ namespace MyFlightbook.OAuth.TachTime
         /// <exception cref="InvalidOperationException"></exception>
         private async Task<TachTimeCompliance> GetComplianceForAircraft(string tachTimeAircraftID)
         {
-            return (TachTimeCompliance)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/compliance"), AuthState.AccessToken, HttpMethod.Get, (response) =>
-            {
-                string szResult = response.Content.ReadAsStringAsync().Result;
-                if (!response.IsSuccessStatusCode)
-                    throw new InvalidOperationException($"Error getting aircraft compliance from TachTime: {response.StatusCode}, message: {szResult}");
-
-                return JsonConvert.DeserializeObject<TachTimeCompliance>(szResult);
-            });
+            return await GetJson<TachTimeCompliance>(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/compliance"));
         }
 
         private async Task<IEnumerable<TachTimeMaintenanceEvent>> GetMaintenanceHistoryForAircraft(string tachTimeAircraftID)
@@ -254,14 +232,7 @@ namespace MyFlightbook.OAuth.TachTime
 
             while (ttmecr.has_more)
             {
-                ttmecr = (TachTimeMaintenanceEventCollectionResponse)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/maintenance-events?cursor={WebUtility.UrlEncode(ttmecr.next_cursor)}"), AuthState.AccessToken, HttpMethod.Get, (response) =>
-                {
-                    string szResult = response.Content.ReadAsStringAsync().Result;
-                    if (!response.IsSuccessStatusCode)
-                        throw new InvalidOperationException($"Error getting aircraft maintenance history from TachTime: {response.StatusCode}, message: {szResult}");
-
-                    return JsonConvert.DeserializeObject<TachTimeMaintenanceEventCollectionResponse>(szResult);
-                });
+                ttmecr = await GetJson<TachTimeMaintenanceEventCollectionResponse>(new Uri(dataEndpointBase + $"aircraft/{WebUtility.UrlEncode(tachTimeAircraftID)}/maintenance-events?cursor={WebUtility.UrlEncode(ttmecr.next_cursor)}"));
                 lst.AddRange(ttmecr.data);
             }
             return lst;
@@ -286,7 +257,7 @@ namespace MyFlightbook.OAuth.TachTime
 
                 // Start out with the unknown aircraft
                 if (lstUnknown.Count > 0)
-                    dResult[Resources.Aircraft.TachTimeUnknownAircraft] = lstUnknown.Select(tta => $"{tta.n_number} ({tta.make} {tta.model})");
+                    dResult[String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceUnknownAircraft, ExternalMaintenanceSourceID.TachTime.SourceName())] = lstUnknown.Select(tta => $"{tta.n_number} ({tta.make} {tta.model})");
 
                 UserAircraft ua = new UserAircraft(username);
                 // Now try to update as appropriate.
@@ -306,10 +277,10 @@ namespace MyFlightbook.OAuth.TachTime
             }
             catch (Exception e) when (!(e is OutOfMemoryException))
             {
-                dResult[Resources.Aircraft.TachTimeError] = new string[] { e.Message };
+                dResult[Resources.Aircraft.ExternalMaintenanceError] = new string[] { e.Message };
             }
             if (dResult.Count == 0)
-                dResult[Resources.Aircraft.TachTimeSuccess] = new string[] { Resources.Aircraft.TachTimeNothingImported };
+                dResult[Resources.Aircraft.ExternalMaintenanceSuccess] = new string[] { Resources.Aircraft.ExternalMaintenanceNothingImported };
             return dResult;
         }
 

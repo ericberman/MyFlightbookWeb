@@ -594,6 +594,7 @@
     <Content Include="images\mfblogonew-large.png" />
     <Content Include="images\mfblogonew.png" />
     <Content Include="images\myflightbooknewstaging.png" />
+    <Content Include="images\mytaillog-logo-dark.svg" />
     <Content Include="images\pdf-scribble.png" />
     <Content Include="images\pdf-wetink.png" />
     <Content Include="images\prohibited.png" />
@@ -1743,6 +1744,7 @@
     <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
     <Compile Include="AppCode\oAuthServices\FlightCrewViewClient.cs" />
     <Compile Include="AppCode\oAuthServices\LeonClient.cs" />
+    <Compile Include="AppCode\oAuthServices\MyTailLogClient.cs" />
     <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
     <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />
     <Compile Include="AppCode\oAuthServices\RosterBusterClient.cs" />
@@ -1919,6 +1921,7 @@
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />
     <Compile Include="Areas\mvc\Controllers\oAuthController.cs" />
+    <Compile Include="Areas\mvc\Controllers\oAuthControllerServer.cs" />
     <Compile Include="Areas\mvc\Controllers\PlaypenController.cs" />
     <Compile Include="Areas\mvc\Controllers\PrefsController.cs" />
     <Compile Include="Areas\mvc\Controllers\PrintController.cs" />

@@ -187,24 +187,16 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
 
         public TachTimeCompliance() { }
 
-        private DateTime DateIfLater(DateTime? proposed, DateTime def)
-        {
-            if (proposed == null)
-                return def;
-            DateTime dt = DateTime.SpecifyKind(proposed.Value, DateTimeKind.Utc).Date;
-            return dt.CompareTo(def) > 0 ? dt : def;
-        }
-
         public MaintenanceRecord ToMaintenanceRecord(MaintenanceRecord mr = null)
         {
             MaintenanceRecord r = new MaintenanceRecord(mr);
 
             r.Last100 = standard_inspections.inspection_100hr.last_completed_tach > (mr?.Last100 ?? 0) ? standard_inspections.inspection_100hr.last_completed_tach : r.Last100;
-            r.LastAnnual = DateIfLater(standard_inspections.annual_inspection.last_completed_at, r.LastAnnual);
-            r.LastAltimeter = DateIfLater(standard_inspections.altimeter_check.last_completed_at, r.LastAltimeter);
-            r.LastELT = DateIfLater(standard_inspections.elt_inspection.last_completed_at, r.LastELT);
-            r.LastStatic = DateIfLater(standard_inspections.pitot_static_check.last_completed_at, r.LastStatic);
-            r.LastTransponder = DateIfLater(standard_inspections.transponder_check.last_completed_at, r.LastTransponder);
+            r.LastAnnual = ExternalMaintenanceRecord.DateIfLater(standard_inspections.annual_inspection.last_completed_at, r.LastAnnual);
+            r.LastAltimeter = ExternalMaintenanceRecord.DateIfLater(standard_inspections.altimeter_check.last_completed_at, r.LastAltimeter);
+            r.LastELT = ExternalMaintenanceRecord.DateIfLater(standard_inspections.elt_inspection.last_completed_at, r.LastELT);
+            r.LastStatic = ExternalMaintenanceRecord.DateIfLater(standard_inspections.pitot_static_check.last_completed_at, r.LastStatic);
+            r.LastTransponder = ExternalMaintenanceRecord.DateIfLater(standard_inspections.transponder_check.last_completed_at, r.LastTransponder);
 
             return r;
         }
@@ -320,8 +312,6 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
             HighWaterHobbs = 0;
             HighWaterTach = data.AircraftDetails.current_tach_time;
         }
-
-        public override string SourceName { get { return "TachTime"; } }
 
         public override IEnumerable<MaintenanceLog> GetMaintenanceLog()
         {

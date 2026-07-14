@@ -715,4 +715,16 @@
   <data name="ExternalMaintenanceTachTimeIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to pull maintenance data from TachTime</value>
   </data>
+  <data name="ExternalMaintenanceAuthorizeMyTailLog" xml:space="preserve">
+    <value>Authorize %APP_NAME% to pull aircraft data from MyTailLog</value>
+  </data>
+  <data name="ExternalMaintenanceDeAuthorizeMyTailLog" xml:space="preserve">
+    <value>De-authorize %APP_NAME% on MyTailLog</value>
+  </data>
+  <data name="ExternalMaintenanceNameMyTailLog" xml:space="preserve">
+    <value>MyTailLog</value>
+  </data>
+  <data name="ExternalMaintenanceMyTailLogAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to pull maintenance data from MyTailLog</value>
+  </data>
 </root>

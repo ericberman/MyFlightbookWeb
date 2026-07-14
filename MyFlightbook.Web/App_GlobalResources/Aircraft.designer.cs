@@ -906,6 +906,69 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string ExternalMaintenanceError {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (No data imported).
+        /// </summary>
+        internal static string ExternalMaintenanceNothingImported {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceNothingImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to refresh access to {0}; please revoke/regrant permissions.
+        /// </summary>
+        internal static string ExternalMaintenanceRefreshAuthFailed {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceRefreshAuthFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results from {0}.
+        /// </summary>
+        internal static string ExternalMaintenanceResultTitle {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceResultTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        internal static string ExternalMaintenanceSuccess {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update from {0}.
+        /// </summary>
+        internal static string ExternalMaintenanceSyncTitle {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceSyncTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft from {0} not active in your account.
+        /// </summary>
+        internal static string ExternalMaintenanceUnknownAircraft {
+            get {
+                return ResourceManager.GetString("ExternalMaintenanceUnknownAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The highest hobbs value you&apos;ve recorded is {0:0.0#}.
         /// </summary>
         internal static string HighWaterMarkHobbsOnly {
@@ -1586,69 +1649,6 @@ namespace Resources {
         internal static string SharedDeadlineIndicator {
             get {
                 return ResourceManager.GetString("SharedDeadlineIndicator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        internal static string TachTimeError {
-            get {
-                return ResourceManager.GetString("TachTimeError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (No data imported).
-        /// </summary>
-        internal static string TachTimeNothingImported {
-            get {
-                return ResourceManager.GetString("TachTimeNothingImported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to refresh access to TachTime; please revoke/regrant permissions.
-        /// </summary>
-        internal static string TachTimeRefreshAuthFailed {
-            get {
-                return ResourceManager.GetString("TachTimeRefreshAuthFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Success.
-        /// </summary>
-        internal static string TachTimeSuccess {
-            get {
-                return ResourceManager.GetString("TachTimeSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Results from TachTime.
-        /// </summary>
-        internal static string TachTimeSyncResult {
-            get {
-                return ResourceManager.GetString("TachTimeSyncResult", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update from TachTime.
-        /// </summary>
-        internal static string TachTimeSyncTitle {
-            get {
-                return ResourceManager.GetString("TachTimeSyncTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aircraft from TachTime not active in your account.
-        /// </summary>
-        internal static string TachTimeUnknownAircraft {
-            get {
-                return ResourceManager.GetString("TachTimeUnknownAircraft", resourceCulture);
             }
         }
         

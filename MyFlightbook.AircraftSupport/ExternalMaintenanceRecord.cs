@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.AircraftSupport.Maintenance.TachTime;
+using MyFlightbook.AircraftSupport.Maintenance.MyTailLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,22 +19,51 @@ namespace MyFlightbook.AircraftSupport.Maintenance
     {
         Unknown = 0,
         TachTime = 1,
+        MyTailLog
     }
 
     public delegate ExternalMaintenanceRecord MaintenanceSourceFactory(string user, int aircraftID, string json, decimal highWaterTach, decimal highWaterHobbs, DateTime timestamp);
 
-    internal static class ExternalMaintenanceRegistry
+    public static class ExternalMaintenanceRegistry
     {
         private static readonly Dictionary<ExternalMaintenanceSourceID, MaintenanceSourceFactory> _map = new Dictionary<ExternalMaintenanceSourceID, MaintenanceSourceFactory>()
         {
-            {  ExternalMaintenanceSourceID.Unknown, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new ExternalMaintenanceRecord() { Username = user, AircraftID = aircraftID, JSONData = json, HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } },
-            {  ExternalMaintenanceSourceID.TachTime, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new TachTimeRecord(user, aircraftID, json) { HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } },
+            { ExternalMaintenanceSourceID.Unknown, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new ExternalMaintenanceRecord() { Username = user, AircraftID = aircraftID, JSONData = json, HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } },
+            { ExternalMaintenanceSourceID.TachTime, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new TachTimeRecord(user, aircraftID, json) { HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } },
+            { ExternalMaintenanceSourceID.MyTailLog, (user, aircraftID, json, highWaterTach,highWaterHobbs, timestamp) => new MyTailLogRecord(user, aircraftID, json) {HighWaterTach = highWaterTach, HighWaterHobbs = highWaterHobbs, LastUpdated = timestamp } }
         };
 
         public static ExternalMaintenanceRecord Create(ExternalMaintenanceSourceID sourceID, string user, int aircraftID, string json, decimal highWaterTach, decimal highWaterHobbs, DateTime timestamp)
             => _map.TryGetValue(sourceID, out var factory)
                 ? factory(user, aircraftID, json, highWaterTach, highWaterHobbs, timestamp)
                 : throw new InvalidOperationException($"Unknown external maintenance source: {(int) sourceID} ({sourceID}");
+
+        public static string SourceName(this ExternalMaintenanceSourceID emsid)
+        {
+            switch (emsid)
+            {
+                case ExternalMaintenanceSourceID.TachTime:
+                    return "TachTime";
+                case ExternalMaintenanceSourceID.MyTailLog:
+                    return "MyTailLog";
+                case ExternalMaintenanceSourceID.Unknown:
+                    return emsid.ToString();
+            }
+            throw new InvalidOperationException($"No string available for {emsid}");
+        }
+
+        public static string TokenPreferenceKey(this ExternalMaintenanceSourceID emsid)
+        {
+            switch (emsid)
+            {
+                case ExternalMaintenanceSourceID.TachTime:
+                    return "TachTimeToken";
+                case ExternalMaintenanceSourceID.MyTailLog:
+                    return "MyTailLogToken";
+                default:
+                    throw new InvalidOperationException($"No preference key available for {emsid}");
+            }
+        }
     }
 
     /// <summary>
@@ -74,10 +104,6 @@ namespace MyFlightbook.AircraftSupport.Maintenance
         /// </summary>
         public ExternalMaintenanceSourceID DataSource { get; set; }
 
-        /// <summary>
-        /// Human readable name of the source of the data (e.g., TachTime)
-        /// </summary>
-        public virtual string SourceName { get { return Properties.ExternalMaintenance.SourceUnknown; } }
         /// <summary>
         /// The raw JSON data of the maintenance record
         /// </summary>
@@ -188,5 +214,13 @@ namespace MyFlightbook.AircraftSupport.Maintenance
             return lst;
         }
         #endregion
+
+        public static DateTime DateIfLater(DateTime? proposed, DateTime def)
+        {
+            if (proposed == null)
+                return def;
+            DateTime dt = DateTime.SpecifyKind(proposed.Value, DateTimeKind.Utc).Date;
+            return dt.CompareTo(def) > 0 ? dt : def;
+        }
     }
 }
