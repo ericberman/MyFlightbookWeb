@@ -672,7 +672,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 {
                     return Redirect(CFIStudentMapRequest.ExecuteRequestForUser(Request["req"], User.Identity.Name));
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     ViewBag.error = ex.Message;
                     return View("addRelationship");
@@ -689,7 +689,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 ViewBag.requestPrompt = CFIStudentMapRequest.ProcessRequestParameter(req, User.Identity.Name);
             } 
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ViewBag.error = ex.Message;
             }

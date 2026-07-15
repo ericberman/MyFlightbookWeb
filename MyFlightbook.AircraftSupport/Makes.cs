@@ -571,7 +571,7 @@ WHERE {1}";
                 if (TypeName.CompareCurrentCultureIgnoreCase("yes") == 0)
                     throw new MyFlightbookValidationException(AircraftResources.errYesNotValidType);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ErrorString = ex.Message;
                 return false;

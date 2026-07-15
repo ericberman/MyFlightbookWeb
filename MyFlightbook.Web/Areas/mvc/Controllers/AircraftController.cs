@@ -358,7 +358,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 else
                     acNew.Commit(User.Identity.Name);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ViewBag.error = String.IsNullOrEmpty(acNew.ErrorString) ? ex.Message : acNew.ErrorString;
                 ViewBag.aircraft = acExisting;

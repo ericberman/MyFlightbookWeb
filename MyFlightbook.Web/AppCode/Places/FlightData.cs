@@ -443,7 +443,7 @@ namespace MyFlightbook.Telemetry
                                         return;
                                     }
                                 }
-                                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }   // eat any error and fall through below
+                                catch (Exception ex) when (ex.IsNonFatal()) { }   // eat any error and fall through below
                             }
                         }
                         // No path was found above.
@@ -854,7 +854,7 @@ namespace MyFlightbook.Telemetry
                                 if (blockIn != null)
                                     blockIn.DateValue = AutoFillOptions.UtcFromZone(DateTime.SpecifyKind(blockIn.DateValue, DateTimeKind.Unspecified), szIANATimeZone2.Result);
                             }
-                            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+                            catch (Exception ex) when (ex.IsNonFatal()) { }
                         } else if (opt.TimeConversion == AutoFillOptions.TimeConversionCriteria.Preferred)
                         {
                             if (opt.PreferredTimeZone == null)

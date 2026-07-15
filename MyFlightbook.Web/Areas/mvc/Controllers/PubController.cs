@@ -188,7 +188,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (rgsz[0].CompareCurrentCultureIgnoreCase(YearInReviewPrefix(DefaultYear(year))) != 0)
                     throw new UnauthorizedAccessException();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 throw new UnauthorizedAccessException();
             }

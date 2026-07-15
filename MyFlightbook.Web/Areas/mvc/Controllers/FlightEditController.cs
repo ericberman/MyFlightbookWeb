@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 /******************************************************
  * 
- * Copyright (c) 2024-2025 MyFlightbook LLC
+ * Copyright (c) 2024-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -731,7 +731,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     }
                 }
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ViewBag.error = ex.Message;
                 ViewBag.cfiComments = cfiComments; // preserve the comments for next try

@@ -151,7 +151,7 @@ namespace MyFlightbook.Achievements
                 // Now add in all of the checkride badges.
                 lstTotal.AddRange(lstCheckrideBadges);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 pf.SetAchievementStatus(ComputeStatus.NeedsComputing);
             }

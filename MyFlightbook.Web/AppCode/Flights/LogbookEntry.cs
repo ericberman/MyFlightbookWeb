@@ -1920,7 +1920,7 @@ ORDER BY flights.date {4}, COALESCE(blockOut, '0001-01-01') {4}, COALESCE(dtEngi
                     DirectoryInfo di = new DirectoryInfo(il.VirtPath.MapAbsoluteFilePath());
                     di.Delete(true);
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 { }
 
                 // And any associated telemetry
@@ -2044,7 +2044,7 @@ ORDER BY flights.date {4}, COALESCE(blockOut, '0001-01-01') {4}, COALESCE(dtEngi
                     {
                         this.MoveTelemetryFromFlightEntry();
                     }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    catch (Exception ex) when (ex.IsNonFatal())
                     {
                         util.NotifyAdminException(String.Format(CultureInfo.CurrentCulture, "Exception moving telemetry for flight {0}", FlightID), ex);
                     }
@@ -5219,7 +5219,7 @@ WHERE f1.username = ?uName ");
                         sz = "#" + sz;
                     return System.Drawing.ColorTranslator.FromHtml(sz);
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+                catch (Exception ex) when (ex.IsNonFatal()) { }
             }
             return System.Drawing.Color.Empty;
         }

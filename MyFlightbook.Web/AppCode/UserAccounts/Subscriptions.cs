@@ -394,7 +394,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
                 if (ex.InnerException != null)
@@ -442,7 +442,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
             }
@@ -469,7 +469,7 @@ namespace MyFlightbook.Subscriptions
                     Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.BoxFailure, pf.PreferredGreeting, SanitizeExceptionMsg(ex.Message), string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user: {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Box FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
             }
@@ -518,7 +518,7 @@ namespace MyFlightbook.Subscriptions
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
             }
@@ -575,7 +575,7 @@ namespace MyFlightbook.Subscriptions
                                 break;
                         }
                     }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    catch (Exception ex) when (ex.IsNonFatal())
                     {
                         string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
                         util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
@@ -642,7 +642,7 @@ namespace MyFlightbook.Subscriptions
                 if (DateTime.Now.Day == 1)
                     Clubs.Club.SendMonthlyClubReports();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 EventRecorder.LogCall("Nightly run had exception: {msg}, {stacktrace} ", ex.Message, ex.StackTrace);
             }
@@ -683,7 +683,7 @@ namespace MyFlightbook.Subscriptions
                     }
                     return !String.IsNullOrEmpty(szResult);
                 }
-                catch (Exception ex) when (ex is HttpRequestException || ex is MyFlightbookException || !(ex is OutOfMemoryException))  // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
+                catch (Exception ex) when (ex.IsNonFatal())  // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
                 {
                     EventRecorder.LogCall($"SendMailForUser - FAILURE for {pf.UserName} - {ex.Message}");
                     return false;

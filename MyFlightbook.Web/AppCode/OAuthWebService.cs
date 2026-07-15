@@ -551,7 +551,7 @@ namespace OAuthAuthorizationServer.Services
                     Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
                 }
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.Clear();
                 Response.ContentType = "text/plain";

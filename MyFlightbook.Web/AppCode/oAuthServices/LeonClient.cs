@@ -45,7 +45,7 @@ namespace MyFlightbook.OAuth.Leon
 
                 return string.Empty;    // no issues!
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return ex.Message;
             }

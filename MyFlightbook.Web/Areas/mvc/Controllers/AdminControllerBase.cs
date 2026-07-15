@@ -154,7 +154,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 return func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;
@@ -171,7 +171,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 return await func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;
@@ -193,7 +193,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 return func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;
@@ -216,7 +216,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;
@@ -239,7 +239,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;
@@ -263,7 +263,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new MyFlightbookException(ShuntState.ShuntMessage);
                 return await func();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;

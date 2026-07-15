@@ -302,7 +302,7 @@ namespace MyFlightbook
             foreach (Endorsement en in rgEndorsements)
             {
                 try { en.RenderHTML(tw); }
-                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
+                catch (Exception ex) when (ex.IsNonFatal()) { }  // don't write bogus or incomplete HTML
             }
         }
 
@@ -951,7 +951,7 @@ namespace MyFlightbook
 
                 return string.Empty;
             }
-            catch (Exception ex) when (ex is OneDriveMFBException || ex is MyFlightbookException || !(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return ex.Message;
             }
@@ -1037,7 +1037,7 @@ namespace MyFlightbook
 
                 return string.Empty;
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return ex.Message;
             }

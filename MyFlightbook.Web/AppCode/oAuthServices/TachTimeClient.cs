@@ -275,7 +275,7 @@ namespace MyFlightbook.OAuth.TachTime
                     dResult[ac.TailNumber] = inspectionSummary;
                 }
             }
-            catch (Exception e) when (!(e is OutOfMemoryException))
+            catch (Exception e) when (e.IsNonFatal())
             {
                 dResult[Resources.Aircraft.ExternalMaintenanceError] = new string[] { e.Message };
             }

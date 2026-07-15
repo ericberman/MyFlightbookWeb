@@ -661,7 +661,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     ? new List<AircraftAdminModelMapping>(AircraftAdminModelMapping.MapModels(fuMapModels.InputStream))
                     : throw new InvalidOperationException("No content provided");
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ViewBag.modelMapError = ex.Message;
             }

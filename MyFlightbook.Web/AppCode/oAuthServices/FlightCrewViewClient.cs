@@ -43,7 +43,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
                         AuthState = await RefreshAccessToken(AuthState.RefreshToken, AuthState.Callback.ToString());
                         pf.SetPreferenceForKey(AccessTokenPrefKey, AuthState);
                     }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    catch (Exception ex) when (ex.IsNonFatal())
                     {
                         // Issue # 1403 - refresh token only lasts for 3 months, if not used.  So clear the authorization and tell the user.
                         return Branding.ReBrand(Resources.LogbookEntry.FlightCrewViewRefreshFailed);
@@ -53,7 +53,7 @@ namespace MyFlightbook.OAuth.FlightCrewView
                 IEnumerable<PendingFlight> _ = await FlightsFromDate(username, startDate, endDate, fAutofill);
                 return string.Empty;
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return ex.Message;
             }

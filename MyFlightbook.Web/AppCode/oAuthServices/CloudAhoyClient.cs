@@ -117,7 +117,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
                     FlyStoStatusResponse fsr = JsonConvert.DeserializeObject<FlyStoStatusResponse>(result);
                     return fsr.processed && fsr.logs.Length > 0 ? fsr.logs[0] : string.Empty;
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     // any error means processing has not finished - just return an empty string
                     return string.Empty;

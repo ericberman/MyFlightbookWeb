@@ -8,7 +8,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2025 MyFlightbook LLC
+ * Copyright (c) 2015-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -316,7 +316,7 @@ ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
 
                         l.Add(ra);
                     }
-                    catch (Exception ex) when (!(ex is OutOfMemoryException))
+                    catch (Exception ex) when (ex.IsNonFatal())
                     {
                     }
                 }

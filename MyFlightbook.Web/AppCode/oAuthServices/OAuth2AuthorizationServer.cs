@@ -50,7 +50,7 @@ namespace OAuthAuthorizationServer.Code
                         comm.Parameters.AddWithValue("ts", timestampUtc);
                     });
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 fResult = false;
             }

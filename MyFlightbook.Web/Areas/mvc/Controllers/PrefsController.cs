@@ -989,7 +989,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 sk.FCommit();
                 return RedirectToAction("Index", new { pane = "social" });
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return RedirectToAction("Index", new { pane = "social", shareKeyErr = ex.Message });
             }

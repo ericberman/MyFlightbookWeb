@@ -1153,7 +1153,7 @@ namespace MyFlightbook.Printing
                         }
                     }
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException) && !(ex is StackOverflowException) && !(ex is ThreadAbortException) && !(ex is AccessViolationException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     onError?.Invoke(ex.ToString());
                     tcs.SetResult(Array.Empty<byte>());

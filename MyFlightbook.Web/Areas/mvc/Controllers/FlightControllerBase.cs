@@ -330,7 +330,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 le.fIsPublic = Request["flightPublic"] != null;
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 le.ErrorString = ex.Message;
             }
@@ -388,7 +388,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                         MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(Achievements.Achievement.ComputeStatus.NeedsComputing);
                     }
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     le.ErrorString = !String.IsNullOrEmpty(le.ErrorString) ? le.ErrorString : ex?.InnerException.Message ?? ex.Message;
                 }

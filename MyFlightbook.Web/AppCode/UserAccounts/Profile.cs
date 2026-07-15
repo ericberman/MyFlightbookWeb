@@ -607,7 +607,7 @@ namespace MyFlightbook
                 {
                     return TimeZoneInfo.FindSystemTimeZoneById(PreferredTimeZoneID) ?? TimeZoneInfo.Utc;
                 }
-                catch (Exception ex) when (ex is OutOfMemoryException || ex is ArgumentNullException || ex is TimeZoneNotFoundException || ex is System.Security.SecurityException || ex is InvalidTimeZoneException)
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     return TimeZoneInfo.Utc;
                 }

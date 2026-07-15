@@ -8,6 +8,7 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 /******************************************************
  * 
@@ -1177,6 +1178,11 @@ namespace MyFlightbook
             }
 
             return sb.ToString();
+        }
+
+        static public bool IsNonFatal(this Exception ex)
+        {
+            return !(ex is OutOfMemoryException) && !(ex is StackOverflowException) && !(ex is ThreadAbortException) && !(ex is AccessViolationException);
         }
         #endregion
 

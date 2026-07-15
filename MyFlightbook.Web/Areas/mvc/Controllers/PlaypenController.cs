@@ -400,7 +400,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     return Redirect("ClientTestBed");
                 }
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 nvc["error"] = ex.Message;
                 return Redirect(String.Format(CultureInfo.InvariantCulture, "ClientTestBed?{0}", nvc.ToString()));

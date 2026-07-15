@@ -302,7 +302,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // At this point, wr.Body should contain the JSON response
                 return Content(wr.Body, "application/json; charset=utf-8");
             }
-            catch (Exception e) when (!(e is OutOfMemoryException))
+            catch (Exception e) when (e.IsNonFatal())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.TrySkipIisCustomErrors = true;

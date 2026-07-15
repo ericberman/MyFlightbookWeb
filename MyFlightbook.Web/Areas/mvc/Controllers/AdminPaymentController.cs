@@ -164,7 +164,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 ViewBag.CreateError = ex.Message;
                 return CompositeView();

@@ -1729,7 +1729,7 @@ namespace MyFlightbook.Image
                     }
                 }
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException)) { } // nothing to do here; fail silently.
+            catch (Exception ex) when (ex.IsNonFatal()) { } // nothing to do here; fail silently.
             finally
             {
                 // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
@@ -2089,7 +2089,7 @@ namespace MyFlightbook.Image
 
                 UpdateProgress(6, 100, "Finished!");
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 UpdateProgress(0, 0, String.Format(CultureInfo.InvariantCulture, "<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
             }

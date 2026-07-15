@@ -165,7 +165,7 @@ namespace MyFlightbook.OAuth.MyTailLog
                 if (unknown.Any())
                     dResult[String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ExternalMaintenanceUnknownAircraft, ExternalMaintenanceSourceID.MyTailLog.SourceName())] = unknown;  // or a MyTailLog-specific string
             }
-            catch (Exception e) when (!(e is OutOfMemoryException))
+            catch (Exception e) when (e.IsNonFatal())
             {
                 dResult[Resources.Aircraft.ExternalMaintenanceError] = new[] { e.Message };
             }

@@ -220,7 +220,7 @@ namespace MyFlightbook.Lint
                     CheckIfOption((options & (UInt32)LintOptions.DateTimeIssues) != 0, le, CheckDateTimeIssues);
                     CheckIfOption((options & (UInt32)LintOptions.MiscIssues) != 0, le,CheckMiscIssues);
                 }
-                catch (Exception ex) when (!(ex is OutOfMemoryException))
+                catch (Exception ex) when (ex.IsNonFatal())
                 {
                     // issue # 1332 - check flights can throw an exception sometimes; catch it as an issue
                     currentIssues.Add(new FlightIssue() { IssueDescription = ex.Message });

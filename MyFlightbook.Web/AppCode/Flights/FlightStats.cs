@@ -405,7 +405,7 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
                         (dr) => { m_lstPopularModels.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsModelInfo, dr["manufacturer"], dr["icao"], dr["num"])); });
 
                     HasSlowInformation = true;
-                } catch (Exception ex) when (!(ex is OutOfMemoryException))
+                } catch (Exception ex) when (ex.IsNonFatal())
                 {
                     util.NotifyAdminException("Error getting flight stats: " + ex.Message, ex);
                 }

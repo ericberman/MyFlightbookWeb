@@ -242,7 +242,7 @@ namespace MyFlightbook.OAuth.RosterBuster
                 bool _ = await GetFlights(username, startDate, endDate, fAutofill);
                 return string.Empty;
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException))
+            catch (Exception ex) when (ex.IsNonFatal())
             {
                 return HttpUtility.HtmlEncode(ex.Message + (ex.InnerException == null ? string.Empty : ex.InnerException.Message));
             }

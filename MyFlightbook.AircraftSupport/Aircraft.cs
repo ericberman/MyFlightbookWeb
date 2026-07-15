@@ -1645,7 +1645,7 @@ namespace MyFlightbook
 
                 this.PopulateImages();
             }
-            catch (Exception ex) when (!(ex is OutOfMemoryException)) { }
+            catch (Exception ex) when (ex.IsNonFatal()) { }
             return true;
         }
         #endregion
