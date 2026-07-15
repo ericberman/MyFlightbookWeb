@@ -681,4 +681,7 @@ Do you still want to delete?</value>
   <data name="ExternalMaintenanceError" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="ADHeader" xml:space="preserve">
+    <value>Airworthiness Directives (ADs) and Other Notes</value>
+  </data>
 </root>

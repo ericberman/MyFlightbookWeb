@@ -140,6 +140,8 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
 
         public decimal HoursDue { get { return TachDue; } }
         public decimal HoursDone { get { return TachDone; } }
+
+        [JsonProperty("display_name")]
         public string Name { get { return $"{InternalName}{(String.IsNullOrEmpty(AD_Number) ? string.Empty : $" ({AD_Number})")}"; } }
         #endregion
         #endregion
@@ -324,6 +326,11 @@ namespace MyFlightbook.AircraftSupport.Maintenance.TachTime
         public override IEnumerable<IExternalCurrencyStatus> GetExternalCurrencies()
         {
             return AggregatedData.Inspections.additional_items;
+        }
+
+        public override IEnumerable<string> GetADs()
+        {
+            return AggregatedData.Inspections.additional_items.Select(x => x.ToString());
         }
     }
 }

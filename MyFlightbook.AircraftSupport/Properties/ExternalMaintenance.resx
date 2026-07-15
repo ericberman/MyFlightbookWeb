@@ -124,4 +124,16 @@
   <data name="SourceUnknown" xml:space="preserve">
     <value>(Unknown)</value>
   </data>
+  <data name="InspectionLastDoneHours" xml:space="preserve">
+    <value>Last done at {0} hours</value>
+  </data>
+  <data name="InspectionLastDoneDate" xml:space="preserve">
+    <value>Last done on {0}</value>
+  </data>
+  <data name="InspectionDueHours" xml:space="preserve">
+    <value>Due at {0} hours</value>
+  </data>
+  <data name="InspectionDueDate" xml:space="preserve">
+    <value>Due on {0}</value>
+  </data>
 </root>

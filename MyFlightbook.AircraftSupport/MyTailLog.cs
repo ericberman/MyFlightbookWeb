@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 
 /******************************************************
  * 
@@ -140,6 +142,20 @@ namespace MyFlightbook.AircraftSupport.Maintenance.MyTailLog
         public bool UsesHours => !DateDue.HasValue && HoursDue > 0;
         
         public string Name => string.IsNullOrEmpty(Title) ? Reference : $"{Reference} — {Title}";
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder($"{Name} {Urgency}");
+            if (HoursDone > 0)
+                sb.Append($" {String.Format(CultureInfo.CurrentCulture, Properties.ExternalMaintenance.InspectionLastDoneHours, HoursDone.FormatDecimal(false))}");
+            if (HoursDue > 0)
+                sb.Append($" {String.Format(CultureInfo.CurrentCulture, Properties.ExternalMaintenance.InspectionDueHours, HoursDue.FormatDecimal(false))}");
+            if (DateDone.HasValue)
+                sb.Append($" {String.Format(CultureInfo.CurrentCulture, Properties.ExternalMaintenance.InspectionLastDoneDate, DateDone.Value.ToShortDateString())}");
+            if (DateDue.HasValue)
+                sb.Append($" {String.Format(CultureInfo.CurrentCulture, Properties.ExternalMaintenance.InspectionDueDate, DateDue.Value.ToShortDateString())}");
+            return sb.ToString();
+        }
     }
 
     public class MyTailLogRecord : ExternalMaintenanceRecord
@@ -181,6 +197,11 @@ namespace MyFlightbook.AircraftSupport.Maintenance.MyTailLog
         public override IEnumerable<MaintenanceLog> GetMaintenanceLog()
         {
             return Enumerable.Empty<MaintenanceLog>();
+        }
+
+        public override IEnumerable<string> GetADs()
+        {
+            return Data?.ADs.Select(mtld => mtld.ToString()) ?? Enumerable.Empty<string>();
         }
         #endregion
     }

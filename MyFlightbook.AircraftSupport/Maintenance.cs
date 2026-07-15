@@ -266,8 +266,9 @@ namespace MyFlightbook
         /// Get a log of all the changes made to a specific aircraft
         /// </summary>
         /// <param name="aircraftid">The ID of the aircraft</param>
+        /// <param name="rgemr">Any external maintenance records to splic in</param>
         /// <returns>An array of all edits to that aircraft</returns>
-        public static MaintenanceLog[] ChangesByAircraftID(int aircraftid)
+        public static MaintenanceLog[] ChangesByAircraftID(int aircraftid, IEnumerable<ExternalMaintenanceRecord> rgemr)
         {
             List<MaintenanceLog> lst = new List<MaintenanceLog>();
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szMaintenanceLogBaseQuery, "m.idaircraft = ?idAircraft"));
@@ -276,8 +277,7 @@ namespace MyFlightbook
                 (dr) => { AddLogToArray(lst, dr); });
 
             // splice in any external inspections
-            IEnumerable<ExternalMaintenanceRecord> rgemr = ExternalMaintenanceRecord.GetExternalMaintenanceRecords(aircraftid);
-            foreach (ExternalMaintenanceRecord emr in rgemr)
+            foreach (ExternalMaintenanceRecord emr in rgemr ?? Array.Empty<ExternalMaintenanceRecord>())
                 lst.AddRange(emr.GetMaintenanceLog());
 
             lst.Sort((mr1, mr2) => mr2.ChangeDate.CompareTo(mr1.ChangeDate));

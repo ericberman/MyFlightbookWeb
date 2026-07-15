@@ -79,6 +79,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airworthiness Directives (ADs) and Other Notes.
+        /// </summary>
+        internal static string ADHeader {
+            get {
+                return ResourceManager.GetString("ADHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This doesn&apos;t look like it should be a sim.
         /// </summary>
         internal static string AdminNotASim {

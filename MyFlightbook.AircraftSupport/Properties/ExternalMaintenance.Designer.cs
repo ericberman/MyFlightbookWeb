@@ -61,6 +61,42 @@ namespace MyFlightbook.AircraftSupport.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Due on {0}.
+        /// </summary>
+        public static string InspectionDueDate {
+            get {
+                return ResourceManager.GetString("InspectionDueDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Due at {0} hours.
+        /// </summary>
+        public static string InspectionDueHours {
+            get {
+                return ResourceManager.GetString("InspectionDueHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last done on {0}.
+        /// </summary>
+        public static string InspectionLastDoneDate {
+            get {
+                return ResourceManager.GetString("InspectionLastDoneDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last done at {0} hours.
+        /// </summary>
+        public static string InspectionLastDoneHours {
+            get {
+                return ResourceManager.GetString("InspectionLastDoneHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (via {0}).
         /// </summary>
         public static string SourceAttribution {

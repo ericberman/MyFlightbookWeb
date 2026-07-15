@@ -130,6 +130,7 @@ namespace MyFlightbook.AircraftSupport.Maintenance
         public virtual IEnumerable<MaintenanceLog> GetMaintenanceLog() { return Array.Empty<MaintenanceLog>(); }
         public virtual IEnumerable<IExternalCurrencyStatus> GetExternalCurrencies() { return Array.Empty<IExternalCurrencyStatus>(); }
 
+        public virtual IEnumerable<String> GetADs() { return Array.Empty<String>(); }
         #region Constructors
         public ExternalMaintenanceRecord()
         {

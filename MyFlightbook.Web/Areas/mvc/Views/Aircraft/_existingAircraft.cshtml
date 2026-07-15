@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using MyFlightbook.AircraftSupport.Maintenance;
 @using MyFlightbook.Image
 @using MyFlightbook.AircraftSupport.Properties;
 @{
@@ -31,7 +32,13 @@
     string modelDisplay = mm.ManufacturerDisplay + Resources.LocalizedText.LocalizedSpace + mm.ModelDisplayName;
     bool fShowNotes = !String.IsNullOrWhiteSpace(ac.PublicNotes) || !String.IsNullOrEmpty(ac.PrivateNotes);
 
-    MaintenanceLog[] rgml = MaintenanceLog.ChangesByAircraftID(ac.AircraftID);
+    IEnumerable<ExternalMaintenanceRecord> rgemr = ExternalMaintenanceRecord.GetExternalMaintenanceRecords(ac.AircraftID);
+    List<string> rgADs = new List<string>();
+    foreach (ExternalMaintenanceRecord emr in rgemr)
+    {
+        rgADs.AddRange(emr.GetADs());
+    }
+    MaintenanceLog[] rgml = MaintenanceLog.ChangesByAircraftID(ac.AircraftID, rgemr);
     bool fShowMaintenance = rgml.Any(ml => ml.User.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0);
 }
 <script type="text/javascript">
@@ -91,15 +98,15 @@
     <div id="pnlEditAircraft">
         <div id="divEditAircraftFormBody">
             <div>
-                <span style="font-size: x-large; font-weight: bold;">@(ac.IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ac.TailNumber, ac.DisplayTailnumber) : ac.TailNumber)</span>
+                <span class="b" style="font-size: x-large;">@(ac.IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, ac.TailNumber, ac.DisplayTailnumber) : ac.TailNumber)</span>
                 @if (fAdminMode && ac.IsRegistered)
                 {
                     <label><input type="checkbox" @ac.IsLocked.ToChecked() onclick="javascript: toggleLock(this, @ac.AircraftID);" />@Resources.Aircraft.editAircraftAdminLocked</label>
                 }
-                <img id="imgUpdateModelProg" style="display: none; height: 16px; width: 16px;" src="@("~/images/progress.gif".ToAbsolute())" />
-                <button type="submit" id="btnUpdateAircraft" style="display: none;"></button>
+                <img id="imgUpdateModelProg" class="dn" style="height: 16px; width: 16px;" src="@("~/images/progress.gif".ToAbsolute())" />
+                <button type="submit" id="btnUpdateAircraft" class="dn"></button>
 
-                <div style="@(fEditMode ? string.Empty : "display: none;")" id="divEditModel">
+                <div class="@(fEditMode ? string.Empty : "dn")" id="divEditModel">
                     <div style="margin-bottom: 8pt;" id="divModelDropdowns">
                         @if (fEditMode)
                         {
@@ -112,15 +119,15 @@
                         }
                     </div>
                 </div>
-                <div style="@(fEditMode ? "display: none" : string.Empty)" id="divStaticModel">
+                <div class="@(fEditMode ? "dn" : string.Empty)" id="divStaticModel">
                     <div>
                         @if (fAdminMode)
                         {
-                            <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID).ToAbsolute()" style="font-size: larger; font-weight: bold;">@modelDisplay</a>
+                            <a href="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Aircraft/ViewModel/{0}", mm.MakeModelID).ToAbsolute()" class="l b">@modelDisplay</a>
                         }
                         else
                         {
-                            <span style="font-size: larger; font-weight: bold">@modelDisplay</span>
+                            <span class="l b">@modelDisplay</span>
                         }
                         @if (fCanEdit)
                         {
@@ -146,7 +153,7 @@
                     <tr>
                         <td>@Resources.Aircraft.editAircraftTailNumberPrompt</td>
                         <td>
-                            <span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span>
+                            <span class="l b">@ac.TailNumber</span>
                             @if (!String.IsNullOrEmpty(registrationLink))
                             {
                                 <a href="@registrationLink" target="_blank">@Resources.Aircraft.editAircraftRegistrationPrompt</a>
@@ -163,21 +170,21 @@
             else if (ac.IsAnonymous)
             {
                 <ul>
-                    <li><span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span></li>
+                    <li><span class="l b">@ac.TailNumber</span></li>
                     <li class="fineprint">@Resources.Aircraft.AnonymousTailNote</li>
                 </ul>
             }
             else
             {
                 <ul>
-                    <li><span style="font-weight: bold; font-size: larger;">@ac.TailNumber</span></li>
+                    <li><span class="l b">@ac.TailNumber</span></li>
                     <li class="fineprint">@Resources.Aircraft.editAircraftAutoAssignedNote</li>
                 </ul>
             }
             <h3>@Resources.Aircraft.editAircraftImagesPrompt</h3>
-            <div class="fineprint"><span style="font-weight: bold">@Resources.LocalizedText.Note</span> @Resources.Aircraft.editAircraftSharedImagesNote</div>
+            <div class="fineprint"><span class="b">@Resources.LocalizedText.Note</span> @Resources.Aircraft.editAircraftSharedImagesNote</div>
             <div>
-                <div id="divUploadAircraftImages" style="display: inline-block;"></div>
+                <div id="divUploadAircraftImages" class="dib"></div>
                 <div id="divAircraftImages" style="display: inline;">
                     @{
                         ac.PopulateImages();
@@ -199,7 +206,7 @@
                 </div>
             </div>
             <div class="header">@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = fShowNotes, targetID = "divAcNotes", labelText = Resources.Aircraft.locNotesPrompt });}</div>
-            <div style="@(fShowNotes ? string.Empty : "display: none;")" id="divAcNotes">
+            <div class="@(fShowNotes ? string.Empty : "dn;")" id="divAcNotes">
                 <div id="divNotesTabs" style="border: 1px solid lightgray;">
                     <ul>
                         <li><a href="#divPubNotes">@Resources.Aircraft.locPublicNotesTab</a></li>
@@ -316,9 +323,17 @@
                         </tr>
                     </table>
                     <h3>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divMaintHistory", labelText = Resources.Aircraft.MaintenanceChangeHistoryPrompt });}</h3>
-                    <div id="divMaintHistory" style="display: none;">
+                    <div id="divMaintHistory" class="dn">
                         @{ Html.RenderAction("MaintenanceLogTable", "Aircraft", new { rgml = rgml, idAircraft = ac.AircraftID, start = 0, pageSize = 10 }); }
                     </div>
+                    @if (rgADs.Count > 0)
+                    {
+                        <h3>@Resources.Aircraft.ADHeader</h3>
+                        foreach (string ad in rgADs)
+                        {
+                            <p>@ad</p>
+                        }
+                    }
                 </div>
             }
         </div>
@@ -327,7 +342,7 @@
 @if (ac.IsRegistered)
 {
     // This needs to be outside of the divs above because you can't put a form in a form, and aircraftdeadlinesection is a separate form.
-    <div id="divDeadlines" style="@(fShowMaintenance ? string.Empty : "display: none;")">
+    <div id="divDeadlines" class="@(fShowMaintenance ? string.Empty : "dn")">
         <h3>@Resources.Currency.deadlinesHeaderDeadlines @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "tipDeadlines", tiptextHTML = Resources.Currency.DeadlineDescription }); }</h3>
         <div id="divDeadlineListContainer">
             @{ Html.RenderAction("AircraftDeadlineSection", "Prefs", new { idAircraft = ac.AircraftID, postEdit = "reloadMaintLog" }); }
