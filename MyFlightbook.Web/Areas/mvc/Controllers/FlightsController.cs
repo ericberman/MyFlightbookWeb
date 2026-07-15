@@ -3,6 +3,7 @@ using MyFlightbook.Currency;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Mapping;
+using MyFlightbook.Subscriptions;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
@@ -916,14 +917,43 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Nightly Email
         [HttpGet]
-        public ActionResult NightlyEmail(string k, string u, string p)
+        public async Task<ActionResult> NightlyEmail(string k, string u, string p)
         {
             if (!IsLocalCall())
                 throw new InvalidOperationException("This endpoint may only be called internally");
 
+            Profile pf = MyFlightbook.Profile.GetUser(u);
+            IEnumerable<CurrencyStatusItem> rgExpiringCurrencies = pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies, out object o) ? (IEnumerable<CurrencyStatusItem>)o : null;
+            IEnumerable<CurrencyStatusItem> rgPrecomputedCurrencies = pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies, out object o2) ? (IEnumerable<CurrencyStatusItem>)o2 : null;
+            EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
+            bool fHasCurrency = em.HasSubscription(SubscriptionType.Currency) || (em.HasSubscription(SubscriptionType.Expiration) && rgExpiringCurrencies != null && rgPrecomputedCurrencies != null);
+            bool fHasTotals = em.HasSubscription(SubscriptionType.Totals);
+            bool fHasMonthly = em.HasSubscription(SubscriptionType.MonthlyTotals);
+
+            bool fMonthlySummary = (String.Compare(p, "monthly", StringComparison.OrdinalIgnoreCase) == 0);
+
+            if (!fHasCurrency && !fHasTotals && !fMonthlySummary)
+            {
+                throw new InvalidOperationException("Email requested but no subscriptions found! User =" + u);
+            }
+
+            if (fMonthlySummary && !fHasMonthly)
+            {
+                throw new InvalidOperationException("Monthly email requested but user does not subscribe to monthly email.  User = " + u);
+            }
+            bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
+            TimeRollup tr = new TimeRollup(u, null) { IncludeLast7Days = !fMonthlySummary, IncludeMonthToDate = !fMonthlySummary, IncludePreviousMonth = true, IncludePreviousYear = true, IncludeYearToDate = !fAnnual, IncludeTrailing12 = !fAnnual };
+            ViewBag.rollup = await tr.Bind();
+
+
             ViewBag.szAuthKey = k;
             ViewBag.username = u;
             ViewBag.szParam = p;
+            ViewBag.fMonthlySummary = fMonthlySummary;
+            ViewBag.fAnnual = fAnnual;
+            ViewBag.fHasCurrency = fHasCurrency;
+            ViewBag.fHasTotals = fHasTotals;
+            ViewBag.rgExpiringCurrencies = rgExpiringCurrencies;
             return View("nightlyEmail");
         }
         #endregion
