@@ -1,14 +1,17 @@
-﻿using MyFlightbook.Image;
+﻿using MyFlightbook.Currency;
+using MyFlightbook.Image;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.UI;
 
 /******************************************************
  * 
@@ -236,115 +239,133 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return RedirectToAction("Index", routeVals);
         }
 
-        private void RenderPDF(PrintingOptions printingOptions, string viewName, string szUser)
+        private async Task RenderPDFAsync(PrintingOptions printingOptions, string viewName, string szUser)
         {
             Profile pf = MyFlightbook.Profile.GetUser(szUser);
-            bool fDigitalAttestation = ((string) Session["rbSigningType"] ?? string.Empty).CompareCurrentCultureIgnoreCase("digital") == 0;
-            byte[] sigData = (byte[]) Session["attestationSignature"] ?? Array.Empty<byte>();
-            
+            bool fDigitalAttestation = ((string)Session["rbSigningType"] ?? string.Empty)
+                .CompareCurrentCultureIgnoreCase("digital") == 0;
+
+            byte[] sigData = (byte[])Session["attestationSignature"] ?? Array.Empty<byte>();
             Session["rbSigningType"] = null;
             Session["attestationSignature"] = null;
-                        
-            PDFFooterOptions footerOptions = new PDFFooterOptions()
+
+            PDFFooterOptions footerOptions = new PDFFooterOptions
             {
                 fCover = printingOptions.Sections.IncludeCoverPage,
                 fTotalPages = printingOptions.PDFSettings.IncludeTotalPageCount,
                 fTrackChanges = pf.PreferenceExists(MFBConstants.keyTrackOriginal),
                 fDigitalSignature = fDigitalAttestation,
                 StartPageOffset = printingOptions.StartingPageNumberOffset,
-                UserName = String.IsNullOrEmpty(pf.FirstName + pf.LastName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, "[{0}]", pf.UserFullName)
+                UserName = String.IsNullOrEmpty(pf.FirstName + pf.LastName)
+                    ? string.Empty
+                    : $"[{pf.UserFullName}]"
             };
+
             printingOptions.PDFSettings.FooterUri = VirtualPathUtility.ToAbsolute("~/mvc/Internal/PrintFooter/" + footerOptions.ToEncodedPathSegment()).ToAbsoluteURL(Request);
-            string szFileName = $"{RegexUtility.UnSafeFileChars.Replace($"{MyFlightbook.Profile.GetUser(szUser).UserFullName} {Resources.LocalizedText.PrintViewCoverSheetNameTemplate}", "-")}.pdf";
+            string szFileName = $"{RegexUtility.UnSafeFileChars.Replace($"{pf.UserFullName} {Resources.LocalizedText.PrintViewCoverSheetNameTemplate}", "-")}.pdf";
 
-            // Dictionary to map file names to human friendly names
-            Dictionary<string, string> dictFiles = new Dictionary<string, string>();
-            string szFileToDownload = string.Empty;
-
-            try
+            // 1. Render MAIN view to HTML synchronously
+            string mainHtml;
             {
-                PDFRenderer.RenderFile(
-                printingOptions.PDFSettings,
-                (htwOut) =>
+                IView view = ViewEngines.Engines.FindView(ControllerContext, viewName, null).View;
+                ControllerContext.Controller.ViewData.Model = null;
+
+                using (var sw = new StringWriter())
+                using (var htw = new HtmlTextWriter(sw))
                 {
-                    IView view = ViewEngines.Engines.FindView(ControllerContext, viewName, null).View;
-                    ControllerContext.Controller.ViewData.Model = null;
-                    var viewContext = new ViewContext(ControllerContext, view, ControllerContext.Controller.ViewData, ControllerContext.Controller.TempData, htwOut);
-                    view.Render(viewContext, htwOut);
-                },
-                (szErr) => // onError
-                {
-                    util.NotifyAdminEvent("Error saving PDF", $"{szErr}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
-                },
-                (szOutputPDF) => // onSuccess
-                {
-                    szFileToDownload = szOutputPDF;
-                    dictFiles[szOutputPDF] = szFileName;
+                    var vc = new ViewContext(
+                        ControllerContext,
+                        view,
+                        ControllerContext.Controller.ViewData,
+                        ControllerContext.Controller.TempData,
+                        htw);
 
-                    if (fDigitalAttestation)
-                    {
-                        // Create a digital attestation page: include the hash of the PDF we just created, and do it portrait with no footer
-                        // Compute the hash
-                        string szHash = PDFRenderer.ComputeSHAForFile(szOutputPDF);
-                        printingOptions.PDFSettings.FooterUri = null; // no footer on attestation page
-                        printingOptions.PDFSettings.Orientation = PDFOptions.PageOrientation.Portrait;
-
-                        // Now create the attestation page
-                        PDFRenderer.RenderFile(printingOptions.PDFSettings,
-                                    (htwOut) =>
-                                    {
-                                        IView view = ViewEngines.Engines.FindView(ControllerContext, "_printAttest", null).View;
-                                        // Populate ViewBag (ViewBag is just ViewData)
-                                        var viewData = ControllerContext.Controller.ViewData;
-                                        viewData["pf"] = pf;
-                                        viewData["scribble"] = sigData;
-                                        viewData["fileName"] = szFileName;
-                                        viewData["hashValue"] = szHash;
-
-                                        var viewContext = new ViewContext(ControllerContext, view, viewData, ControllerContext.Controller.TempData, htwOut);
-                                        view.Render(viewContext, htwOut);
-                                    },
-                                    (szErr) => // onError
-                                    {
-                                        util.NotifyAdminEvent("Error saving PDF", $"{szErr}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
-                                    },
-                                    (szAttestationPDF) => // onSuccess
-                                    {
-                                        dictFiles[szAttestationPDF] = szFileName.Replace(".pdf", $"{Resources.LocalizedText.AttestationFileNameSuffix}.pdf"); // Add the attestation page
-                                        szFileToDownload = PDFRenderer.CreateZipForFiles(dictFiles);  // and zip it up to return that.
-
-                                        // Now change the output file name to indicate it's a zip and add the zip file to the dictionary for cleanup
-                                        szFileName = szFileName.Replace(".pdf", ".zip");
-                                        dictFiles[szFileToDownload] = szFileName;
-                                    });
-                    }
-                });
-
-                // hack, ideally we want to return a File actionresult, but the file will be deleted by the time we get there.
-                bool fIsPDF = szFileToDownload.EndsWith(".pdf");
-                Response.Clear();
-                Response.ContentType = fIsPDF ? "application/pdf" : "application/zip";
-                Response.AddHeader("content-disposition", $"attachment;filename=\"{szFileName}\"");
-                Response.WriteFile(szFileToDownload);
-                Response.Flush();
-                Response.End();
-            }
-            catch (HttpUnhandledException) { }  // sometimes the remote host has closed the connection - allow cleanup to proceed.
-            catch (HttpException) { }
-            finally
-            {
-                foreach (string szFile in dictFiles.Keys)
-                {
-                    if (System.IO.File.Exists(szFile))
-                        System.IO.File.Delete(szFile);
+                    view.Render(vc, htw);
+                    mainHtml = sw.ToString();
                 }
             }
+
+            // 2. Run wkhtmltopdf async on mainHtml
+            byte[] mainPdf = await PDFRenderer.RenderPdfAsync(
+                printingOptions.PDFSettings,
+                mainHtml,
+                (err) =>
+                {
+                    util.NotifyAdminEvent("Error saving PDF", $"{err}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
+                });
+
+            if (mainPdf.Length == 0)
+                return;
+
+            string finalFileName = szFileName;
+            byte[] finalBytes = mainPdf;
+
+            // 3. Attestation (if needed)
+            if (fDigitalAttestation)
+            {
+                string hash = PDFRenderer.ComputeSHAForBytes(mainPdf);
+
+                printingOptions.PDFSettings.FooterUri = null;
+                printingOptions.PDFSettings.Orientation = PDFOptions.PageOrientation.Portrait;
+
+                string attestHtml;
+                {
+                    IView view = ViewEngines.Engines.FindView(ControllerContext, "_printAttest", null).View;
+
+                    var viewData = ControllerContext.Controller.ViewData;
+                    viewData["pf"] = pf;
+                    viewData["scribble"] = sigData;
+                    viewData["fileName"] = szFileName;
+                    viewData["hashValue"] = hash;
+
+                    using (var sw = new StringWriter())
+                    using (var htw = new HtmlTextWriter(sw))
+                    {
+                        var vc = new ViewContext(
+                            ControllerContext,
+                            view,
+                            viewData,
+                            ControllerContext.Controller.TempData,
+                            htw);
+
+                        view.Render(vc, htw);
+                        attestHtml = sw.ToString();
+                    }
+                }
+
+                byte[] attestPdf = await PDFRenderer.RenderPdfAsync(
+                    printingOptions.PDFSettings,
+                    attestHtml,
+                    (err) =>
+                    {
+                        util.NotifyAdminEvent("Error saving PDF attestation", $"{err}\r\nUser: {szUser}", ProfileRoles.maskSiteAdminOnly);
+                    });
+
+                finalBytes = PDFRenderer.CreateZipFromBytes(
+                    (szFileName, mainPdf),
+                    (szFileName.Replace(".pdf", $"{Resources.LocalizedText.AttestationFileNameSuffix}.pdf"), attestPdf));
+
+                finalFileName = szFileName.Replace(".pdf", ".zip");
+            }
+
+            // 4. Stream to client
+            Response.Clear();
+            Response.ContentType = finalFileName.EndsWith(".pdf")
+                ? "application/pdf"
+                : "application/zip";
+
+            Response.AddHeader("content-disposition", $"attachment;filename=\"{finalFileName}\"");
+
+            await Response.OutputStream.WriteAsync(finalBytes, 0, finalBytes.Length);
+            await Response.OutputStream.FlushAsync();
         }
+
+
 
         // GET: mvc/Print
         [Authorize]
         [HttpGet]
-        public ActionResult Index(string u = null, string po = null, string fq = null, bool pdf = false, int tabIndex = 1)
+        public async Task<ActionResult> Index(string u = null, string po = null, string fq = null, bool pdf = false, int tabIndex = 1)
         {
             string szUser = User.Identity.Name;    // default value
             PrintingOptions printingOptions = string.IsNullOrEmpty(po) ? new PrintingOptions() : JsonConvert.DeserializeObject<PrintingOptions>(po.FromSafeParameter());
@@ -378,11 +399,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.prefTab = tabIndex;
             ViewBag.isPDF = pdf;
 
+            if (!printingOptions.Sections.CompactTotals)
+            {
+                TimeRollup tr = new TimeRollup(query.UserName, query) { IncludeTrailing12 = true, IncludeTrailing24 = true };
+                ViewBag.timeRollup  = await tr.Bind();
+            }
+
             const string viewName = "__printView";
 
             if (pdf)
             {
-                RenderPDF(printingOptions, viewName, szUser);
+                await RenderPDFAsync(printingOptions, viewName, szUser);
                 return new EmptyResult();
             }
 

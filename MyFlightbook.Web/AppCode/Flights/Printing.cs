@@ -9,6 +9,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 
@@ -1089,79 +1092,95 @@ namespace MyFlightbook.Printing
         /// <param name="render">Action to render the html to a writer</param>
         /// <param name="onError">Action (no parameters) called if things fail.  Unfortunately, we can't report useful errors</param>
         /// <param name="onSuccess">Action called on success; single parameter is the filename of the PDF</param>
-        static public void RenderFile(PDFOptions pdfOptions, Action<HtmlTextWriter> render, Action<string> onError, Action<string> onSuccess)
+        public static Task<byte[]> RenderPdfAsync(PDFOptions pdfOptions, string html, Action<string> onError)
         {
             if (pdfOptions == null)
                 throw new ArgumentNullException(nameof(pdfOptions));
-            if (render == null)
-                throw new ArgumentNullException(nameof(render));
+            if (html == null)
+                throw new ArgumentNullException(nameof(html));
 
-            string szTempPath = Path.GetTempPath();
-            string szFileRoot = Guid.NewGuid().ToString();
-            string szOutputHtm = szTempPath + szFileRoot + ".htm";
-            string szOutputPDF = szTempPath + szFileRoot + ".pdf";
+            var tcs = new TaskCompletionSource<byte[]>();
 
-            string szArgs = pdfOptions.WKHtmlToPDFArguments(szOutputHtm, szOutputPDF);
-
-            string szWkTextApp = LocalConfig.SettingForKey("wkhtmlpath");
-
-            using (Process p = new Process())
+            Task.Run(async () =>
             {
                 try
                 {
-                    // Render the html directly into our temporary file.
-                    using (StreamWriter sw = File.CreateText(szOutputHtm))
+                    var psi = new ProcessStartInfo
                     {
-                        using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+                        FileName = LocalConfig.SettingForKey("wkhtmlpath"),
+                        Arguments = pdfOptions.WKHtmlToPDFArguments("-", "-"),
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    using (var p = new Process())
+                    {
+                        p.StartInfo = psi;
+
+                        var stderr = new StringBuilder();
+
+                        p.ErrorDataReceived += (s, e) =>
                         {
-                            render(htw);
+                            if (e.Data != null)
+                                stderr.AppendLine(e.Data);
+                        };
+
+                        p.Start();
+
+                        p.BeginErrorReadLine();
+
+                        using (var writer = p.StandardInput)
+                            await writer.WriteAsync(html);
+
+                        using (var pdfStream = new MemoryStream())
+                        {
+                            await p.StandardOutput.BaseStream.CopyToAsync(pdfStream);
+
+                            p.WaitForExit();
+
+                            if (pdfStream.Length == 0)
+                            {
+                                onError?.Invoke(stderr.ToString());
+                                tcs.SetResult(Array.Empty<byte>());
+                            }
+                            else
+                            {
+                                tcs.SetResult(pdfStream.ToArray());
+                            }
                         }
                     }
-
-                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false, RedirectStandardError = true };
-
-                    p.Start();
-
-                    string szErr = p.StandardError.ReadToEnd(); // read BEFORE waiting for exit to avoid deadlock - see https://www.generacodice.com/en/articolo/39973/ProcessStartInfo-hanging-on-%E2%80%9CWaitForExit%E2%80%9D-Whya=r
-
-                    bool fResult = p.WaitForExit(120000);   // wait up to 2 minutes
-
-                    if (!fResult || !File.Exists(szOutputPDF))
-                        onError?.Invoke(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PDFGenerationFailed, szErr));
-                    else
-                        onSuccess?.Invoke(szOutputPDF);
                 }
-                finally
+                catch (Exception ex) when (!(ex is OutOfMemoryException) && !(ex is StackOverflowException) && !(ex is ThreadAbortException) && !(ex is AccessViolationException))
                 {
-                    File.Delete(szOutputHtm);
-
-                    if (p != null && !p.HasExited)
-                        p.Kill();
+                    onError?.Invoke(ex.ToString());
+                    tcs.SetResult(Array.Empty<byte>());
                 }
-            }
+            });
 
-            GC.Collect();   // We could have used a bunch of memory.
+            return tcs.Task;
         }
 
+
         /// <summary>
-        /// Computes the SHA256 hash for the specified file
+        /// Computes the SHA256 hash for the specified bytes
         /// </summary>
-        /// <param name="filename">Name of the file on which to compute the hash</param>
+        /// <param name="rgb"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
-        public static string ComputeSHAForFile(string filename)
+        public static string ComputeSHAForBytes(byte[] rgb)
         {
-            if (String.IsNullOrEmpty(filename))
-                throw new ArgumentNullException(nameof(filename));
+            if (rgb == null)
+                throw new ArgumentNullException(nameof(rgb));
 
-            if (!File.Exists(filename))
-                throw new FileNotFoundException("File not found", filename);
 
             // Compute the hash
             using (var sha = SHA256.Create())
             {
-                using (var stream = System.IO.File.OpenRead(filename))
+                using (var stream = new MemoryStream(rgb))
                 {
                     return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
                 }
@@ -1171,25 +1190,33 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Creates a zip file containing the specified files and returns the name of the zip file.
         /// </summary>
-        /// <param name="dFileMap">A dictionary where the keys are the full file names of the files to add, and the values are the human-readable file names.</param>
+        /// <param name="dFileMap">A dictionary where the keys are the human readable file names of the files to add, and the values are the human-readable file names.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static string CreateZipForFiles(IDictionary<string, string> dFileMap)
+        public static byte[] CreateZipFromBytes(params (string entryName, byte[] data)[] files)
         {
-            if (dFileMap == null)
-                throw new ArgumentNullException(nameof(dFileMap));
-            string szTempPath = Path.GetTempPath();
-            string szZipFile = szTempPath + Guid.NewGuid().ToString() + ".zip";
-            using (FileStream zipToOpen = new FileStream(szZipFile, FileMode.Create))
+            if (files == null)
+                throw new ArgumentNullException(nameof(files));
+
+            using (var ms = new MemoryStream())
             {
-                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
                 {
-                    foreach (string szFilePath in dFileMap.Keys)
-                        archive.CreateEntryFromFile(szFilePath, dFileMap[szFilePath]);
+                    foreach (var file in files)
+                    {
+                        var entry = archive.CreateEntry(file.entryName, CompressionLevel.Optimal);
+
+                        using (var entryStream = entry.Open())
+                        {
+                            entryStream.Write(file.data, 0, file.data.Length);
+                        }
+                    }
                 }
+
+                return ms.ToArray();
             }
-            return szZipFile;
         }
+
     }
 
     /// <summary>

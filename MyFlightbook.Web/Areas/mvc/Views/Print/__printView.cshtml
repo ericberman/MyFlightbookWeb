@@ -202,9 +202,7 @@
                 }
                 else
                 {
-                    TimeRollup tr = new TimeRollup(fq.UserName, fq) { IncludeTrailing12 = true, IncludeTrailing24 = true };
-                    tr.Bind();
-                    <div>@Html.Raw(tr.RenderHTML(pf.UsesHHMM, false))</div>
+                    <div>@Html.Raw(ViewBag.timeRollup.RenderHTML(pf.UsesHHMM, false))</div>
                 }
             </div>
         }
