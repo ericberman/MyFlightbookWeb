@@ -100,12 +100,12 @@
         <p>@Resources.LogbookEntry.StartingTotalsOverview1</p>
         <p>@Resources.LogbookEntry.StartingTotalsOverview2</p>
         <p>
-            <span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsOverviewWhyStartingFlights</span>
+            <span class="b">@Resources.LogbookEntry.StartingTotalsOverviewWhyStartingFlights</span>
             @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "divWhyStarting" });}
         </p>
-        <div id="divWhyStarting" style="display: none;">@Html.Raw(Branding.ReBrand(Resources.LocalizedText.WhyStartingFlights))</div>
+        <div id="divWhyStarting" class="dn">@Html.Raw(Branding.ReBrand(Resources.LocalizedText.WhyStartingFlights))</div>
     </div>
-    <div style="display: none;">
+    <div class="dn">
         <p>@Resources.LogbookEntry.StartingTotalsInputAircraft</p>
         <ul>
             <li>
@@ -118,7 +118,7 @@
         </ul>
         <p><a href="@("~/mvc/Aircraft".ToAbsolute())">@Resources.LogbookEntry.StartingTotalsAddEditAircraft</a></p>
         <p>
-            <span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsYouAircraftPrompt</span>
+            <span class="b">@Resources.LogbookEntry.StartingTotalsYouAircraftPrompt</span>
             @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !rgac.Any(), targetID = "divStartingAircraft" });}
         </p>
         <div id="divStartingAircraft" style="@(rgac.Any() ? "display: none;" : string.Empty)">
@@ -126,41 +126,41 @@
             {
                 foreach (Aircraft ac in rgac)
                 {
-                    <p><span style="font-weight: bold;">@ac.TailNumber</span> @ac.ModelDescription - @ac.ModelCommonName @ac.InstanceTypeDescription  </p>
+                    <p><span class="b">@ac.TailNumber</span> @ac.ModelDescription - @ac.ModelCommonName @ac.InstanceTypeDescription  </p>
                 }
             }
             else
             {
-                <p style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsNoAircraft</p>
+                <p class="b">@Resources.LogbookEntry.StartingTotalsNoAircraft</p>
             }
         </div>
     </div>
-    <div style="display: none;">
+    <div class="dn">
         @using (Html.BeginForm("", "Import", FormMethod.Post, new { name = "frmStartingTotals", id = "frmStartingTotals" }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" value="" id="hdnSerializedRows" name="startingTotalRows" />
-            <p>@Resources.LogbookEntry.StartingTotalsPickDate</p>
+            <p><span class="bigNumberSection">1</span> @Resources.LogbookEntry.StartingTotalsPickDate</p>
             <p>@{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtStartingTotalsDate", name = "startingTotalDate", value = DateTime.Now.Date.AddYears(-1) });}</p>
-            <p>@Resources.LogbookEntry.StartingTotalsGranularity</p>
-            <p><label><input type="radio" name="mode" checked value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassType" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailSimple</span> @Resources.LogbookEntry.StartingTotalsDetailSimpleDesc</label></p>
-            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassCapabilities" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailMedium</span> @Resources.LogbookEntry.StartingTotalsDetailMediumDesc</label></p>
-            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.ByModel" /><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsDetailDetailed</span> @Resources.LogbookEntry.StartingTotalsDetailDetailedDesc</label></p>
+            <p><span class="bigNumberSection">2</span> @Resources.LogbookEntry.StartingTotalsGranularity</p>
+            <p><label><input type="radio" name="mode" checked value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassType" /><span class="b">@Resources.LogbookEntry.StartingTotalsDetailSimple</span> @Resources.LogbookEntry.StartingTotalsDetailSimpleDesc</label></p>
+            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.CatClassCapabilities" /><span class="b">@Resources.LogbookEntry.StartingTotalsDetailMedium</span> @Resources.LogbookEntry.StartingTotalsDetailMediumDesc</label></p>
+            <p><label><input type="radio" name="mode" value="@RepresentativeAircraft.RepresentativeTypeMode.ByModel" /><span class="b">@Resources.LogbookEntry.StartingTotalsDetailDetailed</span> @Resources.LogbookEntry.StartingTotalsDetailDetailedDesc</label></p>
         }
     </div>
-    <div style="display: none;">
-        <p><span style="font-weight: bold;">@Resources.LogbookEntry.StartingTotalsTimesPrompt</span> @Resources.LogbookEntry.StartingTotalsTimesNote</p>
+    <div class="dn">
+        <p><span class="b">@Resources.LogbookEntry.StartingTotalsTimesPrompt</span> @Resources.LogbookEntry.StartingTotalsTimesNote</p>
         <div class="error" id="divFormErr"></div>
         <div id="startingTotalsForm"><img src="@("~/images/progress.gif".ToAbsolute())" /></div>
     </div>
-    <div style="display: none;">
+    <div class="dn">
         <div id="startingTotalsPreview"></div>
     </div>
 </div>
 <div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
-    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+    <button type="button" id="btnWizPrev" class="dn">@Resources.LocalizedText.PreviousPrompt</button>
     <button type="button" id="btnWizNext">@Resources.LocalizedText.NextPrompt</button>
-    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LocalizedText.FinishPrompt</button>
+    <button type="button" id="btnWizFinish" class="dn">@Resources.LocalizedText.FinishPrompt</button>
 </div>
 <div style="margin-left:auto; margin-right:auto; margin-top: 28pt; max-width: 600px;">
     <div id="pnlAcuLog" class="calloutSmall calloutSponsor shadowed" style="text-align:left;">
