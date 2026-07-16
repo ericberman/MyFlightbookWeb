@@ -595,6 +595,8 @@
     <Content Include="images\mfblogonew.png" />
     <Content Include="images\myflightbooknewstaging.png" />
     <Content Include="images\mytaillog-logo-dark.svg" />
+    <Content Include="images\mytaillog-logo-light.svg" />
+    <Content Include="images\mytaillog-mark.svg" />
     <Content Include="images\pdf-scribble.png" />
     <Content Include="images\pdf-wetink.png" />
     <Content Include="images\prohibited.png" />
