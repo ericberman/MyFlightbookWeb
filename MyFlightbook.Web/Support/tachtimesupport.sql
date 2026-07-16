@@ -11,7 +11,7 @@ CREATE TABLE `externalmaintenance` (
   `highWaterTach` decimal(10,2) DEFAULT '0.00' COMMENT 'highWaterTach, if known, at the time that this record was retrieved',
   `highWaterHobbs` decimal(10,2) DEFAULT '0.00' COMMENT 'High watermark hobbs, if known, at the time this record was retrieved',
   `lastUpdated` datetime NOT NULL COMMENT 'Timestamp that this record was last updated',
-  PRIMARY KEY (`idaircraft`,`username`),
+  PRIMARY KEY (`idaircraft`, `username`, `sourceID`),
   KEY `aircraft_idx` (`idaircraft`) /*!80000 INVISIBLE */,
   KEY `user_idx` (`username`),
   CONSTRAINT `fkAircraftMaintID` FOREIGN KEY (`idaircraft`) REFERENCES `aircraft` (`idaircraft`) ON DELETE CASCADE ON UPDATE RESTRICT,
