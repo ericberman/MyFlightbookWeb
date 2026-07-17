@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 /******************************************************
  * 
@@ -200,6 +201,75 @@ namespace MyFlightbook.AircraftSupport.Maintenance
         }
 
         /// <summary>
+        /// Pushes highwatermarks for tach/hobbs to any service that accepts them via IPushHighWater
+        /// </summary>
+        /// <param name="getPusher">Lambda that accepts an ExternalMaintenanceSourceID and a user and returns an IPushHighWater</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static async Task<bool> PushHighWaterMarks(Func<ExternalMaintenanceSourceID, string, IPushHighWater> getPusher)
+        {
+            if (getPusher == null)
+                throw new ArgumentNullException(nameof(getPusher));
+
+            DBHelper dbh = new DBHelper(@"WITH candidate_flights AS (
+    SELECT 
+        f.idaircraft, 
+        f.idflight, 
+        f.date, 
+        f.hobbsEnd,
+        (SELECT fp.decvalue 
+         FROM flightproperties fp 
+         WHERE fp.idflight = f.idflight AND fp.idproptype = 96) AS tachEnd
+    FROM flights f
+    WHERE f.idaircraft IN (SELECT idaircraft FROM externalmaintenance)
+),
+hobbs_ranked AS (
+    SELECT 
+        idaircraft, 
+        hobbsEnd AS MaxHobbs, 
+        date AS MaxHobbsDate,
+        idFlight AS MaxHobbsFlightID,
+        ROW_NUMBER() OVER (PARTITION BY idaircraft ORDER BY hobbsEnd DESC, idflight DESC) AS rn
+    FROM candidate_flights
+),
+tach_ranked AS (
+    SELECT 
+        idaircraft, 
+        tachEnd AS MaxTach, 
+        date AS MaxTachDate,
+        idFlight AS MaxTachFlightID,
+        ROW_NUMBER() OVER (PARTITION BY idaircraft ORDER BY tachEnd DESC, idflight DESC) AS rn
+    FROM candidate_flights
+    WHERE tachEnd IS NOT NULL
+)
+SELECT 
+    em.*,
+    COALESCE(t.MaxTach, 0) AS MaxTach,
+    t.MaxTachDate,
+    t.MaxTachFlightID,
+    COALESCE(h.MaxHobbs, 0) AS MaxHobbs,
+    h.MaxHobbsDate,
+    h.MaxHobbsFlightID
+FROM externalmaintenance em
+INNER JOIN hobbs_ranked h ON h.idaircraft = em.idaircraft AND h.rn = 1
+LEFT JOIN tach_ranked t ON t.idaircraft = em.idaircraft AND t.rn = 1
+WHERE COALESCE(t.MaxTach, 0)  > em.highWaterTach
+   OR COALESCE(h.MaxHobbs, 0) > em.highWaterHobbs;");
+
+            return await dbh.ReadRowsAsync(dbh.CommandArgs, (comm) => { }, async (dr) =>
+            {
+                ExternalMaintenanceSourceID id = (ExternalMaintenanceSourceID)dr["sourceID"];
+                ExternalMaintenanceRecord emr = ExternalMaintenanceRecord.FromDataReader(dr);
+                HighWatermarkSet hws = new HighWatermarkSet()
+                {
+                    Hobbs1 = new HighWatermark() { AsOfDate = Convert.ToDateTime(dr["MaxHobbsDate"], CultureInfo.InvariantCulture), FlightID = Convert.ToInt32(dr["MaxHobbsFlightID"], CultureInfo.InvariantCulture), Value = Convert.ToDecimal(dr["MaxHobbs"], CultureInfo.InvariantCulture) },
+                    Tach1 = new HighWatermark() { AsOfDate = Convert.ToDateTime(dr["MaxTachDate"], CultureInfo.InvariantCulture), FlightID = Convert.ToInt32(dr["MaxTachFlightID"], CultureInfo.InvariantCulture), Value = Convert.ToDecimal(dr["MaxTach"], CultureInfo.InvariantCulture) }
+                };
+                _ = await getPusher(id, emr.Username).UpdateHighWaterForAircraft(emr.Username, emr.AircraftID, hws);
+            });
+        }
+
+        /// <summary>
         /// Retrieve external maintenance for any in a set of aircraft
         /// </summary>
         /// <param name="lstIds"></param>
@@ -223,5 +293,52 @@ namespace MyFlightbook.AircraftSupport.Maintenance
             DateTime dt = DateTime.SpecifyKind(proposed.Value, DateTimeKind.Utc).Date;
             return dt.CompareTo(def) > 0 ? dt : def;
         }
+    }
+
+    /// <summary>
+    /// Represents a high-watermark - ending tach, ending hobbs, etc.
+    /// </summary>
+    [Serializable]
+    public class HighWatermark
+    {
+        #region Properties
+        /// <summary>
+        /// The value for the high water mark
+        /// </summary>
+        public decimal Value { get; set; }
+        /// <summary>
+        /// The date when it was entered
+        /// </summary>
+        public DateTime AsOfDate { get; set; }
+        /// <summary>
+        /// The associated flight from which it was entered.
+        /// </summary>
+        public int FlightID { get; set; }
+        #endregion
+        public HighWatermark() { }
+    }
+
+    [Serializable]
+    public class HighWatermarkSet
+    {
+        #region Properties
+        public HighWatermark Tach1 { get; set; }
+        public HighWatermark Tach2 { get; set; }
+        public HighWatermark Hobbs1 { get; set; }
+        public HighWatermark Hobbs2 { get; set; }
+        #endregion
+        public HighWatermarkSet() { }
+    }
+
+    public interface IPushHighWater
+    {
+        /// <summary>
+        /// Updates the high watermark hobbs/tach for an aircraft; implemented by the oAuthClient
+        /// </summary>
+        /// <param name="userName">The user on behalf of whom to update</param>
+        /// <param name="idAircraft">The id of the aircraft in our system</param>
+        /// <param name="watermarkSet">The set of high-watermarks for the aircraft</param>
+        /// <returns></returns>
+        Task<bool> UpdateHighWaterForAircraft(string userName, int idAircraft, HighWatermarkSet watermarkSet);
     }
 }

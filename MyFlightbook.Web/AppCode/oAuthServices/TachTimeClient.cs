@@ -19,7 +19,7 @@ using System.Web;
 
 namespace MyFlightbook.OAuth.TachTime
 {
-    public class TachTimeClient : OAuthClientBase
+    public class TachTimeClient : OAuthClientBase, IPushHighWater
     {
         private const string clientConfigKey = "TachTimeClientID";
         private const string clientConfigKeySandbox = "TachTimeClientIDSandbox";
@@ -287,6 +287,27 @@ namespace MyFlightbook.OAuth.TachTime
         public static void Revoke(string username)
         {
             ExternalMaintenanceRecord.FDeleteForUser(username, ExternalMaintenanceSourceID.TachTime);
+        }
+
+        public Task<bool> UpdateHighWaterForAircraft(string userName, int idAircraft, HighWatermarkSet watermarkSet)
+        {
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
+            if (watermarkSet == null)
+                throw new ArgumentNullException(nameof(watermarkSet));
+
+            foreach (ExternalMaintenanceRecord emr in ExternalMaintenanceRecord.GetExternalMaintenanceRecords(idAircraft))
+            {
+                if (emr is TachTimeRecord ttr && ttr.DataAsType is TachTimeAggregatedDataForAircraft aggregatedDataForAircraft)
+                {
+                    string externalID = aggregatedDataForAircraft.AircraftDetails.id;
+                    // Update it
+                    // TODO: NOT YET IMPLEMENTED
+                    return Task.FromResult(false);
+                }
+            }
+            return Task.FromResult(true);
+
         }
         #endregion
     }

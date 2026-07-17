@@ -5,6 +5,7 @@ using MyFlightbook.OAuth;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
+using MyFlightbook.OAuth.Maintenance;
 using MyFlightbook.OAuth.MyTailLog;
 using MyFlightbook.OAuth.TachTime;
 using Newtonsoft.Json;
@@ -388,6 +389,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region External Maintenance apps
+        /// <summary>
+        /// Update tach and hobbs times based on flying with any linked external maintenance apps.
+        /// MUST BE CALLED FROM LOCAL MACHINE
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        [HttpGet]
+        public async Task<ActionResult> PushHighWaterMaintenance()
+        {
+            if (!IsLocalCall())
+                throw new UnauthorizedAccessException("Attempt to call PushHighWaterMaintenance from other than localhost");
+            return await ExternalMaintenanceRecord.PushHighWaterMarks((id, user) => id.PushHighWaterForUser(user)) ? Content("Success") : Content("Failure");
+        }
+
         #region TachTime
         [Authorize]
         public async Task<ActionResult> TachTimeRedir(string code)

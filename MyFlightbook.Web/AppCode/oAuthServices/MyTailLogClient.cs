@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -36,14 +37,14 @@ namespace MyFlightbook.OAuth.MyTailLog
         public string TailNumber { get; set; }
     }
 
-    public class MyTailLogClient : OAuthClientBase
+    public class MyTailLogClient : OAuthClientBase, IPushHighWater
     {
         private const string clientConfigKey = "MyTailLogClientID";
         private const string clientSecretConfigKey = "MyTailLogClientSecret";
         private const string authEndpoint = "https://mytaillog.com/api/oidc/auth";
         private const string tokenEndpoint = "https://mytaillog.com/api/oidc/token";
         private const string revokeEndpoint = "https://mytaillog.com/api/oidc/revoke";
-        private static readonly string[] scopes = new string[] { "airworthiness:read", "aircraft:read", "hours:read", "weightbalance:read", "equipment:read", "oil:read", "offline_access", "Confidential" };
+        private static readonly string[] scopes = new string[] { "airworthiness:read", "aircraft:read", "hours:read", "weightbalance:read", "equipment:read", "oil:read", "hours:write", "offline_access" };
         private const string szCachedCodeVerifier = "myTailLogCodeVerifier";
         private const string dataEndpointBase = "https://mytaillog.com/api/v1/aircraft";
 
@@ -145,9 +146,7 @@ namespace MyFlightbook.OAuth.MyTailLog
 
                 foreach (MTLAircraftRef mtl in acList.Aircraft)
                 {
-                    Aircraft ac = ua.FindMatching(a => !a.HideFromSelection &&
-                        a.NormalizedTail.CompareCurrentCultureIgnoreCase(Aircraft.NormalizeTail(mtl.TailNumber)) == 0)
-                        .FirstOrDefault();
+                    Aircraft ac = ua.FindMatching(a => !a.HideFromSelection && a.NormalizedTail.CompareCurrentCultureIgnoreCase(Aircraft.NormalizeTail(mtl.TailNumber)) == 0) .FirstOrDefault();
                     if (ac == null) { unknown.Add(mtl.TailNumber); continue; }
 
                     MTLAirworthiness aw = await GetJson<MTLAirworthiness>(
@@ -172,6 +171,64 @@ namespace MyFlightbook.OAuth.MyTailLog
             if (dResult.Count == 0)
                 dResult[Resources.Aircraft.ExternalMaintenanceSuccess] = new string[] { Resources.Aircraft.ExternalMaintenanceNothingImported };
             return dResult;
+        }
+
+        public async Task<bool> UpdateHighWaterForAircraft(string userName, int idAircraft, HighWatermarkSet watermarkSet)
+        {
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
+            if (watermarkSet == null)
+                throw new ArgumentNullException(nameof(watermarkSet));
+
+            List<dynamic> lstHwm = new List<dynamic>();
+            if (watermarkSet.Hobbs1?.Value > 0)
+                lstHwm.Add(new
+                {
+                    hobbs = watermarkSet.Hobbs1?.Value,
+                    reading_date = watermarkSet.Tach1?.AsOfDate,
+                    external_ref = watermarkSet.Tach1?.FlightID.ToString(CultureInfo.InvariantCulture)
+                });
+            if (watermarkSet.Tach1?.Value > 0)
+                lstHwm.Add(new
+                {
+                    tach = watermarkSet.Tach1?.Value,
+                    reading_date = watermarkSet.Tach1?.AsOfDate,
+                    external_ref = watermarkSet.Tach1?.FlightID.ToString(CultureInfo.InvariantCulture)
+                });
+
+            // short circuit if nothing to send.
+            if (lstHwm.Count == 0)
+                return true;
+
+            string szJSON = JsonConvert.SerializeObject(new { readings = lstHwm });
+
+            Profile pf = Profile.GetUser(userName);
+            if (!pf.PreferenceExists(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey()))
+                throw new UnauthorizedAccessException($"User {userName} is not authorized on MyTailLog");
+            _ = await RefreshAsNeeded(userName);
+
+            foreach (ExternalMaintenanceRecord emr in ExternalMaintenanceRecord.GetExternalMaintenanceRecords(idAircraft))
+            {
+                if (emr is MyTailLogRecord ttr && ttr.DataAsType is MTLAirworthiness aw)
+                {
+                    string szResult;
+                    using (StringContent sc = new StringContent(szJSON))
+                    {
+                        Uri endpoint = new Uri($"https://mytaillog.com/api/v1/aircraft/{aw.AircraftId}/hours");
+                        _ = await SharedHttpClient.GetResponseForAuthenticatedUri(endpoint, AuthState.AccessToken, HttpMethod.Post, sc, (response) => {
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            if (!response.IsSuccessStatusCode)
+                                throw new InvalidOperationException($"Error fetching {endpoint}: {response.StatusCode}, message: {szResult}");
+                            // Success - update our local view
+                            ttr.HighWaterHobbs = Math.Max(watermarkSet.Hobbs1?.Value ?? 0, ttr.HighWaterHobbs);
+                            ttr.HighWaterTach = Math.Max(watermarkSet.Tach1?.Value ?? 0, ttr.HighWaterTach);
+                            ttr.FCommit();
+                            return true;
+                        });
+                    }
+                }
+            }
+            return true;
         }
         #endregion
     }

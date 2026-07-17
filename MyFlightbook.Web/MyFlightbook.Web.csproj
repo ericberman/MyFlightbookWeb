@@ -1744,6 +1744,7 @@
     <Compile Include="AppCode\GlobalSuppressions.cs" />
     <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
     <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
+    <Compile Include="AppCode\oAuthServices\ExternalMaintenanceClient.cs" />
     <Compile Include="AppCode\oAuthServices\FlightCrewViewClient.cs" />
     <Compile Include="AppCode\oAuthServices\LeonClient.cs" />
     <Compile Include="AppCode\oAuthServices\MyTailLogClient.cs" />
