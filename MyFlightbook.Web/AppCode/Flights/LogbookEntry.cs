@@ -1481,6 +1481,42 @@ namespace MyFlightbook
                 throw new MyFlightbookValidationException(ErrorString);
         }
 
+        /// <summary>
+        /// Takes an entry from an instructor and reverses appropriate fields to make it appropriate for a student flight, and as a side effect, also requests a signature.
+        /// </summary>
+        public void MapToStudent(LogbookEntryBase leSrc)
+        {
+            if (leSrc == null) 
+                throw new ArgumentNullException(nameof(leSrc));
+
+            Profile pfCFI = Profile.GetUser(leSrc.User);
+            CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropStudentName);
+            CustomProperties.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropInstructorName)) { FlightID = FlightID, TextValue = pfCFI.UserFullName });
+            Dual = leSrc.CFI;
+            CFI = 0;
+            PIC = SIC = 0;  // may not be true, but recipient can edit it.
+
+            // Swap flight review properties, if given to the student.
+            if (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropFlightReviewGiven))
+            {
+                CustomProperties.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropFlightReview)) { FlightID = FlightID, BoolValue = true });
+                CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropFlightReviewGiven);
+            }
+
+            // Ditto IPC given
+            if (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropIPCGivenToStudent))
+            {
+                CustomProperties.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropIPC)) { FlightID = FlightID, BoolValue = true });
+                CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropIPCGivenToStudent);
+            }
+
+            if (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven))
+            {
+                CustomProperties.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived)) { FlightID = FlightID, DecValue = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) });
+                CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
+            }
+        }
+
         public void CopyToInstructor(string szCFI, string szSigningComments, bool fAsPending)
         {
             if (szCFI == null)
@@ -2849,17 +2885,14 @@ WHERE f1.username = ?uName ");
 
         private readonly static char[] spaceSeparator = new char[] {' '};
         /// <summary>
-        /// Creates a new flight initialized from another user's flight
+        /// Creates a new flight initialized from another user's flight.  USERNAME REMAINS THE SOURCE FLIGHT'S OWNER
         /// </summary>
         /// <param name="szKey">The key - MUST be from a share link</param>
-        /// <param name="szTargetUser">The target user. </param>
         /// <returns>A new LogbookEntry object - Check the ErrorString for any potential errors.</returns>
-        public static LogbookEntry FromShareKey(string szKey, string szTargetUser)
+        public static LogbookEntry FromShareKey(string szKey)
         {
             if (String.IsNullOrEmpty(szKey))
                 throw new ArgumentNullException(nameof(szKey));
-            if (String.IsNullOrEmpty(szTargetUser))
-                throw new ArgumentNullException(nameof(szTargetUser));
 
             string sz = new UserAccessEncryptor().Decrypt(szKey);
             string[] rgSz = sz.Split(spaceSeparator, StringSplitOptions.RemoveEmptyEntries);
@@ -2868,7 +2901,7 @@ WHERE f1.username = ?uName ");
             {
                 if (rgSz.Length == 2)
                 {
-                    leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll) { User = szTargetUser };
+                    leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
                     if (!String.IsNullOrEmpty(leSrc.ErrorString))
                         throw new MyFlightbookException(leSrc.ErrorString);
                 }

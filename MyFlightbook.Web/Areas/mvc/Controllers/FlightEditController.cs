@@ -1,6 +1,6 @@
 ﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Geography;
 using MyFlightbook.Image;
+using MyFlightbook.Instruction;
 using MyFlightbook.Lint;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -879,16 +879,22 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // c) Otherwise, just create a new flight.
             if (!String.IsNullOrEmpty(src) && String.IsNullOrEmpty(id))
             {
-                LogbookEntry leSrc = LogbookEntry.FromShareKey(src, User.Identity.Name);
+                LogbookEntry leSrc = LogbookEntry.FromShareKey(src);
 
                 if (leSrc.FlightID == LogbookEntryCore.idFlightNone || !String.IsNullOrEmpty(leSrc.ErrorString))
                     throw new UnauthorizedAccessException("Invalid source key");
 
                 le = leSrc.Clone(le);
-                le.User = User.Identity.Name; // for safety.
+                le.User = User.Identity.Name; // FromShareKey kept the original user's name, so overwrite it here
 
                 // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
                 le.CFI = le.Dual = le.PIC = le.SIC = 0.0M;
+
+                // Issue #1567: see if this was from an instructor to a student.
+                // If this was a flight with (a) CFI time, (b) a student name property, and (c) from a user who is an instructor of the current user, then treat it as instructor-to-student push
+                // Instructor push reverses appropriate fields and requests signing in one step
+                if (leSrc.CFI > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropStudentName) && new CFIStudentMap(leSrc.User).IsInstructorOf(User.Identity.Name))
+                    le.MapToStudent(leSrc);
 
                 if (le.AircraftID != Aircraft.idAircraftUnknown)
                 {
