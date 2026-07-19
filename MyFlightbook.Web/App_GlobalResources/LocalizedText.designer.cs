@@ -4665,7 +4665,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only display flights after:.
+        ///   Looks up a localized string similar to Only display flights on or after:.
         /// </summary>
         internal static string PrintViewStartingDate {
             get {
