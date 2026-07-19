@@ -812,7 +812,7 @@ namespace MyFlightbook.Airports
                         comm.Parameters.AddWithValue("lat", this.LatLong.Latitude);
                         comm.Parameters.AddWithValue("lon", this.LatLong.Longitude);
                         comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
-                        comm.Parameters.AddWithValue("UserName", this.UserName);
+                        comm.Parameters.AddWithValue("UserName", this.UserName ?? string.Empty);
                     }
                 );
                 ErrorText = dbh.LastError;
