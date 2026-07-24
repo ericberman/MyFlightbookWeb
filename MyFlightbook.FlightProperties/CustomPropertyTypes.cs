@@ -178,6 +178,7 @@ namespace MyFlightbook
             IDPropMonitoredDayLandings = 562,
             IDPropMonitoredNightLandings = 563,
             IDPropMonitoredNightTakeoffs = 565,
+            IDPropCAPInstructorTime = 573,
             IDPropMilitaryFirstPilot = 575,
             IDPropFMSApproaches = 583,
             IDPropAirborneTime = 592,

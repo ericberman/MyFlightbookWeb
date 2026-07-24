@@ -1515,6 +1515,9 @@ namespace MyFlightbook
                 CustomProperties.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived)) { FlightID = FlightID, DecValue = CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) });
                 CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
             }
+
+            // Remove CAP instruction given
+            CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropCAPInstructorTime);
         }
 
         public void CopyToInstructor(string szCFI, string szSigningComments, bool fAsPending)
