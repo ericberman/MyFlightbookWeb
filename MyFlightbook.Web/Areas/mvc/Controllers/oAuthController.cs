@@ -405,12 +405,17 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region TachTime
         [Authorize]
-        public async Task<ActionResult> TachTimeRedir(string code)
+        public async Task<ActionResult> TachTimeRedir(string code = null)
         {
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            PKCEPair pkce = TachTimeClient.PendingCodeVerifier(pf);
-            IAuthorizationState authorizationState = await new TachTimeClient(Request.Url.Host).ConvertToken(Url.Action("TachTimeRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
-            pf.SetPreferenceForKey(ExternalMaintenanceSourceID.TachTime.TokenPreferenceKey(), authorizationState);
+            if (code == null)
+                TempData["oAuthErr"] = Request["error_description"] ?? string.Empty;
+            else
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                PKCEPair pkce = TachTimeClient.PendingCodeVerifier(pf);
+                IAuthorizationState authorizationState = await new TachTimeClient(Request.Url.Host).ConvertToken(Url.Action("TachTimeRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
+                pf.SetPreferenceForKey(ExternalMaintenanceSourceID.TachTime.TokenPreferenceKey(), authorizationState);
+            }
             return Redirect("~/mvc/Prefs?pane=maint");
         }
 
@@ -443,10 +448,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public async Task<ActionResult> MyTailLogRedir(string code)
         {
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-            PKCEPair pkce = MyTailLogClient.PendingCodeVerifier(pf);
-            IAuthorizationState authorizationState = await new MyTailLogClient().ConvertToken(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
-            pf.SetPreferenceForKey(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey(), authorizationState);
+            if (code == null)
+                TempData["oAuthErr"] = Request["error_description"] ?? string.Empty;
+            else
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                PKCEPair pkce = MyTailLogClient.PendingCodeVerifier(pf);
+                IAuthorizationState authorizationState = await new MyTailLogClient().ConvertToken(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
+                pf.SetPreferenceForKey(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey(), authorizationState);
+            }
             return Redirect("~/mvc/Prefs?pane=maint");
         }
 
