@@ -400,7 +400,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (!IsLocalCall())
                 throw new UnauthorizedAccessException("Attempt to call PushHighWaterMaintenance from other than localhost");
-            return await ExternalMaintenanceRecord.PushHighWaterMarks((id, user) => id.PushHighWaterForUser(user)) ? Content("Success") : Content("Failure");
+            bool fResult = await ExternalMaintenanceRecord.PushHighWaterMarks((id, user) => id.PushHighWaterForUser(user));
+            string resultText = fResult ? "Success" : "Failure";
+            util.NotifyAdminEvent("Nightly High Watermark Push", resultText, ProfileRoles.maskSiteAdminOnly);
+            return  Content(resultText);
         }
 
         #region TachTime
