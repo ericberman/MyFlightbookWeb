@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -191,6 +193,10 @@ namespace MyFlightbook.Currency
         /// The description of the total
         /// </summary>
         public string Description { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public string AltDescription { get; set; }
 
         /// <summary>
         /// Additional sub-information about the descriptions
@@ -793,8 +799,10 @@ namespace MyFlightbook.Currency
 
                     if (dModelCount.TryGetValue(szTitle, out int count) && count > 0)
                         szTitle = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", szTitle, ccfr.CatClassDisplay);
+                    // Issue #1570: add it under the more specific title - catclass display as well so that it will get picked up if the "all time" value is split per issue #811 (above)
+                    string szAltDesc = count > 0 ? null : $"{szTitle} - {ccfr.CatClassDisplay}";
 
-                    AddToList(new TotalsItem(szTitle, ccfr.Total, szDesc) { Query = fq, Group = group });
+                    AddToList(new TotalsItem(szTitle, ccfr.Total, szDesc) { Query = fq, Group = group, AltDescription = szAltDesc });
                 }
             }
             catch (MySqlException ex)
@@ -1778,7 +1786,12 @@ GROUP BY f.familyDisplay WITH ROLLUP";
 
                 foreach (TotalsItem ti in ut.Totals)
                     if (ti.Value > 0)
+                    {
                         d[ti.Description] = ti;
+                        // Issue #1570: "All Time" totals might have, say, "C172 - ASEL", but last month might only be "C172", so put in the " - ASEL" version as well.
+                        if (!String.IsNullOrEmpty(ti.AltDescription))
+                            d[ti.AltDescription] = ti;
+                    }
             }
 
             return d;
