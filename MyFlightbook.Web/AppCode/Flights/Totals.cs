@@ -797,10 +797,11 @@ namespace MyFlightbook.Currency
                             break;
                     }
 
+                    string szCatClassQualified = $"{szTitle} - {ccfr.CatClassDisplay}";
                     if (dModelCount.TryGetValue(szTitle, out int count) && count > 0)
-                        szTitle = String.Format(CultureInfo.CurrentCulture, "{0} - {1}", szTitle, ccfr.CatClassDisplay);
+                        szTitle = szCatClassQualified;
                     // Issue #1570: add it under the more specific title - catclass display as well so that it will get picked up if the "all time" value is split per issue #811 (above)
-                    string szAltDesc = count > 0 ? null : $"{szTitle} - {ccfr.CatClassDisplay}";
+                    string szAltDesc = count > 0 ? null : szCatClassQualified;
 
                     AddToList(new TotalsItem(szTitle, ccfr.Total, szDesc) { Query = fq, Group = group, AltDescription = szAltDesc });
                 }
