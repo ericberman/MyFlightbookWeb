@@ -5,7 +5,7 @@
     MyFlightbook.Profile m_pf = ViewBag.pf;
 }
 
-@if (!String.IsNullOrEmpty(TempData["oAuthErr"].ToString()))
+@if (!String.IsNullOrEmpty((string) TempData["oAuthErr"]))
 {
     <div class="error">@TempData["oAuthErr"]</div>
 }
