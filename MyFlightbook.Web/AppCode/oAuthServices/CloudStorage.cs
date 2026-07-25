@@ -1424,6 +1424,8 @@ namespace MyFlightbook.CloudStorage
 
                     await RefreshAccessToken().ConfigureAwait(false);
                     szToken = AuthState.AccessToken;
+                    CurrentUser.DropboxAccessToken = JsonConvert.SerializeObject(AuthState);
+                    CurrentUser.FCommit();
                 }
                 catch (JsonException) { }
                 catch (DotNetOpenAuth.Messaging.ProtocolException ex) { throw new UnauthorizedAccessException(ex.Message, ex); }
