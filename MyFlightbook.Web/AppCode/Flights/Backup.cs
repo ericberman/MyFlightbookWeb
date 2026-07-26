@@ -810,7 +810,7 @@ namespace MyFlightbook
         {
             try
             {
-                if (await new MFBDropbox(User).ValidateDropboxToken().ConfigureAwait(false) == MFBDropbox.TokenStatus.None)
+                if (new MFBDropbox(User).ValidateDropboxToken() == MFBDropbox.TokenStatus.None)
                     return Resources.Profile.errNotConfiguredDropBox;
 
                 Dropbox.Api.Files.FileMetadata result = await BackupToDropbox().ConfigureAwait(false);

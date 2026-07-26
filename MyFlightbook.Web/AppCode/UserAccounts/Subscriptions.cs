@@ -302,7 +302,7 @@ namespace MyFlightbook.Subscriptions
         {
             try
             {
-                MFBDropbox.TokenStatus ts = await new MFBDropbox(pf).ValidateDropboxToken().ConfigureAwait(false);
+                MFBDropbox.TokenStatus ts = new MFBDropbox(pf).ValidateDropboxToken();
                 if (ts == MFBDropbox.TokenStatus.None)
                     return true;
 

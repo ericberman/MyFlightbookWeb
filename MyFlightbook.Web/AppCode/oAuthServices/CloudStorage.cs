@@ -1315,13 +1315,18 @@ namespace MyFlightbook.CloudStorage
         /// <param name="pf">The user profile</param>
         /// <param name="fCommit">True to update the database with the oAuth 2.0 credential</param>
         /// <returns>The state of the dropbox access token PRIOR to upgrade.</returns>
-        async public Task<TokenStatus> ValidateDropboxToken()
+        public TokenStatus ValidateDropboxToken()
         {
             TokenStatus result = TokenStatus.None;
 
             if (CurrentUser == null || String.IsNullOrEmpty(CurrentUser.DropboxAccessToken))
                 return result;
 
+            // Detect modern oAuth2 tokens directly
+            if (CurrentUser.DropboxAccessToken.StartsWith("{") && CurrentUser.DropboxAccessToken.EndsWith("}") && CurrentUser.DropboxAccessToken.Contains("\"RefreshToken\""))
+                return TokenStatus.oAuth2;
+
+            // Older oAuth2 tokens lived forever, but oAuth1 Tokens were base64 encoded XML.
             try
             {
                 string dbAppKey = AppKey;
@@ -1330,40 +1335,12 @@ namespace MyFlightbook.CloudStorage
                 byte[] rgbOAuth1Token = Convert.FromBase64String(CurrentUser.DropboxAccessToken);
                 string xmlOAuth1Token = System.Text.Encoding.Default.GetString(rgbOAuth1Token);
                 // if we get here, it is probably an oAuth1 token
-
                 if (xmlOAuth1Token.Trim().StartsWith("<", StringComparison.OrdinalIgnoreCase))
                 {
-                    string szRawToken = null;
-                    string szRawSecret = null;
-
-                    using (MemoryStream stream = new MemoryStream(rgbOAuth1Token))
-                    {
-                        DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, string>));
-                        Object o = serializer.ReadObject(stream);
-                        if (o.GetType().Equals(typeof(Dictionary<string, string>)))
-                        {
-                            Dictionary<string, string> d = (Dictionary<string, string>)o;
-                            szRawToken = d["TokenDropBoxUsername"];
-                            szRawSecret = d["TokenDropBoxPassword"];
-                        }
-                    }
-
-
-                    try
-                    {
-                        using (DropboxAppClient client = new DropboxAppClient(dbAppKey, dbSecret))
-                        {
-                            var tokenFromOAuth1Result = await client.Auth.TokenFromOauth1Async(szRawToken, szRawSecret).ConfigureAwait(false);
-                            CurrentUser.DropboxAccessToken = tokenFromOAuth1Result.Oauth2Token;
-                        }
-
-                        CurrentUser.FCommit();
-
-                        result = TokenStatus.oAuth1;
-                    }
-                    catch (Exception ex) when (ex is WebException)
-                    {
-                    }
+                    // We used to convert oAuth1 tokens, but that's deprecated (and they're no longer supported anyhow!)
+                    CurrentUser.DropboxAccessToken = null;
+                    CurrentUser.FCommit();
+                    throw new UnauthorizedAccessException($"Error saving to DropBox for user {CurrentUser.UserName}: access token is v1; these are long expired.  The access token has been deleted.  Please re-authorize to get a valid v2 token.");
                 }
                 else
                     result = TokenStatus.oAuth2;
