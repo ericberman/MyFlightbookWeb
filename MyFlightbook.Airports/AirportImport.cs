@@ -199,11 +199,18 @@ namespace MyFlightbook.Airports
             matchedAirport = null;
             if (String.IsNullOrEmpty(szcode))
                 return MatchStatus.NotApplicable;
-            matchedAirport = Array.Find<airport>(rgap, ap2 => String.Compare(szcode, ap2.Code, StringComparison.InvariantCultureIgnoreCase) == 0);
-            if (matchedAirport == null)
+
+            // Issue #1568: e.g., The candidate is coming in as an airport (A), but it matches a Seaport (S) and a fix (FX), and we were matching to the fix.
+            // Two fixes for this:
+            // a) only match on ports.  We only ever do these imports on ports...
+            // b) if it matches multiple, try to find an exact match, or else take the first match.  
+            airport[] matches = Array.FindAll<airport>(rgap, ap2 => ap2.IsPort && ap2.Code.CompareCurrentCultureIgnoreCase(szcode) == 0);
+            if (matches.Length == 0)
                 return MatchStatus.NotInDB;
 
+            matchedAirport = Array.Find<airport>(matches, apMatch => apMatch.FacilityType.CompareCurrentCultureIgnoreCase(FacilityTypeCode) == 0) ?? matches[0];
             matchedName = matchedAirport.Name;
+
             if (String.Compare(matchedAirport.FacilityTypeCode, FacilityTypeCode, StringComparison.InvariantCultureIgnoreCase) != 0)
                 return MatchStatus.WrongType;
             if (this.LatLong == null || !matchedAirport.LatLong.IsSameLocation(this.LatLong, LocationTolerance))
