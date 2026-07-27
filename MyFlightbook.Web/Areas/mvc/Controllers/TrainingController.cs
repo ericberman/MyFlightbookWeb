@@ -760,7 +760,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.templateID = tid;
             ViewBag.endorsements = EndorsementsForUser(student, User.Identity.Name, fIncludeDeleted: @extern == 0); // issue # 1196 - don't include deleted external endorsements.
             ViewBag.nonOwnedEndorsements = string.IsNullOrEmpty(student) ? Array.Empty<Endorsement>() : RemoveEndorsementsByInstructor(EndorsementsForUser(student, null), User.Identity.Name);
-            InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student)) ?? (@extern == 0 ? throw new UnauthorizedAccessException() : (InstructorStudent) null);
+            InstructorStudent instrStudent = (CFIStudentMap.GetInstructorStudent(new CFIStudentMap(User.Identity.Name).Students, student)) ?? (@extern == 0 && !String.IsNullOrEmpty(student) ? throw new UnauthorizedAccessException() : (InstructorStudent) null);
             ViewBag.targetUser = (instrStudent == null) ? string.Empty : student;
             ViewBag.canViewStudent = instrStudent?.CanViewLogbook ?? false;
             ViewBag.canEditStudent = instrStudent?.CanAddLogbook ?? false;
