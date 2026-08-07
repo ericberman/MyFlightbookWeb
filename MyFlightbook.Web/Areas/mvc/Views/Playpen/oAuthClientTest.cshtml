@@ -63,10 +63,6 @@
         }
     }
 
-    function refreshToken() {
-        $("#btnRefresh").click();
-    }
-
     $(function () {
         validateForm($("form[name='frmAuthorize']"),
             { txtClientID: "required", txtClientSecret: "required", txtScope: "required", txtTokenURL: "required" },
@@ -141,19 +137,19 @@
 }
 @using (Html.BeginForm("OAuthAuthorize", "PlayPen", FormMethod.Post, new { id = "frmAuthorize", name = "frmAuthorize" }))
 {
-    <table>
+    <table class="w100">
         <tr>
-            <td>Client ID:</td>
+            <td class="w25">Client ID:</td>
             <td><input id="txtClientID" name="clientID" class="w100" type="text" required value="@currentClient.clientID" /></td>
         </tr>
         @if (currentClient.OAuthClientType == ClientType.Public)
         {
             <tr>
-                <td>Code Challenge (generated)</td>
+                <td class="w25">Code Challenge (generated)</td>
                 <td>@currentClient.PKCE.CodeChallenge <input type="hidden" name="code_challenge" value="@currentClient.PKCE.CodeChallenge" /> <input type="hidden" name="pkce" value="true" /></td>
             </tr>
             <tr>
-                <td>Code Verifier (generated)</td>
+                <td class="w25">Code Verifier (generated)</td>
                 <td>@currentClient.PKCE.CodeVerifier <input type="hidden" name="code_verifier" value="@currentClient.PKCE.CodeVerifier" /><input type="hidden" name="clientSecret" class="w100" value="abc123" /></td>
             </tr>
         }
@@ -172,19 +168,19 @@
             </td>
         </tr>
         <tr>
-            <td>Authorization URL:</td>
+            <td class="w25">Authorization URL:</td>
             <td><input id="txtAuthURL" name="authTarget" class="w100" required value="@currentClient.oAuth2AuthorizeEndpoint" /></td>
         </tr>
         <tr>
-            <td>Redirect URL:</td>
+            <td class="w25">Redirect URL:</td>
             <td><input id="txtRedirectURL" name="targetRedir" class="w100" value="@currentClient.redirectEndpoint" required /></td>
         </tr>
         <tr>
-            <td class="topAlign">Scope:</td>
+            <td class="topAlign w25">Scope:</td>
             <td><input id="txtScope" name="scopes" class="w100" value="@String.Join(" ", currentClient.Scopes)" /></td>
         </tr>
         <tr>
-            <td></td>
+            <td class="w25"></td>
             <td><button type="submit" name="submit" value="authorize">Get Authorization</button></td>
         </tr>
         <tr>
@@ -199,7 +195,7 @@
             </td>
         </tr>
         <tr>
-            <td class="topAlign">Token URL</td>
+            <td class="topAlign w25">Token URL</td>
             <td>
                 <input id="txtTokenURL" name="tokenTarget" class="w100" required value="@currentClient.oAuth2TokenEndpoint" />
                 <input type="hidden" name="code" id="hdnAuthorization" value="@ViewBag.Authorization" />
@@ -207,14 +203,26 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td class="w25"></td>
             <td>
                 <button type="submit" name="submit" value="token">Get Token</button>
-                <button type="submit" name="submit" value="refresh" id="btnRefresh" class="dn"></button>
             </td>
         </tr>
     </table>
 }
+<table class="w100 @(String.IsNullOrEmpty(currentClient.AuthState?.RefreshToken) ? "dn" : string.Empty)">
+    <tr class="topAlign">
+        <td class="w25">Refresh URL</td>
+        <td>
+            @using (Html.BeginForm("OAuthAuthorize", "PlayPen", FormMethod.Post, new { id = "frmRefresh", name = "frmRefresh", enctype = "multipart/form-data" }))
+            {
+                <input name="refreshTarget" class="w50" value="@(currentClient?.oAuth2TokenEndpoint ?? string.Empty)" />
+                <button type="submit" name="submit" value="refresh">Refresh Token</button>
+            }
+        </td>
+    </tr>
+</table>
+
 @using (Html.BeginForm("OAuthResource", "PlayPen", FormMethod.Get, new { id = "frmResource", name = "frmResource", enctype = "multipart/form-data" }))
 {
     <table>
@@ -427,16 +435,16 @@
     </div>
 </div>
 <div>
-    <table class="w100 wsprew">
-        <tr class="topAlign">
+    <table class="w100">
+        <tr class="topAlign wsprew">
             <td class="w100">Authorization result:</td>
             <td>@ViewBag.authorization</td>
         </tr>
         <tr class="topAlign">
             <td class="w100">Token result:</td>
-            <td class="wsprew">@JsonConvert.SerializeObject(currentClient.AuthState, Formatting.Indented)</td>
+            <td class="wsprew" id="txtAuthState">@JsonConvert.SerializeObject(currentClient.AuthState, Formatting.Indented)</td>
         </tr>
-        <tr class="topAlign">
+        <tr class="topAlign wsprew">
             <td class="w100">POST result:</td>
             <td><div id="divPostResults"></div></td>
         </tr>

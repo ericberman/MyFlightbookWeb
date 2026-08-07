@@ -15,6 +15,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -396,7 +397,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 else if (submitter.CompareCurrentCultureIgnoreCase("refresh") == 0)
                 {
-                    bool _ = await adhocClient.RefreshAccessToken();
+                    adhocClient.AuthState = await adhocClient.RefreshAccessToken(adhocClient.AuthState.RefreshToken, adhocClient.redirectEndpoint, Request["refreshTarget"] ?? adhocClient.oAuth2TokenEndpoint);
                     return Redirect("ClientTestBed");
                 }
             }
