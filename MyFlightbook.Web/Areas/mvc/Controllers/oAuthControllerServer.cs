@@ -2,6 +2,7 @@
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.Messages;
 using MyFlightbook.Image;
+using MyFlightbook.Injection;
 using MyFlightbook.OAuth;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
@@ -258,7 +259,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (String.IsNullOrEmpty(clientId))
                     throw new ArgumentNullException(nameof(clientId));
                 if (!Request.IsSecureConnection)
-                    throw new HttpException((int)HttpStatusCode.Forbidden, "Token requests MUST be on a secure channel");
+                    throw new HttpException((int)HttpStatusCode.Forbidden, "Token and refresh requests MUST be on a secure channel");
 
 
                 MFBOauth2Client client = MFBOauth2Client.GetClientByID(clientId)?.FirstOrDefault() ?? throw new InvalidOperationException("Unknown client");
@@ -269,34 +270,55 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 if (client.ClientType == ClientType.Public)
                 {
-                    string publicCode = Request["code"];
-                    if (String.IsNullOrEmpty(publicCode))
-                        throw new ArgumentNullException(nameof(publicCode));
-                    string verifier = Request["code_verifier"];
-                    if (String.IsNullOrEmpty(verifier))
-                        throw new ArgumentNullException(nameof(verifier));
-
-                    var pkce = PkceTempRecord.LoadFromPublicCode(publicCode) ?? throw new InvalidOperationException("invalid grant");
-                    pkce.ValidateGrant(verifier, clientId);
-
                     // Look up the clientID
                     MFBOauth2Client confidentialProxyClient = OAuth2AdHocClient.ConfidentialProxyClient;
 
                     OAuth2AdHocClient proxyClient = new OAuth2AdHocClient(confidentialProxyClient.ClientIdentifier, confidentialProxyClient.ClientSecret, string.Empty, Request.Url.GetLeftPart(UriPartial.Path), confidentialProxyClient.Callbacks.First());
 
-                    // Fake the request environment DNOA needs
-                    // by using DNOA's AuthorizationServer directly
-                    // against a NameValueCollection instead of HttpRequest
-                    requestBase = new Injection.SyntheticTokenRequest(
-                        new Uri($"https://{Request.Url.Host}/logbook/mvc/oAuth/OAuthToken"),
-                        new NameValueCollection
-                        {
-                        { "grant_type", "authorization_code" },
-                        { "client_id", proxyClient.clientID },
-                        { "client_secret", proxyClient.clientSecret },
-                        { "code", pkce.LegacyCode },
-                        { "redirect_uri", confidentialProxyClient.Callbacks.First() }
-                        });
+                    string grantType = Request["grant_type"] ?? string.Empty;
+
+                    if (grantType.CompareCurrentCultureIgnoreCase("authorization_code") == 0)
+                    {
+                        string publicCode = Request["code"];
+                        if (String.IsNullOrEmpty(publicCode))
+                            throw new ArgumentNullException(nameof(publicCode));
+                        string verifier = Request["code_verifier"];
+                        if (String.IsNullOrEmpty(verifier))
+                            throw new ArgumentNullException(nameof(verifier));
+
+                        var pkce = PkceTempRecord.LoadFromPublicCode(publicCode) ?? throw new InvalidOperationException("invalid grant");
+                        pkce.ValidateGrant(verifier, clientId);
+
+                        // Fake the request environment DNOA needs
+                        // by using DNOA's AuthorizationServer directly
+                        // against a NameValueCollection instead of HttpRequest
+                        requestBase = new SyntheticTokenRequest(
+                            new Uri($"https://{Request.Url.Host}/logbook/mvc/oAuth/OAuthToken"),
+                            new NameValueCollection
+                            {
+                                { "grant_type", "authorization_code" },
+                                { "client_id", proxyClient.clientID },
+                                { "client_secret", proxyClient.clientSecret },
+                                { "code", pkce.LegacyCode },
+                                { "redirect_uri", confidentialProxyClient.Callbacks.First() }
+                            });
+                    }
+                    else if (grantType.CompareCurrentCultureIgnoreCase("refresh_token") == 0)
+                    {
+                        string refreshToken = Request["refresh_token"];
+                        if (String.IsNullOrEmpty(refreshToken))
+                            throw new ArgumentNullException(nameof(refreshToken));
+
+                        requestBase = new SyntheticTokenRequest(
+                            new Uri("https://developer.myflightbook.com/logbook/mvc/oAuth/OAuthToken"),
+                            new NameValueCollection
+                            {
+                                { "grant_type", "refresh_token" },
+                                { "client_id", confidentialProxyClient.ClientIdentifier },
+                                { "client_secret", confidentialProxyClient.ClientSecret },
+                                { "refresh_token", refreshToken }
+                            });
+                    }
                 }
                 OutgoingWebResponse wr = authorizationServer.HandleTokenRequest(requestBase);
                 // At this point, wr.Body should contain the JSON response
