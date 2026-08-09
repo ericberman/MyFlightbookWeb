@@ -352,9 +352,9 @@ namespace OAuthAuthorizationServer.Services
                     Token = server.GetAccessToken();
 
                     if (Token.Lifetime.HasValue && Token.UtcIssued.Add(Token.Lifetime.Value).CompareTo(DateTime.UtcNow) < 0)
-                        throw new MyFlightbookException("oAuth2 - Token has expired!");
+                        throw new UnauthorizedAccessException("oAuth2 - Token has expired!");
                     if (String.IsNullOrEmpty(Token.User))
-                        throw new MyFlightbookException("Invalid oAuth token - no user");
+                        throw new UnauthorizedAccessException("Invalid oAuth token - no user");
 
                     GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
                 }
@@ -555,7 +555,7 @@ namespace OAuthAuthorizationServer.Services
             {
                 Response.Clear();
                 Response.ContentType = "text/plain";
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusCode = (ex is UnauthorizedAccessException) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.InternalServerError;
                 Response.TrySkipIisCustomErrors = true;
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Write("Error: " + ex.Message + "\r\n");
