@@ -860,7 +860,8 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             return lst;
         }
 
-        private const string szCustomPropsForUserQuery = @"SELECT cpt.*,
+        private const string szCustomPropsForUserQuery = @"SELECT /*+ SET_VAR(group_concat_max_len = 100000) */ 
+           cpt.*,
            cpt.Title AS LocTitle,
            cpt.FormatString AS LocFormatString,
            cpt.Description AS LocDescription,
