@@ -542,25 +542,27 @@ namespace OAuthAuthorizationServer.Services
                     throw new HttpException((int)HttpStatusCode.Forbidden, "Authorization requests MUST be on a secure channel");
 
                 OAuthServiceID? serviceID = RequestedService(Request, requestedService) ?? throw new InvalidOperationException($"Requested service '{requestedService ?? "null"}' is not recognized.");
+                Response.BufferOutput = true;
                 using (OAuthServiceCall service = new OAuthServiceCall(Request, requestedService))
                 {
                     Response.Clear();
                     Response.ContentType = service.ContentType;
                     service.Execute(Response.OutputStream);
-                    Response.Flush(); // Sends all currently buffered output to the client.
-                    Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+
+                    // Tells ASP.NET we are completely finished with the response body
+                    Response.SuppressContent = false;
                 }
             }
             catch (Exception ex) when (ex.IsNonFatal())
             {
+                // Because we didn't flush, Clear() safely wipes both the body AND resets headers
                 Response.Clear();
+                Response.ClearHeaders();
                 Response.ContentType = "text/plain";
                 Response.StatusCode = (ex is UnauthorizedAccessException) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.InternalServerError;
                 Response.TrySkipIisCustomErrors = true;
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Write("Error: " + ex.Message + "\r\n");
-                Response.Write(ex.ToStringDescriptive() + "\r\n");
-                Response.Flush();
                 Response.End();
             }
         }
