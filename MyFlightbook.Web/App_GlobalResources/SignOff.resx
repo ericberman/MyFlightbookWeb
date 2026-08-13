@@ -635,4 +635,43 @@ Anywhere that you see an expiration date, use either your certificate's expirati
   <data name="WINGSRequestSent" xml:space="preserve">
     <value>The request has been sent</value>
   </data>
+  <data name="WINGSActivityComment" xml:space="preserve">
+    <value>WINGS Activity Completed</value>
+  </data>
+  <data name="WINGSActivityName" xml:space="preserve">
+    <value>WINGS Activity Name</value>
+  </data>
+  <data name="WINGSActivityNameHint" xml:space="preserve">
+    <value>Enter the activity name/identifier, or press the "[" key and a few characters to find matches to known Activities</value>
+  </data>
+  <data name="WINGSActivityOrPhaseNotedEndorsement" xml:space="preserve">
+    <value>You just issued an endorsement that indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!</value>
+  </data>
+  <data name="WINGSActivityOrPhaseNotedFlight" xml:space="preserve">
+    <value>This flight indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!</value>
+  </data>
+  <data name="WINGSAddActivityToLogbook" xml:space="preserve">
+    <value>Create a logbook entry for this activity</value>
+  </data>
+  <data name="WINGSDateActivityCompleted" xml:space="preserve">
+    <value>Date that the activity was completed</value>
+  </data>
+  <data name="WINGSErrNoActivity" xml:space="preserve">
+    <value>Please provide a description of the activity that was completed</value>
+  </data>
+  <data name="WINGSErrNoDate" xml:space="preserve">
+    <value>Please provide a date for the completion of the activity</value>
+  </data>
+  <data name="WINGSGoToFAASafety" xml:space="preserve">
+    <value>Go to the FAASafety website</value>
+  </data>
+  <data name="WINGSNoFlightsFound" xml:space="preserve">
+    <value>No candidate flights were found</value>
+  </data>
+  <data name="WINGSRecordActivity" xml:space="preserve">
+    <value>Record completion of a WINGS activity</value>
+  </data>
+  <data name="WINGSRecordActivityDescription" xml:space="preserve">
+    <value>You can record a WINGS activity completed by adding a WINGS Activity Completed property to an entry in your logbook, or you can quickly add such an entry here</value>
+  </data>
 </root>

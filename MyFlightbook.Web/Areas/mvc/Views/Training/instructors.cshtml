@@ -7,13 +7,12 @@
     fq.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted));
     fq.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted));
     FlightResult fr = FlightResultManager.FlightResultManagerForUser(User.Identity.Name).ResultsForQuery(fq);
-    ViewBag.WINGSFlights = fr.Flights;
-
-    IEnumerable<LogbookEntryDisplay> wingsFlights = ViewBag.WINGSFlights;
+    IEnumerable<LogbookEntryDisplay> wingsFlights = fr.Flights;
     ViewBag.defaultTab = tabID.tabTraining;
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
+<script type="text/javascript" src="@("~/Public/Scripts/autoinsert.js?v=5".ToAbsolute())"></script>
 <script type="text/javascript">
     function deleteInstructor(sender, uname) {
         if (confirm('@Resources.Profile.EditProfileDeleteCFIConfirmation')) {
@@ -85,10 +84,12 @@
     $(() => {
         defaultButtonForDiv("pnlAddInstructor", "btnAddInstructor");
         validateForm($("#frmReqWINGS"), { wingsFlightID: { required: true, minlength: 1 } }, { wingsFlightID: "@Resources.SignOff.wingsErrNoActivityFlightsSelected" });
+        validateForm($("#frmAddWINGSActivity"), { WINGSActivityDate: { required: true }, WINGSActivity: { required: true, minlength: 1 } }, { WINGSActivityDate: '@Resources.SignOff.WINGSErrNoDate', WINGSActivity: '@Resources.SignOff.WINGSErrNoActivity' });
+        autoInsert($("#txtWINGSActivity")[0], "@("~/mvc/Training/WINGSAutoCompletion".ToAbsolute())", '[');
     });
 </script>
 <div id="instructorAccordion">
-    <h3>@Resources.SignOff.RoleYourInstructors</h3>
+    <h3 id="instructors">@Resources.SignOff.RoleYourInstructors</h3>
     <div>
         @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmInstructorManage", name = "frmInstructorManage" }))
         {
@@ -135,45 +136,79 @@
             </div>
         </div>
     </div>
-    <h3>@Resources.SignOff.WINGSCreditTitle</h3>
+    <h3 id="WINGS">@Resources.SignOff.WINGSCreditTitle</h3>
     <div>
         @Html.Raw(Branding.ReBrand(Resources.SignOff.WINGSStudentDescription))
-        @if (wingsFlights.Any() && sm.Instructors.Any())
-        {
-            <p><a class="b" href="#" onclick="javascript: showModalById('divRequestWINGS', '@Resources.SignOff.WINGSRequestCredit', '30em'); $('#cmbCFIUser')[0].focus(); return false;">@Resources.SignOff.WINGSRequestCredit</a></p>
-            <div id="divRequestWINGS" class="dn">
-                @using (Html.BeginForm("RequestWINGSCredit", "Training", FormMethod.Post, new { id = "frmReqWINGS", name = "frmReqWINGS" }))
-                {
-                    @Html.AntiForgeryToken()
-                    <div>
-                        <p>@Resources.SignOff.WINGSSelectInstructor</p>
-                        <select name="cfiUser" id="cmbCFIUser">
-                            @foreach (InstructorStudent instructor in sm.Instructors)
-                            {
-                                <option value="@instructor.UserName">@instructor.UserFullName</option>
-                            }
-                        </select>
-                    </div>
-                    <p>@Resources.SignOff.WINGSSelectActivityFlights</p>
-                    <div style="max-height: 10em; overflow-y: auto; margin-bottom: 1em;">
-                        <table class="lbTable">
-                            @foreach (LogbookEntryDisplay led in ViewBag.WINGSFlights)
-                            {
-                                <tr class="logbookRow logbookRowEven">
-                                    <td><input name="wingsFlightID" type="checkbox" value="@led.FlightID" /></td>
-                                    <td>
-                                        <div><span class="l b">@led.Date.ToShortDateString()</span> <span class="b">@led.TailNumDisplay</span> <span class="i">@led.Route</span> @led.Comment</div>
-                                        <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted]?.DisplayString ?? string.Empty)</div>
-                                        <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted]?.DisplayString ?? string.Empty)</div>
-                                    </td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                    <div class="c"><button onclick="javascript: requestWINGSCredit(); return false;">@Resources.SignOff.WINGSRequestCredit</button></div>
-                }
-            </div>
-        }
+        <hr />
+        <h2>@Resources.SignOff.WINGSRecordActivity</h2>
+        <div>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlNewActivity" });}</div>
+        <div id="pnlNewActivity" class="dn">
+            @using (Html.BeginForm("AddWINGSActivity", "Training", FormMethod.Post, new { id = "frmAddWINGSActivity", name = "frmAddWINGSActivity" }))
+            {
+                @Html.AntiForgeryToken()
+                <div>@Resources.SignOff.WINGSRecordActivityDescription</div>
+                <h3>@Resources.SignOff.WINGSDateActivityCompleted</h3>
+                <div>
+                    @{ Html.RenderAction("RenderDateField", "MFBTemplate", new { id = "txtDateOfActivity", required = true, name = "WINGSActivityDate", value = DateTime.Now });}
+                </div>
+                <h3>@Resources.SignOff.WINGSActivityName</h3>
+                <div>@Resources.SignOff.WINGSActivityNameHint</div>
+                <div class="w80" style="position:relative; display:inline-block;"><textarea name="WINGSActivity" required id="txtWINGSActivity" rows="3" class="w100"></textarea></div>
+                <div class="c"><button type="submit">@Resources.SignOff.WINGSAddActivityToLogbook</button></div>
+                <div style="margin-bottom: 24em;"></div>
+            }
+        </div>
+        <hr />
+        <h2>@Resources.SignOff.WINGSRequestCredit</h2>
+        <div>@{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = false, targetID = "pnlReqCredit" });}</div>
+        <div id="pnlReqCredit" class="dn">
+            @if (sm.Instructors.Any())
+            {
+                <div id="divRequestWINGS">
+                    @using (Html.BeginForm("RequestWINGSCredit", "Training", FormMethod.Post, new { id = "frmReqWINGS", name = "frmReqWINGS" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div>
+                            <h3>@Resources.SignOff.WINGSSelectInstructor</h3>
+                            <select name="cfiUser" id="cmbCFIUser">
+                                @foreach (InstructorStudent instructor in sm.Instructors)
+                                {
+                                    <option value="@instructor.UserName">@instructor.UserFullName</option>
+                                }
+                            </select>
+                        </div>
+                        <h3>@Resources.SignOff.WINGSSelectActivityFlights</h3>
+                        if (wingsFlights.Any())
+                        {
+                            <div style="max-height: 10em; overflow-y: auto; margin-bottom: 1em;">
+                                <table class="lbTable">
+                                    @foreach (LogbookEntryDisplay led in wingsFlights)
+                                    {
+                                        <tr class="logbookRow logbookRowEven">
+                                            <td><input name="wingsFlightID" type="checkbox" value="@led.FlightID" /></td>
+                                            <td>
+                                                <div><span class="l b">@led.Date.ToShortDateString()</span> <span class="b">@led.TailNumDisplay</span> <span class="i">@led.Route</span> @led.Comment</div>
+                                                <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSPhaseCompleted]?.DisplayString ?? string.Empty)</div>
+                                                <div>@(led.CustomProperties[CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted]?.DisplayString ?? string.Empty)</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <div class="c"><button onclick="javascript: requestWINGSCredit(); return false;">@Resources.SignOff.WINGSRequestCredit</button></div>
+                        }
+                        else
+                        {
+                            <div class="i">@Resources.SignOff.WINGSNoFlightsFound</div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="i">@Resources.SignOff.RoleNoInstructors</div>
+            }
+        </div>
     </div>
 </div>
-@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "instructorAccordion", active = "0" }); }
+@{ Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = "instructorAccordion", active = (Request["pane"] ?? string.Empty).CompareCurrentCultureIgnoreCase("WINGS") == 0 ? "1" : "0" }); }

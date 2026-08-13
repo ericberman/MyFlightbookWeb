@@ -662,6 +662,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
+        public ActionResult AddWINGSActivity(DateTime WINGSActivityDate, string WINGSActivity)
+        {
+            LogbookEntry.FromWINGSActivity(User.Identity.Name, WINGSActivityDate, WINGSActivity, Resources.SignOff.WINGSActivityComment).FCommit();
+            return Redirect("~/mvc/Training/Instructors?pane=WINGS");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmRelationship()
         {
             if (Request["btnCancel"] != null)

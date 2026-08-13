@@ -1515,11 +1515,74 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to WINGS Activity Completed.
+        /// </summary>
+        internal static string WINGSActivityComment {
+            get {
+                return ResourceManager.GetString("WINGSActivityComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WINGS Activity Name.
+        /// </summary>
+        internal static string WINGSActivityName {
+            get {
+                return ResourceManager.GetString("WINGSActivityName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the activity name/identifier, or press the &quot;[&quot; key and a few characters to find matches to known Activities.
+        /// </summary>
+        internal static string WINGSActivityNameHint {
+            get {
+                return ResourceManager.GetString("WINGSActivityNameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You just issued an endorsement that indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!.
+        /// </summary>
+        internal static string WINGSActivityOrPhaseNotedEndorsement {
+            get {
+                return ResourceManager.GetString("WINGSActivityOrPhaseNotedEndorsement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This flight indicates that a WINGS activity or phase was completed.  Be sure to record this on the FAA website as well as signing it here!.
+        /// </summary>
+        internal static string WINGSActivityOrPhaseNotedFlight {
+            get {
+                return ResourceManager.GetString("WINGSActivityOrPhaseNotedFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a logbook entry for this activity.
+        /// </summary>
+        internal static string WINGSAddActivityToLogbook {
+            get {
+                return ResourceManager.GetString("WINGSAddActivityToLogbook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FAA WINGS Credit.
         /// </summary>
         internal static string WINGSCreditTitle {
             get {
                 return ResourceManager.GetString("WINGSCreditTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date that the activity was completed.
+        /// </summary>
+        internal static string WINGSDateActivityCompleted {
+            get {
+                return ResourceManager.GetString("WINGSDateActivityCompleted", resourceCulture);
             }
         }
         
@@ -1533,11 +1596,65 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a description of the activity that was completed.
+        /// </summary>
+        internal static string WINGSErrNoActivity {
+            get {
+                return ResourceManager.GetString("WINGSErrNoActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select at least one flight with a WINGS activity.
         /// </summary>
         internal static string wingsErrNoActivityFlightsSelected {
             get {
                 return ResourceManager.GetString("wingsErrNoActivityFlightsSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a date for the completion of the activity.
+        /// </summary>
+        internal static string WINGSErrNoDate {
+            get {
+                return ResourceManager.GetString("WINGSErrNoDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to the FAASafety website.
+        /// </summary>
+        internal static string WINGSGoToFAASafety {
+            get {
+                return ResourceManager.GetString("WINGSGoToFAASafety", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No candidate flights were found.
+        /// </summary>
+        internal static string WINGSNoFlightsFound {
+            get {
+                return ResourceManager.GetString("WINGSNoFlightsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record completion of a WINGS activity.
+        /// </summary>
+        internal static string WINGSRecordActivity {
+            get {
+                return ResourceManager.GetString("WINGSRecordActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can record a WINGS activity completed by adding a WINGS Activity Completed property to an entry in your logbook, or you can quickly add such an entry here.
+        /// </summary>
+        internal static string WINGSRecordActivityDescription {
+            get {
+                return ResourceManager.GetString("WINGSRecordActivityDescription", resourceCulture);
             }
         }
         
@@ -1581,9 +1698,8 @@ namespace Resources {
         ///   Looks up a localized string similar to  &lt;p&gt;&lt;a href=&quot;https://www.faasafety.gov/wings/pub/learn_more.aspx&quot; target=&quot;_blank&quot;&gt;WINGS&lt;/a&gt; is an FAA program of ongoing learning and proficiency.  Completing WINGS phases can reset your flight review clock.&lt;/p&gt;
         ///&lt;p&gt;The most important things you will want to do are:&lt;/p&gt;
         ///&lt;ul&gt;
-        ///    &lt;li&gt;(Optional) Complete an approved WINGS activity and log it in a flight entry&lt;/li&gt;
-        ///    &lt;li&gt;(Optional) Have your instructor sign that flight entry&lt;/li&gt;
-        ///    &lt;li&gt;&lt;span class=&quot;b&quot;&gt;(REQUIRED)&lt;/span&gt; Ask your instructor to register th [rest of string was truncated]&quot;;.
+        ///    &lt;li&gt;(Optional) Complete an approved WINGS activity and log it in a flight entry.  Use the &amp;quot;WINGS Activity Completed&amp;quot; property to denote the activity.&lt;/li&gt;
+        ///    &lt;li&gt;&lt;span class=&quot;b&quot;&gt;(REQUIRED)&lt;/span&gt; If your activity comple [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WINGSStudentDescription {
             get {

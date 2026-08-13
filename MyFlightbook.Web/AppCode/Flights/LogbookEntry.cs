@@ -2917,6 +2917,22 @@ WHERE f1.username = ?uName ");
             return leSrc ?? new LogbookEntry();
         }
 
+        public static LogbookEntry FromWINGSActivity(string szUser, DateTime date, string activity, string comment)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+            if (string.IsNullOrEmpty(activity))
+                throw new ArgumentNullException(nameof(activity));
+            
+            LogbookEntry le = new LogbookEntry() { User = szUser, Date = date, AircraftID = Aircraft.idGenericGround, Comment = comment };
+            le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWINGSActivityCompleted, activity));
+            UserAircraft ua = new UserAircraft(szUser);
+
+            if (ua[Aircraft.idGenericGround] == null)
+                ua.FAddAircraftForUser(Aircraft.GenericGround);
+            return le;
+        }
+
         /// <summary>
         /// Create an entry from a datareader row for the specified user
         /// </summary>

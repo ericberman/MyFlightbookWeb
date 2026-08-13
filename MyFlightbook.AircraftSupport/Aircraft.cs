@@ -885,6 +885,19 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// ID for a generic ground aircraft (ASEL)
+        /// </summary>
+        public const int idGenericGround = 234224;
+
+        /// <summary>
+        /// Utility for a generic ground aircraft (ASEL).  This is used for flights that are not in an actual aircraft, but which are still logged.
+        /// </summary>
+        public static Aircraft GenericGround
+        {
+            get { return new Aircraft(idGenericGround); }
+        }
+
+        /// <summary>
         /// Given a row in a result set, initializes an aircraft.
         /// </summary>
         /// <param name="dr">The data row containing the aircraft</param>
