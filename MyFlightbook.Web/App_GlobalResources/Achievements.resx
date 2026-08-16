@@ -506,4 +506,7 @@
   <data name="nameAltonBay" xml:space="preserve">
     <value>"Slick Flier" - landed at Alton Bay Ice Runway</value>
   </data>
+  <data name="name2017EclipseChaser" xml:space="preserve">
+    <value>2017 Eclipse Chaser</value>
+  </data>
 </root>

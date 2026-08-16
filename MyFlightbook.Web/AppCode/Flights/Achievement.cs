@@ -378,6 +378,7 @@ namespace MyFlightbook.Achievements
             FlightsInDecember,
             FlightsInYear,
             EclipseChaser2024,
+            EclipseChaser2017,
 
             AirportList00 = BadgeCategory.AirportList,
             AirportList01, AirportList02, AirportList03, AirportList04, AirportList05, AirportList06, AirportList07, AirportList08, AirportList09, AirportList10,
@@ -753,6 +754,7 @@ namespace MyFlightbook.Achievements
 
                     // Miscellaneous
                     new FlightOfThePenguin(),
+                    new EclipseChaser2017(),
                     new EclipseChaser2024(),
                     new AltonBay(),
                     // Flights-in-month
@@ -1098,9 +1100,46 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
+    public abstract class EclipseChaser : Badge
+    {
+        protected abstract AirportList GetEclipseAirports { get; }
+
+        protected DateTime dtEclipse { get; set; }
+
+        public override string BadgeImageOverlay { get { return "~/Images/BadgeOverlays/eclipse.png".ToAbsolute(); } }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+            if (cfr.dtFlight.Date.CompareTo(dtEclipse.Date) == 0 && cfr.fIsRealAircraft && !IsAchieved)
+            {
+                AirportList eclipseMaster = GetEclipseAirports;
+                AirportList al = new AirportList(cfr.Route);
+                foreach (airport ap in al.UniqueAirports)
+                {
+                    if (ap.IsPort && eclipseMaster.GetAirportByCode(ap.Code) != null)
+                    {
+                        Level = AchievementLevel.Achieved;
+                        DateEarned = cfr.dtFlight;
+                        IDFlightEarned = cfr.flightID;
+                        break;
+                    }
+                }
+            }
+        }
+
+        protected EclipseChaser(BadgeID bid, DateTime dt, string name) : base(bid, name)
+        {
+            dtEclipse = dt;
+
+        }
+    }
+
 
     [Serializable]
-    public class EclipseChaser2024 : Badge
+    public class EclipseChaser2024 : EclipseChaser
     {
         private const string szEclipseAirports = @"0B7 0G7 1E8 1H1 1I1 21M 39B 3B1 44B 4B6 4B7 4C4 52B 59B 5B1 60B 6B0 6B9 70B 78B 83B 85B 87B 8B0 B06 B16 B21 CYSL K03 K16 KART KBML KBTV KCAR KCDA KEFK KERR KFSO KFZY KGTB KHUL KLKP KLRG KMAL KMLT KMPV KMSS KMVL KOGS KPBG KPQI KPTD KRME KSLK KSYR M57 1I8 5I4 6I4 8I3 C40 I72 KMZZ KTYQ 0G7 1D4 1G0 1G1 1G3 1G5 2D1 2G1 3D8 3G3 3G4 3T7 3W2 3W9 3X5 4G1 4G2 4G3 4G8 4N2 5A1 5D9 5G0 5G7 6D7 6G1 7D8 7D9 7G0 7G8 7W5 8G1 8G2 9G0 9G3 9G5 9G6 01G 03G 12G 14G 15G 16G 17G 41N 56D 62D 85N 88D 89D 92G D23 D51 D52 D59 D79 D88 D91 I64 KAKR KBJJ KBKL KBQR KBUF KCAK KCGF KCLE KDFI KDKK KDSV KERI KFDY KFZI KGKJ KGQQ KGVQ KHTF KHZY KIAG KIUA KJHW KLNN KLPR KMFD KMNN KOLE KOWX KPCW KPEO KPOV KROC KSDC KTDZ KTOL KYNG N56 P15 R47 S24 0G7 1D4 1G0 07F 1F7 20T 2F7 30F 3F9 3T8 4F7 4O4 50F 5M8 68F 6F1 73F 76F 7F3 7F5 7F7 7M3 80F 8F5 90F 9F0 9F1 9F9 9S1 F00 F41 F44 F46 F51 F53 F69 KACT KADS KCNW KCPT KCRS KDAL KDEQ KDFW KFTW KFWS KGDJ KGKY KGOP KGPM KGVT KHHW KHOT KHQZ KINJ KJDD KJWY KJXI KLBR KLNC KLXY KMNZ KOSA KPRX KPWG KRBD KSLR KTKI KTRL KTXK KTYR M18 M77 T13 T14 T15 T31 T37 T48 T56 T80 10X 1T7 20R 23R 2G5 2KL 2TX 3R9 49R 5C1 5T9 81R KAQO KBBD KBMQ KCVB KCZT KDLF KDRT KDZB KECU KEDC KERV KGRK KGTU KHDO KILE KJCT KLZZ KRYW KTPL KUVA T35 T70 T74 T82 T92 T94 0D7 0I2 1H8 1I3 1WF 2R2 38I 3EV 3FK 3I3 3I7 3R8 4I3 4I9 5I4 6CM 6G4 6I4 78I 7I2 7I4 7L8 I17 I20 I22 I34 I42 I44 I54 I61 I67 I68 I72 I73 I74 I80 I83 I91 I95 I99 KAID KAJG KAOH KAXV KBAK KBFR KBMG KCEV KCFJ KCQA KCUL KDAY KDCY KDLZ KEDJ KEHR KEVV KEYE KFFO KFRH KGDK KGEZ KGFD KGPC KHAO KHBE KHFY KHLB KHNB KHUF KIND KLWV KMGY KMIE KMQJ KMRT KMWO KOSU KOVO KOXD KPLD KRID KRSV KSCA KSER KSGH KSIV KUMP KUWL KUYF KVES KVNW O74 1H2 2T2 H57 H88 H96 HSB KENL KFAM KFOA KFWC KMDH KMVN KMWA KOLY KPCD KPJY KSAR KSLO 12A 2A2 32A 34M 37M 37T 3M0 42A 42M 4A5 4M2 4M9 6M2 7M2 7M3 7M5 7M6 7M7 7M8 7M9 8M2 H35 KADF KARG KBDQ KBPK KBVX KCCA KCGI KCHQ KCIR KCVK KCXW KDXE KEIW KFLP KGDA KHBZ KJBR KLIT KMAW KMEZ KMPJ KORK KPAH KPGR KPOF KPYN KRKR KRUE KSIK KSRC KSUZ KTKX KTWT KUNO M19 M27 M30 M60 M70 M74 M78 M85 MO5 X33";
 
@@ -1117,32 +1156,33 @@ namespace MyFlightbook.Achievements
             }
         }
 
-        private static readonly DateTime dtEclipse = new DateTime(2024, 04, 08);
+        protected override AirportList GetEclipseAirports { get { return eclipseAirports; } }
 
-        public override string BadgeImageOverlay { get { return "~/Images/BadgeOverlays/eclipse.png".ToAbsolute(); } }
+        public EclipseChaser2024() : base(BadgeID.EclipseChaser2024, new DateTime(2024, 04, 08), Resources.Achievements.name2024EclipseChaser) { }
+    }
 
-        public EclipseChaser2024() : base(BadgeID.EclipseChaser2024, Resources.Achievements.name2024EclipseChaser) { }
+    [Serializable]
+    public class EclipseChaser2017 : EclipseChaser
+    {
+        private const string szEclipseAirports = @"0GA1 0GA2 0GE5 18A 3GE3 AJR DZJ GA18 GA45 GA67 GE99 KTOC 02ID 03ID 04ID 0ID2 0U0 0U1 0U2 0U9 13ID 17ID 1U2 22ID 24ID 29ID 2ID2 2ID6 2U7 3ID9 42ID 44ID 47ID 51ID 52U 55H 9ID0 AOC DIJ ID06 ID31 ID35 ID36 ID39 ID44 ID56 ID63 ID67 ID72 ID74 ID76 ID77 ID86 ID87 ID95 ID97 KIDA KLLJ KRXE S75 S87 U12 U37 U41 U45 U56 U61 U62 U63 U70 U72 U82 U84 U87 U88 U92 U97 U98 01LL 08IS 16IS 1IL4 24LL 27LL 2IL7 37LL 3LL1 3LL6 4IL8 4IS5 5IL2 5IS3 6IL5 6LL4 7IS2 7IS9 7LL9 83LL 89IS 91LS 94IS 95IL 9LL2 H49 H96 IL71 KCIR KCPS KHSB KMDH KMWA KSAR LL26 M30 PJY 1KS2 2KS6 3KS1 5KS2 62K 63KS 7KS4 8KS3 93KS K59 K83 K87 K91 KFLV MYZ SN75 SN83 0KY1 0KY5 10KY 1M9 23KY 24KY 2I0 2KT4 2KY0 2M0 34KY 35KY 42KY 4M7 54KY 5KY4 5KY5 5KY6 68KY 6KY4 74KY 8KY3 8M7 8M9 HVC KBWG KHOP KPAH M21 M34 TWT 03MO 06MO 0C1 0MO2 0MU8 0N0 10MO 11MO 15MO 16MO 17MO 17MU 1BT 1H3 1MO3 1MO4 1MO7 1MU2 1MU7 1MU8 20MO 23MO 26MO 29MO 2M1 2MO2 2MO7 31MO 37MO 3EX 3GV 3MO2 3MO7 40MO 42MO 44MO 4MO 4MO4 4MO5 4MO7 4MO8 54MU 55MO 56MO 5MO 5MO1 5MU9 61MU 62MO 63M 64MO 66MO 69MU 6MO2 6MO6 6MU4 6MU5 71MO 72MO 73MU 79MU 8MO3 8MO5 8MO7 8WC 92MU 98MO 9K5 9MO3 9MO4 9MO9 CHT EZZ FTT FYG GPH H57 H88 HIG K26 K57 KCGI KCOU KDMO KFAM KJEF KMCI KMHL KMKC KSTJ KSUS KSZL KVIH MO03 MO07 MO08 MO10 MO17 MO23 MO24 MO26 MO27 MO43 MO45 MO48 MO51 MO61 MO71 MO74 MO78 MO81 MO86 MO87 MO89 MO94 MU02 MU14 MU18 MU20 MU21 MU22 MU23 MU31 MU32 MU35 MU65 MU68 MU72 MU77 MU85 MU89 MU97 MYJ OMU9 PCD UBX UUV VER 1A5 24A 57NC 85NC NC08 NC16 RHP 03NE 04NE 07K 08K 09K 0F4 0G3 0NE0 0NE6 0NE9 0V3 12NE 16NE 18NE 1NE2 1V2 24NE 25NE 2NE3 2NE5 2NE8 32NE 33NE 34NE 37NE 38NE 3NE2 3NE7 43NE 45NE 4NE1 50K 52NE 56NE 5NE2 5NE3 5NE4 71NE 7NE6 80NE 82NE 84NE 87NE 88NE 96NE 98NE 9NE2 9NE3 9NE6 9NE8 9V3 AUH CEK CZD FMZ FNB GTE HJH JYR K01 KAIA KBBW KBFF KBIE KEAR KFBY KGRI
+KHSI KLBF KLNK KLXN NE12 NE17 NE18 NE20 NE25 NE29 NE33 NE36 NE38 NE40 NE45 NE53 NE57 NE59 NE64 NE65 NE79 NE80 NE83 NE85 NE86 NE92 NE94 SWT TIF 04OR 0OR7 11OG 12S 18OR 19OR 21OG 22OR 2OR1 2OR3 2OR6 3OR8 43OR 44OR 49OR 4OR1 4OR3 4OR4 4OR5 4OR7 4OR8 4S9 55OR 56OG 5OR3 5OR8 5OR9 5S4 5S5 61OR 64OG 64OR 67OG 67OR 6K5 6OR4 6OR8 6S4 71OR 72OR 7OR4 7OR7 7S5 7S9 88OR 8OR2 8OR7 8S3 97OR 98OR 9OR1 9OR8 KBKE KCVO KGCD KMMV KONO KONP KPFC KRDM KSLE OG00 OG01 OG10 OG12 OG16 OG19 OG23 OG28 OG39 OG44 OG45 OG49 OG51 OG52 OG54 OL05 OR02 OR07 OR11 OR13 OR17 OR20 OR21 OR22 OR25 OR34 OR38 OR39 OR41 OR51 OR52 OR53 OR54 OR56 OR67 OR70 OR71 OR77 OR82 OR85 OR86 OR87 OR89 OR90 OR94 OR95 S12 S30 S33 S39 S45 S49 00SC 12SC 16SC 17SC 18SC 19SC 1DS 1SC1 1SC2 1SC3 24SC 25SC 2SC5 2SC7 2SC8 34SC 35A 3SC4 43SC 44SC 4SC4 4SC7 5J5 66SC 6J0 6J2 6J4 6J6 6SC1 92SC 99N 99SC 9SC CKI DYB EOE FDW JZI KAIK KAND KCAE KCEU KCHS KCUB KGGE KGMU KGRD KGSP KGYH KLQK KMMT KOGB KPHH KSMS KSSC LRO LUX MKS MNI S19 SC00 SC01 SC03 SC05 SC07 SC13 SC14 SC17 SC23 SC24 SC26 SC34 SC37 SC38 SC39 SC41 SC43 SC44 SC45 SC46 SC47 SC48 SC56 SC57 SC65 SC67 SC72 SC75 SC78 SC81 SC82 SC84 SC86 SC87 SC90 SC91 SC92 SC95 SC96 SC97 SC98 XNO 00TN 0A3 0TN2 0TN5 10TN 11TN 12TN 19TN 1A3 1A7 1M5 1TN0 1TN2 2A0 2TN7 2TN8 36TN 38TN 3M7 3TN8 3TN9 41TN 44TN 4TN1 4TN2 4TN6 5TN4 5TN9 63TN 6TN1 70TN 78TN 7TN0 7TN3 80TN 83TN 85TN 8A3 8TN3 8TN5 8TN6 91TN 92A 95TN 96TN 9TN4 9TN9 JWN KBNA KCKV KCSV KMMI KMQY KRKW KRNC KTYS M54 M91 MBT MNV RZR SRB TN08 TN09 TN17 TN23 TN26 TN30 TN45 TN49 TN51 TN53 TN56 TN64 TN66 TN68 TN71 TN74 TN77 TN79 TN80 TN81 TN85 TN87 TN96 XNX 70IL 49ID 10WY 44WY 45WY 46U 49U 76V GUR HAD KCPR KDGW KEAN KJAC KLND KLSK KRIW KTOR WY08 WY16 WY25 WY27 WY30 WY31 WY34 WY58 WY66";
 
-        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        private static AirportList _al = null;
+
+        private static AirportList eclipseAirports
         {
-            if (cfr == null)
-                throw new ArgumentNullException(nameof(cfr));
-            if (cfr.dtFlight.Date.CompareTo(dtEclipse.Date) == 0 && cfr.fIsRealAircraft && !IsAchieved)
+            get
             {
-                AirportList eclipseMaster = eclipseAirports;
-                AirportList al = new AirportList(cfr.Route);
-                foreach (airport ap in al.UniqueAirports)
-                {
-                    if (ap.IsPort && eclipseMaster.GetAirportByCode(ap.Code) != null)
-                    {
-                        Level = AchievementLevel.Achieved;
-                        DateEarned = cfr.dtFlight;
-                        IDFlightEarned = cfr.flightID;
-                        break;
-                    }
-                }
+                if (_al == null)
+                    _al = new AirportList(szEclipseAirports);
+
+                return _al;
             }
         }
+
+        protected override AirportList GetEclipseAirports { get { return eclipseAirports; } }
+
+        public EclipseChaser2017() : base(BadgeID.EclipseChaser2017, new DateTime(2017, 08, 21), Resources.Achievements.name2017EclipseChaser) { }
     }
 
     [Serializable]

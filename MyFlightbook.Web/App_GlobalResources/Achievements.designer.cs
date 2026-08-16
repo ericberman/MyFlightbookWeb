@@ -358,6 +358,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 2017 Eclipse Chaser.
+        /// </summary>
+        internal static string name2017EclipseChaser {
+            get {
+                return ResourceManager.GetString("name2017EclipseChaser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 2024 Eclipse Chaser.
         /// </summary>
         internal static string name2024EclipseChaser {
