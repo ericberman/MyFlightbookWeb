@@ -38,7 +38,6 @@
                 type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { alert(xhr.responseText); },
                 success: function (r) {
-                    $("#divRequestWINGS").dialog('close');
                     window.alert(r);
                 }
             });
@@ -83,7 +82,7 @@
 
     $(() => {
         defaultButtonForDiv("pnlAddInstructor", "btnAddInstructor");
-        validateForm($("#frmReqWINGS"), { wingsFlightID: { required: true, minlength: 1 } }, { wingsFlightID: "@Resources.SignOff.wingsErrNoActivityFlightsSelected" });
+        validateForm($("#frmReqWINGS"), { wingsFlightID: { required: true, minlength: 1 }, cfiUser: { required: true, minlength: 1 } }, { wingsFlightID: "@Resources.SignOff.wingsErrNoActivityFlightsSelected", cfiUser: '@Resources.SignOff.WINGSRequestErrNoInstructor' });
         validateForm($("#frmAddWINGSActivity"), { WINGSActivityDate: { required: true }, WINGSActivity: { required: true, minlength: 1 } }, { WINGSActivityDate: '@Resources.SignOff.WINGSErrNoDate', WINGSActivity: '@Resources.SignOff.WINGSErrNoActivity' });
         autoInsert($("#txtWINGSActivity")[0], "@("~/mvc/Training/WINGSAutoCompletion".ToAbsolute())", '[');
     });
@@ -171,6 +170,7 @@
                         <div>
                             <h3>@Resources.SignOff.WINGSSelectInstructor</h3>
                             <select name="cfiUser" id="cmbCFIUser">
+                                <option value=""></option>
                                 @foreach (InstructorStudent instructor in sm.Instructors)
                                 {
                                     <option value="@instructor.UserName">@instructor.UserFullName</option>

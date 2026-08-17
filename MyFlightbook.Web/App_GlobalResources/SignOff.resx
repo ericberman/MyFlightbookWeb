@@ -674,4 +674,7 @@ Anywhere that you see an expiration date, use either your certificate's expirati
   <data name="WINGSRecordActivityDescription" xml:space="preserve">
     <value>You can record a WINGS activity completed by adding a WINGS Activity Completed property to an entry in your logbook, or you can quickly add such an entry here</value>
   </data>
+  <data name="WINGSRequestErrNoInstructor" xml:space="preserve">
+    <value>Please choose an instructor</value>
+  </data>
 </root>

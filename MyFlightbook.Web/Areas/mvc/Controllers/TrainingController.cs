@@ -651,9 +651,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 if (string.IsNullOrEmpty(cfiUser))
-                    throw new InvalidOperationException("No instructor specified");
+                    throw new InvalidOperationException(Resources.SignOff.WINGSRequestErrNoInstructor);
                 if (wingsFlightID == null || wingsFlightID.Length == 0)
-                    throw new InvalidOperationException("No WINGS activity flights specified");
+                    throw new InvalidOperationException(Resources.SignOff.WINGSErrNoActivity);
                 InstructorStudent.RequestWINGSCredit(User.Identity.Name, cfiUser, wingsFlightID);
                 return Content(Resources.SignOff.WINGSRequestSent);
             });

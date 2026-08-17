@@ -1668,6 +1668,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please choose an instructor.
+        /// </summary>
+        internal static string WINGSRequestErrNoInstructor {
+            get {
+                return ResourceManager.GetString("WINGSRequestErrNoInstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The request has been sent.
         /// </summary>
         internal static string WINGSRequestSent {
