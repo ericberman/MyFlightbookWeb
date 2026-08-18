@@ -49,7 +49,7 @@ namespace MyFlightbook.Currency.WINGS
             if (string.IsNullOrEmpty(szPrefix) || szPrefix.Length < 2)
                 return activities;
             DBHelper dbh = new DBHelper("SELECT * FROM wingsactivities WHERE ActivityName LIKE ?prefix OR ActivityNumber LIKE ?prefix");
-            dbh.ReadRows((comm) => {                 comm.Parameters.AddWithValue("?prefix", szPrefix + "%"); },
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("?prefix", $"%{szPrefix}%"); },
                 (dr) => { activities.Add(new WINGSActivity(dr)); });
             return activities;
         }
