@@ -318,11 +318,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 csvimporter.Progress.Clear();
                 EventRecorder.LogCall("Import Preview - User: {user}, Upload size {cbin}, converted size {cbconvert}, flights found: {flightcount}", User.Identity.Name, cOriginalSize, cConvertedSize, csvimporter.FlightsToImport.Count);
 
-                String szUser = User.Identity.Name;
-                Task.Run(() =>
+                if (results.IsBroken)
                 {
-                    csvimporter.InitWithBytes(rgb, szUser, null, null, null);
-                });
+                    csvimporter.Progress.ErrorMessage = results.AuditResult;
+                    csvimporter.Progress.IsError = csvimporter.Progress.IsComplete = true;
+                }
+                else
+                {
+                    String szUser = User.Identity.Name;
+                    Task.Run(() =>
+                    {
+                        csvimporter.InitWithBytes(rgb, szUser, null, null, null);
+                    });
+                }
                 return new EmptyResult();
             });
         }
