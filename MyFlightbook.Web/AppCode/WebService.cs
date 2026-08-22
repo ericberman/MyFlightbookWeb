@@ -878,7 +878,7 @@ namespace MyFlightbook
 
             string szUser = GetEncryptedUser(szAuthUserToken);
             // slam in the authenticated user.
-            le.User = GetEncryptedUser(szAuthUserToken);
+            le.User = szUser;
 
             if (options == null)
                 options = AutoFillOptions.DefaultOptionsForUser(Profile.GetUser(szUser));
@@ -886,6 +886,22 @@ namespace MyFlightbook
             using (FlightData fd = new FlightData())
                 fd.AutoFill(le, options);
 
+            return le;
+        }
+
+        [WebMethod]
+        public LogbookEntry InitFlightFromFlightDeckScan(string szAuthUserToken, LogbookEntry le, string szScannedFlight)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+            if (szAuthUserToken == null)
+                throw new ArgumentNullException(nameof(szAuthUserToken));
+
+            string szUser = GetEncryptedUser(szAuthUserToken);
+
+            // slam in the authenticated user.
+            le.User = szUser;
+            le.InitFromScannedFlightJSON(szScannedFlight, !Profile.GetUser(szUser).UsesUTCDateOfFlight);
             return le;
         }
 
