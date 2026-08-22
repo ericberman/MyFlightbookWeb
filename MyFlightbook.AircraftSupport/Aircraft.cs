@@ -1472,6 +1472,7 @@ namespace MyFlightbook
             // if we find a good match, we'll re-use that.  if not, we'll 
             MakeModel mmThis = MakeModel.GetModel(modelIDRequested);
             bool fHasFamily = !String.IsNullOrEmpty(mmThis.FamilyName);
+            bool fHasType = !String.IsNullOrEmpty(mmThis.TypeName);
 
             Aircraft acMatch = null;
             foreach (Aircraft ac in rgac)
@@ -1479,10 +1480,10 @@ namespace MyFlightbook
                 if (this.ModelID == ac.ModelID) // perfect match - return it
                     return ac;
 
-                // We'll define a close match as: (a) same non-empty family, (b) same category/class, and (c) same instancetype (c should never be false)
+                // We'll define a close match as: (a) same non-empty family OR typename, (b) same category/class, and (c) same instancetype (c should never be false)
                 MakeModel mmNew = MakeModel.GetModel(ac.ModelID);
                 if (fHasFamily &&
-                    mmThis.FamilyName.CompareCurrentCultureIgnoreCase(mmNew.FamilyName) == 0 &&
+                    (mmThis.FamilyName.CompareCurrentCultureIgnoreCase(mmNew.FamilyName) == 0 || (IsNew && fHasType && mmThis.TypeName.CompareCurrentCultureIgnoreCase(mmNew.TypeName) == 0)) &&
                     mmNew.CategoryClassID == mmThis.CategoryClassID &&
                     ac.InstanceType == this.InstanceType)
                     acMatch = ac;
