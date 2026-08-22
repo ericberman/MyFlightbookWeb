@@ -1964,4 +1964,10 @@ Proceed with import?</value>
   <data name="PrintHeaderBasicXC" xml:space="preserve">
     <value>Basic XC</value>
   </data>
+  <data name="FlightDeckScanPrompt" xml:space="preserve">
+    <value>Initialize this flight from a photo of your flight deck's computer (e.g., ACARS screen or MCDU OOOI screen)</value>
+  </data>
+  <data name="FlightDeckScanLabel" xml:space="preserve">
+    <value>Scan from flight deck</value>
+  </data>
 </root>

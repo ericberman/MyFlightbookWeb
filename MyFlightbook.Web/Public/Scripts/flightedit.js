@@ -240,6 +240,22 @@ function autoFill() {
     }
 }
 
+function initFromACARS() {
+    var f = $("#frmEditFlight");
+    if (f.valid()) {
+        updatePropertyTuples(-1);
+        $.ajax({
+            url: "/logbook/mvc/flightedit/InitFromFlightDeck",
+            type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
+            error: function (xhr, status, error) { showError.text(xhr.responseText); },
+            complete: function (response) { $("imgAutofillPrg").hide(); },
+            success: function (r) {
+                $("#pnlFlightEditorBody").html(r);
+            }
+        });
+    }
+}
+
 // Form Submission
 function showError(e) {
     var err = $("#lblFlightError");

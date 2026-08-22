@@ -37,6 +37,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.Currency", "My
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.FlightQueries", "MyFlightbook.FlightQueries\MyFlightbook.FlightQueries.csproj", "{B28290A0-EAF3-4DA7-B332-5AB73E3DFD92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.FlightDeckScan", "MyFlightbook.FlightDeckScan\MyFlightbook.FlightDeckScan.csproj", "{9FF5C6FE-442B-40D7-A983-D5C750C16862}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F487E951-5414-49FB-9481-F05A54A0D51B} = {F487E951-5414-49FB-9481-F05A54A0D51B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFlightbook.FlightDeckScan.Tests", "MyFlightbook.FlightDeckScan.Tests\MyFlightbook.FlightDeckScan.Tests.csproj", "{431C9CF3-EBF3-4415-A5CE-FFE208093B59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +110,14 @@ Global
 		{B28290A0-EAF3-4DA7-B332-5AB73E3DFD92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B28290A0-EAF3-4DA7-B332-5AB73E3DFD92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B28290A0-EAF3-4DA7-B332-5AB73E3DFD92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FF5C6FE-442B-40D7-A983-D5C750C16862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FF5C6FE-442B-40D7-A983-D5C750C16862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FF5C6FE-442B-40D7-A983-D5C750C16862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FF5C6FE-442B-40D7-A983-D5C750C16862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{431C9CF3-EBF3-4415-A5CE-FFE208093B59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{431C9CF3-EBF3-4415-A5CE-FFE208093B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{431C9CF3-EBF3-4415-A5CE-FFE208093B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{431C9CF3-EBF3-4415-A5CE-FFE208093B59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

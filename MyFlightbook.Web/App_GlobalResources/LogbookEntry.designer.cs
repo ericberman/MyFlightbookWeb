@@ -1348,6 +1348,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan from flight deck.
+        /// </summary>
+        internal static string FlightDeckScanLabel {
+            get {
+                return ResourceManager.GetString("FlightDeckScanLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialize this flight from a photo of your flight deck&apos;s computer (e.g., ACARS screen or MCDU OOOI screen).
+        /// </summary>
+        internal static string FlightDeckScanPrompt {
+            get {
+                return ResourceManager.GetString("FlightDeckScanPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feet.
         /// </summary>
         internal static string flightDetailsAltUnitFeet {

@@ -1,8 +1,8 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Airports;
-using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Geography.SolarTools;
+using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.OAuth;
 using MyFlightbook.Schedule;
@@ -15,7 +15,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -424,6 +424,28 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return View("imageDebug");
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ImageDebugResult()
+        {
+            return SafeOp(() =>
+            {
+                if (Request.Files.Count == 0)
+                    throw new InvalidOperationException("Invalid Image");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><div class='b'>File: {0}</div>", Request.Files[i].FileName);
+                    MFBImageInfo.DebugDescription(Request.Files[i].InputStream, 
+                        (tag, dataType, value) => sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0} ({1}): {2}</div>", tag, dataType, value), 
+                        (tag, dataType, lst) => sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0} ({1}): [{2}]</div>", tag, dataType, String.Join(", ", lst)),
+                        (error) => sb.AppendFormat(CultureInfo.InvariantCulture, "<div class='error'>{0}</div>", error));
+                }
+
+                return Content(sb.ToString());
+            });
+        }
         #endregion
 
         #region iCal Converter
@@ -457,11 +479,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DutyPeriodAnalyzer(int timeSpan)
         {
-            ViewBag.results = DutyPeriodExaminer.DutyPeriodsForPastDays(User.Identity.Name, timeSpan, out string cutoffDate, out string totalFD, out string totalDuty, out string totalRest);
-            ViewBag.cutoffDate = cutoffDate;
-            ViewBag.totalFD = totalFD;
-            ViewBag.totalDuty = totalDuty;
-            ViewBag.totalRest = totalRest;
+            ViewBag.timeSpan = timeSpan;
             return View("dutyPeriodAnalyzer");
         }
 

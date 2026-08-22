@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Geography.SolarTools;
+﻿using GeoTimeZone;
+using MyFlightbook.Geography.SolarTools;
 using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.Extensions;
@@ -228,6 +229,28 @@ namespace MyFlightbook.Telemetry
             return utc;
         }
 
+        /// <param name="dateTime">Local DateTime as UTC or Unspecified DateTimeKind.</param>
+        /// <param name="timezone">Timezone name (in TZDB format).</param>
+        public static DateTime LocalFromUTC(DateTime dateTime, string timezone)
+        {
+            if (dateTime.Kind != DateTimeKind.Utc)
+                throw new ArgumentException("Expected UTC kind of DateTime");
+            var zone = DateTimeZoneProviders.Tzdb[timezone];
+            Instant instant = Instant.FromDateTimeUtc(dateTime);
+            ZonedDateTime asZonedInLocal = instant.InZone(zone);
+            LocalDateTime asLocal = asZonedInLocal.LocalDateTime;
+            DateTime local = asLocal.ToDateTimeUnspecified();
+            return local;
+        }
+
+        public static DateTime ConvertToAirportTimezone(DateTime dt, double latitude, double longitude)
+        {
+            if (dt.Kind != DateTimeKind.Utc)
+                throw new InvalidOperationException("DateTime must be UTC");
+
+            TimeZoneResult tz = TimeZoneLookup.GetTimeZone(latitude, longitude);
+            return LocalFromUTC(dt, tz.Result);
+        }
         #endregion
 
         /// <summary>

@@ -855,6 +855,9 @@
   <data name="GratuityNameVideo" xml:space="preserve">
     <value>Videos on flights</value>
   </data>
+  <data name="GratuityNameFlightDeckScan" xml:space="preserve">
+    <value>Scan flight-deck displays</value>
+  </data>
   <data name="GratuityThanksClub" xml:space="preserve">
     <value>You can create flying clubs to schedule airplanes and report on flying (Expires {0:d})</value>
   </data>
@@ -863,6 +866,9 @@
   </data>
   <data name="GratuityThanksVideo" xml:space="preserve">
     <value>You can attach videos to your flights (Expires {0:d})</value>
+  </data>
+  <data name="GratuityThanksFlightDeckScan" xml:space="preserve">
+    <value>You can scan photos of flight-deck displays (MCDU/FMC/ACARS) to auto-fill a pending flight (Expires {0:d})</value>
   </data>
   <data name="videoDefaultYouTubeTitle" xml:space="preserve">
     <value>Video from a pilot on %APP_NAME%</value>
@@ -881,6 +887,9 @@
   </data>
   <data name="errNotAuthorizedVideos" xml:space="preserve">
     <value>Video upload is only available for pilots that have donated to support %APP_NAME%.</value>
+  </data>
+  <data name="errNotAuthorizedFlightDeckScan" xml:space="preserve">
+    <value>Scanning flight-deck displays is only available for pilots that have donated to support %APP_NAME%.</value>
   </data>
   <data name="oAuthErrCreationFailed" xml:space="preserve">
     <value>Creation of authorization failed</value>
@@ -1535,6 +1544,9 @@
   </data>
   <data name="GratuityDescriptionVideo" xml:space="preserve">
     <value>Videos are one of those few things where my costs go up the more they are used, so I ask for a contribution if you want videos.  With this gratuity, you can add videos to your flights for a year.  Videos remain after the year is up, but you can't upload new ones.</value>
+  </data>
+  <data name="GratuityDescriptionFlightDeckScan" xml:space="preserve">
+    <value>Scan flight-deck photos to pre-fill flight data for a year. This is reserved for users who contribute because it incurs small costs every time it's used.</value>
   </data>
   <data name="GratuityNameEternalGratitude" xml:space="preserve">
     <value>Eternal gratitude...for a year!</value>

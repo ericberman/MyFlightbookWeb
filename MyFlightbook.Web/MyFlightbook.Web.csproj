@@ -550,6 +550,8 @@
     <Content Include="images\1536 with white.png" />
     <Content Include="images\1536xparent.png" />
     <Content Include="images\1x1.png" />
+    <Content Include="images\ACARS-lg.png" />
+    <Content Include="images\ACARS-sm.png" />
     <Content Include="images\AppleAppStore.svg" />
     <Content Include="images\audio.png" />
     <Content Include="images\back.png" />
@@ -2209,6 +2211,10 @@
     <ProjectReference Include="..\MyFlightbook.Currency\MyFlightbook.Currency.csproj">
       <Project>{22160023-e97b-4f74-a383-15c0697e8b40}</Project>
       <Name>MyFlightbook.Currency</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.FlightDeckScan\MyFlightbook.FlightDeckScan.csproj">
+      <Project>{9ff5c6fe-442b-40d7-a983-d5c750c16862}</Project>
+      <Name>MyFlightbook.FlightDeckScan</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.FlightProperties\MyFlightbook.FlightProperties.csproj">
       <Project>{c9a0ed02-c864-4371-bb7e-1846bae90659}</Project>

@@ -1904,6 +1904,73 @@ namespace MyFlightbook.Image
 
             return sbLog.ToString();
         }
+
+        /// <summary>
+        /// Generates a debug description of the EXIF data in the specified stream, calling the specified delegates for each attribute, attribute list, and error.
+        /// </summary>
+        /// <param name="s">The stream containing the image data.</param>
+        /// <param name="onAttribute">The delegate to call for each attribute.</param>
+        /// <param name="onAttributeList">The delegate to call for each attribute list.</param>
+        /// <param name="onError">The delegate to call for each error.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void DebugDescription(Stream s, Action<string, string, string> onAttribute, Action<string, string, IEnumerable<string>> onAttributeList, Action<string> onError)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+            if (onAttribute == null)
+                throw new ArgumentNullException(nameof(onAttribute));
+            if (onAttributeList == null)
+                throw new ArgumentNullException(nameof(onAttributeList));
+            if (onError == null)
+                throw new ArgumentNullException(nameof(onError));
+
+            try
+            {
+                using (IMagickImage image = new MagickImage(s))
+                {
+                    IExifProfile exif = image.GetExifProfile();
+
+                    if (exif == null)
+                        return;
+
+                    // Write all values to the console
+                    foreach (IExifValue value in exif.Values)
+                    {
+                        if (value.IsArray)
+                        {
+                            List<string> lst = new List<string>();
+                            object o = value.GetValue();
+
+                            if (o is byte[] rgbyte)
+                            {
+                                foreach (byte b in rgbyte)
+                                    lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
+                            }
+                            else if (o is ushort[] rgshort)
+                            {
+                                foreach (ushort u in rgshort)
+                                    lst.Add(u.ToString(CultureInfo.InvariantCulture));
+                            }
+                            else if (o is Rational[] rgrational)
+                            {
+                                foreach (Rational r in rgrational)
+                                    lst.Add(r.ToString(CultureInfo.InvariantCulture));
+                            }
+                            else
+                                lst.Add(o.ToString());
+
+                            onAttributeList(value.Tag.ToString(), value.DataType.ToString(), lst);
+                        }
+                        else
+                            onAttribute(value.Tag.ToString(), value.DataType.ToString(), value.ToString());
+                    }
+                }
+            }
+            catch (MagickException ex)
+            {
+                onError(ex.Message);
+            }
+        }
         #endregion
     }
 

@@ -2127,6 +2127,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scanning flight-deck displays is only available for pilots that have donated to support %APP_NAME%..
+        /// </summary>
+        internal static string errNotAuthorizedFlightDeckScan {
+            get {
+                return ResourceManager.GetString("errNotAuthorizedFlightDeckScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Video upload is only available for pilots that have donated to support %APP_NAME%..
         /// </summary>
         internal static string errNotAuthorizedVideos {
@@ -2621,6 +2630,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan flight-deck photos to pre-fill flight data for a year. This is reserved for users who contribute because it incurs small costs every time it&apos;s used..
+        /// </summary>
+        internal static string GratuityDescriptionFlightDeckScan {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionFlightDeckScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Good karma and appreciation is yours for all of eternity...for a year!.
         /// </summary>
         internal static string GratuityDescriptionGratitude {
@@ -2711,6 +2729,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan flight-deck displays.
+        /// </summary>
+        internal static string GratuityNameFlightDeckScan {
+            get {
+                return ResourceManager.GetString("GratuityNameFlightDeckScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Discounted Ground School Coupon.
         /// </summary>
         internal static string GratuityNamePartnerDiscount {
@@ -2761,6 +2788,15 @@ namespace Resources {
         internal static string GratuityThanksEternalGratitude {
             get {
                 return ResourceManager.GetString("GratuityThanksEternalGratitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can scan photos of flight-deck displays (MCDU/FMC/ACARS) to auto-fill a pending flight (Expires {0:d}).
+        /// </summary>
+        internal static string GratuityThanksFlightDeckScan {
+            get {
+                return ResourceManager.GetString("GratuityThanksFlightDeckScan", resourceCulture);
             }
         }
         

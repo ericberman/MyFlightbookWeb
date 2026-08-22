@@ -1,17 +1,16 @@
 ﻿using AWSNotifications;
-using ImageMagick;
 using MyFlightbook.Clubs;
+using MyFlightbook.FlightDeckScan;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
-using OAuthAuthorizationServer.Services;
 using Newtonsoft.Json;
+using OAuthAuthorizationServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -131,72 +130,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
-        [Authorize]
-        [HttpPost]
-        public ActionResult ImageDebug()
-        {
-            return SafeOp(() =>
-            {
-                if (Request.Files.Count == 0)
-                    throw new InvalidOperationException("Invalid Image");
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < Request.Files.Count; i++)
-                {
-                    HttpPostedFileBase file = Request.Files[i];
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><div style='font-weight: bold;'>File: {0}</div>", file.FileName);
-                    try
-                    {
-                        using (IMagickImage image = new MagickImage(file.InputStream))
-                        {
-                            IExifProfile exif = image.GetExifProfile();
-
-                            if (exif == null)
-                                continue;
-
-                            // Write all values to the console
-                            foreach (IExifValue value in exif.Values)
-                            {
-                                if (value.IsArray)
-                                {
-                                    List<string> lst = new List<string>();
-                                    object o = value.GetValue();
-
-                                    if (o is byte[] rgbyte)
-                                    {
-                                        foreach (byte b in rgbyte)
-                                            lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
-                                    }
-                                    else if (o is ushort[] rgshort)
-                                    {
-                                        foreach (ushort u in rgshort)
-                                            lst.Add(u.ToString(CultureInfo.InvariantCulture));
-                                    }
-                                    else if (o is Rational[] rgrational)
-                                    {
-                                        foreach (Rational r in rgrational)
-                                            lst.Add(r.ToString(CultureInfo.InvariantCulture));
-                                    }
-                                    else
-                                        lst.Add(o.ToString());
-
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0}({1}): [{2}]</div>", value.Tag, value.DataType, String.Join(", ", lst));
-
-                                }
-                                else
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "<div>{0}({1}): {2}</div>", value.Tag, value.DataType, value.ToString());
-                            }
-                        }
-                    }
-                    catch (MagickException ex)
-                    {
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "<div class='error'>{0}</div>", ex.Message);
-                    }
-                }
-
-                return Content(sb.ToString());
-            });
-        }
-
         private string ProcessForImageUpload(string txtAuthToken)
         {
             if (!Request.IsSecureConnection)
@@ -207,6 +140,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (Request.Files.Count == 0)
                 throw new MyFlightbookException(Resources.WebService.errNoImageProvided);
+
+            // FlightDeckScan: let an authenticated browser session (forms-auth cookie) call
+            // these upload actions directly too, without a txtAuthToken or OAuth token - this
+            // lets the website reuse the same endpoints as the native apps. Purely additive:
+            // only triggers when there's no token at all, so existing token/OAuth callers are
+            // unaffected.
+            if (String.IsNullOrEmpty(txtAuthToken) && User.Identity.IsAuthenticated)
+                return User.Identity.Name;
 
             if (String.IsNullOrEmpty(txtAuthToken))
             {
@@ -268,6 +209,60 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
 
                 return Content("OK");
+            });
+        }
+
+        /// <summary>
+        /// Scans a photo of an MCDU/FMC/ACARS flight-deck display and returns structured
+        /// OOOI flight data (flight number, date, route, OUT/OFF/ON/IN, block/flight time) as
+        /// JSON, for pre-filling a pending flight. Gated behind the FlightDeckScan gratuity
+        /// since each scan has a real per-call cost (calls a vision-capable LLM).
+        /// See MyFlightbook.FlightDeckScan for the extraction/normalization logic and
+        /// https://github.com/ericberman/MyFlightbookWeb/issues/1577 for the original spec
+        /// and sample images this was built and validated against.
+        /// </summary>
+        /// <param name="debug">
+        /// Admin-only diagnostic mode for tuning (see Playpen/ImageDebug's "?OCR=1" tool):
+        /// when true AND the caller is an admin, returns a FlightDeckScanDebugResult (the
+        /// normalized ScanResult plus the model's raw, pre-normalization RawExtraction)
+        /// instead of the plain ScanResult, so you can tell whether a bad scan came from
+        /// the vision model misreading the screen or from a FlightDeckScanNormalizer bug.
+        /// Silently ignored for non-admins so this never leaks extra model output to
+        /// native-app callers or ordinary donors.
+        /// </param>
+        [HttpPost]
+        public async Task<ActionResult> ScanFlightDeckImage(string txtAuthToken = null, bool debug = false)
+        {
+            return await SafeOp(async () =>
+            {
+                string szUser = ProcessForImageUpload(txtAuthToken);
+
+                if (!EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.FlightDeckScan))
+                    throw new UnauthorizedAccessException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedFlightDeckScan));
+
+                string key = Request.Files.Keys.Count > 0 ? Request.Files.Keys[0] : null;
+                if (key == null)
+                    throw new InvalidOperationException(Resources.WebService.errNoImageProvided);
+
+                MFBPostedFile mfbpf = new MFBPostedFile(Request.ImageFile(key));
+                byte[] imageBytes = mfbpf.CompatibleContentData();
+                if (imageBytes == null || imageBytes.Length == 0)
+                    throw new InvalidOperationException(Resources.WebService.errNoImageProvided);
+
+                // CompatibleContentData() returns the original bytes as-is UNLESS the source was
+                // HEIC, in which case it's converted to JPEG - so the resulting media type matches
+                // the original ContentType except for that one case. Anthropic's API only accepts
+                // jpeg/png/gif/webp, so fall back to jpeg for anything else it doesn't recognize.
+                string szContentType = (mfbpf.ContentType ?? string.Empty).ToLowerInvariant();
+                bool fWasHeic = szContentType.Contains("heic") || szContentType.Contains("heif");
+                string mediaType = fWasHeic ? "image/jpeg" : szContentType;
+                if (mediaType != "image/jpeg" && mediaType != "image/png" && mediaType != "image/gif" && mediaType != "image/webp")
+                    mediaType = "image/jpeg";
+
+                RawExtraction raw = await FlightDeckScanClient.ExtractRawAsync(imageBytes, mediaType);
+                ScanResult result = FlightDeckScanNormalizer.BuildResult(raw, DateTime.UtcNow, debug);
+
+                return Content(result.ToJSON(), "application/json");
             });
         }
 

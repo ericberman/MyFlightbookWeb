@@ -89,7 +89,7 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region GratuityFactory
-        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude, CurrencyAlerts, PartnerDiscount };
+        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude, CurrencyAlerts, PartnerDiscount, FlightDeckScan };
 
         /// <summary>
         /// Return a concrete gratuity from a specified gratuitytype.
@@ -112,6 +112,8 @@ namespace MyFlightbook.Payments
                     return new CurrencyAlertGratuity();
                 case GratuityTypes.PartnerDiscount:
                     return new PartnerDiscountGratuity();
+                case GratuityTypes.FlightDeckScan:
+                    return new FlightDeckScanGratuity();
                 case GratuityTypes.Unknown:
                 default:
                     return null;
@@ -225,6 +227,17 @@ namespace MyFlightbook.Payments
     {
         public StoreVideosGratuity()
             : base(GratuityTypes.Videos, 10.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameVideo, Resources.LocalizedText.GratuityThanksVideo, Resources.LocalizedText.GratuityDescriptionVideo)
+        {
+        }
+    }
+
+    /// <summary>
+    /// You get to scan photos of flight-deck displays (MCDU/FMC/ACARS) to auto-fill a pending flight.
+    /// </summary>
+    public class FlightDeckScanGratuity : Gratuity
+    {
+        public FlightDeckScanGratuity()
+            : base(GratuityTypes.FlightDeckScan, 25.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameFlightDeckScan, Resources.LocalizedText.GratuityThanksFlightDeckScan, Resources.LocalizedText.GratuityDescriptionFlightDeckScan)
         {
         }
     }

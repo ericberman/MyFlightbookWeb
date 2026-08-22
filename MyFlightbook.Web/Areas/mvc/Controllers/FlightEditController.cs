@@ -87,7 +87,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
         #endregion
 
-        #region Telemetry
+        #region Telemetry, autofill, and flight deck scans
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -112,6 +112,25 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     fd.AutoFill(le, afOptions);
                 }
 
+                return FlightEditorBody(pfTarget, pfViewer, le, le as PendingFlight);
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult InitFromFlightDeck()
+        {
+            return SafeOp(() =>
+            {
+                LogbookEntry le = LogbookEntryFromForm();
+                // Load from the DB if needed
+                if (String.IsNullOrEmpty(le.FlightData) && !LogbookEntryCore.IsNewFlightID(le.FlightID))
+                    le.FlightData = new LogbookEntry(le.FlightID, le.User, LogbookEntryCore.LoadTelemetryOption.LoadAll).FlightData;
+                Profile pfTarget = MyFlightbook.Profile.GetUser(Request["szTargetUser"]);
+                Profile pfViewer = MyFlightbook.Profile.GetUser(User.Identity.Name);
+                if (!String.IsNullOrEmpty(Request["flightDeckResultJSON"]))
+                    le.InitFromScannedFlightJSON(Request["flightDeckResultJSON"], !pfTarget.UsesUTCDateOfFlight);
                 return FlightEditorBody(pfTarget, pfViewer, le, le as PendingFlight);
             });
         }
@@ -863,7 +882,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region edit a specific flight
         // GET: mvc/FlightEdit
         [Authorize]
-        public ActionResult Flight(string id, string fq = null, int clone = -1, int reverse = -1, string src = "", int a = 0)
+        public ActionResult Flight(string id, string fq = null, int clone = -1, int reverse = -1, string src = "", string srcScan = "", int a = 0)
         {
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             FlightQuery q = String.IsNullOrEmpty(fq) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fq);
@@ -916,8 +935,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 le.PopulateImages();
             }
+            else if (!String.IsNullOrEmpty(srcScan) && String.IsNullOrEmpty(id))
+            {
+                // This is a flight deck scan - create a new flight and populate it with the scan data
+                le = new LogbookEntry() { User = User.Identity.Name };
+                le.InitFromScannedFlightJSON(srcScan, !pf.UsesUTCDateOfFlight);
+            }
             else
-                le = new LogbookEntry() { User =  User.Identity.Name };
+                le = new LogbookEntry() { User = User.Identity.Name };
             
             ViewBag.returnURL = "~/mvc/flights".ToAbsolute() + SetUpNextPrevious(q, idFlight, pf);
             ViewBag.pf = pf;

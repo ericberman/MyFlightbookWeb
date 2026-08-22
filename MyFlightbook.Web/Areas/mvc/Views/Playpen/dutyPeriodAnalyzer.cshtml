@@ -1,6 +1,11 @@
 ﻿@using MyFlightbook.Currency
 @using System.Globalization
 @{
+    string cutoffDate = string.Empty;
+    string totalFD = string.Empty;
+    string totalDuty = string.Empty;
+    string totalRest = string.Empty;
+    IEnumerable<EffectiveDutyPeriod> results = ViewBag.timeSpan == null ? null : DutyPeriodExaminer.DutyPeriodsForPastDays(User.Identity.Name, ViewBag.timeSpan, out cutoffDate, out totalFD, out totalDuty, out totalRest);
     ViewBag.defaultTab = tabID.tabLogbook;
     ViewBag.Title = "Analyze Duty Periods";
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
@@ -14,24 +19,24 @@
     @using (Html.BeginForm("DutyPeriodAnalyzer", "PlayPen", FormMethod.Post))
     {
         <p>
-            View duty stats since <input type="number" step="1" required min="1" value="@(ViewBag.numDays ?? 30)" id="decDayTimeSpan" name="timeSpan" /> days ago (Same UTC time as now)
+            View duty stats since <input type="number" step="1" required min="1" value="@(ViewBag.timeSpan ?? 30)" id="decDayTimeSpan" name="timeSpan" /> days ago (Same UTC time as now)
             @Html.AntiForgeryToken()
             <button type="submit" id="btnViewDutyPeriods">Go</button>
             <div class="error">@(ViewBag.error ?? string.Empty)</div>
         </p>
     }
 </div>
-@if (ViewBag.results != null)
+@if (results != null)
 {
     <table>
         <tr><td>Current UTC Time:</td><td style="font-weight:bold">@DateTime.UtcNow.UTCDateFormatString()</td></tr>
-        <tr><td>Period start date/time: </td><td style="font-weight:bold">@ViewBag.cutoffDate</td></tr>
-        <tr><td>Total Flight Duty: </td><td style="font-weight:bold">@ViewBag.totalFD</td></tr>
-        <tr><td>Total Duty (non-rest): </td><td style="font-weight:bold">@ViewBag.totalDuty</td></tr>
-        <tr><td>Total Rest: </td><td style="font-weight:bold">@ViewBag.totalRest</td></tr>
+        <tr><td>Period start date/time: </td><td style="font-weight:bold">@cutoffDate</td></tr>
+        <tr><td>Total Flight Duty: </td><td style="font-weight:bold">@totalFD</td></tr>
+        <tr><td>Total Duty (non-rest): </td><td style="font-weight:bold">@totalDuty</td></tr>
+        <tr><td>Total Rest: </td><td style="font-weight:bold">@totalRest</td></tr>
     </table>
     <h2>All duty periods</h2>
-    if (ViewBag.results.Count > 0)
+    if (results.Any())
     {
         <table class="stickyHeaderTable stickyHeaderAlternate">
             <thead>
@@ -48,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (EffectiveDutyPeriod efp in ViewBag.results)
+                @foreach (EffectiveDutyPeriod efp in results)
                 {
 
                     <tr>

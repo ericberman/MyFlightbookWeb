@@ -15,6 +15,7 @@
     bool fAddStudent = ViewBag.fAddStudent;
     TimeZoneInfo defaultTZ = pfViewer.PreferredTimeZone;
     bool fCanDoVideo = MyFlightbook.Payments.EarnedGratuity.UserQualifies(pfViewer.UserName, MyFlightbook.Payments.Gratuity.GratuityTypes.Videos);
+    bool fCanDoFlightDeck = MyFlightbook.Payments.EarnedGratuity.UserQualifies(pfViewer.UserName, MyFlightbook.Payments.Gratuity.GratuityTypes.FlightDeckScan);
     string szPixBlockLabel = fCanDoVideo ? Resources.LogbookEntry.HeaderImagesVideosForFlight : Resources.LogbookEntry.HeaderImagesForFlight;
     CustomFlightProperty fpTachStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropTachStart] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropTachStart));
     CustomFlightProperty fpTachEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropTachEnd] ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropTachEnd));
@@ -274,12 +275,12 @@
         </div>
         <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseEngine || le.EngineStart.HasValue() || le.EngineEnd.HasValue() ? string.Empty : "display: none;")">
             <div style="display: none;" id="lblEngineStartTip">
-                <p style="font-weight: bold;">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
-                <p style="font-weight: bold;">@defaultTZ</p>
+                <p class="b">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p class="b">@defaultTZ</p>
             </div>
             <div style="display: none;" id="lblEngineEndTip">
-                <p style="font-weight: bold;">@Resources.LogbookEntry.EngineEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
-                <p style="font-weight: bold;">@defaultTZ</p>
+                <p class="b">@Resources.LogbookEntry.EngineEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p class="b">@defaultTZ</p>
             </div>
             <div><span class="itemlabel" id="lblEngineStart" style="font-size: smaller;" title="">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
             <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldEngineStart", name = "flightEngineStart", value = le.EngineStart, timeZone = defaultTZ }); }</div>
@@ -295,12 +296,12 @@
         }
         <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
             <div style="display: none;" id="lblFlightStartTip">
-                <p style="font-weight: bold;">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
-                <p style="font-weight: bold;">@defaultTZ</p>
+                <p class="b">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p class="b">@defaultTZ</p>
             </div>
             <div style="display: none;" id="lblFlightEndTip">
-                <p style="font-weight: bold;">@Resources.LogbookEntry.FlightEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
-                <p style="font-weight: bold;">@defaultTZ</p>
+                <p class="b">@Resources.LogbookEntry.FlightEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
+                <p class="b">@defaultTZ</p>
             </div>
             <div><span class="itemlabel" id="lblFlightStart" style="font-size: smaller;" title="">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</span></div>
             <div>@{ Html.RenderAction("RenderDateTimeField", "MFBTemplate", new { id = "fieldFlightStart", name = "flightFlightStart", value = le.FlightStart, timeZone = defaultTZ }); }</div>
@@ -337,10 +338,10 @@
         </script>
         <div id="pnlFlightData" class="flightinfoitem">
             <div class="itemlabel">
-                <div><span style="font-weight:bold">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></div>
+                <div><span class="b">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></div>
                 <div style="display: flex; align-items: center;">
-                    <div id="divUploadTelemetry" style="display:inline-block;"></div>
-                    <div style="display: inline-block; ">
+                    <div id="divUploadTelemetry" class="dib"></div>
+                    <div class="dib">
                         <div id="divExistingTelemetry" style="@(le.HasFlightData ? string.Empty : "display: none;")">
                             @if (!le.IsNewFlight)
                             {
@@ -359,12 +360,50 @@
                 <input type="hidden" name="flightPendingTelemetry" id="hdnFieldCompressedTelemetry" value="@(String.IsNullOrEmpty(le.FlightData) ? string.Empty : Convert.ToBase64String(le.FlightData.Compress()))" />
             </div>
         </div>
+        @if (fCanDoFlightDeck)
+        {
+            <script type="text/javascript">
+                    $(() => {
+                        ajaxFileUpload($("#divScanFlightDeck"), {
+                            uploadURL: "@Url.Action("ScanFlightDeckImage", "Image")",
+                            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, false, false)",
+                            dragTargetClass: "fileDragTarget",
+                            maxFiles: 1,
+                            onFileUploaded: function (status, response) {
+                                if (response.success) {
+                                    $("#hdnFlightDeckResult").val(JSON.stringify(response.parsedResults));
+                                    initFromACARS();
+                                } else {
+                                    $(".fileInQueueContainer").hide();
+                                    $("#flightDeckScanProgress").hide();
+                                    window.alert(response.error);
+                                }
+                            },
+                            onPreSend: function (file) { $("#flightDeckScanProgress").show(); },
+                            onErr: function (err) { window.alert(err); },
+                            promptID: "divScanFlightDeckPrompt",
+                            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+                            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+                            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+                        });
+                    });
+            </script>
+            <div id="pnlFlightDeck" class="flightinfoitem" style="margin-left: 1em;">
+                <div class="itemlabel"><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
+                <div>
+                    <div id="divScanFlightDeck"></div>
+                    <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
+                    <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
+                </div>
+            </div>
+        }
+
         <div style="clear:both;"></div>
         <div id="pnlAutoFill" class="flightinfoitem">
             <table>
                 <tr class="itemlabel">
                     <td style="max-width: 600px">
-                        <span style="font-weight: bold">@Resources.LogbookEntry.AutoFillPrompt</span>
+                        <span class="b">@Resources.LogbookEntry.AutoFillPrompt</span>
                         @{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "afTip", tipTextHTML = Resources.LogbookEntry.AutoFillDescription });}
                     </td>
                     <td><button type="button" onclick="javascript: autoFill(); return false;">@Resources.LogbookEntry.AutoFill</button></td>
