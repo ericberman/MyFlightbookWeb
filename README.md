@@ -51,6 +51,8 @@ and the application should be called "logbook" and point to the /logbook branch.
  
  #### LocalConfig settings
  * AdminAuthAccessKey - Enables use of certain admin-only functionality (provides an encrytion seed)
+ * AnthropicApiKey - API key for using Anthropic's AI services (aka "Claude")
+ * AnthropicScanModel - the Anthropic model to use
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services (i.e., the iOS and Android apps)
  * AWSAccessKey - Access key for Amazon Web services
  * AWSMediaConvertRoleArn - Arn for converting media (video) files on AWS
