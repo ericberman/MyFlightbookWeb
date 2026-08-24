@@ -203,12 +203,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> UploadFlightImages(int szKey, bool fCanDoVideo)
+        public async Task<ActionResult> UploadFlightImages()
         {
             return await SafeOp(async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
+                if (String.IsNullOrEmpty(Request["szKey"]))
+                    throw new InvalidOperationException("No key provided!");
+                int szKey = Convert.ToInt32(Request["szKey"], CultureInfo.InvariantCulture);
+                bool fCanDoVideo = Convert.ToBoolean(Request["fCanDoVideo"] ?? false.ToString());
 
                 return Content(await MFBPendingImage.ProcessUploadedFile(Request.ImageFile(0), MFBImageInfoBase.ImageClass.Flight, szKey > 0 ? szKey.ToString(CultureInfo.InvariantCulture) : string.Empty,
                     (imgType) => { return LogbookEntryCore.ValidateFileType(imgType, fCanDoVideo); },

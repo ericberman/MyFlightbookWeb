@@ -10,7 +10,7 @@
     IEnumerable<MFBOauth2Client> ownedClients = AdminMode ? MFBOauth2Client.GetAvailableClients() : MFBOauth2Client.GetClientsForUser(User.Identity.Name);
     MFBOauth2Client newClient = ViewBag.client;
 }
-<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=11")"></script>
+<script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/Public/Scripts/ajaxUpload.js?v=12")"></script>
 <script type="text/javascript">
     $(() => {
         defaultButtonForDiv("divNewClient", "btnAddClient");

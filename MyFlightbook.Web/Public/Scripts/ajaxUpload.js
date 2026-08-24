@@ -1,6 +1,6 @@
 ﻿/******************************************************
  *
- * Copyright(c) 2023-2025 MyFlightbook LLC
+ * Copyright(c) 2023-2026 MyFlightbook LLC
  * Contact myflightbook - at - gmail.com for more information
  * Code here adapted from https://hayageek.com/drag-and-drop-file-upload-jquery/ - thanks!
  *
@@ -25,10 +25,7 @@
      - onErr - called on an error; otherwise a window alert is presented
 */
 function ajaxFileUpload(container, options) {
-    this.options = options;
-    this.container = container;
-
-    this.queuedFiles = [];
+    var queuedFiles = [];
 
     setUpContainer();
 
@@ -187,29 +184,32 @@ function ajaxFileUpload(container, options) {
             window.alert(options.errTooManyFiles ?? "Too many files uploaded");
             return;
         }
-        // check for validity of all before uploading any
         for (var i = 0; i < files.length; i++) {
             if (!checkFileType(files[i].name)) {
                 window.alert(files[i].name + ": " + (options.errDisallowedFiletype ?? ' file type is not allowed here'));
                 return;
             }
         }
-        for (var i = 0; i < files.length; i++) {
-            var fd = new FormData();
-            if (options.additionalParams) {
-                options.additionalParams.forEach(param => {
-                    fd.append(param.name, param.value);
-                });
-            }
 
-            fd.append('file', files[i]);
-            var status = new createStatusbar(obj); //Using this we can set progress.
-            status.setFileNameSize(files[i].name, files[i].size);
-            queuedFiles.push({ s: status, f: fd });
-        }
-
-        processQueue();
+        // Read each file's bytes into memory ourselves instead of letting
+        // Safari lazily read the picker-sourced File when the XHR actually sends.
+        Promise.all(Array.from(files).map(function (file) {
+            return file.arrayBuffer().then(function (buf) {
+                var fd = new FormData();
+                if (options.additionalParams) {
+                    options.additionalParams.forEach(param => fd.append(param.name, param.value));
+                }
+                fd.append('file', new Blob([buf], { type: file.type }), file.name);
+                var status = new createStatusbar(obj);
+                status.setFileNameSize(file.name, file.size);
+                return { s: status, f: fd };
+            });
+        })).then(function (entries) {
+            entries.forEach(e => queuedFiles.push(e));
+            processQueue();
+        });
     }
+
     function setUpContainer() {
         container.addClass("fileUploadContainer");
 

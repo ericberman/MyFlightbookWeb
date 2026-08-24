@@ -4,7 +4,7 @@
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     bool fOfferOCR = MyFlightbook.Payments.EarnedGratuity.UserQualifies(User.Identity.Name, MyFlightbook.Payments.Gratuity.GratuityTypes.FlightDeckScan);
 }
-<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=11".ToAbsolute())"></script>
+<script type="text/javascript" src="@("~/Public/Scripts/ajaxUpload.js?v=12".ToAbsolute())"></script>
 <script type="text/javascript">
     $(() => {
         ajaxFileUpload($("#uploadFile"), {
