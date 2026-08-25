@@ -297,6 +297,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize]
         public ActionResult StopImpersonation()
         {
             StopImpersonating();
