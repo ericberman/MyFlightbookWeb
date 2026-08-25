@@ -151,7 +151,7 @@ namespace OAuthAuthorizationServer.Services
             /* Aircraft Services */
             AddAircraftForUser, AircraftForUser, MakesAndModels, UpdateMaintenanceForAircraftWithFlagsAndNotes, DeleteAircraftForUser, AircraftMatchingPrefix, ModelsWithIDs,
             /* Flight Services */
-            CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight, CheckFlight, AutofillFlight,
+            CommitFlightWithOptions, addFlight, FlightsWithQueryAndOffset, FlightPathForFlight, FlightPathForFlightGPX, PropertiesForFlight, AvailablePropertyTypesForUser, DeleteLogbookEntry, DeletePropertiesForFlight, CheckFlight, AutofillFlight, InitFlightFromFlightDeckScan,
             /* Flight Services (Pending) */
             CreatePendingFlight, PendingFlightsForUser, UpdatePendingFlight, DeletePendingFlight, CommitPendingFlight,
             /* Currency */
@@ -222,6 +222,7 @@ namespace OAuthAuthorizationServer.Services
                 case OAuthServiceID.PendingFlightsForUser:
                 case OAuthServiceID.CheckFlight:
                 case OAuthServiceID.AutofillFlight:
+                case OAuthServiceID.InitFlightFromFlightDeckScan:
                     return MFBOAuthScope.readflight;
                 case OAuthServiceID.currency:
                 case OAuthServiceID.GetCurrencyForUser:
@@ -482,6 +483,9 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.AutofillFlight:
                         WriteObject(s, mfbSvc.AutofillFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le"), GetOptionalParam<AutoFillOptions>("options")));
+                        break;
+                    case OAuthServiceID.InitFlightFromFlightDeckScan:
+                        WriteObject(s, mfbSvc.InitFlightFromFlightDeckScan(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le"), GetRequiredParam<string>("szScannedFlight")));
                         break;
                     case OAuthServiceID.CreatePendingFlight:
                         WriteObject(s, mfbSvc.CreatePendingFlight(GeneratedAuthToken, GetRequiredParam<LogbookEntry>("le")));
