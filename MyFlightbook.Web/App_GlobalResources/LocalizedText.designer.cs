@@ -2127,7 +2127,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanning flight-deck displays is only available for pilots that have donated to support %APP_NAME%..
+        ///   Looks up a localized string similar to To keep the overall service free, features which incur usage-based costs, such as using AI to interpret flight deck images, are reserved for pilots that have donated to support %APP_NAME%..
         /// </summary>
         internal static string errNotAuthorizedFlightDeckScan {
             get {

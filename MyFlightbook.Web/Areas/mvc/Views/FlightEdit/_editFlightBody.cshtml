@@ -24,6 +24,33 @@
 }
 <script type="text/javascript">
     $(() => {
+        ajaxFileUpload($("#divScanFlightDeck"), {
+            uploadURL: "@Url.Action("ScanFlightDeckImage", "Image")",
+            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, false, false)",
+            dragTargetClass: "fileDragTarget",
+            maxFiles: 1,
+            onFileUploaded: function (status, response) {
+                if (response.success) {
+                    $("#hdnFlightDeckResult").val(JSON.stringify(response.parsedResults));
+                    initFromACARS();
+                } else {
+                    $(".fileInQueueContainer").hide();
+                    $("#flightDeckScanProgress").hide();
+                    window.alert(response.error);
+                }
+            },
+            onPreSend: function (file) { $("#flightDeckScanProgress").show(); },
+            onErr: function (err) {
+                window.alert(err);
+                $(".fileInQueueContainer").hide();
+                $("#flightDeckScanProgress").hide();
+            },
+            promptID: "divScanFlightDeckPrompt",
+            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
+            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
+            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
+        });
+
         ajaxFileUpload($("#divUploadTelemetry"), {
             uploadURL: "@Url.Action("UploadTelemetry", "FlightEdit")",
             allowedTypes: "kml gpx csv txt xml nmea igc",
@@ -360,44 +387,14 @@
                 <input type="hidden" name="flightPendingTelemetry" id="hdnFieldCompressedTelemetry" value="@(String.IsNullOrEmpty(le.FlightData) ? string.Empty : Convert.ToBase64String(le.FlightData.Compress()))" />
             </div>
         </div>
-        @if (fCanDoFlightDeck)
-        {
-            <script type="text/javascript">
-                    $(() => {
-                        ajaxFileUpload($("#divScanFlightDeck"), {
-                            uploadURL: "@Url.Action("ScanFlightDeckImage", "Image")",
-                            allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, false, false)",
-                            dragTargetClass: "fileDragTarget",
-                            maxFiles: 1,
-                            onFileUploaded: function (status, response) {
-                                if (response.success) {
-                                    $("#hdnFlightDeckResult").val(JSON.stringify(response.parsedResults));
-                                    initFromACARS();
-                                } else {
-                                    $(".fileInQueueContainer").hide();
-                                    $("#flightDeckScanProgress").hide();
-                                    window.alert(response.error);
-                                }
-                            },
-                            onPreSend: function (file) { $("#flightDeckScanProgress").show(); },
-                            onErr: function (err) { window.alert(err); },
-                            promptID: "divScanFlightDeckPrompt",
-                            errTooManyFiles: "@Resources.LocalizedText.fileUploadTooManyFiles",
-                            errDisallowedFileType: "@Resources.LocalizedText.fileUploadInvalidType",
-                            abortPrompt: "@Resources.LocalizedText.fileUploadAbort"
-                        });
-                    });
-            </script>
-            <div id="pnlFlightDeck" class="flightinfoitem" style="margin-left: 1em;">
-                <div class="itemlabel"><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
-                <div>
-                    <div id="divScanFlightDeck"></div>
-                    <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
-                    <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
-                </div>
+        <div id="pnlFlightDeck" class="flightinfoitem" style="margin-left: 1em;">
+            <div class="itemlabel"><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
+            <div>
+                <div id="divScanFlightDeck"></div>
+                <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
+                <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
             </div>
-        }
-
+        </div>
         <div style="clear:both;"></div>
         <div id="pnlAutoFill" class="flightinfoitem">
             <table>
