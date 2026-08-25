@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2025 MyFlightbook LLC
+ * Copyright (c) 2008-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +19,7 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class UserAccessEncryptor : MFBEncryptor
     {
-        public UserAccessEncryptor() : base(LocalConfig.SettingForKey("UserAccessEncryptorKey"), "mfb") { }
+        public UserAccessEncryptor() : base(LocalConfig.SettingForKey("UserAccessEncryptorKey")) { }
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class UserEncryptor : MFBEncryptor
     {
-        public UserEncryptor(string szUser) : base(szUser, null) { }
+        public UserEncryptor(string szUser) : base(szUser) { }
     }
 
     /// <summary>
@@ -35,9 +35,9 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class SharedDataEncryptor : MFBEncryptor
     {
-        public SharedDataEncryptor() : base(LocalConfig.SettingForKey("SharedDataEncryptorKey"), null) { }
+        public SharedDataEncryptor() : base(LocalConfig.SettingForKey("SharedDataEncryptorKey")) { }
 
-        public SharedDataEncryptor(string szBackupKey) : base(LocalConfig.SettingForKey("SharedDataEncryptorKey"), szBackupKey) { }
+        public SharedDataEncryptor(string szBackupKey) : base(LocalConfig.SettingForKey("SharedDataEncryptorKey")) { }
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class WebServiceEncryptor : MFBEncryptor
     {
-        public WebServiceEncryptor() : base(LocalConfig.SettingForKey("WebAccessEncryptorKey"), "MyFlightbookAPIKey-boythatwashardtoguess") { }
+        public WebServiceEncryptor() : base(LocalConfig.SettingForKey("WebAccessEncryptorKey")) { }
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class PeerRequestEncryptor : MFBEncryptor
     {
-        public PeerRequestEncryptor() : base(LocalConfig.SettingForKey("PeerRequestEncryptorKey"), "MFBRelationshipRequestPass") { }
+        public PeerRequestEncryptor() : base(LocalConfig.SettingForKey("PeerRequestEncryptorKey")) { }
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public class AdminAuthEncryptor : MFBEncryptor
     {
-        public AdminAuthEncryptor() : base(LocalConfig.SettingForKey("AdminAuthAccessKey"), "AuthAdminKeyInPublicDir") { }
+        public AdminAuthEncryptor() : base(LocalConfig.SettingForKey("AdminAuthAccessKey")) { }
     }
     #endregion
     
@@ -73,22 +73,16 @@ namespace MyFlightbook.Encryptors
         readonly private string m_szPass = string.Empty;
 
         /// <summary>
-        /// key to use for legacy support if the current key doesn't work
-        /// </summary>
-        readonly private string m_szPassFallback = string.Empty;
-
-        /// <summary>
         /// Creates an encryptor using the specified pass keys
         /// </summary>
         /// <param name="szPass">The pass key to use.</param>
         /// <param name="szBackup">A backup to use if necessary for backwards compatibility</param>
-        protected MFBEncryptor(string szPass, string szBackup)
+        protected MFBEncryptor(string szPass)
         {
             m_szPass = szPass;
-            m_szPassFallback = szBackup;
         }
 
-        private string Decrypt(string TextToBeDecrypted, string szPass, bool fUseFallbackOnFail)
+        private string Decrypt(string TextToBeDecrypted, string szPass)
         {
             using (RijndaelManaged RijndaelCipher = new RijndaelManaged())
             {
@@ -119,14 +113,14 @@ namespace MyFlightbook.Encryptors
                         }
                     }
                 }
-                catch (Exception ex) when (ex is FormatException)
+                catch (FormatException)
                 {
                     // Should never happen - implies bogus base64 data, so return empty string
                     return string.Empty;
                 }
-                catch (Exception ex) when (ex is CryptographicException)
+                catch (CryptographicException)
                 {
-                    DecryptedData = fUseFallbackOnFail ? Decrypt(TextToBeDecrypted, m_szPassFallback, false) : TextToBeDecrypted;
+                    return string.Empty;
                 }
                 return DecryptedData;
             }
@@ -134,7 +128,7 @@ namespace MyFlightbook.Encryptors
 
         public string Decrypt(string TextToBeDecrypted)
         {
-            return Decrypt(TextToBeDecrypted, m_szPass, !String.IsNullOrEmpty(m_szPassFallback));
+            return Decrypt(TextToBeDecrypted, m_szPass);
         }
 
         public string Encrypt(string TextToBeEncrypted)
