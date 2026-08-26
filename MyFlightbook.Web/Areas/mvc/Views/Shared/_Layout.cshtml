@@ -8,6 +8,14 @@
     }
 </head>
 <body>
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        $(() => {
+            $.ajaxSetup({
+                headers: { 'X-CSRF-Token': $('input[name="__RequestVerificationToken"]').val() }
+            });
+        });
+    </script>
     @{ Html.RenderAction("RenderImpersonation", "MFBTemplate"); }
     @if (!(ViewBag.ForceNaked ?? false))
     {
@@ -54,7 +62,7 @@
         </footer>
         Html.RenderAction("RenderPrivacyLink", "MFBTemplate");
     }
-    @if (Session["IsNaked"] != null && ((bool) Session["IsNaked"]))
+    @if (Session["IsNaked"] != null && ((bool)Session["IsNaked"]))
     {
         <div style="line-height: 48pt;">&nbsp;</div>
     }

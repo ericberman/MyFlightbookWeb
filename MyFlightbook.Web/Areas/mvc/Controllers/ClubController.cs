@@ -64,6 +64,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Manage (admin) functions
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteMember(int idClub, string userName)
         {
             return SafeOp(() =>
@@ -84,6 +85,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateMember(int idClub, string userName, ClubMember.ClubMemberRole requestedRole, bool isMaintenanceOfficer, bool isTreasurer, bool isInsuranceOfficer, string officesHeld, bool isInactive)
         {
             return SafeOp(() =>
@@ -129,6 +131,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateAircraft(int idClub, int idAircraft, string description, decimal highWater)
         {
             return SafeOp(() =>
@@ -149,6 +152,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteAircraft(int idClub, int idAircraft)
         {
             return SafeOp(() =>
@@ -169,6 +173,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddAircraft(int idClub, int idAircraft, string description)
         {
             return SafeOp(() =>
@@ -199,6 +204,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string InviteToClub(int idClub, string szEmail)
         {
             return SafeOp(() =>
@@ -219,6 +225,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult FlyingReport(int idClub, bool fAsFile, DateTime dateStart, DateTime dateEnd, string reportMember, int reportAircraft, string fileFormat)
         {
             return SafeOp(() =>
@@ -246,6 +253,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MaintenanceReport(int idClub, bool fAsFile)
         {
             return SafeOp(() =>
@@ -267,6 +275,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult InsuranceReport(int idClub, bool fAsFile, int monthsInterval)
         {
             return SafeOp(() =>
@@ -288,6 +297,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string SaveClub(Club club)
         {
             return SafeOp(() => {
@@ -316,6 +326,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string DeleteClub(int idClub)
         {
             return SafeOp(() =>
@@ -374,6 +385,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SendMsgToClubUser(int idClub, string szTarget, string szSubject, string szText)
         {
             return SafeOp(() =>
@@ -386,6 +398,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ContactClub(int idClub, string szMessage, bool fRequestMembership)
         {
             return SafeOp(() =>
@@ -396,6 +409,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PopulateClub(int idClub)
         {
             ViewBag.club = Club.ClubWithID(idClub);

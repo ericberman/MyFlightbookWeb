@@ -1780,6 +1780,7 @@
     <Compile Include="AppCode\Utility\SmtpSupport.cs" />
     <Compile Include="AppCode\Utility\SponsoredAd.cs" />
     <Compile Include="AppCode\Utility\Tabs.cs" />
+    <Compile Include="AppCode\Utility\ValidateHeaderAntiForgeryTokenAttribute.cs" />
     <Compile Include="AppCode\WebService.cs" />
     <Compile Include="App_GlobalResources\Achievements.designer.cs">
       <AutoGen>True</AutoGen>
