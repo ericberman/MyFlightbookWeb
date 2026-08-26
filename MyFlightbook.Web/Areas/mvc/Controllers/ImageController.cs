@@ -126,6 +126,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il = new ImageList(imageClass, szKey);
                     il.Refresh(fIncludeDocs);
                 }
+                foreach (MFBImageInfo mfbii in il.ImageArray)
+                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.View);
                 return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, confirmText, defaultImage, onMakeDefault, onDelete, onAnnotate);
             });
         }

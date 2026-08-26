@@ -912,7 +912,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                 MFBPostedFile pf = new MFBPostedFile(Request.ImageFile(0));
                 string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", MFBImageInfoBase.ImageClass.BasicMed.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());
-                MFBPendingImage pi = new MFBPendingImage(pf, szID);
+                MFBPendingImage pi = new MFBPendingImage(pf, szID, MFBImageInfoBase.ImageClass.BasicMed);
 
                 switch (MFBImageInfo.ImageTypeFromFile(pf))
                 {

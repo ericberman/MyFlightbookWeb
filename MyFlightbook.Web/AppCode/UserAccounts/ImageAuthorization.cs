@@ -1,5 +1,4 @@
-﻿using MyFlightbook.Image;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -19,7 +18,7 @@ namespace MyFlightbook.Image
     /// </summary>
     public static class ImageAuthorization
     {
-        public enum ImageAction { Delete, Annotate }
+        public enum ImageAction { View, Delete, Annotate }
 
         /// <summary>
         /// Determines if the specified user is authorized to modify/delete an image
@@ -41,6 +40,9 @@ namespace MyFlightbook.Image
             switch (mfbii.Class)
             {
                 case MFBImageInfoBase.ImageClass.Aircraft:
+                    if (requestedAction == ImageAction.View)    // all aircraft images are public
+                        return;
+
                     // Check that the user actually has this aircraft in their account
                     UserAircraft ua = new UserAircraft(szuser);
                     Aircraft ac = new Aircraft(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture));
@@ -57,18 +59,26 @@ namespace MyFlightbook.Image
                     break;
                 case MFBImageInfoBase.ImageClass.BasicMed:
                     {
-                        int idBME = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
-                        List<MyFlightbook.BasicmedTools.BasicMedEvent> lst = new List<BasicmedTools.BasicMedEvent>(BasicmedTools.BasicMedEvent.EventsForUser(szuser));
-                        if (!lst.Exists(bme => bme.ID == idBME))
-                            throw new UnauthorizedAccessException();
+                        // Basicmed are inherently private.
+                        if (int.TryParse(mfbii.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idBME))
+                        {
+                            List<MyFlightbook.BasicmedTools.BasicMedEvent> lst = new List<BasicmedTools.BasicMedEvent>(BasicmedTools.BasicMedEvent.EventsForUser(szuser));
+                            if (!lst.Exists(bme => bme.ID == idBME))
+                                throw new UnauthorizedAccessException();
+                        }
                     }
                     break;
                 case MFBImageInfoBase.ImageClass.Endorsement:
                 case MFBImageInfoBase.ImageClass.OfflineEndorsement:
+                    if (requestedAction == ImageAction.View && mfbii.Class == MFBImageInfoBase.ImageClass.Endorsement)  // Endorsements may be viewable by an instructor, but offline endorsements are not
+                        return;
                     if (szuser.CompareCurrentCultureIgnoreCase(mfbii.Key) != 0)
                         throw new UnauthorizedAccessException();
                     break;
                 case MFBImageInfoBase.ImageClass.Flight:
+                    // flight *images* are inherently public due to shared flights or share flights URL, where the user could be entirely unauthenticated.
+                    if (requestedAction == ImageAction.View)    // all aircraft images are public
+                        return;
                     if (!new LogbookEntry().FLoadFromDB(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture), szuser))
                         throw new UnauthorizedAccessException();
                     break;

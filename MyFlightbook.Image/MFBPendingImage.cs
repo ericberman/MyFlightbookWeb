@@ -95,7 +95,7 @@ namespace MyFlightbook.Image
             Init();
         }
 
-        public MFBPendingImage(MFBPostedFile mfbpf, string szSessKey)
+        public MFBPendingImage(MFBPostedFile mfbpf, string szSessKey, ImageClass c = ImageClass.Unknown)
             : base()
         {
             Init();
@@ -103,6 +103,7 @@ namespace MyFlightbook.Image
             ImageType = ImageTypeFromFile(mfbpf);
             ThumbnailFile = ThumbnailPrefix + mfbpf.FileID;
             SessionKey = szSessKey;
+            Class = c;
             if (ImageTypeFromFile(mfbpf) == ImageFileType.PDF)
                 Comment = mfbpf.FileName;
         }
