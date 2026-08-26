@@ -82,6 +82,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public void ResetGratuities(string szUser, bool fResetReminders)
         {
             CheckAuth(ProfileRoles.maskCanManageMoney);
@@ -90,6 +91,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public void FixFees()
         {
             CheckAuth(ProfileRoles.maskCanManageMoney);

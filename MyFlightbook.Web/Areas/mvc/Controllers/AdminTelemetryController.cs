@@ -23,6 +23,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Admin - Telemetry
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string MigrateDBToFiles(int cLimit, string szLimitUser)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -33,6 +34,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string MigrateFilesToDB(int cLimit, string szLimitUser)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -88,6 +90,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string MigrateFlightToDisk(int idFlight)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -103,6 +106,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string MigrateFlightFromDisk(int idFlight)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -228,6 +232,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult TelemetryForUser(string szUser)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
