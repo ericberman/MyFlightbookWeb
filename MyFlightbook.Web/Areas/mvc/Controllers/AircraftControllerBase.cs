@@ -117,6 +117,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult CheckDupeModels(string funcName)
         {
             return SafeOp(() =>
@@ -131,6 +132,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetManufacturerRestriction(int idMan)
         {
             return SafeOp(() =>
@@ -141,6 +143,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddManufacturer(string name)
         {
             return SafeOp(() =>
@@ -222,6 +225,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Aircraft model and list management
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteAircraftForUser(int idAircraft)
         {
             return SafeOp(() =>
@@ -277,6 +281,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ChangeCountryForTail(string prefix, string oldTail)
         {
             return SafeOp(() =>
@@ -326,6 +331,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Aircraft Images
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadAircraftImages(int szKey)
         {
             return await SafeOp(async () =>
@@ -345,6 +351,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetDefaultImage(int idAircraft, string szThumb)
         {
             return SafeOp(() =>
@@ -466,6 +473,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="fIsActive">Active or inactive</param>
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetActive(int idAircraft, bool fIsActive)
         {
             return SafeOp(() =>
@@ -486,6 +494,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="Role">The role to assign</param>
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetRole(int idAircraft, string Role, bool fAddPICName)
         {
             return SafeOp(() =>
@@ -507,6 +516,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="fAdd">True to add the template, false to remove it</param>
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddRemoveTemplate(int idAircraft, int idTemplate, bool fAdd)
         {
             return SafeOp(() =>

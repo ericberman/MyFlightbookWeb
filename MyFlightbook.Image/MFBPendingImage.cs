@@ -171,7 +171,7 @@ namespace MyFlightbook.Image
 
             MFBPostedFile pf = new MFBPostedFile(file);
             string szID = String.Format(CultureInfo.InvariantCulture, "{0}-pendingImage-{1}-{2}", ic.ToString(), (pf.FileName ?? string.Empty).Replace(".", "_"), pf.GetHashCode());
-            MFBPendingImage pi = new MFBPendingImage(pf, szID);
+            MFBPendingImage pi = new MFBPendingImage(pf, szID, ic);
 
             if (!checkType(ImageTypeFromFile(pf)))
                 return string.Empty;

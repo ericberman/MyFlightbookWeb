@@ -78,6 +78,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MaintenanceLogTable(int idAircraft, int start = 0, int pageSize = 10)
         {
             return SafeOp(() =>

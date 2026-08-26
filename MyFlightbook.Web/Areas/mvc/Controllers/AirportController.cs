@@ -43,6 +43,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="InvalidOperationException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddAirport(string Code, string FacilityName, string TypeCode, double Latitude, double Longitude, bool fAsAdmin, bool fForceAdd)
         {
             return SafeOp(() =>
@@ -76,6 +77,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateUserAirportList(bool fAdmin)
         {
             fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
@@ -85,6 +87,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteAirport(string Code, string TypeCode, bool fAdmin)
         {
             fAdmin = fAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
@@ -98,6 +101,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ImportUploadedFile(bool fAllowBlast)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -114,6 +118,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string BulkImportUploadedFile()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -164,6 +169,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Admin airport management
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UseGuess(string szCode, string szTypeCode, string szCountry, string szAdmin)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -188,6 +194,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns>Array of airport clusters, where each cluster is a list of airports that looke like aliases of one another</returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetDupeAirports(int start, int count, string dupeSeed)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -198,6 +205,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AirportImportCommand(airportImportCandidate aic, string source, string szCommand)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -211,6 +219,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Admin - Airport Geocoder
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SuggestCountries(string prefixText, int count)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -221,6 +230,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SuggestAdmin(string prefixText, int count)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -231,6 +241,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GeotTagFromGPX()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -245,6 +256,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GeotTagTable(string queryID, int start, int count)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -338,6 +350,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns>0 if unknown.</returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -352,6 +365,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// </summary>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetPreferred(string szCode, string szType, bool fPreferred)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -367,6 +381,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// </summary>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MakeNative(string szCode, string szType)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -382,6 +397,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// </summary>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MergeWith(string szCodeTarget, string szTypeTarget, string szCodeSource)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -491,6 +507,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region VisitedAirport
         [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string EstimateDistance(FlightQuery fq, bool df = false, string skID = null)
         {
             return SafeOp(() =>
@@ -513,6 +531,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns>An integer in nm for the estimated distance</returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetDistanceFlown(string route)
         {
             return SafeOp(() =>
@@ -534,6 +553,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 throw new UnauthorizedAccessException("You aren't authorized to view this data");
         }
 
+        [Authorize]
         public ActionResult DownloadKML(string fq, string id = null)
         {
             FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
@@ -549,6 +569,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult DownloadVisited(string fq, string id = null)
         {
             FlightQuery query = FlightQuery.FromBase64CompressedJSON(fq);
@@ -676,6 +697,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Admin in Map Routes for visited routes
         [HttpPost]
+        [Authorize]
         public ActionResult RenderVisitedRoutes(string szVRJson)
         {
             VisitedRoute vr = JsonConvert.DeserializeObject<VisitedRoute>(szVRJson);
@@ -686,6 +708,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         private const string sessKeyXMLDownload = "VisitedRoutesAsXML";
 
         [HttpPost]
+        [Authorize]
         public ActionResult DownloadVisitedRoutes(string szVRJson)
         {
             VisitedRoute vr = JsonConvert.DeserializeObject<VisitedRoute>(szVRJson);
@@ -694,6 +717,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetVisitedRoutesDownload()
         {
             VisitedRoute vr = (VisitedRoute)Session[sessKeyXMLDownload];
@@ -701,6 +725,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult VisitedRoutesFromFile()
         {
             if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData)
@@ -780,6 +805,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult METARAutoCompletion(string prefixText, int count)
         {
             return SafeOp(() =>
@@ -807,6 +833,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult AirportResultsForText(string searchTerm, int start, int pageSize, airport[] existingResults = null)
         {
             airport[] fullSet = existingResults ?? AirportsForTerm(searchTerm).GetAirportList();
