@@ -1567,7 +1567,7 @@ namespace MyFlightbook.Clubs
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("aircraftid", AircraftID);
-                comm.Parameters.AddWithValue("desc", ClubDescription.LimitTo(40000));
+                comm.Parameters.AddWithValue("desc", new HtmlSanitizer().Sanitize(ClubDescription).LimitTo(40000));
                 comm.Parameters.AddWithValue("hwm", HighWater);
             });
             if (!fResult)
