@@ -32,6 +32,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region - Users
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UnlockUser(string szUser)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -48,6 +49,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="UnauthorizedAccessException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ResetPasswordForUser(string szPKID)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -71,6 +73,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteFlightsForUser(string szPKID)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -87,6 +90,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteUserAccount(string szPKID)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -103,6 +107,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult Disable2FA(string szPKID)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -120,6 +125,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult EndowClubCreation(string szPKID)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -134,6 +140,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SendUserMessage(string szPKID, string szSubject, string szBody)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -150,6 +157,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Misc - Props
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult InvalidProps()
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -161,6 +169,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string DeleteEmptyProp(int propid)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -177,6 +186,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateInvalidSigs()
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -202,6 +212,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult InvalidSigsResult()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -217,6 +228,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult FixSignature(int idFlight, bool fForceValid)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () => {
@@ -229,6 +241,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ToggleOOF(bool useOOF)
         {
             return SafeOp(ProfileRoles.maskCanSupport, () =>
@@ -255,6 +268,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string KickOffNightlyRun()
         {
             return SafeOp(ProfileRoles.maskSiteAdminOnly, () =>
@@ -285,6 +299,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Misc - Cache
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public string FlushCache()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -297,6 +312,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Property management
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateProperty(int idPropType, string title, string shortTitle, string sortKey, string formatString, string description, uint flags)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -319,6 +335,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Achievements
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string InvalidateBadgeCache()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -332,6 +349,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Stats
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string TrimOldTokensAndAuths()
         {
             return SafeOp(ProfileRoles.maskCanReport, () =>
@@ -342,6 +360,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string TrimOldOAuth()
         {
             return SafeOp(ProfileRoles.maskCanReport, () =>
@@ -353,6 +372,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> FlightsPerUser(string dateRange)
         {
             return await SafeOp(ProfileRoles.maskCanReport, async () =>
@@ -376,6 +396,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string SlowImageOpStatus(string key)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -387,6 +408,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> DeleteOrphans()
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -413,6 +435,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> DeleteDebugS3Images()
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -431,6 +454,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string SyncImages(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -454,6 +478,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> DeleteS3Orphans(MFBImageInfoBase.ImageClass ic, bool fPreviewOnly)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -472,6 +497,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string UpdateBrokenImage(MFBImageInfoBase.ImageClass ic, string key, string thumbName, int width, int height)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -490,6 +516,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> ProcessPendingVideos()
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -501,6 +528,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult NextImageRowset(int offset, int limit, MFBImageInfoBase.ImageClass imageClass)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -516,6 +544,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> MigrateImages(MFBImageInfoBase.ImageClass imageClass, int maxFiles, int maxMB)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -526,6 +555,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AircraftForFlightImage(int idFlight)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -539,6 +569,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Endorsements/WINGS
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UploadWingsActivities()
         {
             return SafeOp(() =>
@@ -619,6 +650,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateFAQ(int idFaq, string Category, string Question, string Answer)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>

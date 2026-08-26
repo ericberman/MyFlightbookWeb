@@ -16,6 +16,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult findUsers(string szSearch)
         {
             return SafeOp(() =>
@@ -30,6 +31,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetRoleForUser(string szRole, string szTargetUser, string szPass)
         {
             return SafeOp(() =>

@@ -21,6 +21,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Manufacturers
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MergeDupes(int idToKeep, int idToKill)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -33,6 +34,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteManufacturer(int id)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -73,6 +75,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Models
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ReviewTypes()
         {
             CheckAuth(ProfileRoles.maskCanManageData);
@@ -84,6 +87,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MigrateSim(int idOriginal, int idNew, string deviceID)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -100,6 +104,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> MergeModels(int idToKeep, int idToKill)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -124,6 +129,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PreviewMerge(int idToKeep, int idToKill)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -154,6 +160,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteModel(int idModel)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -165,6 +172,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshDupes(bool fExcludeSims)
         {
             CheckAuth(ProfileRoles.maskCanManageData);
@@ -200,6 +208,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Aircraft
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateVersion(int aircraftID, int newVersion)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -216,6 +225,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshDupeAircraft()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -227,6 +237,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> keepDupeSim(int idAircraft)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -238,6 +249,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshDupeSims()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -249,6 +261,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string RenameSim(int idAircraft, bool fPreview)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -266,6 +279,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AllSims()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -286,6 +300,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult InvalidAircraft()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -297,6 +312,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshOrphans()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -308,6 +324,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteOrphans(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -329,6 +346,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshPseudoGeneric()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -341,6 +359,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult FindAircraft(string tailToFind)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -352,6 +371,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string CleanUpMaintenance()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -362,6 +382,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RefreshCountryCodes()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -373,6 +394,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdatecountryCode(int id, string prefix, string countryName, string locale, string registrationLinkTemplate, int templateMode, int hyphenPref)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -394,6 +416,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string FixHyphenation(int id)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -406,6 +429,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string MapModel(AircraftAdminModelMapping amm)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -418,6 +442,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ConvertOandI(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -435,6 +460,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult TrimLeadingN(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -454,6 +480,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult TrimN0(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -475,6 +502,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string ReHyphenate(int idAircraft, string newTail)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -496,6 +524,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> MigrateGeneric(int idAircraft)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -525,6 +554,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> MigratePsuedoSim(int idAircraft)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -542,6 +572,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string ViewFlights(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -571,6 +602,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult IgnorePseudo(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -589,6 +621,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ToggleLock(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
@@ -610,6 +643,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> MergeAircraft(int idAircraftToMerge, int idTargetAircraft)
         {
             return await SafeOp(ProfileRoles.maskCanManageData, async () =>
@@ -634,6 +668,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MakeDefault(int idAircraft)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
