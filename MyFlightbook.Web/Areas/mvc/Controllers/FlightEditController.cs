@@ -163,6 +163,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="InvalidOperationException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UploadTelemetry()
         {
             return SafeOp(() =>
@@ -203,6 +204,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadFlightImages()
         {
             return await SafeOp(async () =>
@@ -278,7 +280,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public ActionResult CommitPendingFlight(string pfID)
         {
             return SafeOp(() =>
@@ -305,6 +306,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PendingFlightsInRange(int offset, int pageSize, string sortField, SortDirection sortDirection)
         {
             return SafeOp(() =>
@@ -325,6 +327,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult FlightEditorForFlight(int idFlight, string targetUser = null, string nextFlightHref = null, string prevFlightHref = null, string onCancel = null, string onSave = null, int chk = 0)
         {
             return SafeOp(() =>
@@ -344,6 +347,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SaveFlightToSession()
         {
             return SafeOp(() =>
@@ -374,6 +378,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         /// <summary>
         /// Returns the current time formatted in UTC or specified time-zone
         /// </summary>
@@ -389,6 +394,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string TaxiTime(string fsStart, string fsEnd, string szTotal)
         {
             return SafeOp(() =>
@@ -408,6 +414,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public string AirborneTime(string fsStart, string fsEnd)
         {
             return SafeOp(() =>
@@ -425,6 +432,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdatePropset(string szTargetUser, string propTuples, bool fHHMM, int[] activeTemplateIDs, bool fStripDefault, int idFlight, string dtDefault, int idAircraft = Aircraft.idAircraftUnknown)
         {
             return SafeOp(() =>
