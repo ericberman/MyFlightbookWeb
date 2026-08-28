@@ -34,6 +34,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     {
         #region DayNight
         #region WebServices
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AirportLookup(string szCode)
         {
             return SafeOp(() =>
@@ -110,6 +111,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UploadFiles()
         {
             return SafeOp(() =>
@@ -236,6 +238,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadTelemetryToImport()
         {
             return await SafeOp(async () =>
@@ -265,6 +268,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Bulk Create From Telemetry
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> CreateFlightFromTelemetry()
         {
             return await SafeOp(async () =>
@@ -427,6 +431,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ImageDebugResult()
         {
             return SafeOp(() =>

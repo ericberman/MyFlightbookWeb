@@ -36,6 +36,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns>An array of training items (strings) in JSON format</returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SuggestTraining(string prefixText, int count)
         {
             return SafeOp(() =>
@@ -46,6 +47,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ProgressAgainstRating()
         {
             return SafeOp(() =>
@@ -100,6 +102,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult MilestonesForCustomRating(string szTitle)
         {
             return SafeOp(() =>
@@ -246,6 +249,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadOfflineEndorsement()
         {
             return await SafeOp(async () =>
@@ -262,6 +266,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Endorsements
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult WINGSAutoCompletion(string prefixText, int count)
         {
             return SafeOp(() =>
@@ -283,6 +288,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadEndorsement(string szKey = null)
         {
             return await SafeOp(async () =>
@@ -334,6 +340,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetEndorsementTemplate(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
         {
             return SafeOp(() =>
@@ -405,6 +412,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult TemplatesMatchingTerm(string searchText)
         {
             return SafeOp(() =>

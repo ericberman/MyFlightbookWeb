@@ -336,6 +336,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Developer Page
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetOAuthLogo(string clientID)
         {
             return SafeOp(() =>
@@ -362,6 +363,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteOAuthLogo(string clientID)
         {
             return SafeOp(() =>
@@ -384,6 +386,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateOauthClient(string clientID, string clientSecret, string clientName, string clientCallBack, string clientScopes, string szOwner, bool isPublic = false)
         {
             return SafeOp(() =>
@@ -397,6 +400,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteOAuthClient(string clientID)
         {
             return SafeOp(() =>
@@ -436,6 +440,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region User management of Client apps
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeAuthClient(string idClient)
         {
             return SafeOp(() =>

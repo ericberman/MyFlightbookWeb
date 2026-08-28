@@ -35,6 +35,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region web services for canned queries
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteCannedQuery(CannedQuery cq)
         {
             return SafeOp(() =>
@@ -53,6 +54,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddCannedQuery(CannedQuery cq)
         {
             return SafeOp(() =>

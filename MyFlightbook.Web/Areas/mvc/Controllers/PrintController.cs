@@ -33,6 +33,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PrintLink(string szExistingHRef, PrintingSections ps)
         {
             return SafeOp(() =>

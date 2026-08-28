@@ -29,6 +29,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region autofill
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetAutofillOptions(AutoFillOptions afo)
         {
             return SafeOp(() =>
@@ -51,6 +52,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="color"></param>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetColorForQuery(string queryName, string color)
         {
             return SafeOp(() =>
@@ -66,6 +68,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetMapColors(string routeColor, string pathColor)
         {
             return SafeOp(() =>
@@ -205,6 +208,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="ArgumentException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetLocalPref(string prefName, string prefValue)
         {
             return SafeOp(() =>
@@ -232,6 +236,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Properties and Templates
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult EditPropBlockList(int id, bool fAllow)
         {
             return SafeOp(() =>
@@ -260,6 +265,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PropTemplateEditor(int idTemplate, string containerID, bool fCopy)
         {
             return SafeOp(() =>
@@ -274,6 +280,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult CommitPropTemplate()
         {
             return SafeOp(() =>
@@ -299,6 +306,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddPublicTemplate(int idTemplate)
         {
             return SafeOp(() =>
@@ -317,6 +325,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetTemplateFlags(int idTemplate, bool fPublic, bool fDefault)
         {
             return SafeOp(() =>
@@ -387,6 +396,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeadlineList(int idAircraft = Aircraft.idAircraftUnknown)
         {
             return SafeOp(() => {
@@ -396,6 +406,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         [Authorize]
         public ActionResult AddAircraftOilDeadline(int idAircraft, int interval, int curValue, string postEdit)
         {
@@ -416,6 +427,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeadlineEditor(int idDeadline, bool fShared = false, int idAircraft = Aircraft.idAircraftUnknown)
         {
             ViewBag.idDeadline = idDeadline;
@@ -461,6 +473,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Custom Currency
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult CustCurrencyEditor(int idCustCurrency)
         {
             return SafeOp(() =>
@@ -473,6 +486,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult CustCurrencyList()
         {
             return SafeOp(() =>
@@ -530,6 +544,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetCustCurrencyActive(int idCustCurrency, bool fActive)
         {
             return SafeOp(() =>
@@ -546,6 +561,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Share keys
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateShareKey(string idShareKey, bool fFlights, bool fTotals, bool fCurrency, bool fAchievements, bool fAirports, string queryName)
         {
             return SafeOp(() =>
@@ -567,6 +583,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteShareKey(string id)
         {
             return SafeOp(() =>
@@ -622,6 +639,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SendVerificationEmail(string email)
         {
             return SafeOp(() =>
@@ -634,6 +652,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SetHeadShot()
         {
             return SafeOp(() =>
@@ -658,6 +677,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult DeleteHeadShot()
         {
             return SafeOp(() =>
@@ -880,6 +900,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult BasicMedEventList()
         {
             return SafeOp(() =>
@@ -903,6 +924,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> UploadBasicMedImages(int szKey)
         {
             return await SafeOp(async () =>
