@@ -376,6 +376,7 @@ namespace MyFlightbook.Lint
             (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven,
             (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived,
             (int) CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime,
+            (int) CustomPropertyType.KnownProperties.IDPropInstrumentGroundInstructionGiven,
             (int) CustomPropertyType.KnownProperties.IDPropPlannedBlock
         };
 
