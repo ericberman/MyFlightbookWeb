@@ -44,6 +44,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Web Services
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public async Task<ActionResult> DeleteImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, bool fAsAdmin = false)
         {
             return await SafeOp(async () =>
@@ -69,6 +70,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AnnotateImage(MFBImageInfoBase.ImageClass ic, string key, string szThumb, string newAnnotation, bool fAsAdmin = false)
         {
             return SafeOp(() =>
@@ -113,6 +115,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false)
         {
             return SafeOp(() =>
@@ -327,6 +330,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             });
         }
 
+        [HttpPost]
         public async Task<ActionResult> UploadEndorsement(string txtAuthToken = null, string txtComment = null)
         {
             return await SafeOp(async () =>

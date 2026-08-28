@@ -29,6 +29,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Starting Totals
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult StartingTotalsFormForMode(RepresentativeAircraft.RepresentativeTypeMode mode)
         {
             return SafeOp(() =>
@@ -78,6 +79,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UploadAircraftCSV()
         {
             return SafeOp(() =>
@@ -106,6 +108,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ImportSummary()
         {
             return SafeOp(() =>
@@ -117,6 +120,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ReviewNewAircraft()
         {
             return SafeOp(() =>
@@ -127,14 +131,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddExistingAircraft(int aircraftID)
         {
-            AircraftUtility.AddExistingAircraftForUser(User.Identity.Name, aircraftID);
-            return Content(Resources.Aircraft.ImportAircraftAdded);
+            return SafeOp(() =>
+            {
+                AircraftUtility.AddExistingAircraftForUser(User.Identity.Name, aircraftID);
+                return Content(Resources.Aircraft.ImportAircraftAdded);
+            });
         }
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddAllExisting()
         {
             return SafeOp(() =>
@@ -147,6 +156,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddAllNewAircraft(AircraftImportSpec[] specs, string szJsonMapping)
         {
             return SafeOp(() =>
@@ -168,6 +178,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult AddNewAircraft(AircraftImportSpec spec, string szJsonMapping)
         {
             return SafeOp(() =>
@@ -180,6 +191,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ValidateAircraft(string szTail, int idModel, int instanceType)
         {
             return SafeOp(() =>
@@ -190,6 +202,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult SuggestFullModelsWithTargets(string prefixText, int count, string contextKey)
         {
             return SafeOp(() =>
@@ -247,6 +260,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UploadFlightsCSV()
         {
             return SafeOp(() =>
@@ -288,6 +302,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ReviewAircraftResults()
         {
             return SafeOp(() =>

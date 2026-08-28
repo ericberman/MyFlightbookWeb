@@ -49,6 +49,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetAnalysisForUser(FlightQuery fq, bool fLinkItems = true)
         {
             return SafeOp(() =>
@@ -65,6 +66,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #region Telemetry analysis charting
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult UpdateTelemetryChart(int idFlight, string xData, string yData, string y2Data, double y1Scale, double y2Scale, bool fAsAdmin)
         {
             return SafeOp(() =>
@@ -78,6 +80,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetTelemetryAnalysisForUser(int idFlight, bool fAsAdmin)
         {
             return SafeOp(() =>
@@ -108,6 +111,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ApplyCropForFlight(int idFlight, int start, int end)
         {
             return SafeOp(() =>
@@ -123,6 +127,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult ResetCropForFlight(int idFlight)
         {
             return SafeOp(() =>
@@ -165,6 +170,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult CompactViewToSign(int idFlight)
         {
             return SafeOp(() =>
@@ -209,6 +215,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false, string originalPath = null)
         {
             return SafeOp(() =>
@@ -227,6 +234,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetTotalsForUser(string userName, string viewingUser = null, bool linkItems = true, bool grouped = true, FlightQuery fq = null, bool fUpdatePref = false)
         {
             return SafeOp(() =>
@@ -241,6 +249,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetCurrencyForUser(string userName, string viewingUser, bool linkItems = true, bool useInlineFormatting = false)
         {
             return SafeOp(() =>
@@ -252,6 +261,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult RawTelemetryAsTable(int idFlight)
         {
             return SafeOp(() =>
@@ -339,6 +349,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="UnauthorizedAccessException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetFlight(int idFlight, bool fIncludeImages = false, bool fIncludeTelemetry = false)
         {
             return SafeOp(() =>
