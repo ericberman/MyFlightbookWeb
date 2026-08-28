@@ -4,7 +4,6 @@ using MyFlightbook.SponsoredAds;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -48,6 +47,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return null;
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult SignOut()
         {
@@ -300,6 +300,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult StopImpersonation()
         {
+            // While impersonating, the current identity IS THE VICTIM, so the support-role
+            // check must run against the admin captured server-side at impersonation start,
+            // not the current user. A session is "in an impersonation" only if a
+            // support-verified admin started it (ImpersonateUser), so that state is trusted.
+            string szOriginalAdmin = Session[MFBConstants.keyOriginalID] as string;
+            bool fInImpersonation = !String.IsNullOrEmpty(szOriginalAdmin);
+            bool fCanSupport = MyFlightbook.Profile.GetUser(szOriginalAdmin).CanSupport;
+            if (!fInImpersonation && !fCanSupport)
+                throw new UnauthorizedAccessException($"Attempt to access an admin page by an unauthorized user: {User.Identity.Name}");
+
             StopImpersonating();
             return Redirect("~/mvc/AdminUser");
         }
@@ -363,8 +373,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (User.Identity.IsAuthenticated)
                 Session[User.Identity.Name + "-LastPage"] = String.Format(CultureInfo.InvariantCulture, "{0}:{1}{2}", Request.IsSecureConnection ? "https" : "http", Request.Url.Host, Request.Url.PathAndQuery);
-            else
-                StopImpersonating();
 
             int naked = GetIntParam("naked", 0);
             if (naked == -1) // kill naked

@@ -47,7 +47,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// </summary>
         public string OriginalAdmin
         {
-            get { return Request.Cookies[MFBConstants.keyOriginalID]?.Value ?? string.Empty; }
+            get { return (string) Session[MFBConstants.keyOriginalID]; }
         }
 
         /// <summary>
@@ -77,23 +77,26 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (Request.Cookies[MFBConstants.keyIsImpersonating] != null)
                 Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
-            if (Response.Cookies[MFBConstants.keyOriginalID] != null)
-            {
-                string szUser = Request.Cookies[MFBConstants.keyOriginalID].Value;
-                MembershipUser mu = (szUser == null) ? null : Membership.GetUser(szUser);
-                if (!String.IsNullOrEmpty(mu?.UserName))
-                {
-                    FormsAuthentication.SetAuthCookie(Request.Cookies[MFBConstants.keyOriginalID].Value, true);
-                    Profile pf = MyFlightbook.Profile.GetUser(mu.UserName);
-                    Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
-                        ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
-                        : (object)null;
-                    Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
-                }
-                else
-                    FormsAuthentication.SignOut();
+            if (Request.Cookies[MFBConstants.keyOriginalID] != null)
                 Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(-1);
+            string szOriginalAdmin = Session[MFBConstants.keyOriginalID] as string;
+            if (String.IsNullOrEmpty(szOriginalAdmin))
+                return;  // no server-side impersonation state: nothing to restore
+
+            Session[MFBConstants.keyOriginalID] = null;
+
+            MembershipUser mu = Membership.GetUser(szOriginalAdmin);
+            if (!String.IsNullOrEmpty(mu?.UserName) && MyFlightbook.Profile.GetUser(szOriginalAdmin).CanSupport)
+            {
+                FormsAuthentication.SetAuthCookie(szOriginalAdmin, true);
+                Profile pf = MyFlightbook.Profile.GetUser(szOriginalAdmin);
+                Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
+                                    ? pf.GetPreferenceForKey<DecimalFormat>(MFBConstants.keyDecimalSettings)
+                                    : (object)null;
+                Session[MFBConstants.keyMathRoundingUnits] = pf.MathRoundingUnit;
             }
+            else
+                FormsAuthentication.SignOut();
         }
 
         /// <summary>
@@ -103,11 +106,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="szTargetName">The impersonation target</param>
         public void ImpersonateUser(string szAdminName, string szTargetName)
         {
-            Response.Cookies[MFBConstants.keyOriginalID].Value = szAdminName;
             Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(30);
             FormsAuthentication.SetAuthCookie(szTargetName, true);
             Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
+
+            // Server-side record of who started the impersonation: the only trusted source
+            // StopImpersonating() may use to restore the admin session. The OriginalID cookie
+            // above is display-only (banner) and is never trusted for authentication.
+            Session[MFBConstants.keyOriginalID] = szAdminName;
 
             Profile pf = MyFlightbook.Profile.GetUser(szTargetName);
             Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
