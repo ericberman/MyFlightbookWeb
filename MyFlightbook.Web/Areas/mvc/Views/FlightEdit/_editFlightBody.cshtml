@@ -289,18 +289,18 @@
     <div id="pnlFlightDetails" style="@(fExpanded ? string.Empty : "display: none;")">
         @if (pfTarget.UseTach)
         {
-            <div class="flightinfoitem" style="margin-right: 1em;">
+            <div class="dib topAlign" style="margin-right: 1em;">
                 <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpTachStart, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
                 <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpTachEnd, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
             </div>
         }
-        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseHobbs || le.HobbsStart + le.HobbsEnd > 0 ? string.Empty : "display: none;")">
+        <div class="dib topAlign" style="margin-right: 1em; @(pfTarget.UseHobbs || le.HobbsStart + le.HobbsEnd > 0 ? string.Empty : "display: none;")">
             <div><span class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsStartShort</span></div>
             <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsStart", name = "flightHobbsStart", value = le.HobbsStart, cfd = new CrossFillDescriptor(Resources.LogbookEntry.HobbsCrossfillTip, String.Format(CultureInfo.InvariantCulture, "getHobbsFill(currentlySelectedAircraft, '{0}')", "~/mvc/Aircraft".ToAbsolute())) }); }</div>
             <div class="itemlabel" style="font-size: smaller;">@Resources.LogbookEntry.HobbsEndShort</div>
             <div>@{ Html.RenderAction("RenderDecimalField", "MFBTemplate", new { mode = EditMode.Decimal, id = "fieldHobbsEnd", name = "flightHobbsEnd", value = le.HobbsEnd, cfd = (CrossFillDescriptor)null }); }</div>
         </div>
-        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseEngine || le.EngineStart.HasValue() || le.EngineEnd.HasValue() ? string.Empty : "display: none;")">
+        <div class="dib topAlign" style="margin-right: 1em; @(pfTarget.UseEngine || le.EngineStart.HasValue() || le.EngineEnd.HasValue() ? string.Empty : "display: none;")">
             <div style="display: none;" id="lblEngineStartTip">
                 <p class="b">@Resources.LogbookEntry.EngineStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
                 <p class="b">@defaultTZ</p>
@@ -316,17 +316,17 @@
         </div>
         @if (pfTarget.UseBlock)
         {
-            <div class="flightinfoitem" style="margin-right: 1em;">
+            <div class="dib topAlign" style="margin-right: 1em;">
                 <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpBlockOut, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
                 <div>@{ Html.RenderAction("PropEdit", "FlightEdit", new { fp = fpBlockIn, fHHMM = fHHMM, timeZone = defaultTZ, fHidden = false }); }</div>
             </div>
         }
-        <div class="flightinfoitem" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
-            <div style="display: none;" id="lblFlightStartTip">
+        <div class="dib topAlign" style="margin-right: 1em; @(pfTarget.UseFlight || le.FlightStart.HasValue() || le.FlightEnd.HasValue() ? string.Empty : "display: none;")">
+            <div class="dn" id="lblFlightStartTip">
                 <p class="b">@Resources.LogbookEntry.FlightStartShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
                 <p class="b">@defaultTZ</p>
             </div>
-            <div style="display: none;" id="lblFlightEndTip">
+            <div class="dn" id="lblFlightEndTip">
                 <p class="b">@Resources.LogbookEntry.FlightEndShort.IndicateUTCOrCustomTimeZone(defaultTZ)</p>
                 <p class="b">@defaultTZ</p>
             </div>
@@ -363,7 +363,7 @@
                 });
             });
         </script>
-        <div id="pnlFlightData" class="flightinfoitem">
+        <div id="pnlFlightData" class="dib topAlign">
             <div class="itemlabel">
                 <div><span class="b">@Resources.LogbookEntry.FieldTelemetry</span> <a class="fineprint" href="@("~/mvc/pub/FlightDataKey".ToAbsolute())" target="_blank">@Resources.LogbookEntry.FieldTelemetryLearnMore</a></div>
                 <div style="display: flex; align-items: center;">
@@ -387,12 +387,14 @@
                 <input type="hidden" name="flightPendingTelemetry" id="hdnFieldCompressedTelemetry" value="@(String.IsNullOrEmpty(le.FlightData) ? string.Empty : Convert.ToBase64String(le.FlightData.Compress()))" />
             </div>
         </div>
-        <div id="pnlFlightDeck" class="flightinfoitem" style="margin-left: 1em;">
-            <div class="itemlabel"><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
-            <div>
-                <div id="divScanFlightDeck"></div>
-                <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
-                <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
+        <div id="pnlFlightDeck" class="dib topAlign" style="margin-left: 1em;">
+            <div class="itemlabel">
+                <div><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
+                <div>
+                    <div id="divScanFlightDeck"></div>
+                    <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
+                    <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
+                </div>
             </div>
         </div>
         <div style="clear:both;"></div>
