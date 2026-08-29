@@ -1,7 +1,6 @@
 ﻿using MyFlightbook.Achievements;
 using MyFlightbook.CSV;
 using MyFlightbook.Currency.WINGS;
-using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.RatingsProgress;
@@ -591,21 +590,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             // Admins should just emulate the user to view progress; this is a (minor) change from the old .aspx implementation
             string szUser = (!String.IsNullOrEmpty(user) && (CFIStudentMap.GetInstructorStudent((new CFIStudentMap(User.Identity.Name)).Students, user)?.CanViewLogbook ?? false)) ? user : User.Identity.Name;
 
-            // build a map of all histogrammable values for naming
-            List<HistogramableValue> lstMilestoneFields = new List<HistogramableValue>(LogbookEntryDisplay.HistogramableValues);
-            foreach (CustomPropertyType cpt in CustomPropertyType.GetCustomPropertyTypes(szUser))
-            {
-                HistogramableValue hv = LogbookEntryDisplay.HistogramableValueForPropertyType(cpt);
-                if (hv != null)
-                    lstMilestoneFields.Add(hv);
-            }
-
             HttpCookie cookieLastGroup = Request.Cookies[szCookieLastGroup];
             HttpCookie cookieLastMilestone = Request.Cookies[szCookieLastMilestone];
             ViewBag.selectedGroup = (cookieLastGroup?.Value ?? string.Empty).Replace(szCommaCookieSub, ",");
             ViewBag.selectedRating = (cookieLastMilestone?.Value ?? string.Empty).Replace(szCommaCookieSub, ",");
             ViewBag.cannedQueries = CannedQuery.QueriesForUser(szUser);
-            ViewBag.milestoneFields = lstMilestoneFields;
+            ViewBag.milestoneFields = CustomRatingProgress.MilestoneFieldsForUser(user);
             ViewBag.targetUser = szUser;
             ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.PageTitle, HttpUtility.HtmlEncode(MyFlightbook.Profile.GetUser(szUser).UserFullName));
             ViewBag.milestones = MilestoneProgress.AvailablePrgressItemsDictionary(szUser);

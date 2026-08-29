@@ -9,8 +9,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -315,7 +313,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IEnumerable<PropertyTemplate> currentTemplates = UserPropertyTemplate.TemplatesForUser(User.Identity.Name);
                 PersistablePropertyTemplate pptNew = pt.CopyPublicTemplate(User.Identity.Name);
                 // Override the existing one if it exists with the same name.
-                PropertyTemplate ptMatch = currentTemplates.FirstOrDefault(ptUser => ptUser.Group == pt.Group && ptUser.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0);
+                PropertyTemplate ptMatch = new List<PropertyTemplate>(currentTemplates).Find(ptUser => ptUser.Group == pt.Group && ptUser.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0);
                 if (ptMatch != null)
                     pptNew.ID = ptMatch.ID;
                 pptNew.Commit();
@@ -662,8 +660,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                Stream s = Request.Files[0].InputStream;
-                byte[] rgb = s == null ? Array.Empty<byte>() : MFBImageInfo.ScaledImage(s, 90, 90);
+                byte[] rgb = Request.Files[0].InputStream == null ? Array.Empty<byte>() : MFBImageInfo.ScaledImage(Request.Files[0].InputStream, 90, 90);
                 if (rgb != null && rgb.Length > 0)
                 {
                     if (rgb.Length > 65000)
@@ -916,7 +913,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
-                BasicMedEvent bme = BasicMedEvent.EventsForUser(User.Identity.Name).FirstOrDefault<BasicMedEvent>(bme2 => bme2.ID == idBasicMed) ?? throw new UnauthorizedAccessException();
+                BasicMedEvent bme = new List<BasicMedEvent>(BasicMedEvent.EventsForUser(User.Identity.Name)).Find(bme2 => bme2.ID == idBasicMed) ?? throw new UnauthorizedAccessException();
                 bme.Delete();
                 return PartialView("_pilotInfoBasicMedEvents");
             });

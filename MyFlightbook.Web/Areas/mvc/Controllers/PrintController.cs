@@ -1,5 +1,4 @@
 ﻿using MyFlightbook.Currency;
-using MyFlightbook.Image;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
@@ -224,7 +223,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ["po"] = JsonConvert.SerializeObject(po, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).ToSafeParameter()
             };
             if (!fq.IsDefault)
-            routeVals["fq"] = fq.ToBase64CompressedJSONString();
+                routeVals["fq"] = fq.ToBase64CompressedJSONString();
             if (user.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
                 routeVals["u"] = user;
             if ((Request["refreshPrintView"] ?? string.Empty).CompareCurrentCultureIgnoreCase("pdf") == 0)
@@ -234,8 +233,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Digital signing should not be preserved in the URL - put it in session
             Session["rbSigningType"] = Request["rbSigningType"] ?? string.Empty;
-            string base64Data = Request["hdnSigData"];
-            Session["attestationSignature"] = String.IsNullOrEmpty(base64Data) ? null : ScribbleImage.FromDataLinkURL(base64Data);
+            Session["attestationSignature"] = Request["hdnSigData"];
 
             return RedirectToAction("Index", routeVals);
         }
@@ -246,7 +244,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool fDigitalAttestation = ((string)Session["rbSigningType"] ?? string.Empty)
                 .CompareCurrentCultureIgnoreCase("digital") == 0;
 
-            byte[] sigData = (byte[])Session["attestationSignature"] ?? Array.Empty<byte>();
+            string sigDataBase64 = (string)Session["attestationSignature"]; ;
             Session["rbSigningType"] = null;
             Session["attestationSignature"] = null;
 
@@ -315,7 +313,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
                     var viewData = ControllerContext.Controller.ViewData;
                     viewData["pf"] = pf;
-                    viewData["scribble"] = sigData;
+                    viewData["scribbleData"] = sigDataBase64;
                     viewData["fileName"] = szFileName;
                     viewData["hashValue"] = hash;
 

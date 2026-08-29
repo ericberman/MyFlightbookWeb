@@ -115,7 +115,7 @@
     @{ Html.RenderAction("CurrencyForUser", "Flights", new { rgcsi = ViewBag.rgcsi, userName = pfTarget.UserName, linkItems = false }); }
 </div>
 <div id="targetAnalysis" style="display: none">
-    @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = fq, linkItems = false, sk = (string)null, canDownload = true }); }
+    @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = fq, linkItems = false, skID = (string)null, canDownload = true }); }
 </div>
 <div id="targetPrintView" style="display: none">
     <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">

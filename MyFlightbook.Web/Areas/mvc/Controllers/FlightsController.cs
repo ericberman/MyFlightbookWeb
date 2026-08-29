@@ -5,7 +5,6 @@ using MyFlightbook.Image;
 using MyFlightbook.Mapping;
 using MyFlightbook.Subscriptions;
 using MyFlightbook.Telemetry;
-using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,7 +40,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 FlightQuery fq = FlightQuery.FromJSON(fqJSON);
-                CheckCanViewFlights(fq.UserName, User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty, ShareKey.ShareKeyWithID(skID));
+                CheckCanViewFlights(fq.UserName, User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty, skID);
                 HistogramManager hm = LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName);
                 return ChartForData(hm, selectedBucket, fieldToGraph, fUseHHMM, Request["fIncludeAverage"] != null, fLinkItems);
             });
@@ -215,7 +214,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetFlightsForResult(string fqJSON, string targetUser, string viewingUser, string sortExpr, SortDirection sortDir, string pageRequest, int pageSize, bool readOnly, string skID = null, string selectedFlights = null, bool miniMode = false, string originalPath = null)
         {
             return SafeOp(() =>
@@ -228,7 +226,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 }
                 FlightResult fr = FlightResultManager.FlightResultManagerForUser(targetUser).ResultsForQuery(fq);
                 FlightResultRange range = fr.GetResultRange(pageSize, FlightRangeType.Search, sortExpr, sortDir, 0, pageRequest);
-                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, ShareKey.ShareKeyWithID(skID), miniMode, originalPath);
+                return LogbookTableContentsForResults(fq, targetUser, viewingUser, readOnly, fr, range, skID, miniMode, originalPath);
             });
         }
 
@@ -403,10 +401,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Analysis
         [ChildActionOnly]
-        public ActionResult AnalysisForUser(HistogramManager hm = null, FlightQuery fq = null, bool linkItems = true, bool canDownload = false, ShareKey sk = null)
+        public ActionResult AnalysisForUser(HistogramManager hm = null, FlightQuery fq = null, bool linkItems = true, bool canDownload = false, string skID = null)
         {
             fq = fq ?? new FlightQuery(User.Identity.Name);
-            CheckCanViewFlights(fq.UserName, User.Identity.Name, sk);
+            CheckCanViewFlights(fq.UserName, User.Identity.Name, skID);
             if (hm == null)
                 hm = LogbookEntryDisplay.GetHistogramManager(FlightResultManager.FlightResultManagerForUser(fq.UserName).ResultsForQuery(fq).Flights, fq.UserName);
 
@@ -415,7 +413,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.useHHMM = MyFlightbook.Profile.GetUser(fq.UserName).UsesHHMM;
             ViewBag.query = fq;
             ViewBag.linkItems = linkItems;
-            ViewBag.sk = sk;
+            AddShareKeyFromID(skID);
             return PartialView("_analysis");
         }
 
@@ -459,7 +457,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             bool readOnly,
             FlightResult fr,
             FlightResultRange currentRange,
-            ShareKey sk = null,
+            string skID = null,
             bool miniMode = false,
             string originalPath = null
             )
@@ -467,7 +465,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.query = fq ?? throw new ArgumentNullException(nameof(fq), "Flight query passed to content for results is null!");
             ViewBag.flightResults = fr ?? throw new ArgumentNullException(nameof(fr));
 
-            ViewBag.student = CheckCanViewFlights(targetUser, User.Identity.Name, sk);
+            ViewBag.student = CheckCanViewFlights(targetUser, User.Identity.Name, skID);
 
             ViewBag.readOnly = readOnly;
 
@@ -491,7 +489,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             ViewBag.dictAircraft = dictAircraft;
 
-            ViewBag.sk = sk;
+            AddShareKeyFromID(skID);
             ViewBag.miniMode = miniMode;
 
             string signatureTemplate = "~/mvc/flightedit/Sign/".ToAbsolute() + "{0}";
@@ -521,7 +519,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             string targetUser,
             bool readOnly = false,
             FlightResult fr = null, 
-            ShareKey sk = null, 
+            string skID = null, 
             FlightResultRange currentRange = null,
             bool miniMode = false)
         {
@@ -554,8 +552,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 SortDirection sortDir = Enum.TryParse(Request["so"], out SortDirection sd) ? sd : fr.CurrentSortDir;
                 currentRange = fr.GetResultRange(flightsPerPage, int.TryParse(Request["pg"], out int page) ? FlightRangeType.Page : FlightRangeType.First, sortExpr, sortDir, page);
             }
+
             ViewBag.currentRange = currentRange;
-            ViewBag.sk = sk;
+            AddShareKeyFromID(skID);
             ViewBag.miniMode = miniMode;
             return PartialView("_logbookTable");
         }
@@ -576,7 +575,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult DownloadFlyingStats(string fqJSON, string selectedBucket, string skID = null)
         {
             FlightQuery fq = FlightQuery.FromJSON(fqJSON);
-            CheckCanViewFlights(fq.UserName, User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty, ShareKey.ShareKeyWithID(skID));
+            CheckCanViewFlights(fq.UserName, User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty, skID);
             string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, MyFlightbook.Profile.GetUser(fq.UserName).UserFullName, DateTime.Now.YMDString().Replace(" ", "-"));
             return File(RenderFlyingStats(fq, selectedBucket), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
         }
@@ -586,49 +585,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             if (string.IsNullOrEmpty(g))
                 throw new UnauthorizedAccessException();
 
-            ShareKey sk = ShareKey.ShareKeyWithID(g) ?? throw new UnauthorizedAccessException("Invalid share key: " + g);
-            ViewBag.sk = sk;
-
-            // Issue # 1449 - restrict to a specified query.
-            fq = sk.Query ?? fq ?? new FlightQuery(sk.Username);
-
-            if (fq.UserName.CompareCurrentCultureIgnoreCase(sk.Username) != 0)
-                throw new UnauthorizedAccessException();
-
-            fq.Refresh();   // make sure we have all the right queryfilter items, etc.
-            ViewBag.query = fq;
-
-            if (fPropDeleteClicked)
-                fq.ClearRestriction(propToDelete ?? string.Empty);
-
-            if (sk.CanViewVisitedAirports)
-            {
-                IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(fq.UserName, fq));
-                ViewBag.rgva = rgva;
-                GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = new AirportList[] { new AirportList(rgva) },  };
-                map.Options.fShowRoute = false;
-                ViewBag.map = map;
-                ViewBag.regions = VisitedAirport.VisitedCountriesAndAdmins(rgva ?? Array.Empty<VisitedAirport>());
-            }
-
-            if (sk.CanViewCurrency)
-                ViewBag.rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(sk.Username);
-
-            if (sk.CanViewTotals)
-            {
-                UserTotals ut = new UserTotals(sk.Username, fq, true);
-                ut.DataBind();
-                ViewBag.rgti = ut.Totals;
-                ViewBag.grouped = ut.DefaultGroupModeForUser;
-            }
-
-            if (sk.CanViewFlights)
-            {
-                ViewBag.canDownload = false;
-                FlightResult fr = FlightResultManager.FlightResultManagerForUser(sk.Username).ResultsForQuery(fq);
-                ViewBag.flightResult = fr;
-                ViewBag.hm = LogbookEntryDisplay.GetHistogramManager(fr.Flights, sk.Username);
-            }
+            AddDataFromShareKey(AddShareKeyFromID(g), fq, fPropDeleteClicked, propToDelete);
 
             return View("sharedLogbook");
         }

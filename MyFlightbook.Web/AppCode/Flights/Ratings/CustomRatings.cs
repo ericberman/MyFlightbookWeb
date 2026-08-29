@@ -176,6 +176,24 @@ namespace MyFlightbook.RatingsProgress
         }
 
         /// <summary>
+        /// Returns an enumerable set of fields that can be used for custom milestones.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public static IEnumerable<HistogramableValue> MilestoneFieldsForUser(string szUser)
+        {
+            // build a map of all histogrammable values for naming
+            List<HistogramableValue> lstMilestoneFields = new List<HistogramableValue>(LogbookEntryDisplay.HistogramableValues);
+            foreach (CustomPropertyType cpt in CustomPropertyType.GetCustomPropertyTypes(szUser))
+            {
+                HistogramableValue hv = LogbookEntryDisplay.HistogramableValueForPropertyType(cpt);
+                if (hv != null)
+                    lstMilestoneFields.Add(hv);
+            }
+            return lstMilestoneFields;
+        }
+
+        /// <summary>
         /// Deletes the named custom rating progress for the specified user.
         /// </summary>
         /// <param name="szName"></param>

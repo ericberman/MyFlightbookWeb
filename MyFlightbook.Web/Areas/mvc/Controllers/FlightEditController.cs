@@ -1,6 +1,5 @@
 ﻿using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
-using MyFlightbook.Instruction;
 using MyFlightbook.Lint;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -924,7 +923,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 // Issue #1567: see if this was from an instructor to a student.
                 // If this was a flight with (a) CFI time, (b) a student name property, and (c) from a user who is an instructor of the current user, then treat it as instructor-to-student push
                 // Instructor push reverses appropriate fields and requests signing in one step
-                if (leSrc.CFI > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropStudentName) && new CFIStudentMap(leSrc.User).IsInstructorOf(User.Identity.Name))
+                if (leSrc.CFI > 0 && le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropStudentName) && CheckInstructor(User.Identity.Name, leSrc.User))
                     le.MapToStudent(leSrc);
 
                 if (le.AircraftID != Aircraft.idAircraftUnknown)

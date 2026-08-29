@@ -1,7 +1,8 @@
 ﻿@using System.Globalization
 @{
     Profile pf = ViewBag.pf;
-    byte[] scribble = ViewBag.scribble;
+    string szScribbleBase64 = ViewBag.scribbleData;
+    byte[] scribble = String.IsNullOrEmpty(szScribbleBase64) ? Array.Empty<byte>() : MyFlightbook.Image.ScribbleImage.FromDataLinkURL(szScribbleBase64);
     ViewBag.AddBaseRef = ViewBag.isPDF;
     ViewBag.sheets = new string[] { $"~/public/CSS/holdprogress.css?v={MFBConstants.StyleSheetVer}".ToAbsolute() };
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";

@@ -181,7 +181,7 @@
 @if (sk.CanViewFlights)
 {
     <div id="targetAnalysis" style="display:none">
-        @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = ViewBag.query, linkItems = false, sk = sk, canDownload = true }); }
+        @{ Html.RenderAction("AnalysisForUser", "Flights", new { hm = ViewBag.hm, fq = ViewBag.query, linkItems = false, skID = sk.ID, canDownload = true }); }
     </div>
 }
 @if (sk.CanViewAchievements)
@@ -275,7 +275,7 @@
 @if (sk.CanViewFlights)
 {
 <div>
-    @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = true, targetUser = sk.Username, sk = sk, fq = fq, currentRange = (FlightResultRange) null }); }
+    @{ Html.RenderAction("LogbookTableForResults", "Flights", new { fr = ViewBag.flightResult, readOnly = true, targetUser = sk.Username, skID = sk.ID, fq = fq, currentRange = (FlightResultRange) null }); }
 </div>
 }
 

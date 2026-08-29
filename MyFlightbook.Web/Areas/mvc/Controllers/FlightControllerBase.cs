@@ -1,7 +1,10 @@
-﻿using MyFlightbook.Charting;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Charting;
+using MyFlightbook.Currency;
 using MyFlightbook.Histogram;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.Mapping;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
@@ -23,7 +26,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 {
     public class FlightControllerBase : AdminControllerBase
     {
-        #region Check if you are authorized for a given operation
+        #region Check if you are authorized for a given operation and other sharekey utilities
         /// <summary>
         /// Determines if the viewing user has access to view flight data for the specified target user.
         /// If unauthorized for any reason, an exception is thrown
@@ -74,6 +77,63 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Otherwise, we're unauthenticated
             throw new UnauthorizedAccessException(Resources.LogbookEntry.errNotAuthorizedToViewLogbook);
+        }
+
+        protected InstructorStudent CheckCanViewFlights(string targetUser, string viewingUser, string skID)
+        {
+            return CheckCanViewFlights(targetUser, viewingUser, ShareKey.ShareKeyWithID(skID));
+        }
+
+        protected object AddShareKeyFromID(string skID)
+        {
+            return ViewBag.sk = String.IsNullOrEmpty(skID) ? null : ShareKey.ShareKeyWithID(skID) ?? throw new UnauthorizedAccessException($"Invalid share key: {skID}");
+        }
+
+        protected void AddDataFromShareKey(object o, FlightQuery fq, bool fPropDeleteClicked, string propToDelete)
+        {
+            if (o is ShareKey sk)
+            {
+                // Issue # 1449 - restrict to a specified query.
+                fq = sk.Query ?? fq ?? new FlightQuery(sk.Username);
+
+                if (fq.UserName.CompareCurrentCultureIgnoreCase(sk.Username) != 0)
+                    throw new UnauthorizedAccessException();
+
+                fq.Refresh();   // make sure we have all the right queryfilter items, etc.
+                ViewBag.query = fq;
+
+                if (fPropDeleteClicked)
+                    fq.ClearRestriction(propToDelete ?? string.Empty);
+
+                if (sk.CanViewVisitedAirports)
+                {
+                    IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(fq.UserName, fq));
+                    ViewBag.rgva = rgva;
+                    GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = new AirportList[] { new AirportList(rgva) }, };
+                    map.Options.fShowRoute = false;
+                    ViewBag.map = map;
+                    ViewBag.regions = VisitedAirport.VisitedCountriesAndAdmins(rgva ?? Array.Empty<VisitedAirport>());
+                }
+
+                if (sk.CanViewCurrency)
+                    ViewBag.rgcsi = CurrencyStatusItem.GetCurrencyItemsForUser(sk.Username);
+
+                if (sk.CanViewTotals)
+                {
+                    UserTotals ut = new UserTotals(sk.Username, fq, true);
+                    ut.DataBind();
+                    ViewBag.rgti = ut.Totals;
+                    ViewBag.grouped = ut.DefaultGroupModeForUser;
+                }
+
+                if (sk.CanViewFlights)
+                {
+                    ViewBag.canDownload = false;
+                    FlightResult fr = FlightResultManager.FlightResultManagerForUser(sk.Username).ResultsForQuery(fq);
+                    ViewBag.flightResult = fr;
+                    ViewBag.hm = LogbookEntryDisplay.GetHistogramManager(fr.Flights, sk.Username);
+                }
+            }
         }
 
         /// <summary>
@@ -409,6 +469,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropApproachName);
             cfp.TextValue = (cfp.TextValue + Resources.LocalizedText.LocalizedSpace + new ApproachDescription(appchCount, Request["appchHelpType"] + Request["appchHelpTypeSfx"], Request["appchHelpRwy"] + Request["appchHelpRwySfx"], Request["appchHelpApt"]).ToCanonicalString()).Trim();
             le.CustomProperties.Add(cfp);
+        }
+        #endregion
+
+        #region Instructor/Student Utilities
+        protected bool CheckInstructor(string szUserFlight, string szUserCFI)
+        {
+            return new CFIStudentMap(szUserCFI).IsInstructorOf(szUserFlight);
         }
         #endregion
 
