@@ -195,6 +195,9 @@ namespace MyFlightbook.Printing
             throw new ArgumentOutOfRangeException(nameof(type), "Unknown OptionalColumnType: " + type.ToString());
         }
 
+        /// <summary>
+        /// Determines if the column represents a category/class time
+        /// </summary>
         public bool IsCatClass
         {
             get
@@ -218,9 +221,40 @@ namespace MyFlightbook.Printing
             }
         }
 
+
+        /// <summary>
+        /// Determines if the column represents a turbine time of one sort or another.
+        /// </summary>
+        public bool IsTurbine
+        {
+            get
+            {
+                switch (ColumnType)
+                {
+                    case OptionalColumnType.Turbine:
+                    case OptionalColumnType.TurbineSIC:
+                    case OptionalColumnType.TurbinePIC:
+                    case OptionalColumnType.TurboProp:
+                    case OptionalColumnType.TurboPropSIC:
+                    case OptionalColumnType.TurboPropPIC:
+                    case OptionalColumnType.Jet:
+                    case OptionalColumnType.JetPIC:
+                    case OptionalColumnType.JetSIC:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
         public static int CatClassColumnCount(IEnumerable<OptionalColumn> optionalColumns)
         {
-            return (optionalColumns == null) ? 0 : optionalColumns.Count(oc => oc.IsCatClass);
+            return optionalColumns?.Count(oc => oc.IsCatClass) ?? 0;
+        }
+
+        public static int TurbineColumnCount(IEnumerable<OptionalColumn> optionalColumns)
+        {
+            return optionalColumns?.Count(oc => oc.IsTurbine) ?? 0;
         }
 
         public override string ToString() { return Title; }

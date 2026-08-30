@@ -149,12 +149,12 @@
                     <th class="headerSmall w1cm rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderSim</th>
                     @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
                     {
-                        if (!oc.IsCatClass)
+                        if (!oc.IsCatClass && !oc.IsTurbine)
                         {
                             <th class="headerSmall 1cm rowHeight3" rowspan="2"><div class="custColumn">@oc.Title</div></th>
                         }
                     }
-                    <th class="headerBig rowHeight1" colspan="@(3 + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (pl.CurrentUser.IsInstructor ? 1 : 0))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
+                    <th class="headerBig rowHeight1" colspan="@(3 + (pl.CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (pl.CurrentUser.IsInstructor ? 1 : 0) + OptionalColumn.TurbineColumnCount(pl.Options.OptionalColumns))">@Resources.LogbookEntry.PrintHeaderPilotFunction2</th>
                     <th class="headerBig rowHeight3" rowspan="2">@Resources.LogbookEntry.PrintHeaderRemarks</th>
                 </tr>
                 <tr class="bordered">
@@ -172,6 +172,13 @@
                         <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.FieldSIC</th>
                     }
                     <th class="headerSmall w1cm rowHeight2">@Resources.LogbookEntry.PrintHeaderPIC2</th>
+                    @foreach (OptionalColumn oc in pl.Options.OptionalColumns)
+                    {
+                        if (oc.IsTurbine)
+                        {
+                            <th class="headerSmall rowHeight2 w1cm"><div class="custColumn">@oc.Title</div></th>
+                        }
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -185,7 +192,7 @@
                         @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                         {
                             OptionalColumn oc = pl.Options.OptionalColumns[i];
-                            if (!oc.IsCatClass)
+                            if (!oc.IsCatClass && !oc.IsTurbine)
                             {
                                 <td class="altColumns"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
                             }
@@ -201,6 +208,14 @@
                             <td class="altColumns"><div class="fhd">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
                         }
                         <td class="altColumns"><div class="fhd">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</div></td>
+                        @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                        {
+                            OptionalColumn oc = pl.Options.OptionalColumns[i];
+                            if (oc.IsTurbine)
+                            {
+                                <td class="altColumns"><div class="fhd">@led.OptionalColumnDisplayValue(i, pl.CurrentUser.UsesHHMM)</div></td>
+                            }
+                        }
                         <td>
                             <div class="fhd">
                                 @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
@@ -235,7 +250,7 @@
                             @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
                             {
                                 OptionalColumn oc = pl.Options.OptionalColumns[i];
-                                if (!oc.IsCatClass)
+                                if (!oc.IsCatClass && !oc.IsTurbine)
                                 {
                                     <td class="rowHeight1 altColumns">@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
                                 }
@@ -251,6 +266,14 @@
                                 <td class="rowHeight1 altColumns">@led.SIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
                             }
                             <td class="rowHeight1 altColumns">@led.PIC.FormatDecimal(pl.CurrentUser.UsesHHMM)</td>
+                            @for (int i = 0; i < pl.Options.OptionalColumns.Count; i++)
+                            {
+                                OptionalColumn oc = pl.Options.OptionalColumns[i];
+                                if (oc.IsTurbine)
+                                {
+                                    <td class="rowHeight1 altColumns">@led.OptionalColumnTotalDisplayValue(i, pl.CurrentUser.UsesHHMM)</td>
+                                }
+                            }
                             <td class="rowHeight1"></td>
                         </tr>
                     }
