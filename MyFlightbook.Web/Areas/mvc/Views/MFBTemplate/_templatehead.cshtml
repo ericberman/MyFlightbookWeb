@@ -78,6 +78,10 @@ gtag('config', '@LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4
             v: "weekly",
             // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
             // Add other bootstrap parameters as needed, using camel case.
+            @if (System.Globalization.CultureInfo.CurrentCulture.Name.CompareCurrentCultureIgnoreCase("en-US") == 0)
+            {
+                @:region: "CA",
+            }
         });
     </script>
     <script defer src="@(("~/Public/Scripts/oms.min.js?v=10&spiderfier_callback=onGMapLoaded".ToAbsolute()))"></script>
