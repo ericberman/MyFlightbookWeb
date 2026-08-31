@@ -80,6 +80,7 @@ gtag('config', '@LocalConfig.SettingForKey(Request.IsLocal ? "GoogleAnalyticsGA4
             // Add other bootstrap parameters as needed, using camel case.
             @if (System.Globalization.CultureInfo.CurrentCulture.Name.CompareCurrentCultureIgnoreCase("en-US") == 0)
             {
+                @:language: "en",
                 @:region: "CA",
             }
         });
