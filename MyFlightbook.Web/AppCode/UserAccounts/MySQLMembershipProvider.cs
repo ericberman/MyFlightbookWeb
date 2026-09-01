@@ -42,13 +42,11 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`PKID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci; 
 
-
 */
 
 
 namespace Andri.Web
 {
-
     public sealed class MySqlMembershipProvider : MembershipProvider
     {
 
@@ -1225,7 +1223,7 @@ namespace Andri.Web
                             }
                         }
 
-                        if (CheckPassword(password, pwd))
+                        if (CheckPasswordSalted(username, password, pwd))
                         {
                             if (isApproved)
                             {
@@ -1444,6 +1442,54 @@ namespace Andri.Web
             return false;
         }
 
+        // CheckPassword's Hashed case becomes salted-first, legacy-fallback:
+        private bool CheckPasswordSalted(string username, string password, string dbpassword)
+        {
+            switch (PasswordFormat)
+            {
+                case MembershipPasswordFormat.Encrypted:
+                    return UnEncodePassword(dbpassword) == password;
+                case MembershipPasswordFormat.Hashed:
+                    if (EncodePasswordSalted(username, password) == dbpassword)
+                        return true;
+
+                    // Not-yet-migrated row: check the old unsalted hash. If it matches, the
+                    // password's right - opportunistically upgrade the stored hash so this
+                    // account is salted from here on. No schema change, same column.
+                    if (EncodePassword(password) == dbpassword)
+                    {
+                        UpgradeStoredPassword(username, EncodePasswordSalted(username, password));
+                        return true;
+                    }
+                    return false;
+                default:
+                    return password == dbpassword;
+            }
+        }
+
+        private string EncodePasswordSalted(string username, string password)
+        {
+            using (HMACSHA1 hash = new HMACSHA1())
+            {
+                hash.Key = HexToByte(encryptionKey);
+                string salted = (username ?? string.Empty).ToLowerInvariant() + "|" + password;
+                return Convert.ToBase64String(hash.ComputeHash(Encoding.Unicode.GetBytes(salted)));
+            }
+        }
+
+        private void UpgradeStoredPassword(string username, string newEncodedPassword)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlCommand cmd = new MySqlCommand("UPDATE `" + tableName + "` SET Password = ?Password" +
+                " WHERE Username = ?Username AND ApplicationName = ?ApplicationName", conn))
+            {
+                cmd.Parameters.Add("?Password", MySqlDbType.VarChar, 255).Value = newEncodedPassword;
+                cmd.Parameters.Add("?Username", MySqlDbType.VarChar, 255).Value = username;
+                cmd.Parameters.Add("?ApplicationName", MySqlDbType.VarChar, 255).Value = pApplicationName;
+                try { conn.Open(); cmd.ExecuteNonQuery(); }
+                catch (MySqlException) { /* best-effort - it'll just retry on the next successful login */ }
+            }
+        }
 
         //
         // EncodePassword
