@@ -300,11 +300,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult StopImpersonation()
         {
-            // While impersonating, the current identity IS THE VICTIM, so the support-role
-            // check must run against the admin captured server-side at impersonation start,
-            // not the current user. A session is "in an impersonation" only if a
-            // support-verified admin started it (ImpersonateUser), so that state is trusted.
-            string szOriginalAdmin = Session[MFBConstants.keyOriginalID] as string;
+            string szOriginalAdmin = OriginalAdmin;
             bool fInImpersonation = !String.IsNullOrEmpty(szOriginalAdmin);
             bool fCanSupport = MyFlightbook.Profile.GetUser(szOriginalAdmin).CanSupport;
             if (!fInImpersonation && !fCanSupport)

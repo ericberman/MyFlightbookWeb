@@ -3,6 +3,8 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -42,12 +44,36 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Impersonation
+        // Scopes the protected cookie so it can't be swapped for a value MachineKey.Protect
+        // produced for some other purpose elsewhere in the app.
+        private const string ImpersonationCookiePurpose = "MFB.Impersonation.OriginalAdmin.v1";
+
         /// <summary>
-        /// Returns the username of the user who might be doing any impersonation.
+        /// Returns the username of the admin who might be impersonating, if any.
+        /// Sourced from a MachineKey-protected cookie: it survives session expiry and app-pool
+        /// recycles, but the client cannot forge or alter its content - Unprotect throws (and
+        /// this returns empty) on anything it didn't itself Protect.
         /// </summary>
         public string OriginalAdmin
         {
-            get { return (string) Session[MFBConstants.keyOriginalID]; }
+            get
+            {
+                HttpCookie cookie = Request.Cookies[MFBConstants.keyOriginalID];
+                if (string.IsNullOrEmpty(cookie?.Value))
+                    return string.Empty;
+
+                try
+                {
+                    byte[] protectedBytes = Convert.FromBase64String(cookie.Value);
+                    byte[] userData = MachineKey.Unprotect(protectedBytes, ImpersonationCookiePurpose);
+                    return userData == null ? string.Empty : Encoding.UTF8.GetString(userData);
+                }
+                catch (Exception ex) when (ex is FormatException || ex is CryptographicException)
+                {
+                    // Tampered, foreign, or (rare) post-machine-key-rotation cookie - treat as absent.
+                    return string.Empty;
+                }
+            }
         }
 
         /// <summary>
@@ -75,15 +101,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// </summary>
         public void StopImpersonating()
         {
+            string szOriginalAdmin = OriginalAdmin;   // cookie-backed now, survives session loss
+
             if (Request.Cookies[MFBConstants.keyIsImpersonating] != null)
                 Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(-1);
             if (Request.Cookies[MFBConstants.keyOriginalID] != null)
                 Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(-1);
-            string szOriginalAdmin = Session[MFBConstants.keyOriginalID] as string;
-            if (String.IsNullOrEmpty(szOriginalAdmin))
-                return;  // no server-side impersonation state: nothing to restore
 
-            Session[MFBConstants.keyOriginalID] = null;
+            if (String.IsNullOrEmpty(szOriginalAdmin))
+                return;  // no legitimate impersonation state: nothing to restore
 
             MembershipUser mu = Membership.GetUser(szOriginalAdmin);
             if (!String.IsNullOrEmpty(mu?.UserName) && MyFlightbook.Profile.GetUser(szOriginalAdmin).CanSupport)
@@ -106,15 +132,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <param name="szTargetName">The impersonation target</param>
         public void ImpersonateUser(string szAdminName, string szTargetName)
         {
+            byte[] protectedBytes = MachineKey.Protect(Encoding.UTF8.GetBytes(szAdminName), ImpersonationCookiePurpose);
+            Response.Cookies[MFBConstants.keyOriginalID].Value = Convert.ToBase64String(protectedBytes);
+            Response.Cookies[MFBConstants.keyOriginalID].HttpOnly = true;
+            Response.Cookies[MFBConstants.keyOriginalID].Secure = true;   // matches your <forms requireSSL="true">
             Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(30);
+
             FormsAuthentication.SetAuthCookie(szTargetName, true);
             Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
-
-            // Server-side record of who started the impersonation: the only trusted source
-            // StopImpersonating() may use to restore the admin session. The OriginalID cookie
-            // above is display-only (banner) and is never trusted for authentication.
-            Session[MFBConstants.keyOriginalID] = szAdminName;
 
             Profile pf = MyFlightbook.Profile.GetUser(szTargetName);
             Session[MFBConstants.keyDecimalSettings] = pf.PreferenceExists(MFBConstants.keyDecimalSettings)
