@@ -87,6 +87,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     throw new ArgumentOutOfRangeException(nameof(start));
                 if (pageSize < 1)
                     throw new ArgumentOutOfRangeException(nameof(pageSize));
+                UserAircraft ua = new UserAircraft(User.Identity.Name);
+                if (ua[idAircraft] == null)
+                    throw new UnauthorizedAccessException();
                 return MaintenanceLogTable(idAircraft, MaintenanceLog.ChangesByAircraftID(idAircraft, null), start, pageSize);
             });
         }
