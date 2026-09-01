@@ -8,7 +8,7 @@
 
     if (User.Identity.IsAuthenticated && Request.IsSecureConnection)
     {
-        SharedDataEncryptor ec = new SharedDataEncryptor("mfb");
+        SharedDataEncryptor ec = new SharedDataEncryptor();
         string szEncrypted = ec.Encrypt(User.Identity.Name);
         string szXMLTotals = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}&t=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));
         string szHTMLTotals = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}&t=1&HTML=1", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/mvc/pub/rss"), HttpUtility.UrlEncode(szEncrypted));

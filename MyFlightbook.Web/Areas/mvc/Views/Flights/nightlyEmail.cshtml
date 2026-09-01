@@ -27,8 +27,7 @@
         {
             throw new UnauthorizedAccessException("Unauthorized attempt to view stats for mail - no auth key provided");
         }
-        AdminAuthEncryptor enc = new AdminAuthEncryptor();
-        string szDate = enc.Decrypt(szAuthKey);
+        string szDate = new AdminAuthEncryptor().Decrypt(szAuthKey);
         DateTime dt = DateTime.Parse(szDate, CultureInfo.InvariantCulture);
         double elapsedSeconds = DateTime.Now.Subtract(dt).TotalSeconds;
         if (elapsedSeconds < 0 || elapsedSeconds > 10)

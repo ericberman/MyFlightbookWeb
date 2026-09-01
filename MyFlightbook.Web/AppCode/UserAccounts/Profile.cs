@@ -1501,8 +1501,6 @@ namespace MyFlightbook
             return true;
         }
 
-        private const string keyEncryptMyFlights = "MyFlightsKey";
-
         /// <summary>
         /// Return a URL to this user's public flights.
         /// </summary>
@@ -1510,7 +1508,7 @@ namespace MyFlightbook
         /// <returns>A URL to the user's public flights</returns>
         public Uri PublicFlightsURL(string szHost)
         {
-            SharedDataEncryptor enc = new SharedDataEncryptor(keyEncryptMyFlights);
+            SharedDataEncryptor enc = new SharedDataEncryptor();
             return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, "~/mvc/flights/myflights".ToAbsolute(), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
         }
 
@@ -1518,7 +1516,7 @@ namespace MyFlightbook
         {
             if (String.IsNullOrEmpty(uid))
                 return null;
-            return new SharedDataEncryptor(keyEncryptMyFlights).Decrypt(uid);
+            return new SharedDataEncryptor().Decrypt(uid);
         }
 
         #region verified Email
@@ -1563,8 +1561,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szEmail))
                 throw new ArgumentNullException(nameof(szEmail));
 
-            PeerRequestEncryptor enc = new PeerRequestEncryptor();
-            string encLink = String.Format(CultureInfo.InvariantCulture, szTargetFormatString, HttpUtility.UrlEncode(enc.Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1} {2}", DateTime.Now.Ticks, UserName, szEmail))));
+            string encLink = String.Format(CultureInfo.InvariantCulture, szTargetFormatString, HttpUtility.UrlEncode(new PeerRequestEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1} {2}", DateTime.Now.Ticks, UserName, szEmail))));
 
             using (MailMessage msg = new MailMessage())
             {
@@ -1584,8 +1581,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(encodedResponse))
                 throw new ArgumentNullException(nameof(encodedResponse));
 
-            PeerRequestEncryptor enc = new PeerRequestEncryptor();
-            string szDecoded = enc.Decrypt(encodedResponse);
+            string szDecoded = new PeerRequestEncryptor().Decrypt(encodedResponse);
             szError = szEmail = string.Empty;
 
             if (String.IsNullOrEmpty(szDecoded))

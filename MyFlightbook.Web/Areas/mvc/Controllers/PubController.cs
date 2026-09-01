@@ -182,7 +182,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             try
             {
-                string[] rgsz = new SharedDataEncryptor(string.Empty).Decrypt(uid).SplitCommas();
+                string[] rgsz = new SharedDataEncryptor().Decrypt(uid).SplitCommas();
                 ViewBag.user = rgsz.Length == 2 ? rgsz[1] : throw new UnauthorizedAccessException();
                 // Limit the sharing to the explicitly shared year
                 if (rgsz[0].CompareCurrentCultureIgnoreCase(YearInReviewPrefix(DefaultYear(year))) != 0)
@@ -200,7 +200,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         public ActionResult YearInReview(int year = -1)
         {
-            return RedirectToAction("YearInReviewPub", new { uid = new SharedDataEncryptor(string.Empty).Encrypt($"{YearInReviewPrefix(DefaultYear(year))},{User.Identity.Name}"), year = DefaultYear(year) });
+            return RedirectToAction("YearInReviewPub", new { uid = new SharedDataEncryptor().Encrypt($"{YearInReviewPrefix(DefaultYear(year))},{User.Identity.Name}"), year = DefaultYear(year) });
         }
         #endregion
 
@@ -384,7 +384,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return View("rss");
 
             string szUser = string.Empty;
-            string szDebug = string.Empty;
+            string szDebug;
             if (String.IsNullOrEmpty(uid))
             {
                 if (User.Identity.IsAuthenticated)
@@ -397,7 +397,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
             else
             {
-                SharedDataEncryptor ec = new SharedDataEncryptor("mfb");
+                SharedDataEncryptor ec = new SharedDataEncryptor();
                 szDebug = "original uid=" + Request.Params["uid"] + " fixed szUid=" + uid + " and szUser=" + szUser + " and timestamp = " + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString();
                 szUser = ec.Decrypt(uid);
             }

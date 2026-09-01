@@ -659,10 +659,8 @@ namespace MyFlightbook.Subscriptions
         /// <returns>True if the mail is successfully sent</returns>
         private async Task<bool> SendMailForUser(Profile pf, string szSubject, string szParam)
         {
-            AdminAuthEncryptor enc = new AdminAuthEncryptor();
-
             NameValueCollection nvc = HttpUtility.ParseQueryString(string.Empty);
-            nvc["k"] = enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture));
+            nvc["k"] = new AdminAuthEncryptor().Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture));
             nvc["u"] = pf.UserName;
             nvc["p"] = szParam;
 
