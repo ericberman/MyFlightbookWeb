@@ -21,6 +21,7 @@ namespace MyFlightbook.FlightDeckScan
         public string Origin { get; set; }
         public string Destination { get; set; }
         public DateTime? Date { get; set; }
+        public DateTime? CrewStart { get; set; }
         public DateTime? Out { get; set; }
         public DateTime? Off { get; set; }
         public DateTime? On { get; set; }
@@ -61,6 +62,7 @@ namespace MyFlightbook.FlightDeckScan
         public string DateRaw { get; set; }
         public string Origin { get; set; }
         public string Destination { get; set; }
+        public string CrewRaw { get; set; }
         public string OutRaw { get; set; }
         public string OffRaw { get; set; }
         public string OnRaw { get; set; }
@@ -123,6 +125,7 @@ namespace MyFlightbook.FlightDeckScan
 
     public class OoiTimes
     {
+        public TimeValue Crew { get; set; }
         public TimeValue Out { get; set; }
         public TimeValue Off { get; set; }
         public TimeValue On { get; set; }
@@ -168,8 +171,8 @@ namespace MyFlightbook.FlightDeckScan
                 // the LATEST one actually present, then walk backwards (IN -> ON -> OFF ->
                 // OUT), subtracting a day anywhere the naive same-day placement would put
                 // an earlier event chronologically after the one that follows it.
-                TimeValue[] reverseChain = { Times?.In, Times?.On, Times?.Off, Times?.Out };
-                DateTime?[] resolved = new DateTime?[4];
+                TimeValue[] reverseChain = { Times?.In, Times?.On, Times?.Off, Times?.Out, Times?.Crew };
+                DateTime?[] resolved = new DateTime?[5];
                 DateTime? anchorInstant = null;
                 bool haveAnchor = false;
 
@@ -197,6 +200,7 @@ namespace MyFlightbook.FlightDeckScan
                     On = resolved[1],
                     Off = resolved[2],
                     Out = resolved[3],
+                    CrewStart = resolved[4],
                     Block = BlockTime?.Hours
                 };
             }

@@ -249,6 +249,7 @@ namespace MyFlightbook.FlightDeckScan
                 return NotAFlightDeckDisplay(raw);
 
             DateValue date = ParseDate(raw.DateRaw, referenceDateUtc);
+            TimeValue crewT = ParseTime(raw.CrewRaw);
             TimeValue outT = ParseTime(raw.OutRaw);
             TimeValue offT = ParseTime(raw.OffRaw);
             TimeValue onT = ParseTime(raw.OnRaw);
@@ -283,6 +284,7 @@ namespace MyFlightbook.FlightDeckScan
             }
             WarnIfParseError("OUT", outT);
             WarnIfParseError("OFF", offT);
+            WarnIfParseError("CREW", crewT);
             WarnIfParseError("ON", onT);
             WarnIfParseError("IN", inT);
 
@@ -296,21 +298,34 @@ namespace MyFlightbook.FlightDeckScan
             if (isInProgress)
                 warnings.Add("Flight appears to still be in progress (IN time not yet recorded).");
 
-            // BLOCK: prefer the printed value; fall back to OUT->IN; flag a mismatch.
+            // BLOCK: prefer the printed value; fall back to OUT->IN or, if present, CREW->IN
+            // (some airlines, e.g. United, compute BLOCK/TRIP from CREW rather than OUT).
             TimeValue blockPrinted = ParseTime(raw.BlockRaw);
-            string blockComputed = Elapsed(outT?.Hhmm, inT?.Hhmm);
+            string blockComputedOutIn = Elapsed(outT?.Hhmm, inT?.Hhmm);
+            string blockComputedCrewIn = Elapsed(crewT?.Hhmm, inT?.Hhmm);
             DurationValue blockTime = null;
             if (blockPrinted?.Hhmm != null)
             {
-                blockTime = new DurationValue { Hhmm = blockPrinted.Hhmm, Source = "printed", Hours = ParseElapsedHhMm(blockPrinted.Hhmm) };
-                if (blockComputed != null && !WithinOneMinute(blockPrinted.Hhmm, blockComputed))
-                    warnings.Add($"Printed BLOCK time ({blockPrinted.Hhmm}) does not match OUT/IN times (computed {blockComputed}); using the printed value.");
+                bool matchesOutIn = blockComputedOutIn != null && WithinOneMinute(blockPrinted.Hhmm, blockComputedOutIn);
+                bool matchesCrewIn = blockComputedCrewIn != null && WithinOneMinute(blockPrinted.Hhmm, blockComputedCrewIn);
+                blockTime = new DurationValue
+                {
+                    Hhmm = blockPrinted.Hhmm,
+                    Source = matchesCrewIn && !matchesOutIn ? "printed_matches_crew_in" : "printed",
+                    Hours = ParseElapsedHhMm(blockPrinted.Hhmm)
+                };
+                if (!matchesOutIn && !matchesCrewIn && (blockComputedOutIn != null || blockComputedCrewIn != null))
+                    warnings.Add($"Printed BLOCK time ({blockPrinted.Hhmm}) does not match OUT/IN times (computed {blockComputedOutIn ?? "n/a"}){(crewT?.Hhmm != null ? $" or CREW/IN times (computed {blockComputedCrewIn})" : "")}; using the printed value.");
             }
-            else if (blockComputed != null)
+            else if (blockComputedOutIn != null)
             {
-                blockTime = new DurationValue { Hhmm = blockComputed, Source = "computed_from_out_in", Hours = ParseElapsedHhMm(blockComputed) };
+                blockTime = new DurationValue { Hhmm = blockComputedOutIn, Source = "computed_from_out_in", Hours = ParseElapsedHhMm(blockComputedOutIn) };
             }
-
+            else if (blockComputedCrewIn != null)
+            {
+                blockTime = new DurationValue { Hhmm = blockComputedCrewIn, Source = "computed_from_crew_in", Hours = ParseElapsedHhMm(blockComputedCrewIn) };
+            }
+            
             // FLIGHT: prefer the printed value; fall back to OFF->ON.
             TimeValue flightPrinted = ParseTime(raw.FlightTimeRaw);
             string flightComputed = Elapsed(offT?.Hhmm, onT?.Hhmm);
@@ -339,6 +354,7 @@ namespace MyFlightbook.FlightDeckScan
                 Destination = string.IsNullOrEmpty(raw.Destination) ? null : raw.Destination,
                 Times = new OoiTimes
                 {
+                    Crew = crewT?.Hhmm != null ? crewT : null,
                     Out = outT?.Hhmm != null ? outT : null,
                     Off = offT?.Hhmm != null ? offT : null,
                     On = onT?.Hhmm != null ? onT : null,

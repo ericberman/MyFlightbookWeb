@@ -51,6 +51,8 @@ namespace MyFlightbook.FlightDeckScan
                     "Origin airport code exactly as printed (e.g. \"KAEX\", \"LEAL\", \"EHAM\", \"LILC\"). Null if blank/dashed-out."),
                 ["destination"] = StringOrNullProp(
                     "Destination airport code exactly as printed. Null if blank/dashed-out."),
+                ["crewRaw"] = StringOrNullProp(
+                    "The CREW time exactly as printed, if shown - a Zulu time labeled \"CREW\" that some airlines (e.g. United) print a few minutes before OUT, marking when the crew's duty/trip time officially begins. This is DIFFERENT from OUT and is used by that airline to compute BLOCK/TRIP time instead of OUT (e.g. CREW 1331, OUT 1335, IN 1535 -> printed TRIP is 2:04, not 2:00 - i.e. CREW to IN, not OUT to IN). Report null if no such field/label is present on this screen - most screens do not have one, and it must not be confused with OUT."),
                 ["outRaw"] = StringOrNullProp(
                     "The OUT (block out / gate departure) time exactly as printed, including seconds if shown (e.g. \"1331\", \"1331Z\", \"05:02:40\", \"0953Z\"). Null if not printed or shown only as dashes."),
                 ["offRaw"] = StringOrNullProp(
@@ -60,7 +62,7 @@ namespace MyFlightbook.FlightDeckScan
                 ["inRaw"] = StringOrNullProp(
                     "The IN (block in / gate arrival) time exactly as printed. Null if not printed, blank, or shown only as dashes (this is normal for a flight still in progress)."),
                 ["blockRaw"] = StringOrNullProp(
-                    "The BLOCK time exactly as printed (elapsed time from OUT to IN), e.g. \"0144\", \"02:46\". Null if not printed on screen. Do not compute this yourself if it is not shown."),
+                    "The BLOCK time exactly as printed (elapsed time from OUT to IN, or from CREW to IN if a CREW time is shown) - e.g. \"0144\", \"02:46\". Some airlines (e.g. United) label this field \"TRIP\" instead of \"BLOCK\" - treat TRIP as the same concept and report its value here. Null if neither BLOCK nor TRIP is printed on screen. Do not compute this yourself if it is not shown."),
                 ["flightTimeRaw"] = StringOrNullProp(
                     "The FLIGHT time exactly as printed (airborne time from OFF to ON), e.g. \"0126\", \"02:25\". Null if not printed on screen. Do not compute this yourself if it is not shown."),
                 ["extractionNotes"] = StringOrNullProp(
@@ -69,7 +71,7 @@ namespace MyFlightbook.FlightDeckScan
 
             var required = new JArray(
                 "isFlightDeckDisplay", "screenType", "flightNumber", "dateRaw", "origin", "destination",
-                "outRaw", "offRaw", "onRaw", "inRaw", "blockRaw", "flightTimeRaw", "extractionNotes");
+                "crewRaw", "outRaw", "offRaw", "onRaw", "inRaw", "blockRaw", "flightTimeRaw", "extractionNotes");
 
             return new JObject
             {

@@ -869,42 +869,6 @@ namespace MyFlightbook
         #endregion
 
         protected LogbookEntryCore() { }
-
-        public void InitFromScannedFlight(ScannedFlight sf, bool adjustToLocalDate)
-        {
-            if (sf == null)
-                throw new ArgumentNullException(nameof(sf));
-            string newRoute = $"{sf.Origin} {sf.Destination}".Trim();
-            Route = !String.IsNullOrEmpty(newRoute) ? newRoute : Route;
-
-            // For date of flight, prefer out time to date, since date is approximately "now" but out is when you started the flgiht.
-            Date = sf.Out ?? sf.Date ?? Date;
-            if (sf.Out.HasValue || sf.Date.HasValue && adjustToLocalDate && !String.IsNullOrEmpty(sf.Origin))
-            {
-                airport ap = airport.AirportsMatchingCodes(new string[] { sf.Origin ?? string.Empty }).FirstOrDefault();
-                Date = ap == null ? Date : AutoFillOptions.ConvertToAirportTimezone(Date, ap.LatLong.Latitude, ap.LatLong.Longitude);
-            }
-            if (!String.IsNullOrWhiteSpace(sf.FlightNumber))
-                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, sf.FlightNumber));
-            if (sf.Out.HasValue)
-                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, sf.Out.Value, true));
-            if (sf.In.HasValue)
-                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, sf.In.Value, true));
-            if (sf.Off.HasValue)
-                FlightStart = sf.Off.Value;
-            if (sf.On.HasValue)
-                FlightEnd = sf.On.Value;
-            if (sf.Block.HasValue)
-                TotalFlightTime = sf.Block.Value;
-        }
-
-        public void InitFromScannedFlightJSON(string sfJSON, bool adjustToLocalDate)
-        {
-            if (String.IsNullOrEmpty(sfJSON))
-                throw new ArgumentNullException(nameof(sfJSON));
-            ScannedFlight sf = JsonConvert.DeserializeObject<ScannedFlight>(sfJSON);
-            InitFromScannedFlight(sf, adjustToLocalDate);
-        }
     }
 
     /// <summary>
@@ -3227,6 +3191,51 @@ WHERE f1.username = ?uName ");
                     TotalFlightTime = 0;
                 }
             }
+        }
+
+        private void InitFromScannedFlight(ScannedFlight sf, bool adjustToLocalDate)
+        {
+            if (sf == null)
+                throw new ArgumentNullException(nameof(sf));
+            string newRoute = $"{sf.Origin} {sf.Destination}".Trim();
+            Route = !String.IsNullOrEmpty(newRoute) ? newRoute : Route;
+
+            // For date of flight, prefer out time to date, since date is approximately "now" but out is when you started the flgiht.
+            Date = sf.Out ?? sf.Date ?? Date;
+            if (sf.Out.HasValue || sf.Date.HasValue && adjustToLocalDate && !String.IsNullOrEmpty(sf.Origin))
+            {
+                airport ap = airport.AirportsMatchingCodes(new string[] { sf.Origin ?? string.Empty }).FirstOrDefault();
+                Date = ap == null ? Date : AutoFillOptions.ConvertToAirportTimezone(Date, ap.LatLong.Latitude, ap.LatLong.Longitude);
+            }
+            if (!String.IsNullOrWhiteSpace(sf.FlightNumber))
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, sf.FlightNumber));
+            if (sf.CrewStart.HasValue)
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrewStartTime, sf.CrewStart.Value, true));
+            if (sf.Out.HasValue)
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, sf.Out.Value, true));
+            if (sf.In.HasValue)
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, sf.In.Value, true));
+            if (sf.Off.HasValue)
+                FlightStart = sf.Off.Value;
+            if (sf.On.HasValue)
+                FlightEnd = sf.On.Value;
+            // Issue #1587 - do autofill, then put in the block time if available, since autofill will override it.  This allows for United Airline's "Crew" time as the start, which precedes block out.
+            using (FlightData fd = new FlightData())
+                fd.AutoFill(this, AutoFillOptions.DefaultOptionsForUser(Profile.GetUser(User)));
+
+            // Autofill may have filled in total time, but if the scanned flight has a block time, use that instead.
+            if (sf.Block.HasValue)
+                TotalFlightTime = sf.Block.Value;
+            if (CrossCountry > 0 && CrossCountry < TotalFlightTime)
+                CrossCountry = TotalFlightTime;
+        }
+
+        public void InitFromScannedFlightJSON(string sfJSON, bool adjustToLocalDate)
+        {
+            if (String.IsNullOrEmpty(sfJSON))
+                throw new ArgumentNullException(nameof(sfJSON));
+            ScannedFlight sf = JsonConvert.DeserializeObject<ScannedFlight>(sfJSON);
+            InitFromScannedFlight(sf, adjustToLocalDate);
         }
 
         #region AutofillFinish Helpers

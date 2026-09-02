@@ -220,7 +220,8 @@ namespace MyFlightbook
             IDPropNightIMC = 793,
             IDPropP2xDay = 810,
             IDPropP2xNight = 811,
-            IDPropInstrumentGroundInstructionGiven = 852
+            IDPropInstrumentGroundInstructionGiven = 852,
+            IDPropCrewStartTime = 882
         }
 
         public static class CFPPropertyFlag
