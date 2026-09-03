@@ -7,8 +7,10 @@
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, le.Date.ToShortDateString(), HttpUtility.HtmlEncode(le.TailNumDisplay));
     ViewBag.UseMaps = true;
     ViewBag.defaultTab = tabID.tabHome;
+    ViewBag.SuppressAntiForgeryToken = true;
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
     Profile pf = MyFlightbook.Profile.GetUser(le.User);
+
 }
 <script type="text/javascript">
         function toggleComponent() {
