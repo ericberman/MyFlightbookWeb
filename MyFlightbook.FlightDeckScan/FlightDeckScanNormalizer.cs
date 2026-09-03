@@ -317,13 +317,13 @@ namespace MyFlightbook.FlightDeckScan
                 if (!matchesOutIn && !matchesCrewIn && (blockComputedOutIn != null || blockComputedCrewIn != null))
                     warnings.Add($"Printed BLOCK time ({blockPrinted.Hhmm}) does not match OUT/IN times (computed {blockComputedOutIn ?? "n/a"}){(crewT?.Hhmm != null ? $" or CREW/IN times (computed {blockComputedCrewIn})" : "")}; using the printed value.");
             }
-            else if (blockComputedOutIn != null)
-            {
-                blockTime = new DurationValue { Hhmm = blockComputedOutIn, Source = "computed_from_out_in", Hours = ParseElapsedHhMm(blockComputedOutIn) };
-            }
             else if (blockComputedCrewIn != null)
             {
                 blockTime = new DurationValue { Hhmm = blockComputedCrewIn, Source = "computed_from_crew_in", Hours = ParseElapsedHhMm(blockComputedCrewIn) };
+            }
+            else if (blockComputedOutIn != null)
+            {
+                blockTime = new DurationValue { Hhmm = blockComputedOutIn, Source = "computed_from_out_in", Hours = ParseElapsedHhMm(blockComputedOutIn) };
             }
             
             // FLIGHT: prefer the printed value; fall back to OFF->ON.
