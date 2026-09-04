@@ -24,6 +24,8 @@ namespace MyFlightbook.Web
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
 
+            MFBImageInfoBase.AppInitImageMagick();
+
             // Dependency Injection
             Geography.Geography.Init();
             DBHelper.Init(ConfigurationManager.ConnectionStrings["logbookConnectionString"].ConnectionString);
@@ -33,7 +35,7 @@ namespace MyFlightbook.Web
             Aircraft.Init(new AdminAircraftDataChangeNotifier());
             UserAircraft.Init(new MyFlightbook.AircraftSupport.UserAircraftDelegate());
 
-            MFBImageInfo.SetStorage(LocalConfig.SettingForKey("UseImageDB").CompareCurrentCultureIgnoreCase("yes") == 0,
+            MFBImageInfoBase.SetStorage(LocalConfig.SettingForKey("UseImageDB").CompareCurrentCultureIgnoreCase("yes") == 0,
                 new Dictionary<MFBImageInfoBase.ImageClass, string>() {
                     { MFBImageInfoBase.ImageClass.Aircraft, LocalConfig.SettingForKey("AircraftPixDir").ToAbsolute() },
                     { MFBImageInfoBase.ImageClass.Endorsement, LocalConfig.SettingForKey("EndorsementsPixDir").ToAbsolute() },

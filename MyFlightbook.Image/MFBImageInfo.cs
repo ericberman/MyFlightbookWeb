@@ -1,6 +1,7 @@
 ﻿using AWSNotifications;
 using gma.Drawing.ImageInfo;
 using ImageMagick;
+using ImageMagick.Configuration;
 using MyFlightbook.Geography;
 using Newtonsoft.Json;
 using System;
@@ -112,6 +113,33 @@ namespace MyFlightbook.Image
         {
             _useDB = fUseDB;
             _imageFolders = imageFolders;
+        }
+        #endregion
+
+        #region ImageMagick initialization
+        public static void AppInitImageMagick()
+        {
+            var configFiles = ConfigurationFiles.Default;
+            configFiles.Policy.Data = @"
+<policymap>
+  <policy domain=""delegate"" rights=""none"" pattern=""*"" />
+  <policy domain=""path"" rights=""none"" pattern=""@*"" />
+  <policy domain=""coder"" rights=""none"" pattern=""*"" />
+  <policy domain=""coder"" rights=""read|write"" pattern=""JPEG"" />
+  <policy domain=""coder"" rights=""read|write"" pattern=""PNG"" />
+  <policy domain=""coder"" rights=""read"" pattern=""GIF"" />
+  <policy domain=""coder"" rights=""read"" pattern=""HEIC"" />
+  <policy domain=""coder"" rights=""read"" pattern=""HEIF"" />
+  <policy domain=""resource"" name=""width"" value=""10000"" />
+  <policy domain=""resource"" name=""height"" value=""10000"" />
+  <policy domain=""resource"" name=""area"" value=""64MP"" />
+  <policy domain=""resource"" name=""memory"" value=""512MiB"" />
+  <policy domain=""resource"" name=""map"" value=""1GiB"" />
+  <policy domain=""resource"" name=""disk"" value=""1GiB"" />
+  <policy domain=""resource"" name=""time"" value=""30"" />
+</policymap>";
+
+            MagickNET.Initialize(configFiles);
         }
         #endregion
 
@@ -1468,7 +1496,6 @@ namespace MyFlightbook.Image
                     }
                 }
             }
-
         }
 
         /// <summary>
