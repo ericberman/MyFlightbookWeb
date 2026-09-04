@@ -432,10 +432,6 @@ namespace MyFlightbook
             return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Route);
         }
         #endregion
-
-        // These are overridden in child classes; declared here so that we don't have to expose LogbookEntryBase serializable
-        public virtual string SendFlightLink { get; set; }
-        public virtual string SocialMediaLink { get; set; }
         #endregion
 
         public Boolean IsNewFlight
@@ -869,6 +865,86 @@ namespace MyFlightbook
         #endregion
 
         protected LogbookEntryCore() { }
+
+        #region IPostable
+        /// <summary>
+        /// The comment for the post
+        /// </summary>
+        [JsonIgnore]
+        public string SocialMediaComment
+        {
+            get
+            {
+                string sz1 = Route.Trim();
+                string sz2 = Comment.Trim();
+                return (sz1.Length > 0 && sz2.Length > 0) ? sz1 + Resources.LocalizedText.ColonConnector + sz2 : sz1 + sz2;
+            }
+        }
+
+        /// <summary>
+        /// The Uri, if any, for the post.  MUST BE FULLY QUALIFIED ABSOLUTE URI; can use current branding, if needed.
+        /// </summary>
+        public Uri SocialMediaItemUri()
+        {
+            return String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}?v={1}", FlightID, (new Random()).Next(10000)).ToAbsoluteBrandedUri();
+        }
+
+        /// <summary>
+        /// Returns a Uri to send a flight (i.e., to another pilot)
+        /// </summary>
+        /// <param name="szEncodedShareKey">Encoded key that can be decrypted to share the flight</param>
+        /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
+        /// <param name="szTarget">Target, if provided; otherwises, uses LogbookNew</param>
+        /// <returns>The Uri to the flight for adding</returns>
+        public Uri SendFlightUri(string szHost = null, string szTarget = null)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/mvc/flightedit/flight", HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", FlightID, User)))).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+        }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Indicates if the item can be posted.
+        /// </summary>
+        public bool CanPost
+        {
+            get { return (fIsPublic || Route.Length > 0); }
+        }
+
+        private int _roundingUnit = 0;
+
+        /// <summary>
+        /// Rounding factor for adding minutes - add whole minutes (Quantization = 60) or add hundredths-of-an-hour (Quantization = 0.01)
+        /// Should be nice and fast, since it's retrieved from cached items (session or cached user's prefs) and then cached locally within this object.
+        /// </summary>
+        [JsonIgnore]
+        protected int RoundingUnit
+        {
+            get
+            {
+                if (_roundingUnit <= 0)
+                {
+                    object o = util.RequestContext?.GetSessionValue(MFBConstants.keyMathRoundingUnits);
+                    _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int)o;
+                }
+                return _roundingUnit;
+            }
+        }
+
+        #region Sharing
+        // Send flight and social media links are
+        public virtual string SendFlightLink
+        {
+            get { return SendFlightUri().ToString(); }
+            set { } // to enable serialization
+        }
+
+        public virtual string SocialMediaLink
+        {
+            get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
+            set { } // to enable serialization
+        }
+        #endregion
+        #endregion IPostable
     }
 
     /// <summary>
@@ -2726,107 +2802,6 @@ WHERE f1.username = ?uName ");
     [Serializable]
     public class LogbookEntry : LogbookEntryBase
     {
-        #region IPostable
-        /// <summary>
-        /// The comment for the post
-        /// </summary>
-        [JsonIgnore]
-        public string SocialMediaComment
-        {
-            get
-            {
-                string sz1 = Route.Trim();
-                string sz2 = Comment.Trim();
-                return (sz1.Length > 0 && sz2.Length > 0) ? sz1 + Resources.LocalizedText.ColonConnector + sz2 : sz1 + sz2;
-            }
-        }
-
-        /// <summary>
-        /// The Uri, if any, for the post.  MUST BE FULLY QUALIFIED ABSOLUTE URI; can use current branding, if needed.
-        /// </summary>
-        public Uri SocialMediaItemUri()
-        {
-            return String.Format(CultureInfo.InvariantCulture, "~/mvc/pub/ViewFlight/{0}?v={1}", FlightID, (new Random()).Next(10000)).ToAbsoluteBrandedUri();
-        }
-
-        /// <summary>
-        /// Returns a Uri to send a flight (i.e., to another pilot)
-        /// </summary>
-        /// <param name="szEncodedShareKey">Encoded key that can be decrypted to share the flight</param>
-        /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
-        /// <param name="szTarget">Target, if provided; otherwises, uses LogbookNew</param>
-        /// <returns>The Uri to the flight for adding</returns>
-        public Uri SendFlightUri(string szHost = null, string szTarget = null)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/mvc/flightedit/flight", HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", FlightID, User)))).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
-        }
-
-        /// <summary>
-        /// The image, if any, for the post.
-        /// </summary>
-        public MFBImageInfo SocialMediaImage(string szHost = null)
-        {
-            PopulateImages();
-            if (FlightImages.Count > 0)
-                return FlightImages[0].ImageType == MFBImageInfo.ImageFileType.JPEG ? FlightImages[0] : FlightImages[0];    // use video thumbnail if it's for a video, since we can't use the video link itself.
-            else
-            {
-                // Use the preferred aircraft, if one is specified.
-                UserAircraft ua = new UserAircraft(User);
-                Aircraft ac = ua.GetUserAircraftByID(AircraftID) ?? new Aircraft(AircraftID);
-                ac.PopulateImages();
-                if (ac.AircraftImages.Count > 0)
-                    return ac.AircraftImages[0];
-            }
-            return null;
-        }
-
-        [JsonIgnore]
-        /// <summary>
-        /// Indicates if the item can be posted.
-        /// </summary>
-        public bool CanPost
-        {
-            get { return (fIsPublic || Route.Length > 0); }
-        }
-
-        private int _roundingUnit = 0;
-
-        /// <summary>
-        /// Rounding factor for adding minutes - add whole minutes (Quantization = 60) or add hundredths-of-an-hour (Quantization = 0.01)
-        /// Should be nice and fast, since it's retrieved from cached items (session or cached user's prefs) and then cached locally within this object.
-        /// </summary>
-        [JsonIgnore]
-        protected int RoundingUnit
-        {
-            get
-            {
-                if (_roundingUnit <= 0)
-                {
-                    object o = util.RequestContext?.GetSessionValue(MFBConstants.keyMathRoundingUnits);
-                    _roundingUnit = (o == null) ? String.IsNullOrEmpty(User) ? 60 : Profile.GetUser(User).MathRoundingUnit : (int)o;
-                }
-                return _roundingUnit;
-            }
-        }
-
-        #region Sharing
-        // Send flight and social media links are
-        // done as overrides so that the WSDL doesn't have to refer to LogbookEntryBase.
-        public override string SendFlightLink
-        {
-            get { return SendFlightUri().ToString(); }
-            set { } // to enable serialization
-        }
-
-        public override string SocialMediaLink
-        {
-            get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
-            set { } // to enable serialization
-        }
-        #endregion
-        #endregion IPostable
-
         #region CloudAhoy
         /// <summary>
         /// Pushes the flight to cloudahow
