@@ -56,6 +56,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult PaymentSetForMonth(int month, int year)
         {
+            CheckAuth(ProfileRoles.maskCanManageMoney);
             ViewBag.PaymentList = Payment.RecordsForMonth(month, year);
             return PartialView("_pmtDetailRows");
         }
