@@ -54,6 +54,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PaymentSetForMonth(int month, int year)
         {
             CheckAuth(ProfileRoles.maskCanManageMoney);
@@ -75,6 +76,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         /// <exception cref="UnauthorizedAccessException"></exception>
         [Authorize]
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PaymentSet(string szUser, bool fPayments, bool fRefunds, bool fAdjustments, bool fTestTransactions, int offset, int limit)
         {
             CheckAuth(ProfileRoles.maskCanManageMoney);
