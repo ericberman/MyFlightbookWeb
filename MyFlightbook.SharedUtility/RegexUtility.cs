@@ -424,7 +424,7 @@ namespace MyFlightbook
 
         static private Regex mPseudoCertifiedSim = null;
 
-        public static Regex ADMINPseudoCertifiedSim { get { return mPseudoCertifiedSim ?? (mPseudoCertifiedSim = new Regex("FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|MENT|FAA", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
+        public static Regex ADMINPseudoCertifiedSim { get { return mPseudoCertifiedSim ?? (mPseudoCertifiedSim = new Regex("FS|SIM|FTD|RTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|MENT|FAA", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
 
         static private Regex mPseudoFFS = null;
         public static Regex AdminPseudoFFS { get { return mPseudoFFS ?? (mPseudoFFS = new Regex("(D-?SIM)|FFS", RegexOptions.Compiled | RegexOptions.IgnoreCase)); } }
