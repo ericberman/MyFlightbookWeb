@@ -1132,11 +1132,13 @@ namespace MyFlightbook.Printing
 
                         p.BeginErrorReadLine();
 
-                        using (var stream = p.StandardInput.BaseStream)
-                        {
-                            byte[] utf8Bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(html);
-                            await stream.WriteAsync(utf8Bytes, 0, utf8Bytes.Length);
-                        }
+                        byte[] utf8Bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(html);
+
+                        // BaseStream doesn't need to be disposed by us.
+                        var stdin = p.StandardInput.BaseStream;
+                        await stdin.WriteAsync(utf8Bytes, 0, utf8Bytes.Length);
+                        await stdin.FlushAsync();
+                        p.StandardInput.Close(); // required: signals EOF so wkhtmltopdf starts converting
 
                         using (var pdfStream = new MemoryStream())
                         {
