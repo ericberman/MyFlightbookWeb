@@ -125,11 +125,10 @@ namespace MyFlightbook.Image
   <policy domain=""delegate"" rights=""none"" pattern=""*"" />
   <policy domain=""path"" rights=""none"" pattern=""@*"" />
   <policy domain=""coder"" rights=""none"" pattern=""*"" />
-  <policy domain=""coder"" rights=""read|write"" pattern=""JPEG"" />
+  <policy domain=""coder"" rights=""read|write"" pattern=""{JPEG,JPG,JPE}"" />
   <policy domain=""coder"" rights=""read|write"" pattern=""PNG"" />
   <policy domain=""coder"" rights=""read"" pattern=""GIF"" />
-  <policy domain=""coder"" rights=""read"" pattern=""HEIC"" />
-  <policy domain=""coder"" rights=""read"" pattern=""HEIF"" />
+  <policy domain=""coder"" rights=""read"" pattern=""{HEIC,HEIF}"" />
   <policy domain=""resource"" name=""width"" value=""10000"" />
   <policy domain=""resource"" name=""height"" value=""10000"" />
   <policy domain=""resource"" name=""area"" value=""64MP"" />
@@ -1485,7 +1484,7 @@ namespace MyFlightbook.Image
                     try
                     {
                         szTemp = Path.GetTempFileName();
-                        image.Write(szTemp, MagickFormat.Jpg);
+                        image.Write(szTemp, MagickFormat.Jpeg);
 
                         System.Drawing.Image img = System.Drawing.Image.FromFile(szTemp);
                         return img;
