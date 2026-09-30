@@ -86,8 +86,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             string szDest = d?.ToUpperInvariant() ?? string.Empty;
 
             // Verify all parameters are present and not empty, and that the destination is valid
-            if (!Request.IsSecureConnection || String.IsNullOrEmpty(u) || String.IsNullOrEmpty(p) || String.IsNullOrEmpty(szDest) || !dictRedir.TryGetValue(szDest, out string redir))
+            if (!Request.IsSecureConnection || !dictRedir.TryGetValue(szDest ?? string.Empty, out string redir))
                 return Redirect(szDestErr);
+
+            if (String.IsNullOrEmpty(u) || String.IsNullOrEmpty(p))
+            {
+                // Only allow FAQ and Contact for anonymous users.
+                return Redirect((szDest.CompareCurrentCultureIgnoreCase("FAQ") == 0 || szDest.CompareCurrentCultureIgnoreCase("CONTACT") == 0) ? redir : szDestErr);
+            }
 
             // look for admin emulation in the form of admin:useremail
             string[] rgUsers = u.Split(adminSeparator, StringSplitOptions.RemoveEmptyEntries);
