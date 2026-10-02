@@ -85,21 +85,21 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown", "flight_date", "dep_datetime_local", "FlightDate", "departureDateTimeLocal" };
         private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Aircraft Ident", "AircraftIdent", "Reg", "Reg.", "AIRCRAFT REGISTRATION", "aircraft_registration", "tailNo", "aircraft_tail_number", "Tail #", "Tail No.", "AC_REG", "fcv_tail_number", "tail_number", "TailNum" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
-        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight", "TotalTime" };
-        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr", "Approaches.Count" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "DURATION_BLOCK", "HRS", "TIME FLOWN", "FltTime", "Total", "total_time", "totalFlightTime", "flight_time", "total_flight_time", "Duration", "Flight Time", "Blk Hrs", "Blk", "Duration of Flight", "TotalTime" };
+        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE", "instrumentApproaches", "Approaches Instrument", "Num App..", "Num App.", "IFR Appr", "Approaches.Count", "APPROACH_NR" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns", "nbr_hold", "HLD" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD", "Lnd", "AllLandings", "totalLandings" };
         private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "LandingsNight", "landings_night", "ldgs_night", "Ldg Night", "nightLandings", "night_landings", "Night Landing", "Night Land", "LNight", "LDG_NIGHT", "NightLandingsFullStop" };
         private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "LandingsDay", "landings_day", "ldgs_day", "dayLandings", "day_landings", "Ldg Day", "Day Landing", "Day Land", "LDay", "LDG_DAY", "DayLandingsFullStop" };
-        private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X-C", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country", "Time_XC" };
-        private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime", "Night Time", "Night Hrs" };
-        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Instr.", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument", "ActualInstrument", "imcTime" };
-        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)", "SimulatedInstrument", "SimInstrument" };
-        private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time", "Flight Simulator", "Ground Sim", "FTD", "ATD", "SimulatedFlight", "GroundTrainer" };
-        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)", "Dual Rec'd", "Dual Rcvd", "Time_Dual Rcvd", "dualRcvd" };
-        private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "As Instr.", "IP", "Instructor (PIC)" };
-        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "Co-Plt", "co_pilot", "copilot", "Co-Pilot", "sicTime" };
-        private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD", "Time_PIC", "picTime" };
+        private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X-C", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration", "cross_country", "Time_XC", "DURATION_XC" };
+        private readonly static string[] colNight = { "Night", "flight_night", "Night Duration", "nightTime", "Night Time", "Night Hrs", "DURATION_NIGHT" };
+        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr", "Instr.", "Inst", "Actual Instrument", "ifr", "actualInstrument", "actual_instrument", "ActualInstrument", "imcTime", "DURATION_IFR_ACTUAL" };
+        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration", "simulated_instrument", "Simulated Instrument (Hood)", "SimulatedInstrument", "SimInstrument", "DURATION_IFR_SIMULATED" };
+        private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR", "Simulator Duration", "SimTime", "synthetic_training", "simulator_time", "Flight Simulator", "Ground Sim", "FTD", "ATD", "SimulatedFlight", "GroundTrainer", "DURATION_SIMULATOR" };
+        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual", "Dual Received Duration", "dual_received", "Dual Received (Student)", "Dual Rec'd", "Dual Rcvd", "Time_Dual Rcvd", "dualRcvd", "DURATION_DUAL" };
+        private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given", "Dual Given Duration", "flight_instructor", "instructor", "as_instructor", "As Instr.", "IP", "Instructor (PIC)", "DURATION_CFI", "DURATION_INSTRUCTOR" };
+        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND", "SIC Duration", "CoPlt", "Co-Plt", "co_pilot", "copilot", "Co-Pilot", "sicTime", "DURATION_SIC" };
+        private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND", "PIC Duration", "pilot_in_command_time", "Pilot in CMD", "Time_PIC", "picTime", "DURATION_PIC" };
         private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM", "Route of Flight Via", "Enroute", "Dept-Dest" };
         private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM", "DepPlace", "departure_airport_name", "departure_airport", "departureAirport", "Route of Flight From", "ADEP", "AF_DEP", "Dep", "dep_airport", "departureAirportICAO" };
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO", "ArrPlace", "arrival_airport_name", "arrival_airport", "arrivalAirport", "Route of Flight To", "ADES", "AF_ARR", "Arr", "arr_airport", "arrivalAirportICAO" };
@@ -107,8 +107,8 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
         private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
         private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
-        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off", "departure_time", "Flight Departure", "TIME_TO", "fcv_off_datetime_utc", "off_datetime_utc", "takeoffDateTimeUTC" };
-        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On", "arrival_time", "Flight Arrival", "TIME_LDG", "fcv_on_datetime_utc", "on_datetime_utc", "landingDateTimeUTC" };
+        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off", "departure_time", "Flight Departure", "TIME_TO", "fcv_off_datetime_utc", "off_datetime_utc", "takeoffDateTimeUTC", "TIME_TAKEOFF" };
+        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On", "arrival_time", "Flight Arrival", "TIME_LDG", "fcv_on_datetime_utc", "on_datetime_utc", "landingDateTimeUTC", "TIME_LANDING" };
         private readonly static string[] colHobbsStart = { "Hobbs Start", "Hobbs Out", "HobbsStart" };
         private readonly static string[] colHobbsEnd = { "Hobbs End", "Hobbs In", "HobbsEnd" };
         private readonly static string[] colPublic = { "Public" };
@@ -125,58 +125,61 @@ namespace MyFlightbook.ImportFlights
         private readonly static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
         {
             { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo", "1"}},
-            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name", "Name PIC", "Crew Captain", "COM", "CA" }},
-            { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer", "FO" }},
+            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain", "PIC Name", "PICName", "name_of_pilot_in_command", "pic_name", "Name PIC", "Crew Captain", "COM", "CA", "NAME_PIC" }},
+            { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer", "FO", "NAME_COPILOT" }},
             { "Additional Crew Member(s)", new string[] { "Additional Crew Member(s)", "Crew", "crew_list" } },
-            { "Instructor Name", new string[] {"Instructor Name", "instructor_name" } },
-            { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night", "Night T-O", "TNight", "TO_NIGHT", "NightTakeoffs" }},
+            { "Instructor Name", new string[] {"Instructor Name", "instructor_name", "NAME_INSTRUCTOR" } },
+            { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O", "Night Takeoffs", "TKoffsNight", "to_night", "T/O Night", "Night T-O", "TNight", "TO_NIGHT", "NightTakeoffs", "TAKEOFFS_NIGHT" }},
             { "Landings - Water", new string[] {"Landings - Water", "flight_waterLandings"}},
             { "Takeoffs - Water", new string[] {"Takeoffs - Water", "flight_waterTakeoffs"}},
-            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day", "T/O Day", "Day T-O", "Day Takeoffs", "Day T/O", "TO_DAY", "DayTakeoffs" } },
+            { "Takeoffs (any)", new string[] {"Takeoffs (any)", "to_day", "T/O Day", "Day T-O", "Day Takeoffs", "Day T/O", "TO_DAY", "DayTakeoffs", "TAKEOFFS_DAY" } },
             { "Night Vision Time (Goggles)", new string[] { "Night Vision Time (Goggles)", "NVG" } },
-            {"Night Vision - Landing", new string[] {"Night Vision - Landing", "flight_nightVisionGoggleLandings"}},
-            {"Night Vision - Takeoff", new string[] {"Night Vision - Takeoff", "flight_nightVisionGoggleTakeoffs"}},
-            {"Go-arounds", new string[] {"Go-arounds", "flight_goArounds"}},
-            {"Duty Time End (UTC)", new string[] {"Duty Time End (UTC)", "flight_offDutyTime"}},
-            {"Duty Time Start (UTC)", new string[] {"Duty Time Start (UTC)", "flight_onDutyTime"}},
-            {"Part 91 Flight", new string[] {"Part 91 Flight", "flight_faaPart91", "PT91" }},
-            {"Part 121 Flight", new string[] {"Part 121 Flight", "flight_faaPart121", "PT121"}},
-            {"Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135", "PT135"}},
-            {"Tachometer End", new string[] {"Tachometer End", "Tach In", "TachEnd"}},
-            {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out", "TachStart"}},
+            { "Night Vision - Landing", new string[] {"Night Vision - Landing", "flight_nightVisionGoggleLandings"}},
+            { "Night Vision - Takeoff", new string[] {"Night Vision - Takeoff", "flight_nightVisionGoggleTakeoffs"}},
+            { "Go-arounds", new string[] {"Go-arounds", "flight_goArounds"}},
+            { "Duty Time End (UTC)", new string[] {"Duty Time End (UTC)", "flight_offDutyTime"}},
+            { "Duty Time Start (UTC)", new string[] {"Duty Time Start (UTC)", "flight_onDutyTime"}},
+            { "Part 91 Flight", new string[] {"Part 91 Flight", "flight_faaPart91", "PT91" }},
+            { "Part 121 Flight", new string[] {"Part 121 Flight", "flight_faaPart121", "PT121"}},
+            { "Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135", "PT135"}},
+            { "Tachometer End", new string[] {"Tachometer End", "Tach In", "TachEnd"}},
+            { "Tachometer Start", new string[] {"Tachometer Start", "Tach Out", "TachStart"}},
             { "Employer Name", new string[] { "Employer Name", "carrier" } },
-            {"Flight Number", new string[] {"Flight Number", "Flight", "flightNo", "Flight No.", "FLIGHTNUMBER", "Flight #", "flight_number" } },
-            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off", "Time Out", "Out", "dep_datetime_utc", "departureDateTimeUTC" } },
-            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On", "Time In", "In", "arr_datetime_utc", "arrivalDateTimeUTC" } },
+            { "Flight Number", new string[] {"Flight Number", "Flight", "flightNo", "Flight No.", "FLIGHTNUMBER", "Flight #", "flight_number" } },
+            { "Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block", "block_start", "departureTime", "Block Off", "Off", "Time Out", "Out", "dep_datetime_utc", "departureDateTimeUTC", "TIME_BLOCK_START" } },
+            { "Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block", "block_end", "arrivalTime", "Block On", "On", "Time In", "In", "arr_datetime_utc", "arrivalDateTimeUTC", "TIME_BLOCK_END" } },
             { "Pilot Monitoring Time", new string[] { "Pilot Monitoring Time", "PM" } },
             { "Pilot Flying Time", new string[] { "Pilot Flying Time", "PF" } },
-            {"Scheduled Departure Time", new string[] { "Scheduled Departure Time", "ETD", "TIME_DEPSCH" } },
-            {"Scheduled Arrival Time", new string[] { "Scheduled Arrival Time", "ETA", "TIME_ARRSCH" } },
-            {"Ground Instruction Received", new string[] { "Ground Instruction Received", "Ground Instruction Duration", "GroundTraining" } },
-            {"Fuel Remaining At Landing", new string[] { "Fuel Remaining At Landing", "Fuel Remaining" } },
-            {"Maximum Altitude", new string[] { "Maximum Altitude", "Max Altitude" } },
-            {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
-            {"Military Pilot Primary Time", new string[] {"Military Pilot Primary Time", "PRI", "Primary" } },
-            {"Military Pilot Secondary Time", new string[] {"Military Pilot Secondary Time", "SEC", "Secondary" } },
-            {"Mission and Sortie", new string[] { "Mission and Sortie", "Mission #" } },
-            {"Aircraft Commander Time", new string[] { "Aircraft Commander Time", "A/C Cmdr", "A/C Cdr"} },
-            {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
-            {"Student Name", new string[] {"Student Name", "Student"} },
-            {"Nose Number", new string[] { "Nose Number", "Nose Number (Private Aircraft ID)" } },
-            {"Approach Name(s)", new string[] { "Approach Name(s)", "App Type", "Type App..", "Type App.", "Approaches Summary", "approachTypes" } },
-            {"Approaches - ILS", new string[] {"Approaches - ILS", "nbr_ils"}},
-            {"Approaches - LDA", new string[] {"Approaches - LDA", "nbr_lda"}},
-            {"Approaches - Localizer", new string[] {"Approaches - Localizer", "nbr_loc"}},
-            {"Approaches - MLS", new string[] {"Approaches - MLS", "nbr_mls"}},
-            {"Approaches - NDB", new string[] {"Approaches - NDB", "nbr_ndb"}},
-            {"Approaches - PAR", new string[] {"Approaches - PAR", "nbr_par"}},
-            {"Approaches - RNAV/GPS", new string[] {"Approaches - RNAV/GPS", "nbr_gps"}},
-            {"Approaches - SDF", new string[] {"Approaches - SDF", "nbr_sdf"}},
-            {"Approaches - SRA/ASR", new string[] {"Approaches - SRA/ASR", "nbr_asr"}},
-            {"Approaches - TACAN", new string[] {"Approaches - TACAN", "nbr_tacan"}},
-            {"Approaches - VOR", new string[] {"Approaches - VOR", "nbr_vor"}},
-            {"Approaches - Localizer Backcourse", new string[] {"Approaches - Localizer Backcourse", "nbr_bc"}},
-            {"Approaches - RNAV/GPS (LP)", new string[] {"Approaches - RNAV/GPS (LP)", "nbr_rnav"}},
+            { "Scheduled Departure Time", new string[] { "Scheduled Departure Time", "ETD", "TIME_DEPSCH" } },
+            { "Scheduled Arrival Time", new string[] { "Scheduled Arrival Time", "ETA", "TIME_ARRSCH" } },
+            { "Ground Instruction Received", new string[] { "Ground Instruction Received", "Ground Instruction Duration", "GroundTraining" } },
+            { "Fuel Remaining At Landing", new string[] { "Fuel Remaining At Landing", "Fuel Remaining" } },
+            { "Maximum Altitude", new string[] { "Maximum Altitude", "Max Altitude" } },
+            { "Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
+            { "Military Pilot Primary Time", new string[] {"Military Pilot Primary Time", "PRI", "Primary" } },
+            { "Military Pilot Secondary Time", new string[] {"Military Pilot Secondary Time", "SEC", "Secondary" } },
+            { "Mission and Sortie", new string[] { "Mission and Sortie", "Mission #" } },
+            { "Aircraft Commander Time", new string[] { "Aircraft Commander Time", "A/C Cmdr", "A/C Cdr"} },
+            { "Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
+            { "Student Name", new string[] {"Student Name", "Student", "NAME_STUDENT" } },
+            { "Nose Number", new string[] { "Nose Number", "Nose Number (Private Aircraft ID)" } },
+            { "Approach Name(s)", new string[] { "Approach Name(s)", "App Type", "Type App..", "Type App.", "Approaches Summary", "approachTypes", "APPROACH_TYPE" } },
+            { "Approaches - ILS", new string[] {"Approaches - ILS", "nbr_ils"}},
+            { "Approaches - LDA", new string[] {"Approaches - LDA", "nbr_lda"}},
+            { "Approaches - Localizer", new string[] {"Approaches - Localizer", "nbr_loc"}},
+            { "Approaches - MLS", new string[] {"Approaches - MLS", "nbr_mls"}},
+            { "Approaches - NDB", new string[] {"Approaches - NDB", "nbr_ndb"}},
+            { "Approaches - PAR", new string[] {"Approaches - PAR", "nbr_par"}},
+            { "Approaches - RNAV/GPS", new string[] {"Approaches - RNAV/GPS", "nbr_gps"}},
+            { "Approaches - SDF", new string[] {"Approaches - SDF", "nbr_sdf"}},
+            { "Approaches - SRA/ASR", new string[] {"Approaches - SRA/ASR", "nbr_asr"}},
+            { "Approaches - TACAN", new string[] {"Approaches - TACAN", "nbr_tacan"}},
+            { "Approaches - VOR", new string[] {"Approaches - VOR", "nbr_vor"}},
+            { "Approaches - Localizer Backcourse", new string[] {"Approaches - Localizer Backcourse", "nbr_bc"}},
+            { "IFR Time", new string[] {"IFR Time", "flight_ifr", "IFR", "IFR Duration", "IFR Time Duration", "flight_ifrTime", "flight_ifr_time", "IFRTime", "DURATION_IFR" } },
+            { "Multi-Pilot Time", new string[] { "Multi-Pilot Time", "DURATION_MULTI_PILOT" } },
+            { "Simulator/Training Device Identifier", new string[] { "Simulator/Training Device Identifier", "SIMULATOR_TYPE" } },
+            { "Approaches - RNAV/GPS (LP)", new string[] {"Approaches - RNAV/GPS (LP)", "nbr_rnav"}},
             { "Trip Number", new string[] { "Trip Number", "Trip #", "Trip No." } },
             { "DeadHead", new string[] {"DeadHead", "DH", "DHD" } }
         };
