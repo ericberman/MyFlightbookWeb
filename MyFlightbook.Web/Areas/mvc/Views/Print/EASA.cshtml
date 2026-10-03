@@ -106,7 +106,6 @@
                         <div class="fhd">
                             <div>@(led.Airports.Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, led.Route))</div>
                             <div class="wsprel" style="clear:left;" dir="auto">@Html.Raw(led.RedactedCommentWithReplacedApproaches)</div>
-                            <div>@(led.CrossCountry > 0 ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", Resources.LogbookEntry.PrintHeaderCrossCountry, @led.CrossCountry.FormatDecimal(fUseHHMM)) : string.Empty)</div>
                             <div class="wsprel">@led.CustPropertyDisplay</div>
                             <div>
                                 @if (pl.Options.IncludeSignatures && led.CFISignatureState != LogbookEntryCore.SignatureState.None)
