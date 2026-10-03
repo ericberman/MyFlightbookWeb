@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Text;
 
 /******************************************************
@@ -228,7 +229,7 @@ namespace MyFlightbook.Airports
             return rgsz[icol];
         }
 
-        public static IEnumerable<airportImportCandidate> Candidates(Stream s, bool fHideKHack)
+        public static async Task<IEnumerable<airportImportCandidate>> Candidates(Stream s, bool fHideKHack)
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
@@ -237,76 +238,78 @@ namespace MyFlightbook.Airports
 
             List<airportImportCandidate> lst = new List<airportImportCandidate>();
 
-            using (CSVReader csvReader = new CSVReader(s))
+            await Task.Run(() =>
             {
-                ic.InitFromHeader(csvReader.GetCSVLine(true));
-
-                string[] rgCols = null;
-
-                while ((rgCols = csvReader.GetCSVLine()) != null)
+                using (CSVReader csvReader = new CSVReader(s))
                 {
-                    airportImportCandidate aic = new airportImportCandidate()
-                    {
-                        FAA = GetCol(rgCols, ic.iColFAA).Replace("-", ""),
-                        IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
-                        ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
-                        Name = GetCol(rgCols, ic.iColName),
-                        FacilityTypeCode = GetCol(rgCols, ic.iColType),
-                        Country = GetCol(rgCols, ic.iColCountry),
-                        Admin1 = GetCol(rgCols, ic.iColAdmin1)
-                    };
-                    if (String.IsNullOrEmpty(aic.FacilityTypeCode))
-                        aic.FacilityTypeCode = "A";     // default to airport
-                    aic.Name = GetCol(rgCols, ic.iColName);
-                    aic.Code = "(TBD)";
-                    string szLat = GetCol(rgCols, ic.iColLatitude);
-                    string szLon = GetCol(rgCols, ic.iColLongitude);
-                    string szLatLong = GetCol(rgCols, ic.iColLatLong);
-                    aic.LatLong = null;
+                    ic.InitFromHeader(csvReader.GetCSVLine(true));
 
-                    if (!String.IsNullOrEmpty(szLatLong))
+                    string[] rgCols = null;
+
+                    while ((rgCols = csvReader.GetCSVLine()) != null)
                     {
-                        // see if it is decimal; if so, we'll fall through.
-                        if (RegexUtility.CompassDirections.IsMatch(szLatLong))
-                            aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
-                        else
+                        airportImportCandidate aic = new airportImportCandidate()
                         {
-                            string[] rgsz = szLatLong.Split(rgchLatLongSeparator, StringSplitOptions.RemoveEmptyEntries);
-                            if (rgsz.Length == 2)
+                            FAA = GetCol(rgCols, ic.iColFAA).Replace("-", ""),
+                            IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
+                            ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
+                            Name = GetCol(rgCols, ic.iColName),
+                            FacilityTypeCode = GetCol(rgCols, ic.iColType),
+                            Country = GetCol(rgCols, ic.iColCountry),
+                            Admin1 = GetCol(rgCols, ic.iColAdmin1)
+                        };
+                        if (String.IsNullOrEmpty(aic.FacilityTypeCode))
+                            aic.FacilityTypeCode = "A";     // default to airport
+                        aic.Name = GetCol(rgCols, ic.iColName);
+                        aic.Code = "(TBD)";
+                        string szLat = GetCol(rgCols, ic.iColLatitude);
+                        string szLon = GetCol(rgCols, ic.iColLongitude);
+                        string szLatLong = GetCol(rgCols, ic.iColLatLong);
+                        aic.LatLong = null;
+
+                        if (!String.IsNullOrEmpty(szLatLong))
+                        {
+                            // see if it is decimal; if so, we'll fall through.
+                            if (RegexUtility.CompassDirections.IsMatch(szLatLong))
+                                aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
+                            else
                             {
-                                szLat = rgsz[0];
-                                szLon = rgsz[1];
+                                string[] rgsz = szLatLong.Split(rgchLatLongSeparator, StringSplitOptions.RemoveEmptyEntries);
+                                if (rgsz.Length == 2)
+                                {
+                                    szLat = rgsz[0];
+                                    szLon = rgsz[1];
+                                }
                             }
                         }
-                    }
-                    if (aic.LatLong == null)
-                    {
-                        aic.LatLong = new LatLong
+                        if (aic.LatLong == null)
                         {
-                            Latitude = double.TryParse(szLat, out double d) ? d : new DMSAngle(szLat).Value,
-                            Longitude = double.TryParse(szLon, out d) ? d : new DMSAngle(szLon).Value
-                        };
+                            aic.LatLong = new LatLong
+                            {
+                                Latitude = double.TryParse(szLat, out double d) ? d : new DMSAngle(szLat).Value,
+                                Longitude = double.TryParse(szLon, out d) ? d : new DMSAngle(szLon).Value
+                            };
+                        }
+
+                        lst.Add(aic);
                     }
 
-                    lst.Add(aic);
+                    StringBuilder sbCodes = new StringBuilder();
+
+                    // update status for each candidate
+                    lst.ForEach((aic) =>
+                    {
+                        sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.FAA);
+                        sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.IATA);
+                        sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.ICAO);
+                    });
+                    AirportList al = new AirportList(sbCodes.ToString());
+                    lst.ForEach((aic) => { aic.CheckStatus(al); });
+
+                    lst.RemoveAll(aic => aic.IsOK || (fHideKHack && aic.IsKHack));
                 }
-
-                StringBuilder sbCodes = new StringBuilder();
-
-                // update status for each candidate
-                lst.ForEach((aic) =>
-                {
-                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.FAA);
-                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.IATA);
-                    sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.ICAO);
-                });
-                AirportList al = new AirportList(sbCodes.ToString());
-                lst.ForEach((aic) => { aic.CheckStatus(al); });
-
-                lst.RemoveAll(aic => aic.IsOK || (fHideKHack && aic.IsKHack));
-
-                return lst;
-            }
+            });
+            return lst;
         }
 
         public static bool AirportImportRowCommand(airportImportCandidate aic, string source, string szCommand)

@@ -452,7 +452,7 @@
             r[++j] = "(" + ap.FacilityTypeCode + ") " + htmlEncode(ap.Name) + " ";
             if (ap.SourceUserName != '')
                 r[++j] = "(" + htmlEncode(ap.SourceUserName) + ") ";
-            r[++j] = '</div><div><input type="checkbox" ' + (ap.IsPreferred ? 'checked' : '') + ' onclick="javascript:setPreferred(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this)" />Preferred ';
+            r[++j] = '</div><div><label><input type="checkbox" ' + (ap.IsPreferred ? 'checked' : '') + ' onclick="javascript:setPreferred(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this)" />Preferred </label>';
             r[++j] = '<button type="button" onclick="javascript:mergeWith(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', \'' + apAlt.Code + '\', this);">Merge from ' + apAlt.Code + '</button> ';
             if (ap.SourceUserName != '')
                 r[++j] = '<button type="button" onclick="javascript:makeNative(\'' + ap.Code + '\', \'' + ap.FacilityTypeCode + '\', this);">Make Native</button> ';

@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 /******************************************************
@@ -102,13 +103,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateHeaderAntiForgeryToken]
-        public ActionResult ImportUploadedFile(bool fAllowBlast)
+        public async Task<ActionResult> ImportUploadedFile(bool fAllowBlast)
         {
-            return SafeOp(ProfileRoles.maskCanManageData, () =>
+            return await SafeOp(ProfileRoles.maskCanManageData, async () =>
             {
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
-                List<airportImportCandidate> lst = new List<airportImportCandidate>(airportImportCandidate.Candidates(Request.Files[0].InputStream, GetIntParam("khack", 0) == 0));
+                List<airportImportCandidate> lst = new List<airportImportCandidate>(await airportImportCandidate.Candidates(Request.Files[0].InputStream, GetIntParam("khack", 0) == 0));
 
                 ViewBag.importCandidates = lst;
                 ViewBag.allowBlast = fAllowBlast;
