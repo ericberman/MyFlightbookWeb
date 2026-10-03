@@ -4670,14 +4670,14 @@ WHERE f1.username = ?uName ");
                     NightTakeoffTotal += led.NightTakeoffs;
 
                     FCLPTotal += led.FCLP;
-                    SpecialCrewTimeTotal += led.SpecialCrewTime;
+                    SpecialCrewTimeTotal = SpecialCrewTimeTotal.AddMinutes(led.SpecialCrewTime, RoundingUnit);
                     CarrierArrestsTotal += led.CarrierArrests;
                     CarrierBoltsTotal += led.CarrierBolts;
                     CarrierTandGTotal += led.CarrierTandG;
                     CatapultsTotal += led.Catapults;
-                    FirstPilotTotal += led.MilitaryFirstPilotTime;
-                    CoPilotTotal += led.CoPilotTime;
-                    CommanderTotal += led.MilitaryACCommanderTime;
+                    FirstPilotTotal = FirstPilotTotal.AddMinutes(led.MilitaryFirstPilotTime, RoundingUnit);
+                    CoPilotTotal = CoPilotTotal.AddMinutes(led.CoPilotTime, RoundingUnit);
+                    CommanderTotal = CommanderTotal.AddMinutes(led.MilitaryACCommanderTime, RoundingUnit);
 
                     FlightCount++;
 
@@ -4708,14 +4708,14 @@ WHERE f1.username = ?uName ");
                     NightTakeoffTotal += led.NightTakeoffTotal;
 
                     FCLPTotal += led.FCLPTotal;
-                    SpecialCrewTimeTotal += led.SpecialCrewTimeTotal;
+                    SpecialCrewTimeTotal = SpecialCrewTimeTotal.AddMinutes(led.SpecialCrewTimeTotal, RoundingUnit);
                     CarrierArrestsTotal += led.CarrierArrestsTotal;
                     CarrierBoltsTotal += led.CarrierBoltsTotal;
                     CarrierTandGTotal += led.CarrierTandGTotal;
                     CatapultsTotal += led.CatapultsTotal;
-                    FirstPilotTotal += led.FirstPilotTotal;
-                    CoPilotTotal += led.CoPilotTotal;
-                    CommanderTotal += led.CommanderTotal;
+                    FirstPilotTotal = FirstPilotTotal.AddMinutes(led.FirstPilotTotal, RoundingUnit);
+                    CoPilotTotal = CoPilotTotal.AddMinutes(led.CoPilotTotal, RoundingUnit);
+                    CommanderTotal = CommanderTotal.AddMinutes(led.CommanderTotal, RoundingUnit);
 
                     FlightCount += led.FlightCount;
 
