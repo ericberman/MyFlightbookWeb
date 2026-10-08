@@ -3,6 +3,7 @@ using MyFlightbook.CSV;
 using MyFlightbook.Geography;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -578,10 +579,19 @@ namespace MyFlightbook.Airports
         private readonly Dictionary<string, string> countryMap = new Dictionary<string, string>();
         private readonly Dictionary<string, string> admin1Map = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Maps a place key ("USA" for a country, "USA-CA" for an admin1) to a Google Maps place ID, for use with
+        /// data-driven styling of boundaries.  Populated from the isoplaceids table; can be extended at runtime via SetPlaceID.
+        /// </summary>
+        private readonly ConcurrentDictionary<string, string> placeIDMap = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly Regex rPlaceID = new Regex("^[A-Za-z0-9_-]{10,255}$", RegexOptions.Compiled);
+
         private void InitMapping()
         {
             countryMap.Clear();
             admin1Map.Clear();
+            placeIDMap.Clear();
 
             DBHelper dbh = new DBHelper("SELECT * FROM isocodes");
             dbh.ReadRows((comm) => { },
@@ -591,14 +601,87 @@ namespace MyFlightbook.Airports
                     Dictionary<string, string> d = (level == 0) ? countryMap : admin1Map;
                     d[(string)dr["Region"]] = (string)dr["ISO"];
                 });
+
+            try
+            {
+                new DBHelper("SELECT isokey, placeid FROM isoplaceids").ReadRows((comm) => { },
+                    (dr) => { placeIDMap[(string)dr["isokey"]] = (string)dr["placeid"]; });
+            }
+            catch (MyFlightbookException) { }   // isoplaceids table may not exist yet; place IDs are then resolved client-side.
+        }
+
+        /// <summary>
+        /// Returns the key used for place IDs: the country code alone, or country-admin1
+        /// </summary>
+        public static string PlaceKey(string countryCode, string admin1Code)
+        {
+            return String.IsNullOrEmpty(admin1Code) ? countryCode : countryCode + "-" + admin1Code;
+        }
+
+        private void AddKnownPlaceID(IDictionary<string, string> d, string key)
+        {
+            if (!String.IsNullOrEmpty(key) && !d.ContainsKey(key) && placeIDMap.TryGetValue(key, out string pid))
+                d[key] = pid;
+        }
+
+        /// <summary>
+        /// Returns the known Google place IDs for the countries and admin1s in the specified locations, keyed by place key.
+        /// </summary>
+        public IDictionary<string, string> PlaceIDsForLocations(VisitedLocations vl)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (vl == null)
+                return d;
+
+            foreach (VisitedCountry vc in vl.Countries)
+            {
+                AddKnownPlaceID(d, vc.Id);
+                foreach (VisitedAdmin1 va1 in vc.Admin1s)
+                {
+                    if (!String.IsNullOrEmpty(va1.Id))
+                        AddKnownPlaceID(d, PlaceKey(vc.Id, va1.Id));
+                }
+            }
+            return d;
+        }
+
+        /// <summary>
+        /// Saves a Google place ID for the specified place key (e.g., "USA" or "USA-CA").  Caller is responsible for authorization.
+        /// </summary>
+        public void SetPlaceID(string key, string placeID)
+        {
+            if (String.IsNullOrWhiteSpace(key) || key.Length > 100)
+                throw new ArgumentOutOfRangeException(nameof(key));
+            if (placeID == null || !rPlaceID.IsMatch(placeID))
+                throw new ArgumentOutOfRangeException(nameof(placeID));
+
+            new DBHelper("INSERT INTO isoplaceids (isokey, placeid) VALUES (?k, ?p) ON DUPLICATE KEY UPDATE placeid=?p").DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("k", key);
+                comm.Parameters.AddWithValue("p", placeID);
+            });
+            placeIDMap[key] = placeID;
         }
 
         public string CountryCodeForAirport(airport ap)
         {
-            if (ap == null || String.IsNullOrEmpty(ap.Country))
+            return CountryCodeForName(ap?.Country);
+        }
+
+        public string CountryCodeForName(string country)
+        {
+            if (String.IsNullOrEmpty(country))
                 return string.Empty;
 
-            return countryMap.TryGetValue(ap.Country, out string countryCode) ? countryCode : string.Empty;
+            return countryMap.TryGetValue(country, out string countryCode) ? countryCode : string.Empty;
+        }
+
+        public string AdminCodeForName(string admin1)
+        {
+            if (String.IsNullOrEmpty(admin1))
+                return string.Empty;
+
+            return admin1Map.TryGetValue(admin1, out string adminCode) ? adminCode : admin1;
         }
 
         public string AdminCodeForAirport(airport ap)
@@ -757,6 +840,28 @@ namespace MyFlightbook.Airports
         }
 
         private readonly Dictionary<int, HashSet<string>> dByYear = new Dictionary<int, HashSet<string>>();
+
+        /// <summary>
+        /// Returns every distinct country/admin1 found in the airports table (with no airports or timeline), mapped through the ISOMap exactly
+        /// as VisitedLocations(airports) would map them.  Used to bulk-populate Google place IDs.
+        /// </summary>
+        public static VisitedLocations AllAirportRegions()
+        {
+            VisitedLocations vl = new VisitedLocations();
+            ISOMap map = ISOMap.CachedMap;
+            new DBHelper("SELECT DISTINCT Country, Admin1 FROM airports WHERE Country IS NOT NULL AND Country <> ''").ReadRows((comm) => { },
+                (dr) =>
+                {
+                    string idCountry = map.CountryCodeForName(dr["Country"] as string);
+                    if (String.IsNullOrEmpty(idCountry))
+                        return;
+                    VisitedCountry vc = vl.GetCountry(idCountry);
+                    string admin1 = dr["Admin1"] as string;
+                    if (!String.IsNullOrEmpty(admin1))
+                        vc.GetAdmin1(map.AdminCodeForName(admin1), admin1);
+                });
+            return vl;
+        }
 
         public VisitedLocations(IEnumerable<VisitedAirport> airports) : this()
         {

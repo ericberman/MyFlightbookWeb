@@ -1,0 +1,549 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Resources.Airports.visitedAirportTitle</title>
+    <script type="text/javascript" src="@VirtualPathUtility.ToAbsolute("~/public/tmap/scripts/iso.js")"></script>
+    <style>
+        html, body { height: 100%; margin: 0; font-size: 14px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; background-color: #AAD3DF; }
+        #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+        .box { position: absolute; z-index: 2; padding: 8px 10px; background-color: rgba(70, 70, 70, .92); color: #FFFFFF; border-radius: 6px; box-shadow: 0 1px 4px rgba(0, 0, 0, .4); }
+        .box a { color: #DDDDDD; text-decoration: underline dotted; cursor: pointer; }
+        .hidden { display: none !important; }
+        #stat { top: 10px; left: 10px; line-height: 1.6; }
+        #stat b { margin-left: 4px; }
+        #info { top: 100px; left: 10px; width: 260px; max-height: calc(100% - 200px); overflow-y: auto; }
+        #status { bottom: 80px; left: 10px; }
+        #hover { top: 10px; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
+        #timeline { top: 10px; right: 10px; width: 220px; max-height: calc(100% - 110px); overflow-y: auto; }
+        #shuttle { bottom: 28px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100% - 120px)); display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
+        #shuttle input[type=range] { flex: 1; min-width: 0; }
+        #btnPlay { width: 34px; height: 28px; border: none; border-radius: 5px; background-color: #444444; color: #FFFFFF; cursor: pointer; font-size: 14px; }
+        #btnPlay:hover { background-color: #999999; }
+        #yearLabel { font-weight: bold; min-width: 3em; text-align: right; }
+        .close { float: right; cursor: pointer; font-size: 20px; line-height: 1; margin-left: 8px; }
+        .yearHdr { font-weight: bold; cursor: pointer; margin-top: 6px; user-select: none; }
+        .yearHdr.future { opacity: .45; }
+        .yearList { padding: 3px 0 3px 10px; }
+        .flag { width: 14px; vertical-align: middle; margin-right: 4px; }
+        .apIcon { width: 14px; height: 14px; transform: translateY(50%); display: block; }
+        .iw { color: #000000; font-size: 13px; }
+        @@media (max-width: 640px) {
+            #timeline { display: none; }
+            #shuttle { width: calc(100% - 80px); left: 10px; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <div id="map"></div>
+    <div id="stat" class="box"></div>
+    <div id="hover" class="box hidden"></div>
+    <div id="status" class="box hidden"></div>
+    <div id="info" class="box hidden"></div>
+    <div id="timeline" class="box"></div>
+    <div id="shuttle" class="box hidden">
+        <button type="button" id="btnPlay">&#9654;</button>
+        <input type="range" id="yearSlider" step="1" />
+        <span id="yearLabel"></span>
+    </div>
+    <script>
+        (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+            key: "@MyFlightbook.Mapping.GoogleMap.MapsKey",
+            v: "weekly",
+            @if (System.Globalization.CultureInfo.CurrentCulture.Name.CompareCurrentCultureIgnoreCase("en-US") == 0)
+            {
+                @:language: "en",
+                @:region: "CA",
+            }
+        });
+    </script>
+    <script>
+        (function () {
+            "use strict";
+
+            // ---- Data from the server ----
+            const data = @Html.Raw(ViewBag.DataToMap);                 // { countries: [ { id, states: [ { id, name, cities: [ { name, description, coordinates, visityear } ] } ] } ] }
+            const timelineData = @Html.Raw(ViewBag.TimelineData);      // { year: [cumulative country / country-admin1 keys] }
+            const placeIds = @Html.Raw(ViewBag.PlaceIDs);              // { "USA": "ChIJ...", "USA-CA": "ChIJ..." }
+            const mapId = @Html.Raw(ViewBag.MapID);
+            const canPersistPlaceIds = @(ViewBag.CanPersistPlaceIDs ? "true" : "false");
+            const airportIcon = "@VirtualPathUtility.ToAbsolute("~/images/airport.png")";
+            const flagRoot = "@VirtualPathUtility.ToAbsolute("~/public/tmap/flags/4x3/")";
+            const setPlaceIdsUrl = "@Url.Action("SetISOPlaceIDs", "Airport")";
+            const strings = {
+                countries: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Resources.Airports.viewCountryAdminMapTopLevel)),
+                admin1s: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Resources.Airports.viewCountryAdminMapAdmin1)),
+                airports: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Resources.Airports.viewCountryAdminMapAirports)),
+                airportCode: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Resources.Airports.airportCode))
+            };
+
+            const COLOR_UNVISITED = "#9E9E9E";
+            const COLOR_COUNTRY = "#3A6B3D";
+            const COLOR_ADMIN1 = "#1B5E20";
+            const PLAY_INTERVAL_MS = 1000;
+
+            // ---- Helpers ----
+            let regionNames = null;
+            try { regionNames = new Intl.DisplayNames([navigator.language || "en"], { type: "region" }); } catch (e) { regionNames = null; }
+
+            function iso2(c3) { return (typeof iso3to2 === "function" ? iso3to2(c3) : "") || ""; }
+            function countryName(c3) {
+                const c2 = iso2(c3);
+                try { return (regionNames && c2) ? (regionNames.of(c2) || c3) : c3; } catch (e) { return c3; }
+            }
+            function isAdminKey(k) { return k.indexOf("-") > 0; }   // country keys are ISO-3166 alpha-3, never contain a hyphen
+            function el(tag, props, children) {
+                const e = document.createElement(tag);
+                if (props) Object.assign(e, props);
+                for (const c of (children || [])) e.append(c);
+                return e;
+            }
+            function flagImg(c3) {
+                const c2 = iso2(c3);
+                return c2 ? el("img", { className: "flag", src: flagRoot + c2.toLowerCase() + ".svg", alt: "" }) : "";
+            }
+
+            // ---- Flatten the data ----
+            const cities = [];          // every airport
+            const countryByKey = {};    // "USA" -> { id, name, cities }
+            const adminByKey = {};      // "USA-CA" -> { key, country, id, name }
+            for (const country of (data.countries || [])) {
+                if (!country.id) continue;
+                const cEntry = countryByKey[country.id] || (countryByKey[country.id] = { id: country.id, name: countryName(country.id), cities: [] });
+                const states = (country.states && country.states.length) ? country.states : [{ id: "", name: "", cities: country.cities || [] }];
+                for (const st of states) {
+                    const adminKey = st.id ? country.id + "-" + st.id : "";
+                    if (adminKey && !adminByKey[adminKey])
+                        adminByKey[adminKey] = { key: adminKey, country: country.id, id: st.id, name: st.name || st.id };
+                    for (const c of (st.cities || [])) {
+                        const city = {
+                            code: c.name || "",
+                            description: c.description || "",
+                            year: c.visityear,
+                            lat: c.coordinates ? c.coordinates[0] : 0,
+                            lng: c.coordinates ? c.coordinates[1] : 0,
+                            country: country.id,
+                            adminKey: adminKey,
+                            marker: null
+                        };
+                        cities.push(city);
+                        cEntry.cities.push(city);
+                    }
+                }
+            }
+
+            const years = Object.keys(timelineData || {}).map(Number).filter(y => !isNaN(y)).sort((a, b) => a - b);
+            const minYear = years.length ? years[0] : 0;
+            const maxYear = years.length ? years[years.length - 1] : 0;
+            let currentYear = maxYear;
+
+            const keyByPid = {};
+            for (const k in placeIds) keyByPid[placeIds[k]] = k;
+
+            let visitedCountryPids = new Set();
+            let visitedAdminPids = new Set();
+            function keysForYear(y) { return new Set(timelineData[y] || []); }
+            function rebuildVisitedSets() {
+                visitedCountryPids = new Set();
+                visitedAdminPids = new Set();
+                for (const k of keysForYear(currentYear)) {
+                    const pid = placeIds[k];
+                    if (pid) (isAdminKey(k) ? visitedAdminPids : visitedCountryPids).add(pid);
+                }
+            }
+
+            // ---- Map state ----
+            let map = null, infoWindow = null, countryLayer = null, adminLayer = null;
+            let showMarkers = true;
+            let hoverCountryPid = null, hoverAdminPid = null, hoverCountryFeature = null;
+
+            function styleCountry(options) {
+                const pid = options.feature.placeId;
+                const visited = visitedCountryPids.has(pid);
+                const hovered = pid === hoverCountryPid;
+                return {
+                    fillColor: visited ? COLOR_COUNTRY : COLOR_UNVISITED,
+                    fillOpacity: visited ? 0.55 : 0.3,
+                    strokeColor: hovered ? "#000000" : "#FFFFFF",
+                    strokeOpacity: hovered ? 0.9 : 0.6,
+                    strokeWeight: hovered ? 2 : 0.5
+                };
+            }
+
+            function styleAdmin(options) {
+                const pid = options.feature.placeId;
+                if (!visitedAdminPids.has(pid))
+                    return null;    // leave unvisited admin1s unstyled so the country shows through
+                const hovered = pid === hoverAdminPid;
+                return {
+                    fillColor: COLOR_ADMIN1,
+                    fillOpacity: 0.6,
+                    strokeColor: hovered ? "#000000" : "#FFFFFF",
+                    strokeOpacity: hovered ? 0.9 : 0.6,
+                    strokeWeight: hovered ? 2 : 0.5
+                };
+            }
+
+            function restyle() {
+                // Style functions are only re-evaluated when the style property is reassigned.
+                if (countryLayer) countryLayer.style = styleCountry;
+                if (adminLayer) adminLayer.style = styleAdmin;
+            }
+
+            // ---- Hover ----
+            // Both layers (and the map) fire mousemove; gather what we saw in this animation frame and resolve once.
+            let hoverFrame = 0, sawCountry = false, sawAdmin = false, frameCountryPid = null, frameAdminPid = null, frameCountryFeature = null;
+            const placeNameCache = {};
+            let hoverToken = 0;
+
+            function scheduleHover() { if (!hoverFrame) hoverFrame = requestAnimationFrame(applyHover); }
+            function applyHover() {
+                hoverFrame = 0;
+                const newCountry = sawCountry ? frameCountryPid : null;
+                const newAdmin = sawAdmin ? frameAdminPid : null;
+                const newFeature = sawCountry ? frameCountryFeature : null;
+                sawCountry = sawAdmin = false;
+                const countryChanged = newCountry !== hoverCountryPid;
+                const adminChanged = newAdmin !== hoverAdminPid;
+                if (!countryChanged && !adminChanged)
+                    return;
+                hoverCountryPid = newCountry;
+                hoverAdminPid = newAdmin;
+                hoverCountryFeature = newFeature;
+                if (countryChanged) countryLayer.style = styleCountry;
+                if (adminChanged) adminLayer.style = styleAdmin;
+                updateHoverLabel();
+            }
+
+            async function nameForCountry(pid, feature) {
+                const k = keyByPid[pid];
+                if (k && !isAdminKey(k))
+                    return countryName(k);
+                if (pid in placeNameCache)
+                    return placeNameCache[pid];
+                let name = "";
+                try { if (feature) name = (await feature.fetchPlace()).displayName || ""; } catch (e) { name = ""; }
+                placeNameCache[pid] = name;
+                return name;
+            }
+
+            async function updateHoverLabel() {
+                const box = document.getElementById("hover");
+                const token = ++hoverToken;
+                if (!hoverCountryPid) {
+                    box.classList.add("hidden");
+                    return;
+                }
+                const adminPid = hoverAdminPid;
+                let text = await nameForCountry(hoverCountryPid, hoverCountryFeature);
+                if (token !== hoverToken)
+                    return; // stale
+                const ak = adminPid ? keyByPid[adminPid] : null;
+                if (ak && adminByKey[ak])
+                    text = (text ? text + " — " : "") + adminByKey[ak].name;
+                box.textContent = text;
+                box.classList.toggle("hidden", !text);
+            }
+
+            // ---- Info panel ----
+            function showInfo(nodes) {
+                const info = document.getElementById("info");
+                info.replaceChildren(el("span", { className: "close", textContent: "×", onclick: hideInfo }), ...nodes);
+                info.classList.remove("hidden");
+            }
+            function hideInfo() { document.getElementById("info").classList.add("hidden"); }
+
+            function showCountryInfo(pid) {
+                const k = keyByPid[pid];
+                const c = k ? countryByKey[k] : null;
+                if (!c || !visitedCountryPids.has(pid)) {
+                    hideInfo();
+                    return;
+                }
+                const nodes = [flagImg(c.id), el("b", { textContent: c.name })];
+                for (const city of c.cities) {
+                    if (city.year > currentYear) continue;
+                    nodes.push(el("br"), el("br"), el("a", { textContent: city.code, onclick: () => showCity(city, true) }), el("br"), document.createTextNode(" " + city.description));
+                }
+                showInfo(nodes);
+            }
+
+            function showCity(city, fPan) {
+                const content = el("div", { className: "iw" }, [flagImg(city.country), el("b", { textContent: city.code })]);
+                for (const line of city.description.split("\n"))
+                    content.append(el("br"), document.createTextNode(line));
+                infoWindow.setContent(content);
+                if (city.marker && city.marker.map) {
+                    infoWindow.open({ map: map, anchor: city.marker });
+                } else if (city.lat || city.lng) {
+                    infoWindow.setPosition({ lat: city.lat, lng: city.lng });
+                    infoWindow.open({ map: map });
+                }
+                if (fPan && (city.lat || city.lng)) {
+                    map.panTo({ lat: city.lat, lng: city.lng });
+                    if (map.getZoom() < 6) map.setZoom(6);
+                }
+            }
+
+            function showCountryList() {
+                const list = [];
+                for (const k of keysForYear(currentYear))
+                    if (!isAdminKey(k)) list.push({ id: k, name: countryName(k) });
+                list.sort((a, b) => a.name.localeCompare(b.name));
+                const nodes = [];
+                for (const c of list) nodes.push(flagImg(c.id), document.createTextNode(c.name), el("br"));
+                showInfo(nodes);
+            }
+
+            function showAdminList() {
+                const list = [];
+                for (const k of keysForYear(currentYear)) {
+                    if (isAdminKey(k)) {
+                        const a = adminByKey[k];
+                        list.push({ country: k.substring(0, k.indexOf("-")), name: a ? a.name : k.substring(k.indexOf("-") + 1) });
+                    }
+                }
+                list.sort((a, b) => countryName(a.country).localeCompare(countryName(b.country)) || a.name.localeCompare(b.name));
+                const nodes = [];
+                for (const a of list) nodes.push(flagImg(a.country), document.createTextNode(a.name), el("br"));
+                showInfo(nodes);
+            }
+
+            // ---- Stats, side list, shuttle ----
+            function updateStats() {
+                let nCountries = 0, nAdmins = 0;
+                for (const k of keysForYear(currentYear))
+                    isAdminKey(k) ? nAdmins++ : nCountries++;
+                const nAirports = cities.filter(c => c.year <= currentYear).length;
+                document.getElementById("stat").replaceChildren(
+                    el("a", { textContent: strings.countries, onclick: showCountryList }), el("b", { textContent: nCountries }), el("br"),
+                    el("a", { textContent: strings.admin1s, onclick: showAdminList }), el("b", { textContent: nAdmins }), el("br"),
+                    document.createTextNode(strings.airports), el("b", { textContent: nAirports }));
+            }
+
+            function buildTimelineList() {
+                const tl = document.getElementById("timeline");
+                const chk = el("input", { type: "checkbox", id: "chkMarkers", checked: true });
+                chk.addEventListener("change", () => { showMarkers = chk.checked; updateMarkers(); });
+                tl.append(el("div", null, [chk, el("label", { htmlFor: "chkMarkers", textContent: " " + strings.airportCode })]));
+
+                const byYear = {};
+                for (const city of cities) (byYear[city.year] || (byYear[city.year] = [])).push(city);
+                for (const y of Object.keys(byYear).map(Number).sort((a, b) => a - b)) {
+                    const list = el("div", { className: "yearList hidden" });
+                    for (const city of byYear[y].sort((a, b) => a.code.localeCompare(b.code)))
+                        list.append(flagImg(city.country), el("a", { textContent: city.code, title: city.description, onclick: () => showCity(city, true) }), el("br"));
+                    const hdr = el("div", { className: "yearHdr", textContent: "▸ " + y });
+                    hdr.dataset.year = y;
+                    hdr.addEventListener("click", () => {
+                        const fHidden = list.classList.toggle("hidden");
+                        hdr.textContent = (fHidden ? "▸ " : "▾ ") + y;
+                    });
+                    tl.append(hdr, list);
+                }
+            }
+
+            function updateMarkers() {
+                for (const city of cities) {
+                    if (city.marker)
+                        city.marker.map = (showMarkers && city.year <= currentYear) ? map : null;
+                }
+            }
+
+            function setYear(y) {
+                currentYear = Math.min(Math.max(y, minYear), maxYear);
+                document.getElementById("yearSlider").value = currentYear;
+                document.getElementById("yearLabel").textContent = currentYear;
+                for (const hdr of document.querySelectorAll(".yearHdr"))
+                    hdr.classList.toggle("future", Number(hdr.dataset.year) > currentYear);
+                rebuildVisitedSets();
+                restyle();
+                updateMarkers();
+                updateStats();
+                if (infoWindow) infoWindow.close();
+            }
+
+            let playTimer = null;
+            function stopPlay() {
+                if (playTimer) clearInterval(playTimer);
+                playTimer = null;
+                document.getElementById("btnPlay").innerHTML = "&#9654;";
+            }
+            function togglePlay() {
+                if (playTimer) {
+                    stopPlay();
+                    return;
+                }
+                if (currentYear >= maxYear)
+                    setYear(minYear);
+                document.getElementById("btnPlay").innerHTML = "&#10074;&#10074;";
+                playTimer = setInterval(() => {
+                    if (currentYear >= maxYear)
+                        stopPlay();
+                    else
+                        setYear(currentYear + 1);
+                }, PLAY_INTERVAL_MS);
+            }
+
+            function initShuttle() {
+                if (!years.length || minYear === maxYear)
+                    return;
+                const slider = document.getElementById("yearSlider");
+                slider.min = minYear;
+                slider.max = maxYear;
+                slider.value = currentYear;
+                slider.addEventListener("input", () => { stopPlay(); setYear(Number(slider.value)); });
+                document.getElementById("btnPlay").addEventListener("click", togglePlay);
+                document.getElementById("yearLabel").textContent = currentYear;
+                document.getElementById("shuttle").classList.remove("hidden");
+            }
+
+            // ---- Place ID resolution for any region we don't yet have a place ID for ----
+            // Only done for admins (who can save the results), so regular page views never incur Geocoding charges.
+            const SAVE_BATCH_SIZE = 25;
+            function savePlaceIds(batch) {
+                if (!Object.keys(batch).length)
+                    return;
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                fetch(setPlaceIdsUrl, {
+                    method: "POST",
+                    headers: { "X-CSRF-Token": tokenInput ? tokenInput.value : "" },
+                    body: new URLSearchParams({ placeIDs: JSON.stringify(batch) })
+                }).then(resp => { if (!resp.ok) console.warn("Saving place IDs failed: " + resp.status); });
+            }
+
+            async function resolveMissingPlaceIds() {
+                if (!canPersistPlaceIds)
+                    return;
+                const missing = [];
+                for (const k in countryByKey)
+                    if (!placeIds[k]) missing.push({ key: k, type: "country", c2: iso2(k), address: countryName(k) });
+                for (const k in adminByKey)
+                    if (!placeIds[k]) missing.push({ key: k, type: "administrative_area_level_1", c2: iso2(adminByKey[k].country), address: adminByKey[k].name });
+                if (!missing.length)
+                    return;
+
+                const { Geocoder } = await google.maps.importLibrary("geocoding");
+                const geocoder = new Geocoder();
+                const status = document.getElementById("status");
+                status.classList.remove("hidden");
+                let batch = {}, nFound = 0, nDone = 0;
+                for (const m of missing) {
+                    status.textContent = "Resolving place IDs: " + (++nDone) + " / " + missing.length + " (" + nFound + " found)";
+                    if (!m.c2) {
+                        console.warn("No ISO-2 code for " + m.key + "; cannot resolve place ID");
+                        continue;
+                    }
+                    try {
+                        const response = await geocoder.geocode({ address: m.address, componentRestrictions: { country: m.c2 } });
+                        const r = (response.results || []).find(x => (x.types || []).indexOf(m.type) >= 0);
+                        if (r) {
+                            nFound++;
+                            batch[m.key] = r.place_id;
+                            if (Object.keys(batch).length >= SAVE_BATCH_SIZE) {
+                                savePlaceIds(batch);
+                                batch = {};
+                            }
+                            placeIds[m.key] = r.place_id;
+                            keyByPid[r.place_id] = m.key;
+                        } else {
+                            console.warn("No " + m.type + " result for " + m.key + " (" + m.address + ")");
+                        }
+                    } catch (e) {
+                        console.warn("Geocode failed for " + m.key + " (" + m.address + ")", e);
+                    }
+                }
+
+                savePlaceIds(batch);
+                status.textContent = "Resolved " + nFound + " of " + missing.length + " missing place IDs; see console for any that failed.";
+                if (nFound) {
+                    rebuildVisitedSets();
+                    restyle();
+                }
+            }
+
+            // ---- Init ----
+            async function init() {
+                buildTimelineList();
+                initShuttle();
+                rebuildVisitedSets();
+                updateStats();
+
+                const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+                map = new Map(document.getElementById("map"), {
+                    mapId: mapId,
+                    center: { lat: 20, lng: 0 },
+                    zoom: 2,
+                    mapTypeControl: false,
+                    streetViewControl: false,
+                    fullscreenControl: false,
+                    clickableIcons: false
+                });
+                infoWindow = new InfoWindow();
+
+                map.addListener("mapcapabilities_changed", () => {
+                    if (!map.getMapCapabilities().isDataDrivenStylingAvailable)
+                        console.error("Data-driven styling is not available for this map ID; check that it is a vector JavaScript map ID whose style has the Country and Administrative area level 1 feature layers enabled.");
+                });
+
+                countryLayer = map.getFeatureLayer("COUNTRY");
+                adminLayer = map.getFeatureLayer("ADMINISTRATIVE_AREA_LEVEL_1");
+                restyle();
+
+                countryLayer.addListener("mousemove", (e) => {
+                    sawCountry = true;
+                    frameCountryFeature = (e.features && e.features.length) ? e.features[0] : null;
+                    frameCountryPid = frameCountryFeature ? frameCountryFeature.placeId : null;
+                    scheduleHover();
+                });
+                adminLayer.addListener("mousemove", (e) => {
+                    const pid = (e.features && e.features.length) ? e.features[0].placeId : null;
+                    if (pid && visitedAdminPids.has(pid)) {
+                        sawAdmin = true;
+                        frameAdminPid = pid;
+                    }
+                    scheduleHover();
+                });
+                map.addListener("mousemove", scheduleHover);
+                map.getDiv().addEventListener("mouseleave", () => { sawCountry = sawAdmin = false; scheduleHover(); });
+
+                countryLayer.addListener("click", (e) => {
+                    if (e.features && e.features.length)
+                        showCountryInfo(e.features[0].placeId);
+                });
+                map.addListener("click", hideInfo);
+
+                const bounds = new google.maps.LatLngBounds();
+                let nPlaced = 0;
+                for (const city of cities) {
+                    if (!city.lat && !city.lng)
+                        continue;
+                    const img = el("img", { className: "apIcon", src: airportIcon, alt: city.code });
+                    city.marker = new AdvancedMarkerElement({ position: { lat: city.lat, lng: city.lng }, content: img, title: city.code, gmpClickable: true });
+                    city.marker.addListener("click", () => showCity(city, false));
+                    bounds.extend({ lat: city.lat, lng: city.lng });
+                    nPlaced++;
+                }
+                updateMarkers();
+
+                if (nPlaced > 0) {
+                    map.fitBounds(bounds, 40);
+                    google.maps.event.addListenerOnce(map, "idle", () => { if (map.getZoom() > 8) map.setZoom(8); });
+                }
+
+                resolveMissingPlaceIds();
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>

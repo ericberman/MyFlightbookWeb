@@ -637,23 +637,80 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Visited Map
+        private VisitedLocations VisitedLocationsForRequest(string fqs, string v)
+        {
+            if (v != null)
+                return new VisitedLocations(v);
+
+            FlightQuery fq = String.IsNullOrEmpty(fqs) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fqs);
+            if (fq.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
+                throw new UnauthorizedAccessException();
+
+            return new VisitedLocations(VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq)));
+        }
+
         [Authorize]
         public ActionResult VisitedMap(string fqs = null, string v = null)
         {
-            VisitedLocations locations = (v == null) ? null : new VisitedLocations(v);
-
-            if (v == null)
-            {
-                FlightQuery fq = String.IsNullOrEmpty(fqs) ? new FlightQuery(User.Identity.Name) : FlightQuery.FromBase64CompressedJSON(fqs);
-                if (fq.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
-                    throw new UnauthorizedAccessException();
-
-                locations = new VisitedLocations(VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(User.Identity.Name, fq)));
-            }
+            VisitedLocations locations = VisitedLocationsForRequest(fqs, v);
 
             ViewBag.DataToMap = JsonConvert.SerializeObject(locations, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
             ViewBag.TimelineData = JsonConvert.SerializeObject(locations.BuildTimeline());
             return View("visitedMap");
+        }
+
+        /// <summary>
+        /// Visited map rendered on Google Maps, using data-driven styling of country/admin1 boundaries.
+        /// </summary>
+        [Authorize]
+        public ActionResult VisitedMap2(string fqs = null, string v = null)
+        {
+            return VisitedMap2ForLocations(VisitedLocationsForRequest(fqs, v));
+        }
+
+        /// <summary>
+        /// Admin-only: renders visitedMap2 with every country/admin1 in the airports table, so that the page geocodes and saves any missing place IDs.
+        /// </summary>
+        [Authorize]
+        public ActionResult SeedISOPlaceIDs()
+        {
+            if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData)
+                throw new UnauthorizedAccessException();
+            return VisitedMap2ForLocations(VisitedLocations.AllAirportRegions());
+        }
+
+        private ActionResult VisitedMap2ForLocations(VisitedLocations locations)
+        {
+            // EscapeHtml so that a "</script>" in an airport name can't break out of the script block.
+            JsonSerializerSettings jss = new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeHtml };
+            ViewBag.DataToMap = JsonConvert.SerializeObject(locations, jss);
+            ViewBag.TimelineData = JsonConvert.SerializeObject(locations.BuildTimeline(), jss);
+            ViewBag.PlaceIDs = JsonConvert.SerializeObject(ISOMap.CachedMap.PlaceIDsForLocations(locations), jss);
+            ViewBag.MapID = JsonConvert.SerializeObject(LocalConfig.SettingForKey("GoogleMapIDVisited") ?? string.Empty, jss);
+            ViewBag.CanPersistPlaceIDs = MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
+            return View("visitedMap2");
+        }
+
+        /// <summary>
+        /// Saves Google place IDs resolved client-side for ISO place keys (e.g., "USA" or "USA-CA").  Admin/data-manager only, since the table is shared by all users.
+        /// </summary>
+        /// <param name="placeIDs">JSON dictionary of place key => place ID</param>
+        [Authorize]
+        [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
+        public ActionResult SetISOPlaceIDs(string placeIDs)
+        {
+            return SafeOp(() =>
+            {
+                if (!MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData)
+                    throw new UnauthorizedAccessException();
+
+                Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(placeIDs ?? "{}") ?? new Dictionary<string, string>();
+                ISOMap map = ISOMap.CachedMap;
+                foreach (KeyValuePair<string, string> kvp in d)
+                    map.SetPlaceID(kvp.Key, kvp.Value);
+                return new EmptyResult();
+            });
         }
         #endregion
 

@@ -2010,6 +2010,7 @@
     <Content Include="Areas\mvc\Views\Internal\_printFooter.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\allClubs.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\visitedMap.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\visitedMap2.cshtml" />
     <Content Include="Areas\mvc\Views\Search\_searchForm.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\visitedAirports.cshtml" />
     <Content Include="Areas\mvc\Views\Search\_queryDescriptorItem.cshtml" />
