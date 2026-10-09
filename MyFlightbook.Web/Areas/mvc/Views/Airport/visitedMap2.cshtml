@@ -425,12 +425,39 @@
                 for (const k in countryByKey)
                     if (!placeIds[k]) missing.push({ key: k, type: "country", c2: iso2(k), address: countryName(k) });
                 for (const k in adminByKey)
-                    if (!placeIds[k]) missing.push({ key: k, type: "administrative_area_level_1", c2: iso2(adminByKey[k].country), address: adminByKey[k].name });
+                    if (!placeIds[k]) missing.push({ key: k, type: "administrative_area_level_1", c2: iso2(adminByKey[k].country), address: adminByKey[k].name, code: adminByKey[k].id });
                 if (!missing.length)
                     return;
 
                 const { Geocoder } = await google.maps.importLibrary("geocoding");
                 const geocoder = new Geocoder();
+
+                // Returns { match, seen } where match is the first result of the desired type (or null) and seen describes what came back instead.
+                async function tryGeocode(request, type) {
+                    try {
+                        const response = await geocoder.geocode(request);
+                        const results = response.results || [];
+                        return {
+                            match: results.find(x => (x.types || []).indexOf(type) >= 0) || null,
+                            seen: results.slice(0, 2).map(x => x.formatted_address + " [" + (x.types || []).join(",") + "]").join("; ")
+                        };
+                    } catch (e) {
+                        return { match: null, seen: (e && e.code) ? e.code : String(e) };
+                    }
+                }
+
+                // For admin1s, a free-text search for e.g. "New York" finds the city rather than the state, so first ask for
+                // the administrative area by component (name, then code), and only fall back to free text.
+                function requestsFor(m) {
+                    const reqs = [];
+                    if (m.type === "administrative_area_level_1") {
+                        reqs.push({ componentRestrictions: { country: m.c2, administrativeArea: m.address } });
+                        if (m.code && m.code !== m.address)
+                            reqs.push({ componentRestrictions: { country: m.c2, administrativeArea: m.code } });
+                    }
+                    reqs.push({ address: m.address, componentRestrictions: { country: m.c2 } });
+                    return reqs;
+                }
                 const status = document.getElementById("status");
                 status.classList.remove("hidden");
                 let batch = {}, nFound = 0, nDone = 0;
@@ -440,23 +467,25 @@
                         console.warn("No ISO-2 code for " + m.key + "; cannot resolve place ID");
                         continue;
                     }
-                    try {
-                        const response = await geocoder.geocode({ address: m.address, componentRestrictions: { country: m.c2 } });
-                        const r = (response.results || []).find(x => (x.types || []).indexOf(m.type) >= 0);
-                        if (r) {
-                            nFound++;
-                            batch[m.key] = r.place_id;
-                            if (Object.keys(batch).length >= SAVE_BATCH_SIZE) {
-                                savePlaceIds(batch);
-                                batch = {};
-                            }
-                            placeIds[m.key] = r.place_id;
-                            keyByPid[r.place_id] = m.key;
-                        } else {
-                            console.warn("No " + m.type + " result for " + m.key + " (" + m.address + ")");
+                    let r = null;
+                    const attempts = [];
+                    for (const req of requestsFor(m)) {
+                        const result = await tryGeocode(req, m.type);
+                        attempts.push(result.seen || "(no results)");
+                        if ((r = result.match) !== null)
+                            break;
+                    }
+                    if (r) {
+                        nFound++;
+                        batch[m.key] = r.place_id;
+                        if (Object.keys(batch).length >= SAVE_BATCH_SIZE) {
+                            savePlaceIds(batch);
+                            batch = {};
                         }
-                    } catch (e) {
-                        console.warn("Geocode failed for " + m.key + " (" + m.address + ")", e);
+                        placeIds[m.key] = r.place_id;
+                        keyByPid[r.place_id] = m.key;
+                    } else {
+                        console.warn("No " + m.type + " result for " + m.key + " (" + m.address + "); got: " + attempts.join(" | "));
                     }
                 }
 
