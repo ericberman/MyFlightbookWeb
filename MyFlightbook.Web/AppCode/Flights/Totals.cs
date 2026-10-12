@@ -987,14 +987,14 @@ namespace MyFlightbook.Currency
        SUM(IF(YEAR(dtEngineStart) > 1 AND YEAR(dtEngineEnd) > 1 AND dtEngineEnd > dtEngineStart, TIME_TO_SEC(TIMEDIFF(dtEngineEnd, dtEngineStart)) / 3600.0, 0)) AS TotalEngineTime,
        SUM(IF(HobbsEnd > 0 AND HobbsStart > 0 AND HobbsEnd - HobbsStart > 0, HobbsEnd - HobbsStart, 0)) AS TotalHobbs,";
 
-        private const string szTotalsQuery = @"SELECT CatClassDisplay AS CatClassDisplay,
-         cc.idCatClass,
-         cc.CatClass,
-         f.idmodel,
-         f.typename,
-         f.ModelDisplay,
-         f.Family,
-         f.FamilyDisplay,
+        private const string szTotalsQuery = @"SELECT  ANY_VALUE(CatClassDisplay) AS CatClassDisplay,
+       ANY_VALUE(cc.idCatClass) AS idCatClass,
+       ANY_VALUE(cc.CatClass) AS CatClass,
+       ANY_VALUE(f.idmodel) AS idmodel,
+       ANY_VALUE(f.typename) AS typename,
+       ANY_VALUE(f.ModelDisplay) AS ModelDisplay,
+       ANY_VALUE(f.Family) AS Family,
+       ANY_VALUE(f.FamilyDisplay) AS FamilyDisplay,
          COUNT(DISTINCT f.idFlight) AS numFlights,
          {0}
          SUM(ROUND(crosscountry*?qf))/?qf AS XCountry,

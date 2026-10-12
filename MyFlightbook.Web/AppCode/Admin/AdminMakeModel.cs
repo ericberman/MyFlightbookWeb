@@ -125,7 +125,7 @@ namespace MyFlightbook.Admin
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szSQLSelectTemplate, string.Empty,
                 String.Format(CultureInfo.InvariantCulture, @"UPPER(REPLACE(REPLACE(CONCAT(models.model, models.idcategoryclass,models.typename), '-', ''), ' ', '')) IN
-                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,m2.idcategoryclass,m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) AS dupes)
+                    (SELECT modelandtype FROM (SELECT COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,m2.idcategoryclass,m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) AS dupes)
                     {0}
                 ORDER BY models.model", fIncludeSims ? string.Empty : "HAVING models.fSimOnly = 0")));
             List<MakeModel> lst = new List<MakeModel>();

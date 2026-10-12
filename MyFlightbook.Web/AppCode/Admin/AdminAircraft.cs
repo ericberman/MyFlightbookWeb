@@ -713,8 +713,8 @@ FROM
     Aircraft ac
         INNER JOIN
     aircraftinstancetypes aic ON ac.instancetype = aic.id
-GROUP BY AircraftInstance
-ORDER BY ac.instancetype ASC");
+GROUP BY ac.instancetype, AircraftInstance
+ORDER BY ac.instancetype, AircraftInstance ASC");
             dbh.ReadRows((comm) => { comm.CommandTimeout = 300; },
                 (dr) => { lst.Add(new AircraftInstanceTypeStat() { InstanceType = (string)dr["AircraftInstance"], NumAircraft = Convert.ToInt32(dr["Number of Aircraft"], CultureInfo.InvariantCulture) }); });
 

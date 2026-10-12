@@ -625,11 +625,23 @@ namespace MyFlightbook.Clubs
             LastError = dbh.LastError;
         }
 
-        private const string szSQLGetClubsBase = @"SELECT *, 0 AS dist, '' AS FriendlyName 
-        FROM clubs c 
-            LEFT JOIN airports ap ON (c.clubHomeAirport=ap.AirportID OR (LENGTH(c.clubHomeAirport)=4 AND c.clubHomeAirport= CONCAT('K', ap.airportID))) AND ap.Type IN ('A', 'H', 'S')
-            {0}
-        GROUP BY c.idclub, c.clubHomeAirport";
+        private const string szSQLGetClubsBase = @"SELECT *, 0 AS dist, '' AS FriendlyName
+FROM clubs c
+  LEFT JOIN LATERAL (
+    SELECT * FROM (
+      SELECT a.* FROM airports a
+      WHERE a.AirportID = c.clubHomeAirport
+        AND a.Type IN ('A', 'H', 'S')
+      UNION ALL
+      SELECT a.* FROM airports a
+      WHERE LENGTH(c.clubHomeAirport) = 4 AND LEFT(c.clubHomeAirport, 1) = 'K'
+        AND a.AirportID = SUBSTRING(c.clubHomeAirport, 2)
+        AND a.Type IN ('A', 'H', 'S')
+    ) m
+    ORDER BY LENGTH(m.AirportID) DESC
+    LIMIT 1
+  ) ap ON TRUE
+{0}";
 
         private static string PrivateInactiveRestriction()
         {
@@ -711,7 +723,7 @@ namespace MyFlightbook.Clubs
         public static IEnumerable<Club> AllClubsForUser(string szUser)
         {
             List<Club> lst = new List<Club>();
-            DBHelper dbh = new DBHelper("SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName FROM clubs c LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') LEFT JOIN clubmembers cm ON cm.idclub=c.idclub WHERE (cm.username IS NULL AND c.creator=?user) OR cm.username=?user GROUP BY c.idclub");
+            DBHelper dbh = new DBHelper("SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName FROM clubs c LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') LEFT JOIN clubmembers cm ON cm.idclub=c.idclub WHERE (cm.username IS NULL AND c.creator=?user) OR cm.username=?user");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); }, (dr) => { lst.Add(new Club(dr)); });
             return lst;
         }
@@ -734,8 +746,7 @@ namespace MyFlightbook.Clubs
                 INNER JOIN clubs c ON ca.idclub=c.idclub 
                 {0}
                 LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') 
-                WHERE ca.idaircraft=?idaircraft {1}
-                GROUP BY c.idclub", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
+                WHERE ca.idaircraft=?idaircraft {1}", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows((comm) => {
                 comm.Parameters.AddWithValue("idaircraft", idaircraft);
@@ -758,7 +769,6 @@ namespace MyFlightbook.Clubs
                 LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') 
                 LEFT JOIN airports ap2 ON ABS(ap2.latitude - ap.latitude) <= 2 AND ABS(ap2.longitude - ap.longitude) <= 2
                 WHERE ap2.airportid=?code AND ap2.type IN ('A', 'H', 'S') {0}
-                GROUP BY c.idclub
                 ORDER BY dist ASC";
             string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate, fIncludePrivateAndInactive ? string.Empty : " AND " + PrivateInactiveRestriction());
             DBHelper dbh = new DBHelper(szQ);

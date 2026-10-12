@@ -183,34 +183,36 @@ namespace MyFlightbook.StartingFlights
         #region Querystrings
         // Issue #1461 - wasn't striping correctly by type if you have multiple type ratings.
         private const string sqlRepresentativeTypesBase = @"
-    SELECT
+   SELECT
     CONCAT(cc.CatClass, IF(m.typename = '', '', CONCAT(' (', m.typename, ')'))) AS catclasstype,
-    CONCAT(
-      cc.CatClass,
-      IF(m.fTurbine, 'B', ' '),
-      IF(m.fRetract, 'R', ' '),
-      IF(m.fComplex, 'X', ' '),
-      IF(m.fHighPerf, 'H', ' '),
-      IF(m.fTailwheel, 'T', ' '),
-      IF(m.fConstantProp, 'C', ' '),
-      m.typename
-      ) AS ModelSignature,
-m.fComplex+m.fHighPerf+m.fTailwheel+m.fConstantProp+m.fTurbine+m.fRetract AS Capabilities,
-GROUP_CONCAT(cast(ac.idAircraft AS char(8)) separator ',') AS AircraftIDs,
-GROUP_CONCAT(ac.tailnumber separator ',') AS Tailnumbers,
-m.*
-FROM aircraft ac
-INNER JOIN useraircraft ua ON ua.idAircraft = ac.idAircraft
-INNER JOIN models m ON ac.idmodel=m.idmodel
-INNER JOIN CategoryClass cc ON m.idcategoryclass=cc.idCatClass
-WHERE ua.username=?uName AND ac.instancetype=1
-GROUP BY {0}
+    CONCAT(cc.CatClass,
+           IF(m.fTurbine, 'B', ' '), IF(m.fRetract, 'R', ' '), IF(m.fComplex, 'X', ' '),
+           IF(m.fHighPerf, 'H', ' '), IF(m.fTailwheel, 'T', ' '), IF(m.fConstantProp, 'C', ' '),
+           m.typename) AS ModelSignature,
+    m.fComplex+m.fHighPerf+m.fTailwheel+m.fConstantProp+m.fTurbine+m.fRetract AS Capabilities,
+    g.AircraftIDs,
+    g.Tailnumbers,
+    m.*
+FROM (
+    SELECT {0} AS grpkey,
+           MIN(m.idmodel) AS idmodel,
+           GROUP_CONCAT(CAST(ac.idAircraft AS CHAR(8)) ORDER BY m.idmodel, ac.idAircraft SEPARATOR ',') AS AircraftIDs,
+           GROUP_CONCAT(ac.tailnumber ORDER BY m.idmodel, ac.idAircraft SEPARATOR ',') AS Tailnumbers
+    FROM aircraft ac
+    INNER JOIN useraircraft ua ON ua.idAircraft = ac.idAircraft
+    INNER JOIN models m ON ac.idmodel = m.idmodel
+    INNER JOIN CategoryClass cc ON m.idcategoryclass = cc.idCatClass
+    WHERE ua.username = ?uName AND ac.instancetype = 1
+    GROUP BY grpkey
+) g
+INNER JOIN models m ON m.idmodel = g.idmodel
+INNER JOIN CategoryClass cc ON m.idcategoryclass = cc.idCatClass
 ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
     ";
 
         private static readonly string sqlAircraftModels = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "m.idmodel");
-        private static readonly string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "ModelSignature");
-        private static readonly string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM ({0}) types GROUP BY types.catclasstype", sqlAircraftCatClassCapabilities);
+        private static readonly string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "CONCAT(cc.CatClass, IF(m.fTurbine, 'B', ' '), IF(m.fRetract, 'R', ' '), IF(m.fComplex, 'X', ' '), IF(m.fHighPerf, 'H', ' '), IF(m.fTailwheel, 'T', ' '), IF(m.fConstantProp, 'C', ' '), m.typename)");
+        private static readonly string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "CONCAT(cc.CatClass, IF(m.typename = '', '', CONCAT(' (', m.typename, ')')))");
         #endregion
 
         #region Properties

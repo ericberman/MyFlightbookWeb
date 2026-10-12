@@ -378,7 +378,7 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND ac.InstanceType = 1");
 
                     // Popular models
                     const string szPopularModels = @"SELECT 
-                    man.manufacturer, IF(m.typename='', IF(m.family = '', m.model, m.family), m.typename) AS icao, COUNT(f.idflight) AS num
+                    ANY_VALUE(man.manufacturer) AS manufacturer, IF(m.typename='', IF(m.family = '', m.model, m.family), m.typename) AS icao, COUNT(f.idflight) AS num
                 FROM
                     flights f
                         INNER JOIN

@@ -1952,8 +1952,7 @@ namespace MyFlightbook
             List<NewUserStats> lst = new List<NewUserStats>();
             int runningTotal = 0;
             DBHelper dbh = new DBHelper(@"SELECT
-    CAST(CONCAT(YEAR(CreationDate), '-', MONTHNAME(CreationDate)) AS CHAR) AS 'DisplayPeriod',
-    DATE(CreationDate) AS CDate,
+    MIN(DATE(CreationDate)) AS CDate,
     COUNT(DISTINCT(username)) AS NewUsers
 FROM
 	users

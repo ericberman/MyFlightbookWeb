@@ -287,7 +287,7 @@ namespace MyFlightbook
 
             // One more hack for helping find the right aircraft:
             // For anonymous aircraft, it's useful to include those aircraft registrations; we can then use that to detect otherwise missing aircraft and map them to this one
-            DBHelper dbh = new DBHelper("select fp.StringValue AS 'tail', f.idaircraft from flightproperties fp inner join flights f on fp.idflight=f.idflight where f.username=?user and fp.idproptype=559 group by fp.StringValue");
+            DBHelper dbh = new DBHelper("select fp.StringValue AS 'tail', f.idaircraft from flightproperties fp inner join flights f on fp.idflight=f.idflight where f.username=?user and fp.idproptype=559 group by fp.StringValue, f.idaircraft");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", User); }, (dr) =>
             {
                 string szTail = Aircraft.NormalizeTail((string)dr["tail"]);

@@ -598,7 +598,23 @@ namespace OAuthAuthorizationServer.Code
         {
             List<MFBOauthClientAuth> lst = new List<MFBOauthClientAuth>();
 
-            DBHelper dbh = new DBHelper("SELECT oca.*, aoc.ClientName FROM oauthclientauthorization oca INNER JOIN allowedoauthclients aoc ON oca.ClientId=aoc.clientid WHERE (ExpirationDateUtc IS NULL OR ExpirationDateUTC > UTC_TIMESTAMP()) AND userID=?uname GROUP BY clientID");
+            DBHelper dbh = new DBHelper(@"SELECT 
+    0 AS AuthorizationID,
+    ANY_VALUE(CreatedOnUtc) AS CreatedOnUTC,
+    oca.ClientId,
+    oca.UserId,
+    '' AS Scope,
+    ANY_VALUE(oca.ExpirationDateUtc) AS ExpirationDateUtc,
+    aoc.ClientName
+FROM
+    oauthclientauthorization oca
+        INNER JOIN
+    allowedoauthclients aoc ON oca.ClientId = aoc.clientid
+WHERE
+    (ExpirationDateUtc IS NULL
+        OR ExpirationDateUTC > UTC_TIMESTAMP())
+        AND userID = 'ericbe'
+GROUP BY clientID;");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("uname", username); },
                 (dr) => { lst.Add(new MFBOauthClientAuth(dr)); });
             return lst;
