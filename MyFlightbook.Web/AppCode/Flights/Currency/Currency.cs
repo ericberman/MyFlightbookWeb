@@ -583,13 +583,14 @@ namespace MyFlightbook.Currency
          IF (flights.idCatClassOverride = 0, 0, 1) AS IsOverridden,
          IF (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) AS CatClassOverride,
          fdc2.dateValue AS blockOut,
-		 IF (fdc.idprop IS NULL, CONVERT(null using utf8mb4), JSON_ARRAYAGG(JSON_OBJECT('PropID', fdc.idprop, 'PropTypeID', fdc.idPropType, 'ValueString', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, IF(fdc.IntValue<>0, 'true', 'false'), fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)))) AS CustomPropsJSON
-         FROM flights INNER JOIN aircraft on flights.idaircraft = aircraft.idaircraft
+         (SELECT JSON_ARRAYAGG(JSON_OBJECT('PropID', p.idprop, 'PropTypeID', p.idPropType, 'ValueString', ELT(t.type + 1, p.IntValue, p.DecValue, IF(p.IntValue<>0, 'true', 'false'), p.DateValue, p.DateValue, p.StringValue, p.DecValue)))
+           FROM FlightProperties p
+           LEFT JOIN custompropertytypes t ON p.idPropType = t.idPropType
+           WHERE p.idFlight = flights.idFlight) AS CustomPropsJSON
+        FROM flights INNER JOIN aircraft on flights.idaircraft = aircraft.idaircraft
            INNER JOIN models on aircraft.idmodel = models.idmodel
            INNER JOIN manufacturers man ON models.idManufacturer=man.idManufacturer
            INNER JOIN aircraftinstancetypes on aircraft.InstanceType = aircraftinstancetypes.ID
-           LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
-           LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
            LEFT JOIN FlightProperties fdc2 ON flights.idFlight=fdc2.idflight AND fdc2.idPropType=187
          WHERE flights.username = ?UserName 
          GROUP BY flights.idflight

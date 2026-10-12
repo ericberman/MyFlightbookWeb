@@ -1883,7 +1883,42 @@ namespace MyFlightbook
             return le;
         }
 
-        private const string szBaseQueryTemplate = @"SELECT flights.idFlight,
+        /// <summary>
+        /// Returns a command object with the query string for the user and any optional restriction
+        /// INCLUDES ALL RELEVANT PARAMETERS
+        /// </summary>
+        /// <param name="fq">FlightQuery object (will be refreshed)</param>
+        /// <param name="limit">Maximum results to return, 0 or less for no limit</param>
+        /// <param name="offset">Offset to first result</param>
+        /// <param name="fAsc">True to sort in ascending order (vs. descending)</param>
+        /// <param name="fIncludeTelemetry">True to include telemetry</param>
+        /// <returns>Command object.</returns>
+        public static DBHelperCommandArgs QueryCommand(FlightQuery fq, int offset = -1, int limit = -1, bool fAsc = false, LoadTelemetryOption lto = LoadTelemetryOption.None)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            DBHelperCommandArgs comm = new DBHelperCommandArgs();
+
+            // And any query parameters
+            fq.Refresh();
+            foreach (MySqlParameter p in fq.QueryParameters())
+                comm.Parameters.Add(p);
+
+            StringBuilder sbAdditionalColumns = new StringBuilder(fq.SearchColumns);
+            if (lto != LoadTelemetryOption.None)
+                sbAdditionalColumns.Append("CAST(UNCOMPRESS(flights.Telemetry) AS CHAR) AS FlightData, ");
+
+            StringBuilder sbAdditionalJoins = new StringBuilder();
+            if (fq.NeedsUserAircraft)
+                sbAdditionalJoins.Append(" INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) ");
+
+            if (!String.IsNullOrEmpty(fq.HavingClause))
+                sbAdditionalColumns.AppendFormat(CultureInfo.InvariantCulture, @"(SELECT GROUP_CONCAT(REPLACE(t.FormatString, '{{0}}', ELT(t.type + 1, p.IntValue, p.DecValue, '', p.DateValue, p.DateValue, p.StringValue, p.DecValue)) SEPARATOR ' ')
+   FROM FlightProperties p
+   LEFT JOIN custompropertytypes t ON p.idPropType = t.idPropType
+   WHERE p.idFlight = flights.idFlight) AS CustomProperties,");
+
+            const string szBaseQueryTemplate = @"SELECT flights.idFlight,
     flights.date,
     flights.idaircraft,
     flights.cInstrumentApproaches,
@@ -1930,10 +1965,14 @@ namespace MyFlightbook
     ft.telemetrytype,
     ft.metadata,
     fp2.DateValue AS blockOut,
-	IF (fv.idFlightVideos IS NULL, CONVERT(null using utf8mb4), CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_OBJECT('ID', fv.idFlightVideos, 'FlightID', fv.idFlight, 'VideoReference', fv.vidRef, 'Comment', fv.comment)), ']') AS JSON)) AS FlightVids,
-	IF (fdc.idprop IS NULL, CONVERT(null using utf8mb4), JSON_ARRAYAGG(JSON_OBJECT('PropID', fdc.idprop, 'PropTypeID', fdc.idPropType, 'ValueString', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, IF(fdc.IntValue<>0, 'true', 'false'), fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)))) AS CustomPropsJSON,
-    GROUP_CONCAT(DISTINCT REPLACE(cpt.FormatString, '{{0}}', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, '', fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)) SEPARATOR ' ') AS CustomProperties,
-    models.*,
+(SELECT JSON_ARRAYAGG(JSON_OBJECT('ID', v.idFlightVideos, 'FlightID', v.idFlight, 'VideoReference', v.vidRef, 'Comment', v.comment))
+   FROM flightvideos v
+   WHERE v.idflight = flights.idflight) AS FlightVids,
+(SELECT JSON_ARRAYAGG(JSON_OBJECT('PropID', p.idprop, 'PropTypeID', p.idPropType, 'ValueString', ELT(t.type + 1, p.IntValue, p.DecValue, IF(p.IntValue<>0, 'true', 'false'), p.DateValue, p.DateValue, p.StringValue, p.DecValue)))
+   FROM FlightProperties p
+   LEFT JOIN custompropertytypes t ON p.idPropType = t.idPropType
+   WHERE p.idFlight = flights.idFlight) AS CustomPropsJSON,
+models.*,
     IF(models.fTAA <> 0 OR (aircraft.HasTAAUpgrade  <> 0 AND (aircraft.GlassUpgradeDate IS NULL OR flights.date >= aircraft.GlassUpgradeDate)), 1, 0) AS IsTAA,
     if (flights.idCatClassOverride = 0 OR flights.idCatClassOverride=models.idCategoryClass, 0, 1) AS IsOverridden,
     if (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) AS CatClassOverride,
@@ -1952,8 +1991,6 @@ FROM flights
   {1}
   LEFT JOIN flighttelemetry ft ON (flights.idflight=ft.idflight)
   LEFT JOIN categoryclass ccOver ON (flights.idCatClassOverride = ccOver.idCatClass)
-  LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
-  LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
   LEFT JOIN flightvideos fv ON fv.idflight=flights.idflight
   LEFT JOIN FlightProperties fp2 ON flights.idflight=fp2.idflight AND fp2.idproptype=187
 WHERE {2}
@@ -1962,36 +1999,7 @@ GROUP BY flights.idFlight, aircraft.idaircraft
 ORDER BY flights.date {4}, COALESCE(blockOut, '0001-01-01') {4}, COALESCE(dtEngineStart, '0001-01-01') {4}, COALESCE(dtFlightStart, '0001-01-01') {4}, hobbsStart {4}, flights.idFlight {4}
 {5}";
 
-        /// <summary>
-        /// Returns a command object with the query string for the user and any optional restriction
-        /// INCLUDES ALL RELEVANT PARAMETERS
-        /// </summary>
-        /// <param name="fq">FlightQuery object (will be refreshed)</param>
-        /// <param name="limit">Maximum results to return, 0 or less for no limit</param>
-        /// <param name="offset">Offset to first result</param>
-        /// <param name="fAsc">True to sort in ascending order (vs. descending)</param>
-        /// <param name="fIncludeTelemetry">True to include telemetry</param>
-        /// <returns>Command object.</returns>
-        public static DBHelperCommandArgs QueryCommand(FlightQuery fq, int offset = -1, int limit = -1, bool fAsc = false, LoadTelemetryOption lto = LoadTelemetryOption.None)
-        {
-            if (fq == null)
-                throw new ArgumentNullException(nameof(fq));
-            DBHelperCommandArgs comm = new DBHelperCommandArgs();
-
-            // And any query parameters
-            fq.Refresh();
-            foreach (MySqlParameter p in fq.QueryParameters())
-                comm.Parameters.Add(p);
-
-            StringBuilder sbAdditionalColumns = new StringBuilder(fq.SearchColumns);
-            if (lto != LoadTelemetryOption.None)
-                sbAdditionalColumns.Append("CAST(UNCOMPRESS(flights.Telemetry) AS CHAR) AS FlightData, ");
-
-            StringBuilder sbAdditionalJoins = new StringBuilder();
-            if (fq.NeedsUserAircraft)
-                sbAdditionalJoins.Append(" INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) ");
-
-            comm.QueryString = String.Format(CultureInfo.InvariantCulture, szBaseQueryTemplate,
+        comm.QueryString = String.Format(CultureInfo.InvariantCulture, szBaseQueryTemplate,
                 sbAdditionalColumns.ToString(),                                                             // FlightData column and/or extra search columns
                 sbAdditionalJoins.ToString(),                                                              // Join on user aircraft or images if needed
                 fq.RestrictClause,                                                                          // WHERE clause
