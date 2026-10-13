@@ -86,8 +86,6 @@ FROM (
         WHERE f.username = ?user
           AND f.idaircraft = ?id
           AND fp.idproptype = {0}
-        ORDER BY f.date DESC
-        LIMIT 10
     ) tach
 
     UNION ALL
