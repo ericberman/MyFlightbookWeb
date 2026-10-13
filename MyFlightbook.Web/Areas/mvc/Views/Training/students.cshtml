@@ -220,7 +220,7 @@
             <div class="callout calloutSmall calloutBackground shadowed" style="white-space: pre-line; display: none;" id="divTipCFIExpiration">@Html.Raw(Resources.SignOff.tipInstructorExpiration.Linkify(true))</div>
             <div>&nbsp;</div>
             <div>
-                <input type="email" required name="studentEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtStudentEmail" />
+                <input data-1p-ignore type="email" required name="studentEmail" placeholder="@Resources.LocalizedText.PromptEnterEmail" id="txtStudentEmail" />
                 <button id="btnAddStudent" type="button" onclick="javascript: addStudent();">@Resources.SignOff.RoleAddStudent</button>
             </div>
         }

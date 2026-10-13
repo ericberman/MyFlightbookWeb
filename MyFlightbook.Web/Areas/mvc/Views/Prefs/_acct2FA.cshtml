@@ -36,20 +36,20 @@
         }
         <div id="disable2faResult"></div>
     </div>
-    <div id="vwAddTFA" style="display: none;">
-        <p><span style="font-size:larger; font-weight:bold">1.&nbsp</span>@Resources.Profile.TFADownloadGoogleAuthenticator</p>
-        <p><span style="font-size:larger; font-weight:bold">2.&nbsp</span>@Resources.Profile.TFASaveSecretKey</p>
-        <p><span style="font-size:larger; font-weight:bold">3.&nbsp</span>@Resources.Profile.TFATwoOptionsPrompt</p>
-        <div style="text-align:center">
+    <div id="vwAddTFA" class="dn">
+        <p><span class="l b">1.&nbsp</span>@Resources.Profile.TFADownloadGoogleAuthenticator</p>
+        <p><span class="l b">2.&nbsp</span>@Resources.Profile.TFASaveSecretKey</p>
+        <p><span class="l b">3.&nbsp</span>@Resources.Profile.TFATwoOptionsPrompt</p>
+        <div class="c">
             <div>@Resources.Profile.TFASecretKeyPrompt <span style="font-weight: bold;">@setupInfo.ManualEntryKey</span></div>
             <img id="imgQR" src="@setupInfo.QrCodeSetupImageUrl" />
         </div>
-        <p><span style="font-size:larger; font-weight:bold">4.&nbsp</span>@Resources.Profile.TFAValidateCodePrompt</p>
+        <p><span class="l b">4.&nbsp</span>@Resources.Profile.TFAValidateCodePrompt</p>
         @using (Html.BeginForm("", "Prefs", FormMethod.Post, new { id = "frmEnable2FA", name = "frmEnable2FA" }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" value="@uniqueUserKey" name="seed" />
-            <input type="text" maxlength="6" pattern="^[0-9]{6}$" required data-1p-ignore id="txtAccount2faCodeSetup" name="verification" />
+            <input type="text" maxlength="6" pattern="^[0-9]{6}$" required autocomplete="one-time-code" id="txtAccount2faCodeSetup" name="verification" />
             <button type="button" id="btnVerify2faCodeSetup" onclick="javascript: acctEditor.setUp2fa($('#frmEnable2FA'), $('#enable2faResult')); return false;">@Resources.Profile.TFAValidateCode</button>
         }
         <div id="enable2faResult"></div>
