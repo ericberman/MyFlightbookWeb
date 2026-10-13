@@ -1568,39 +1568,39 @@ namespace MyFlightbook.Image
             using (MagickImage image = new MagickImage(sIn))
             {
                 // first, fix any orientation issues.
-                OrientationType ot = image.Orientation;
+                ImageMagick.Orientation ot = image.Orientation;
                 switch (ot)
                 {
-                    case OrientationType.TopLeft:
+                    case ImageMagick.Orientation.TopLeft:
                         break;
-                    case OrientationType.TopRight:
+                    case ImageMagick.Orientation.TopRight:
                         image.Flop();
                         break;
-                    case OrientationType.BottomRight:
+                    case ImageMagick.Orientation.BottomRight:
                         image.Rotate(180);
                         break;
-                    case OrientationType.BottomLeft:
+                    case ImageMagick.Orientation.BottomLeft:
                         image.Flop();
                         image.Rotate(180);
                         break;
-                    case OrientationType.LeftTop:
+                    case ImageMagick.Orientation.LeftTop:
                         image.Flop();
                         image.Rotate(-90);
                         break;
-                    case OrientationType.RightTop:
+                    case ImageMagick.Orientation.RightTop:
                         image.Rotate(90);
                         break;
-                    case OrientationType.RightBottom:
+                    case ImageMagick.Orientation.RightBottom:
                         image.Flop();
                         image.Rotate(90);
                         break;
-                    case OrientationType.LeftBottom:
+                    case ImageMagick.Orientation.LeftBottom:
                         image.Rotate(-90);
                         break;
                     default:
                         break;
                 }
-                image.Orientation = OrientationType.TopLeft;
+                image.Orientation = ImageMagick.Orientation.TopLeft;
 
                 // Make it square and then resize.  Cut off from half of longer dimension on each end.
                 uint curHeight = image.Height;
