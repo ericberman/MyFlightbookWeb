@@ -600,6 +600,9 @@
     <Content Include="images\mytaillog-mark.svg" />
     <Content Include="images\pdf-scribble.png" />
     <Content Include="images\pdf-wetink.png" />
+    <Content Include="images\progress-x-128.gif" />
+    <Content Include="images\progress-x-256.gif" />
+    <Content Include="images\progress-x-64.gif" />
     <Content Include="images\prohibited.png" />
     <Content Include="images\rb_logo.png" />
     <Content Include="images\SponsoredAds\Hartnack_Co_Copper2.png" />
