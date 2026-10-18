@@ -389,13 +389,14 @@
         </div>
         <div id="pnlFlightDeck" class="dib topAlign" style="margin-left: 1em;">
             <div class="itemlabel">
-                <div><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span> <span id="flightDeckScanProgress" class="dn"><img src="@("~/images/progress.gif".ToAbsolute())" style="height: 1em; width: 1em;" /></span></div>
+                <div><span class="b">@Resources.LogbookEntry.FlightDeckScanLabel</span></div>
                 <div>
                     <div id="divScanFlightDeck"></div>
                     <div id="divScanFlightDeckPrompt"><div><img src="@("~/images/ACARS-sm.png".ToAbsolute())" title="@Resources.LogbookEntry.FlightDeckScanPrompt" alt="@Resources.LogbookEntry.FlightDeckScanPrompt" /></div></div>
                     <input type="hidden" id="hdnFlightDeckResult" name="flightDeckResultJSON" />
                 </div>
             </div>
+            <div><img src="~/images/progress-x-64.gif" id="flightDeckScanProgress" class="dn" /></div>
         </div>
         <div style="clear:both;"></div>
         <div id="pnlAutoFill" class="flightinfoitem">

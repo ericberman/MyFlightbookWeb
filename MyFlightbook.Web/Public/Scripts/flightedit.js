@@ -243,12 +243,13 @@ function autoFill() {
 function initFromACARS() {
     var f = $("#frmEditFlight");
     if (f.valid()) {
+        $("#flightDeckScanProgress").show();
         updatePropertyTuples(-1);
         $.ajax({
             url: "/logbook/mvc/flightedit/InitFromFlightDeck",
             type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
             error: function (xhr, status, error) { showError.text(xhr.responseText); },
-            complete: function (response) { $("imgAutofillPrg").hide(); },
+            complete: function (response) { $("#flightDeckScanProgress").hide(); },
             success: function (r) {
                 $("#pnlFlightEditorBody").html(r);
             }
