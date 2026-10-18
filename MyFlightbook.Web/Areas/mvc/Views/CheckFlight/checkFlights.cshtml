@@ -132,9 +132,7 @@
     <input type="hidden" id="hdnFlightID" name="idFlight" value="-1" />
     <input type="hidden" id="hdnIgnore" name="fIgnore" value="false" />
 
-    <h2>
-        @Resources.FlightLint.TitleCheckFlights <img id="imgCkFlightsPrg" src="@("~/images/progress.gif".ToAbsolute())" style="display:none; height: 14pt; width: 14pt;" />
-    </h2>
+    <h2>@Resources.FlightLint.TitleCheckFlights</h2>
     <div id="pnlMainForm" DefaultButton="btnCheckAll">
         <p>@Resources.FlightLint.CheckFlightsDescription1</p>
         <p>@Branding.ReBrand(Resources.FlightLint.CheckFlightsCategoriesHeader)</p>
@@ -169,6 +167,7 @@
     </div>
     <div class="error" id="lblErr"></div>
 }
+<div class="c"><img id="imgCkFlightsPrg" src="@("~/images/progress.gif".ToAbsolute())" class="dn" /></div>
 <div id="divIssueList">
 </div>
 <div id="flightEditor" style="display:none;">
