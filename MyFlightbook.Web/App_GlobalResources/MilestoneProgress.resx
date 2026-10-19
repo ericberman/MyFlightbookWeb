@@ -148,7 +148,7 @@
     <value>*{0}* hours of *flight training* (dual)</value>
   </data>
   <data name="MinXCDistance" xml:space="preserve">
-    <value>One *solo cross-country* flight of *{1}NM* total distance and a leg that is at least *{2}NM*, with *three takeoffs and landings to a full-stop* in *{0}*</value>
+    <value>One *solo cross-country* flight of *{1}NM* total distance and a leg that is at least *{2}NM*, with *landings to a full-stop* at *3* points in *{0}*</value>
   </data>
   <data name="MinXCNight" xml:space="preserve">
     <value>One *night-time cross-country training* flight of over *{1}NM* distance in *{0}*</value>

@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class MilestoneProgress {
@@ -2761,7 +2761,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One *solo cross-country* flight of *{1}NM* total distance and a leg that is at least *{2}NM*, with *three takeoffs and landings to a full-stop* in *{0}*.
+        ///   Looks up a localized string similar to One *solo cross-country* flight of *{1}NM* total distance and a leg that is at least *{2}NM*, with *landings to a full-stop* at *3* points in *{0}*.
         /// </summary>
         internal static string MinXCDistance {
             get {
