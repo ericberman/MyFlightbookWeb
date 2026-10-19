@@ -3590,10 +3590,12 @@ WHERE f1.username = ?uName ");
                 }
             }
 
+            ListsFromRoutesResults rr = AirportList.ListsFromRoutes(Route);
+            double dRoute = 0;
+            foreach (AirportList aplist in rr.Result)
+                dRoute += aplist.DistanceForRoute();
+
             AirportList al = new AirportList(Route);
-            double dRoute = al.DistanceForRoute();
-            RouteSegment dMaxSegment = al.MaxSegmentForRoute();
-            RouteSegment dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
             double dPath = PathDistance ?? 0.0;
 
             double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double)TotalFlightTime;
@@ -3612,8 +3614,11 @@ WHERE f1.username = ?uName ");
                 {
                     lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute));
 
-                    if (al.GetNormalizedAirports().Length > 2)
+                    if (al.GetNormalizedAirports().Length > 2 && rr.Result.Count == 1)
                     {
+                        RouteSegment dMaxSegment = al.MaxSegmentForRoute();
+                        RouteSegment dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
+
                         lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
                         if (dMaxSegment.Distance != dMaxDistanceFromStart.Distance)
                             lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
