@@ -244,12 +244,13 @@ function initFromACARS() {
     var f = $("#frmEditFlight");
     if (f.valid()) {
         $("#flightDeckScanProgress").show();
+        $("#imgACARS").hide();
         updatePropertyTuples(-1);
         $.ajax({
             url: "/logbook/mvc/flightedit/InitFromFlightDeck",
             type: "POST", data: new FormData(f[0]), dataType: "html", contentType: false, processData: false,
             error: function (xhr, status, error) { showError.text(xhr.responseText); },
-            complete: function (response) { $("#flightDeckScanProgress").hide(); },
+            complete: function (response) { $("#flightDeckScanProgress").hide(); $("#imgACARS").show(); },
             success: function (r) {
                 $("#pnlFlightEditorBody").html(r);
             }
