@@ -1836,6 +1836,8 @@ ORDER BY username asc;"));
         public string PilotName { get; set; }
         public string Route { get; set; }
         public bool IsInstruction { get; set; }
+
+        public string StudentName { get; set; }
         public string FlightRules { get; set; }
         public int Passengers { get; set; }
         public decimal TotalTime { get; set; }
@@ -1879,47 +1881,50 @@ ORDER BY username asc;"));
         /// <param name="idAircraft">If positive, only shows flights for this aircraft, otherwise all club aircraft</param>
         public static IEnumerable<ClubFlyingReportItem> ReportForClub(int idClub, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
         {
-            const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
-fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
-f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
-f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
-IF (YEAR(f.dtFlightEnd) > 1 AND YEAR(f.dtFlightStart) > 1, (UNIX_TIMESTAMP(f.dtFlightEnd)-UNIX_TIMESTAMP(f.dtFlightStart))/3600, 0) AS 'Total Flight',
-IF (YEAR(f.dtEngineEnd) > 1 AND YEAR(f.dtEngineStart) > 1, (UNIX_TIMESTAMP(f.dtEngineEnd)-UNIX_TIMESTAMP(f.dtEngineStart))/3600, 0) AS 'Total Engine',
-GREATEST(CAST(f.HobbsEnd AS decimal(10, 2)) - CAST(f.HobbsStart AS decimal(10,2)), 0) AS 'Total Hobbs', 
-fp2.decValue - fp.decValue AS 'Total Tach',
-fp3.decValue AS 'Oil Added',
-fp4.decValue AS 'Fuel Added',
-fp5.decValue AS 'Fuel Cost',
-fp6.decValue AS 'Oil Level',
-fp7.decValue AS 'Oil Added 2nd',
-fp8.decValue AS 'Fuel Remaining',
-fp9.decValue AS 'Fuel At Start',
-IF(fppart91.StringValue is null, if(fppart121.StringValue is null, if(fppart135.StringValue is null, '', 'Part 131'), 'Part 121'), 'Part 91') AS FlightRules,
-COALESCE(fpPassCount.intValue, 0) as 'Passengers',
-IF(f.dualReceived > 0 OR f.cfi > 0, true, false) AS IsInstruction
-FROM flights f 
-INNER JOIN clubmembers cm ON f.username = cm.username
-INNER JOIN users u ON u.username=cm.username
-INNER JOIN clubs c ON c.idclub=cm.idclub
-INNER JOIN clubaircraft ca ON (ca.idaircraft=f.idaircraft AND c.idclub=ca.idclub)
-INNER JOIN aircraft ac ON (ca.idaircraft=ac.idaircraft AND c.idclub=ca.idclub)
-LEFT JOIN flightproperties fp on (fp.idflight=f.idflight AND fp.idproptype=95)
-LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96)
-LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
-LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
-LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=662)
-LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
-LEFT JOIN flightproperties fp7 on (fp7.idflight=f.idflight AND fp7.idproptype=418)
-LEFT JOIN flightproperties fp8 on (fp8.idflight=f.idflight AND fp8.idproptype=72)
-LEFT JOIN flightproperties fp9 on (fp9.idflight=f.idflight AND fp9.idproptype=622)
-LEFT JOIN flightproperties fpPassCount on (fpPassCount.idflight=f.idflight and fpPassCount.idproptype=316)
-LEFT JOIN flightproperties fppart91 on (fppart91.idflight=f.idflight AND fppart91.idproptype=155)
-LEFT JOIN flightproperties fppart121 on (fppart121.idflight=f.idflight AND fppart121.idproptype=153)
-LEFT JOIN flightproperties fppart135 on (fppart135.idflight=f.idflight AND fppart135.idproptype=154)
+            const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route,
+  f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End',
+  u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',
+  MAX(CASE WHEN fp.idproptype = 95 THEN fp.decValue END) AS 'Tach Start',
+  MAX(CASE WHEN fp.idproptype = 96 THEN fp.decValue END) AS 'Tach End',
+  f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End',
+  f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
+  IF(YEAR(f.dtFlightEnd) > 1 AND YEAR(f.dtFlightStart) > 1,
+     (UNIX_TIMESTAMP(f.dtFlightEnd) - UNIX_TIMESTAMP(f.dtFlightStart)) / 3600, 0) AS 'Total Flight',
+  IF(YEAR(f.dtEngineEnd) > 1 AND YEAR(f.dtEngineStart) > 1,
+     (UNIX_TIMESTAMP(f.dtEngineEnd) - UNIX_TIMESTAMP(f.dtEngineStart)) / 3600, 0) AS 'Total Engine',
+  GREATEST(CAST(f.HobbsEnd AS DECIMAL(10,2)) - CAST(f.HobbsStart AS DECIMAL(10,2)), 0) AS 'Total Hobbs',
+  MAX(CASE WHEN fp.idproptype = 96 THEN fp.decValue END)
+    - MAX(CASE WHEN fp.idproptype = 95 THEN fp.decValue END) AS 'Total Tach',
+  MAX(CASE WHEN fp.idproptype = 365 THEN fp.decValue END) AS 'Oil Added',
+  MAX(CASE WHEN fp.idproptype = 94  THEN fp.decValue END) AS 'Fuel Added',
+  MAX(CASE WHEN fp.idproptype = 662 THEN fp.decValue END) AS 'Fuel Cost',
+  MAX(CASE WHEN fp.idproptype = 650 THEN fp.decValue END) AS 'Oil Level',
+  MAX(CASE WHEN fp.idproptype = 418 THEN fp.decValue END) AS 'Oil Added 2nd',
+  MAX(CASE WHEN fp.idproptype = 72  THEN fp.decValue END) AS 'Fuel Remaining',
+  MAX(CASE WHEN fp.idproptype = 622 THEN fp.decValue END) AS 'Fuel At Start',
+  CASE
+    WHEN MAX(fp.idproptype = 155 AND fp.StringValue IS NOT NULL) THEN 'Part 91'
+    WHEN MAX(fp.idproptype = 153 AND fp.StringValue IS NOT NULL) THEN 'Part 121'
+    WHEN MAX(fp.idproptype = 154 AND fp.StringValue IS NOT NULL) THEN 'Part 135'
+    ELSE ''
+  END AS FlightRules,
+  COALESCE(MAX(CASE WHEN fp.idproptype = 316 THEN fp.intValue END), 0) AS 'Passengers',
+  MAX(CASE WHEN fp.idproptype = 166 THEN fp.StringValue END) AS 'StudentName',
+  (f.dualReceived > 0 OR f.cfi > 0) AS IsInstruction
+FROM clubaircraft ca
+INNER JOIN clubs c        ON c.idclub = ca.idclub
+INNER JOIN aircraft ac    ON ac.idaircraft = ca.idaircraft
+INNER JOIN flights f      ON f.idaircraft = ca.idaircraft
+INNER JOIN clubmembers cm ON cm.idclub = ca.idclub AND cm.username = f.username
+INNER JOIN users u        ON u.username = f.username
+LEFT JOIN flightproperties fp
+       ON fp.idflight = f.idflight
+      AND fp.idproptype IN (95, 96, 365, 94, 662, 650, 418, 72, 622, 316, 155, 153, 154, 166)
 WHERE
 c.idClub = ?idClub AND
-f.date >= GREATEST(?startDate, cm.joindate, c.creationDate) AND
-f.date <= ?endDate {0} {1}
+f.date >= GREATEST(DATE(?startDate), DATE(cm.joindate), DATE(c.creationDate)) AND
+f.date <= DATE(?endDate) {0} {1}
+GROUP BY f.idflight, u.username, u.FirstName, u.LastName, u.Email, ac.TailNumber
 ORDER BY f.DATE ASC";
 
             List<ClubFlyingReportItem> lst = new List<ClubFlyingReportItem>();
@@ -1969,7 +1974,8 @@ ORDER BY f.DATE ASC";
                     FuelAdded = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Added", 0.0M), CultureInfo.InvariantCulture),
                     FuelRemaining = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Remaining", 0.0M), CultureInfo.InvariantCulture),
                     FuelAtStart = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel At Start", 0.0M), CultureInfo.InvariantCulture),
-                    FuelCost = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Cost", 0.0M), CultureInfo.InvariantCulture)
+                    FuelCost = Convert.ToDecimal(util.ReadNullableField(dr, "Fuel Cost", 0.0M), CultureInfo.InvariantCulture),
+                    StudentName = util.ReadNullableString(dr, "StudentName")
                 });
             });
 

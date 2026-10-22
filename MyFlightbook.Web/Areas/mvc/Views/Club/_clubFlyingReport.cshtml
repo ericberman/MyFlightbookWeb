@@ -47,7 +47,7 @@ else
                         <td class="PaddedCell">@String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", cfri.FlightDate.Year, cfri.FlightDate.Month.ToString("00", CultureInfo.InvariantCulture), cfri.FlightDate.ToString("MMM", CultureInfo.CurrentCulture))</td>
                         <td class="PaddedCell">@cfri.Aircraft</td>
                         <td class="PaddedCell">@cfri.PilotName</td>
-                        <td class="PaddedCell">@((cfri.IsInstruction ? 1 : 0).FormatBooleanInt())</td>
+                        <td class="PaddedCell">@((cfri.IsInstruction ? 1 : 0).FormatBooleanInt())@(String.IsNullOrEmpty(cfri.StudentName) ? string.Empty : $" ({cfri.StudentName})")</td>
                         <td class="PaddedCell">@cfri.FlightRules</td>
                         <td class="PaddedCell">@cfri.Passengers.FormatInt()</td>
                         <td class="PaddedCell">@cfri.Route</td>
