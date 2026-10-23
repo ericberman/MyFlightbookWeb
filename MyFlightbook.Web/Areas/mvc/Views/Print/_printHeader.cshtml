@@ -6,18 +6,24 @@
 <table style="width:100%;">
     <tr>
         <td class="printHeaderLeft">
-            @if (pl.Options.Sections.IncludeHeadshot && pf.HasHeadShot)
+            @if (((string) ViewBag.facingSide ?? "l").CompareCurrentCultureIgnoreCase("l") == 0)
             {
-                <div class="dib"><img class="headerHeadSht" src="@pf.HeadShotHRefWithKey" /></div>   
+                if (pl.Options.Sections.IncludeHeadshot && pf.HasHeadShot)
+                {
+                    <div class="dib"><img class="headerHeadSht" src="@pf.HeadShotHRefWithKey" /></div>
+                }
+                <div class="dib printHeaderAddress">@(pl.Options.Sections.IncludeAddress ? pf.Address : string.Empty)</div>
             }
-            <div class="dib printHeaderAddress">@(pl.Options.Sections.IncludeAddress ? pf.Address : string.Empty)</div>
         </td>
         <td class="printHeaderCenter" colspan="7">
             <img class="printHeaderLogo" src="@Branding.CurrentBrand.LogoHRef.ToAbsoluteURL(Request)" />
         </td>
         <td class="printHeaderRight">
-            <div>@pf.UserFullName</div>
-            <div>@pf.LicenseDisplay</div>
+            @if (((string)ViewBag.facingSide ?? "r").CompareCurrentCultureIgnoreCase("r") == 0)
+            {
+                <div>@pf.UserFullName</div>
+                <div>@pf.LicenseDisplay</div>
+            }
         </td>
     </tr>
 </table>

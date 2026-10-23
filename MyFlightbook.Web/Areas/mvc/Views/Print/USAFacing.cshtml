@@ -30,7 +30,10 @@
 
     // Do the left table, then do the right table.
     <div class="force-even-page">
-        @{ Html.RenderPartial("_printHeader"); }
+        @{ 
+            ViewBag.facingSide = "l";
+            Html.RenderPartial("_printHeader");
+        }
         <table class="pageTable">
             <thead class="header bordered">
                 <tr class="bordered">
@@ -141,7 +144,10 @@
         </table>
     </div>
     <div class="force-odd-page">
-        @{ Html.RenderPartial("_printHeader"); }
+        @{
+            ViewBag.facingSide = "r";
+            Html.RenderPartial("_printHeader");
+        }
         <table class="pageTable">
             <thead class="header bordered">
                 <tr class="bordered">
