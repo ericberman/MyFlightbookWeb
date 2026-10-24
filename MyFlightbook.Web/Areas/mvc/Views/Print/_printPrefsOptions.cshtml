@@ -144,6 +144,12 @@
                 <label><input type="radio" onchange="javascript:@(onChange)();" value="Year" name="poForcedBreak" @po.BreakAtYearBoundary.ToChecked() />@Resources.LocalizedText.PrintViewBreakYear</label>
             </td>
         </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label><input type="checkbox" @po.IncludePageHeader.ToChecked() name="poPageHeaders" onclick="javascript:@(onChange)();" />@Resources.LocalizedText.PrintViewIncludePageHeader</label>
+            </td>
+        </tr>
     </table>
     <div id="flightsPerPageTip" class="callout dn">@Html.Raw(Resources.LocalizedText.PrintOptionsEntriesPerPageDescription)</div>
     <h3 class="b">@Resources.LocalizedText.PrintViewSubtotals</h3>

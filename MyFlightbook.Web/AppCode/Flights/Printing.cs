@@ -664,6 +664,12 @@ namespace MyFlightbook.Printing
         public HashSet<int> PageBreaks { get; set; } = new HashSet<int>();
 
         /// <summary>
+        /// True to include the page header on each page (default true).
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)] 
+        public bool IncludePageHeader { get; set; } = true;
+
+        /// <summary>
         /// Use flight coloring in the print view?
         /// </summary>
         public bool UseFlightColoring { get; set; }

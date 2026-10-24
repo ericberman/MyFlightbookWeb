@@ -4413,6 +4413,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include Page Header.
+        /// </summary>
+        internal static string PrintViewIncludePageHeader {
+            get {
+                return ResourceManager.GetString("PrintViewIncludePageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat previous page totals in subtotals for each page.
         /// </summary>
         internal static string PrintViewIncludePreviousPageTotals {
@@ -4782,7 +4791,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What to Include.
+        ///   Looks up a localized string similar to Logbook Sections.
         /// </summary>
         internal static string PrintViewTabFilter {
             get {

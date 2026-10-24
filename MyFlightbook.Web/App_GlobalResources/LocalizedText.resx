@@ -1081,7 +1081,7 @@
     <value>Printing Information</value>
   </data>
   <data name="PrintViewTabFilter" xml:space="preserve">
-    <value>What to Include</value>
+    <value>Logbook Sections</value>
   </data>
   <data name="PrintViewTabOptions" xml:space="preserve">
     <value>Layout</value>
@@ -2131,5 +2131,8 @@
   </data>
   <data name="HeaderTrustedByPilots" xml:space="preserve">
     <value>Trusted by pilots since 2006</value>
+  </data>
+  <data name="PrintViewIncludePageHeader" xml:space="preserve">
+    <value>Include Page Header</value>
   </data>
 </root>
