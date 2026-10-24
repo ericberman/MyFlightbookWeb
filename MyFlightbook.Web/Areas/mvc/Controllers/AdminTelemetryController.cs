@@ -70,21 +70,33 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public string FindOrphanReferences()
+        public string FindOrphans()
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                return EnumerableToHtmlResult(TelemetryReference.FindOrphanedRefs());
+                IDictionary<string, IEnumerable<int>> dct = TelemetryReference.FindOrphans();
+                List<object> lst = new List<object>();
+                foreach (string key in dct.Keys)
+                {
+                    lst.Add(key);
+                    if (dct[key].Any())
+                        foreach (int idFlight in dct[key])
+                            lst.Add(idFlight);
+                    else
+                        lst.Add("(No issues)");
+                }
+                return EnumerableToHtmlResult<object>(lst);
             });
         }
 
         [Authorize]
         [HttpPost]
-        public string FindOrphanedFiles()
+        [ValidateHeaderAntiForgeryToken]
+        public string MigrateFromFlatToBuckets(int cFiles)
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
-                return EnumerableToHtmlResult(TelemetryReference.FindOrphanedFiles());
+                return $"{TelemetryReference.MigrateFilesToBuckets(cFiles).PrettyString()} files migrated to bucketed folders";
             });
         }
 

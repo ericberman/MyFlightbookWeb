@@ -1189,9 +1189,15 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         public void DeleteFile()
         {
-            string szPath = FilePath;
+            string szPath = FilePathLegacy;
             if (File.Exists(szPath))
                 File.Delete(szPath);
+            else
+            {
+                szPath = FilePathNew;
+                if (File.Exists(szPath))
+                    File.Delete(szPath);
+            }
         }
 
         /// <summary>
@@ -1206,16 +1212,26 @@ namespace MyFlightbook.Telemetry
 
         public void SaveData()
         {
+            DeleteFile(); // Delete any data in an old location
             if (String.IsNullOrEmpty(RawData))
                 throw new MyFlightbookException("SaveData called but no raw data round to write!");
-            File.WriteAllText(FilePath, RawData);
+            // Create the file containing folder if it doesn't exist
+            if (!Directory.Exists(DirectoryNew))
+                Directory.CreateDirectory(DirectoryNew);
+            File.WriteAllText(FilePathNew, RawData);
         }
 
         public string LoadData()
         {
-            string path = FilePath;
+            string path = FilePathLegacy;
             if (File.Exists(path))
                 return RawData = File.ReadAllText(path);
+            else
+            {
+                path = FilePathNew;
+                if (File.Exists(path))
+                    return RawData = File.ReadAllText(path);
+            }
             throw new FileNotFoundException("Telemetry file not found", path);
         }
         #endregion
@@ -1265,7 +1281,7 @@ namespace MyFlightbook.Telemetry
         /// <summary>
         /// Directory where the telemetry files live.
         /// </summary>
-        private static string FileDir
+        private static string TelemetryRootDir
         {
             get { return LocalConfig.SettingForKey("TelemetryDir").ToString(CultureInfo.InvariantCulture) + "/"; }
         }
@@ -1287,16 +1303,23 @@ namespace MyFlightbook.Telemetry
             }
         }
 
+        private const int BucketSize = 100_000; // DO NOT CHANGE THIS!
+
+        private static string BucketFolderForID(int idFlight)
+        {
+            return (idFlight / BucketSize).ToString("D6", CultureInfo.InvariantCulture);
+        }
+
+        private string BucketFolder => FlightID.HasValue ? BucketFolderForID(FlightID.Value) : throw new ArgumentException("Attempt to generate a FilePath for a TelemetrySummary object without a flightID");
+
         /// <summary>
         /// Full path of the original data on disk.
         /// </summary>
-        private string FilePath
-        {
-            get
-            {
-                return (FileDir + FileName).MapAbsoluteFilePath();
-            }
-        }
+        private string FilePathLegacy => (TelemetryRootDir + FileName).MapAbsoluteFilePath();
+
+        private string DirectoryNew => (TelemetryRootDir + BucketFolder).MapAbsoluteFilePath();
+
+        private string FilePathNew => (TelemetryRootDir + BucketFolder + "/" + FileName).MapAbsoluteFilePath();
 
         /// <summary>
         /// The type of data (GPX, CSV, KML, etc.)
@@ -1410,36 +1433,98 @@ namespace MyFlightbook.Telemetry
         }
 
         /// <summary>
-        /// Find all flights for there is a telemetryreference but no corresponding file on the disk
+        /// Admin function to move up to cLimit files from the root telemetry directory to the bucketed directory structure.  Returns the number of files moved.
         /// </summary>
-        /// <returns>An enumeration of flightIDs</returns>
-        public static IEnumerable<int> FindOrphanedRefs()
+        /// <param name="cLimit"></param>
+        /// <returns></returns>
+        public static int MigrateFilesToBuckets(int cLimit)
         {
-            List<int> lst = new List<int>();
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(FileDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
-            DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
-            dbh.ReadRows((comm) => { comm.CommandTimeout = 300; }, (dr) =>
+            int cFilesMoved = 0;
+            foreach (string fname in Directory.EnumerateFiles(TelemetryRootDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly))
             {
-                TelemetryReference tr = new TelemetryReference(dr);
-                if (!files.Contains(tr.FilePath))
-                    lst.Add(tr.FlightID.Value);
-            });
-            return lst;
+                if (int.TryParse(System.IO.Path.GetFileNameWithoutExtension(fname), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idFlight))
+                {
+                    TelemetryReference tr = new TelemetryReference() { FlightID = idFlight };
+                    if (tr.MoveData() && ++cFilesMoved >= cLimit)
+                        break;
+                }
+            }
+            return cFilesMoved;
         }
 
         /// <summary>
-        /// Find all files for which there is a file on the disk but no telemetry reference
+        /// Admin method to migrate from the root to a new bucketed directory structure.  Returns true if the file was moved, false if it didn't exist.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> FindOrphanedFiles()
+        private bool MoveData()
         {
-            HashSet<string> files = new HashSet<string>(Directory.EnumerateFiles(FileDir.MapAbsoluteFilePath(), "*" + TelemetryExtension, SearchOption.TopDirectoryOnly));
-            DBHelper dbh = new DBHelper("SELECT * FROM FlightTelemetry");
-            HashSet<string> References = new HashSet<string>();
-            dbh.ReadRows(
-                (comm) => { comm.CommandTimeout = 300; },
-                (dr) => { References.Add(new TelemetryReference(dr).FilePath); });
-            return files.Except(References);
+            string pathOld = FilePathLegacy;
+            string pathNew = FilePathNew;
+            if (File.Exists(pathOld))
+            {
+                if (!Directory.Exists(DirectoryNew))
+                    Directory.CreateDirectory(DirectoryNew);
+                File.Move(pathOld, pathNew);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// New Orphan detection - finds all flights for which there is a telemetryreference but no corresponding file on the disk, and all files for which there is a file on the disk but no telemetry reference
+        /// </summary>
+        /// <returns>A dictionary with two keys: "orphanedRefs" and "orphanedFiles", each mapping to a collection of IDs</returns>
+        public static IDictionary<string, IEnumerable<int>> FindOrphans()
+        {
+            HashSet<int> files = new HashSet<int>();
+            HashSet<int> refs = new HashSet<int>();
+
+            int idFlightMax = 0;
+            DBHelper dbh = new DBHelper("SELECT MAX(idflight) AS cFlights FROM flights;");
+            dbh.ReadRow((comm) => { }, (dr) => { idFlightMax = Convert.ToInt32(dr["cFlights"], CultureInfo.InvariantCulture); });
+
+            // One query for ALL telemetry refs, instead of one query per bucket.
+            List<int> allRefs = new List<int>();
+            DBHelper dbhAll = new DBHelper("SELECT idFlight FROM FlightTelemetry");
+            dbhAll.ReadRows((comm) => { }, (dr) => { allRefs.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+
+            // Partition them by bucket index in memory, using the same id/BucketSize math as your folder layout.
+            Dictionary<int, HashSet<int>> refsByBucket = allRefs
+                .GroupBy(id => id / BucketSize)
+                .ToDictionary(g => g.Key, g => new HashSet<int>(g));
+
+            for (int iFlight = 0; iFlight <= idFlightMax; iFlight += BucketSize)
+            {
+                int bucketIndex = iFlight / BucketSize;
+
+                // O(1) lookup; empty set if this bucket has zero refs at all.
+                HashSet<int> flightsInDB = refsByBucket.TryGetValue(bucketIndex, out HashSet<int> hs) ? hs : new HashSet<int>();
+
+                string dir = new TelemetryReference() { FlightID = iFlight }.DirectoryNew;
+                HashSet<int> flightsOnDisk = new HashSet<int>();
+                if (Directory.Exists(dir))
+                {
+                    foreach (string fname in Directory.EnumerateFiles(dir, "*" + TelemetryExtension, SearchOption.TopDirectoryOnly))
+                    {
+                        if (int.TryParse(System.IO.Path.GetFileNameWithoutExtension(fname), NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
+                            flightsOnDisk.Add(id);
+                        // else: a malformed filename — worth logging/collecting separately, not crashing on.
+                    }
+                }
+
+                HashSet<int> orphanedFiles = new HashSet<int>(flightsOnDisk);
+                orphanedFiles.ExceptWith(flightsInDB);
+                files.UnionWith(orphanedFiles);
+
+                HashSet<int> orphanedRefs = new HashSet<int>(flightsInDB);
+                orphanedRefs.ExceptWith(flightsOnDisk);
+                refs.UnionWith(orphanedRefs);
+            }
+            return new Dictionary<string, IEnumerable<int>>()
+            {
+                { "orphanedRefs", refs },
+                { "orphanedFiles", files }
+            };
         }
 
         /// <summary>

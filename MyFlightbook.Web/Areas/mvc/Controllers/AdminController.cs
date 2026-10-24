@@ -304,6 +304,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(ProfileRoles.maskCanManageData, () =>
             {
+                LocalConfig.Flush();
                 return String.Format(CultureInfo.CurrentCulture, "Cache flushed, {0:#,##0} items removed.", util.FlushCache());
             });
         }

@@ -64,30 +64,13 @@
         return false;
     }
 
-    function findOrphanReferences(idStatus) {
+    function findOrphans(idStatus) {
         var params = new Object();
         var d = JSON.stringify(params);
         $('#prgFindExceptions').toggle();
         $.ajax(
             {
-                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindOrphanReferences")',
-                type: "POST", data: d, dataType: "text", contentType: "application/json",
-                error: function (xhr) { window.alert(xhr.responseText); },
-                complete: function () { $('#prgFindExceptions').toggle(); },
-                success: function (r) {
-                    $("#" + idStatus)[0].innerHTML = r;
-                }
-            });
-        return false;
-    }
-
-    function findOrphanedFiles(idStatus) {
-        var params = new Object();
-        var d = JSON.stringify(params);
-        $('#prgFindExceptions').toggle();
-        $.ajax(
-            {
-                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindOrphanedFiles")',
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/FindOrphans")',
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr) { window.alert(xhr.responseText); },
                 complete: function () { $('#prgFindExceptions').toggle(); },
@@ -121,6 +104,22 @@
         $.ajax(
             {
                 url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateFlightFromDisk")',
+                type: "POST", data: d, dataType: "text", contentType: "application/json",
+                error: function (xhr) { window.alert(xhr.responseText); },
+                success: function (r) {
+                    window.alert(r);
+                }
+            });
+        return false;
+    }
+
+    function migrateFromFlatToBuckets(cFiles) {
+        var params = new Object();
+        params.cFiles = cFiles;
+        var d = JSON.stringify(params);
+        $.ajax(
+            {
+                url: '@VirtualPathUtility.ToAbsolute("~/mvc/AdminTelemetry/MigrateFromFlatToBuckets")',
                 type: "POST", data: d, dataType: "text", contentType: "application/json",
                 error: function (xhr) { window.alert(xhr.responseText); },
                 success: function (r) {
@@ -221,12 +220,13 @@
     <input type="button" id="btnMigrateFROMDBtoFILES" name="btnMigrateTOFiles" value="Migrate from DATABASE to FILES" onclick="javascrtipt:migrateDBToFiles('lblMigrateStatus')" />
     <input type="button" id="btnMigrateFILEStoDB" name="btnMigrateFROMFiles" value="Migrate from FILES to DATABASE" onclick="javascrtipt:migrateFilesToDB('lblMigrateStatus')" />
     <img style="max-height: 16px; max-width: 16px; display:none;" id="prgBulkMigrate" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" /><span id="lblMigrateStatus"></span>
+    <h2>Migrate to Buckets</h2>
+    <div>Migrate up to <input type="number" step="1" value="500" required id="cFilesToMigrate" /> file from flat to buckets <input type="button" value="Migrate Files" onclick="javascript: migrateFromFlatToBuckets($('#cFilesToMigrate').val());" /></div>
 
     <h2>Synchronization, data integrity</h2>
     <div>
         <input type="button" id="btnFindDupeTelemetry" value="Find flights in both DB and disk" onclick="javascript:findDupeTelemetry('migrateResults');" />
-        <input type="button" id="btnFindOrphanReferences" value="Find orphaned references" onclick="javascript:findOrphanReferences('migrateResults');" />
-        <input type="button" id="btnFindOrphanedFiles" value="Find orphaned files" onclick="javascript:findOrphanedFiles('migrateResults');" />
+        <input type="button" id="btnFindOrphans" value="Find orphaned references" onclick="javascript:findOrphans('migrateResults');" />
     </div>
 </div>
 <div>
@@ -253,7 +253,7 @@
     </script>
 </div>
 <div id="pnlUser">
-    <input type="text" placeholder="(Username)" id="txtUserName" name="szUser" value="@User.Identity.Name" />
+    <input type="text" placeholder="(Username)" data-1p-ignore id="txtUserName" name="szUser" value="@User.Identity.Name" />
     <input type="button" value="Refresh" onclick="javascript:getUserTelemetry($('#txtUserName')[0].value, $('#telemetryContainer'));" />
     <img style="max-height: 16px; max-width: 16px; display:none;" id="prgGetTelemetry" src="@VirtualPathUtility.ToAbsolute("~/images/progress.gif")" />
     <div id="telemetryContainer" style="max-width: 500px;">
