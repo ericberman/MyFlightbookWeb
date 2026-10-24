@@ -1212,9 +1212,9 @@ namespace MyFlightbook.Telemetry
 
         public void SaveData()
         {
-            DeleteFile(); // Delete any data in an old location
             if (String.IsNullOrEmpty(RawData))
                 throw new MyFlightbookException("SaveData called but no raw data round to write!");
+            DeleteFile(); // Delete any data in an old location
             // Create the file containing folder if it doesn't exist
             if (!Directory.Exists(DirectoryNew))
                 Directory.CreateDirectory(DirectoryNew);
