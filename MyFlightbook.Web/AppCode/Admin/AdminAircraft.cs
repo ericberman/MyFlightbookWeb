@@ -522,7 +522,7 @@ FROM
 WHERE
     ua.idaircraft = ?idaircraft
         AND f.idaircraft = ?idaircraft
-GROUP BY ua.username 
+GROUP BY ua.username, u.email, u.firstname, u.lastname
 UNION SELECT 
     u.email AS 'Email Address',
     u.username AS User,
@@ -542,7 +542,7 @@ WHERE
         WHERE
             f.username = u.username
                 AND f.idaircraft = ?idaircraft)
-GROUP BY ua.username
+GROUP BY ua.username, u.email, u.firstname, u.lastname
 ORDER BY user ASC");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("idaircraft", aircraftID); },
                 (dr) =>
