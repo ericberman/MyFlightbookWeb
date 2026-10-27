@@ -1475,11 +1475,13 @@ namespace MyFlightbook
             bool fHasType = !String.IsNullOrEmpty(mmThis.TypeName);
 
             Aircraft acMatch = null;
+            bool fAnyLocked = false;
             foreach (Aircraft ac in rgac)
             {
                 if (this.ModelID == ac.ModelID) // perfect match - return it
                     return ac;
 
+                fAnyLocked |= ac.IsLocked;
                 // We'll define a close match as: (a) same non-empty family OR typename, (b) same category/class, and (c) same instancetype (c should never be false)
                 MakeModel mmNew = MakeModel.GetModel(ac.ModelID);
                 if (fHasFamily &&
@@ -1488,6 +1490,10 @@ namespace MyFlightbook
                     ac.InstanceType == this.InstanceType)
                     acMatch = ac;
             }
+
+            // Issue #1605: if ANY of the existing aircraft are locked, don't clone, so just return the first one.  FirstOrDefault shouldn't be null because for fAnyLocked to be true, there must be at least one aircraft in the list.
+            if (fAnyLocked && acMatch == null)
+                acMatch = rgac.FirstOrDefault();
 
             // If there's no good match, let's plan to clone 
             if (acMatch == null)
