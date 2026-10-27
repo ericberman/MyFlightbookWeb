@@ -421,3 +421,4 @@ MigrationBackup/
 **/.idea/*
 .idea/
 MyFlightbook.Web/ILLink/ILLink.Descriptors.LibraryBuild.xml
+MyFlightbook.Web/Directory.Build.targets
