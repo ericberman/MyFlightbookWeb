@@ -17,7 +17,7 @@
 </script>
 @{ Html.RenderPartial("_noteATDFTD"); }
 
-@{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = idModel, onCommitFunc = "modelCommitted" }); }
+@{ Html.RenderAction("ModelEditor", "Aircraft", new { idModel = idModel, onCommitFunc = "modelCommitted", idMan = ViewBag.idMan, aat = ViewBag.allowedTypes }); }
 
 @if (fAdmin)
 {

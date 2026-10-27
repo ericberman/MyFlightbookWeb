@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Makes {
@@ -1001,11 +1001,132 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I still want to create a new model for this.
+        /// </summary>
+        internal static string NewMakeCreateSimForRealModel {
+            get {
+                return ResourceManager.GetString("NewMakeCreateSimForRealModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a sim to my account based on the model I want to emulate.
+        /// </summary>
+        internal static string NewMakeCreateSimFromRealModel {
+            get {
+                return ResourceManager.GetString("NewMakeCreateSimFromRealModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create new make/model.
         /// </summary>
         internal static string newMakeHeader {
             get {
                 return ResourceManager.GetString("newMakeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Of course, both of these examples are already well represented in the database...).
+        /// </summary>
+        internal static string NewMakeNoteFlyingMachine {
+            get {
+                return ResourceManager.GetString("NewMakeNoteFlyingMachine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Common as a placeholder for pulling forward totals from paper logbooks.  Note that the &quot;Generic&quot; pseudo-manufacturer exists for this and already likely has what you need..
+        /// </summary>
+        internal static string NewMakeNoteGenericReal {
+            get {
+                return ResourceManager.GetString("NewMakeNoteGenericReal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For simulators where the model of the sim is more important than the specific model being emulated, such as where: &lt;ul&gt;&lt;li&gt;Practicing instrument approaches or basic flying is more important than specific buttonology or dashboard layout&lt;/li&gt;&lt;li&gt;The broad category of aircraft (e.g., helicopter or single-engine land airplane) is the key thing&lt;/li&gt;&lt;li&gt;Multiple models of aircraft can be emulated&lt;/li&gt;&lt;/ul&gt;.
+        /// </summary>
+        internal static string NewMakeNoteGenericSim {
+            get {
+                return ResourceManager.GetString("NewMakeNoteGenericSim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please do NOT create a new model for a specific device.  You can record the serial number or registration with each flight entry that uses the sim that you create..
+        /// </summary>
+        internal static string NewMakeNoteSim {
+            get {
+                return ResourceManager.GetString("NewMakeNoteSim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For learning very precise equipment, such as: &lt;ul&gt;&lt;li&gt;Learning/maintaining certification in a specific type&lt;/li&gt;&lt;li&gt;Practicing with specific avionics&lt;/li&gt;&lt;li&gt;Other scenarios where the model of aircraft (e.g., Boeing 737) is more important than who made the sim (e.g., CAE)&lt;/li&gt;&lt;/ul&gt;.
+        /// </summary>
+        internal static string NewMakeNoteSpecificSim {
+            get {
+                return ResourceManager.GetString("NewMakeNoteSpecificSim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What kind of model do you want to create?.
+        /// </summary>
+        internal static string NewMakePrompt {
+            get {
+                return ResourceManager.GetString("NewMakePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For simulators where the goal is about learning the ins and outs of the specific type of aircraft, there is *no need to create a new model*.  
+        ///
+        ///Instead, just *add a new aircraft* to your account, *use the model of aircraft being emulated*, and *indicate the relevant level of sim*.
+        ///
+        ///E.g., if you are training in a Boeing 737-800, then just add a new aircraft to your account, use &quot;Boeing 737-800&quot; as the model, and select the appropriate level of sim..
+        /// </summary>
+        internal static string NewMakeSpecificSimRec {
+            get {
+                return ResourceManager.GetString("NewMakeSpecificSimRec", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A *specific* model of an *actual flying* aircraft.  E.g., _Cessna 172_ or _Bell 206_.
+        /// </summary>
+        internal static string NewMakeTypeFlyingMachine {
+            get {
+                return ResourceManager.GetString("NewMakeTypeFlyingMachine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A *non-specific* model of *actual flying* aircraft.  E.g., _Multi-engine Piston_.
+        /// </summary>
+        internal static string NewMakeTypeGenericReal {
+            get {
+                return ResourceManager.GetString("NewMakeTypeGenericReal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A *simulator* for *flight and instrument training/currency*.  E.g., _Redbird FMX_ or _Microsoft Flight Sim_.
+        /// </summary>
+        internal static string NewMakeTypeGenericSim {
+            get {
+                return ResourceManager.GetString("NewMakeTypeGenericSim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A *simulator* for training in a *specific model* of aircraft, E.g., _Boeing 737-800_ or _Airbus A-321-271NX_ .
+        /// </summary>
+        internal static string NewMakeTypeSimSpecific {
+            get {
+                return ResourceManager.GetString("NewMakeTypeSimSpecific", resourceCulture);
             }
         }
         

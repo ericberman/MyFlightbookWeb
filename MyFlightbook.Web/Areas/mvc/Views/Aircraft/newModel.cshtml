@@ -1,0 +1,87 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = Resources.Makes.newMakeHeader;
+    ViewBag.defaultTab = tabID.tabAircraft;
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    function selectReal() {
+        $("#allowedTypes").val("@AllowedAircraftTypes.Any");
+        $("#idManufacturer").val("@Manufacturer.UnsavedID");
+        $("#frmNewMake").submit();
+    }
+
+    function selectGeneric() {
+        $("#allowedTypes").val("@AllowedAircraftTypes.SimOrAnonymous");
+        $("#idManufacturer").val("46");
+        $("#frmNewMake").submit();
+    }
+
+    function selectSpecificSim() {
+        $("#divSpecificSim").show();
+        $("#idManufacturer").val("@Manufacturer.UnsavedID")
+        $("#allowedTypes").val("@AllowedAircraftTypes.SimulatorOnly");
+        $("#frmNewMake").submit();
+    }
+
+    function selectGenericSim() {
+        $("#allowedTypes").val("@AllowedAircraftTypes.SimulatorOnly");
+        $("#idManufacturer").val("@Manufacturer.UnsavedID");
+        $("#frmNewMake").submit();
+    }
+</script>
+@using (Html.BeginForm("EditModel", "Aircraft", FormMethod.Post, new { id = "frmNewMake", name = "frmNewMake" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="idModel" value="@MakeModel.UnknownModel" />
+    <input type="hidden" name="idMan" id="idManufacturer" value="@Manufacturer.UnsavedID" />
+    <input type="hidden" name="aat" id="allowedTypes" value="@AllowedAircraftTypes.Any" />
+    <div id="divModelType">
+        <h2>@Resources.Makes.NewMakePrompt</h2>
+        <table cellspacing="10">
+            <tr class="topAlign">
+                <td><input type="radio" name="modelType" value="real" onclick="javascript: selectReal();" id="rbRealSpecific" /></td>
+                <td>
+                    <div><label for="rbRealSpecific">@Html.Raw(Resources.Makes.NewMakeTypeFlyingMachine.Linkify())</label></div>
+                    <div>@Resources.Makes.NewMakeNoteFlyingMachine</div>
+                </td>
+            </tr>
+            <tr class="topAlign">
+                <td><input type="radio" name="modelType" value="realGeneric" onclick="javascript: selectGeneric();" id="rbRealGeneric" /></td>
+                <td>
+                    <div><label for="rbRealGeneric">@Html.Raw(Resources.Makes.NewMakeTypeGenericReal.Linkify())</label></div>
+                    <div>@Resources.Makes.NewMakeNoteGenericReal</div>
+                </td>
+            </tr>
+            <tr class="topAlign">
+                <td><input type="radio" name="modelType" value="simGeneric" onclick="javascript: selectGenericSim();" id="rbSimGeneric" /></td>
+                <td>
+                    <div><label for="rbSimGeneric">@Html.Raw(Resources.Makes.NewMakeTypeGenericSim.Linkify())</label></div>
+                    <div>@Html.Raw(Resources.Makes.NewMakeNoteGenericSim)</div>
+                    <div class="fineprint">@Resources.Makes.NewMakeNoteSim</div>
+                </td>
+            </tr>
+            <tr class="topAlign">
+                <td><input type="radio" name="modelType" value="simSpecific" onclick="javascript: $('#divModelType').hide(); $('#divConfirmSpecific').show();" id="rbSimSpecific" /></td>
+                <td>
+                    <div><label for="rbSimSpecific">@Html.Raw(Resources.Makes.NewMakeTypeSimSpecific.Linkify())</label></div>
+                    <div>@Html.Raw(Resources.Makes.NewMakeNoteSpecificSim)</div>
+                    <div class="fineprint">@Resources.Makes.NewMakeNoteSim</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="divConfirmSpecific" class="dn">
+        <p class="wsprel">@Html.Raw(Resources.Makes.NewMakeSpecificSimRec.Linkify())</p>
+        <table cellspacing="10">
+            <tr>
+                <td><img src="@("~/images/rightarrow.png".ToAbsolute())" class="imgMiddle" /></td>
+                <td><a class="b" href="@("~/mvc/aircraft/new?instanceType=CertifiedATD".ToAbsolute())">@Resources.Makes.NewMakeCreateSimFromRealModel</a></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><a href="#" onclick="javascript: selectSpecificSim(); return false;">@Resources.Makes.NewMakeCreateSimForRealModel</a></td>
+            </tr>
+        </table>
+    </div>
+}

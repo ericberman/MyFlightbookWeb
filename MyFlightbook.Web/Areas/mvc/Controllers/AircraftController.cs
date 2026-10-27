@@ -46,11 +46,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Child actions
         [ChildActionOnly]
-        public ActionResult ModelEditor(int idModel, string onCommitfunc)
+        public ActionResult ModelEditor(int idModel, string onCommitfunc, int idMan = Manufacturer.UnsavedID, AllowedAircraftTypes aat = AllowedAircraftTypes.Any)
         {
             ViewBag.idModel = idModel;
             MakeModel model = MakeModel.GetModel(idModel);
             ViewBag.model = model;
+            ViewBag.idMan = idMan;
+            ViewBag.allowedTypes = aat;
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             ViewBag.fAdmin = User.Identity.IsAuthenticated && pf.CanManageData;
             ViewBag.useArmyCurrency = pf.UsesArmyCurrency;
@@ -157,9 +159,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region Endpoints
         #region Make View details/Edit
-        private ViewResult MakeView(int idModel, bool fEditMode)
+        private ViewResult MakeView(int idModel, bool fEditMode, int idMan = Manufacturer.UnsavedID, AllowedAircraftTypes aat = AllowedAircraftTypes.Any)
         {
+            if (Request.HttpMethod.CompareCurrentCultureIgnoreCase("GET") == 0 && idModel == MakeModel.UnknownModel && fEditMode)
+                return View("newModel");
             ViewBag.idModel = idModel;
+            ViewBag.idMan = idMan;
+            ViewBag.allowedTypes = aat;
             MakeModel model = MakeModel.GetModel(idModel);
             Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             ViewBag.fAdmin = User.Identity.IsAuthenticated && pf.CanManageData;
@@ -184,6 +190,14 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult EditModel(int id)
         {
             return MakeView(id, true);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditModel(int id, int idMan, AllowedAircraftTypes aat)
+        {
+            return MakeView(id, true, idMan, aat);
         }
 
         [HttpGet]
@@ -450,9 +464,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult New()
+        public ActionResult New(AircraftInstanceTypes instanceType = AircraftInstanceTypes.RealAircraft)
         {
-            ViewBag.aircraft = new Aircraft() { TailNumber = DefaultTail };
+            ViewBag.aircraft = new Aircraft() { TailNumber = DefaultTail, InstanceType = instanceType };
             ViewBag.model = null;
             ViewBag.fAdminMode = false;
             ViewBag.ret = Request["ret"] ?? string.Empty;

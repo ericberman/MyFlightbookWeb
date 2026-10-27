@@ -5,6 +5,8 @@
     bool fAdmin = ViewBag.fAdmin;
     bool useArmyCurrency = ViewBag.useArmyCurrency;
     bool hasEngine = CategoryClass.HasEngine(mm.CategoryClassID);
+    AllowedAircraftTypes aat = ViewBag.allowedTypes;
+    int restrictedMan = ViewBag.idMan;
 }
 <script type="text/javascript">
     // <![CDATA[
@@ -72,8 +74,8 @@
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function (r) {
                 $("input[name='allowedTypes']")[r].checked = true;
-                showModalById("divSimModelWarning", "@Branding.ReBrand(Resources.Makes.editMakeSimsWarningTitle)", 500);
-                $("#btnCloseSimWarning")[0].focus();
+                // showModalById("divSimModelWarning", "@Branding.ReBrand(Resources.Makes.editMakeSimsWarningTitle)", 500);
+                // $("#btnCloseSimWarning")[0].focus();
             }
         });
     }
@@ -250,22 +252,36 @@
     {
         @Html.AntiForgeryToken()
         <input type="hidden" value="@idModel" id="hdnModelID" name="idmodel" />
-        <div class="vfSection">
-            <div class="vfPrompt">
-                <span id=lblManufacturer>@Resources.Makes.editMakeManufacturerPrompt</span>
+        if (restrictedMan == Manufacturer.UnsavedID)
+        {
+            <div class="vfSection">
+                <div class="vfPrompt">
+                    <span id=lblManufacturer>@Resources.Makes.editMakeManufacturerPrompt</span>
+                </div>
+                <div class="vfValue">
+                    <select id="cmbManufacturer" name="manufacturer" required onchange="javascript: manufacturerChanged($(this).val());">
+                        <option @(mm.ManufacturerID == Manufacturer.UnsavedID ? "selected" : string.Empty) value="">@Resources.Makes.editMakeSelectMake</option>
+                        @foreach (Manufacturer manufacturer in Manufacturer.CachedManufacturers())
+                        {
+                            if (aat == AllowedAircraftTypes.Any || manufacturer.AllowedTypes == aat)
+                            {
+                                <option @(mm.ManufacturerID == manufacturer.ManufacturerID ? "selected" : string.Empty) value="@manufacturer.ManufacturerID">@manufacturer.ManufacturerName</option>
+                            }
+                        }
+                    </select>
+                    <a href="javascript:showAddMan();">@Resources.Makes.editMakeAddmanufacturer</a>
+                </div>
+                <div></div>
             </div>
-            <div class="vfValue">
-                <select id="cmbManufacturer" name="manufacturer" required onchange="javascript: manufacturerChanged($(this).val());">
-                    <option @(mm.ManufacturerID == Manufacturer.UnsavedID ? "selected" : string.Empty) value="">@Resources.Makes.editMakeSelectMake</option>
-                    @foreach (Manufacturer manufacturer in Manufacturer.CachedManufacturers())
-                    {
-                        <option @(mm.ManufacturerID == manufacturer.ManufacturerID ? "selected" : string.Empty) value="@manufacturer.ManufacturerID">@manufacturer.ManufacturerName</option>
-                    }
-                </select>
-                <a href="javascript:showAddMan();">@Resources.Makes.editMakeAddmanufacturer</a>
+        }
+        else
+        {
+            <div class="vfSection">
+                <div class="vfPrompt" id=lblManufacturer>@Resources.Makes.editMakeManufacturerPrompt</div>
+                <div class="vfValue">@(Manufacturer.CachedManufacturers().First(m => m.ManufacturerID == restrictedMan)?.ManufacturerName ?? string.Empty)</div>
+                <input type="hidden" value="@restrictedMan" name="manufacturer" />
             </div>
-            <div></div>
-        </div>
+        }
         <div class="dn" id="divSimModelWarning">
             <div>@Html.Raw(Branding.ReBrand(Resources.Makes.editMakeKeepSimsHighLevel))</div>
             <div class="c"><button type="button" id="btnCloseSimWarning" onclick="javascript: $(this).closest('.ui-dialog-content').dialog('close');">@Resources.LocalizedText.OK</button></div>
