@@ -208,10 +208,10 @@
     <value>*5* hours *solo* in *night* VFR conditions in *{0}*</value>
   </data>
   <data name="CommMinNightLandings" xml:space="preserve">
-    <value>*10 solo* landings at *night* in *{0}* (flight in the traffic pattern and a control tower are assumed)</value>
+    <value>*10 solo* landings at *night* in *{0}* at an airport with an *operating control tower* (use the "Landings - Night, towered Airport" property to indicate this; flight in the traffic pattern is assumed)</value>
   </data>
   <data name="CommMinNightTakeoffs" xml:space="preserve">
-    <value>*10 solo* takeoffs at *night* in *{0}*</value>
+    <value>*10 solo* takeoffs at *night* in *{0}* at an airport with an *operating control tower* (use the "Takeoffs - Night, towered Airport" property to indicate this; flight in the traffic pattern is assumed)</value>
   </data>
   <data name="CommMinPIC" xml:space="preserve">
     <value>*{0:#,##0}* hours *PIC* time</value>

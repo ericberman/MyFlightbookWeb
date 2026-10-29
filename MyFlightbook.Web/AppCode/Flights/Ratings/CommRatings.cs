@@ -346,8 +346,6 @@ namespace MyFlightbook.RatingsProgress
             decimal substituteSolo = 0.0M;
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
-            int cNightLandingsAtToweredAirport = 0;
-            int cNightTakefoffsAtToweredAirport = 0;
             int cNightTouchAndGo = 0;
             int nightTakeoffs = 0;
             if (fCatClassMatches)
@@ -356,8 +354,6 @@ namespace MyFlightbook.RatingsProgress
                 fInstructorOnBoard = cfr.FlightProps[CustomPropertyType.KnownProperties.IDPropInstructorOnBoard] != null; // instructor-on-board time only counts if you are acting as PIC
                 dutiesOfPICTime = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC);
                 nightTakeoffs = cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsNightTakeOff);
-                cNightLandingsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropLandingToweredNight);
-                cNightTakefoffsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight);
                 cNightTouchAndGo = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
             }
 
@@ -445,14 +441,14 @@ namespace MyFlightbook.RatingsProgress
                         if (soloTime > 0)
                         {
                             miMinSoloNight.AddEvent(Math.Min(soloTime, cfr.Night - cfr.IMC));
-                            miMinSoloNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
-                            miMinSoloNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings + cNightTouchAndGo, cNightLandingsAtToweredAirport));
+                            miMinSoloNightTO.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight));
+                            miMinSoloNightLandings.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropLandingToweredNight));
                         }
                         if (substituteSolo > 0)
                         {
                             miMinSoloSubNight.AddEvent(Math.Min(substituteSolo, cfr.Night - cfr.IMC));
-                            miMinSoloSubNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
-                            miMinSoloSubNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings + cNightTouchAndGo, cNightLandingsAtToweredAirport));
+                            miMinSoloSubNightTO.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight));
+                            miMinSoloSubNightLandings.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropLandingToweredNight));
                         }
                     }
                 }
