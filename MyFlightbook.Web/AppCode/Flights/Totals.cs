@@ -1032,38 +1032,38 @@ namespace MyFlightbook.Currency
           ORDER BY cpt.Title ";
 
         public const string sz8710ForUserQuery = @"SELECT
-  InstanceTypeID,
-  Category,
-  Class,
-  CatClass,
-  IF(InstanceTypeID = 1, SUM(ROUND(TotalTime*?qf))/?qf, SUM(ROUND(GroundSim*?qf))/?qf) AS TotalTime,
+  ANY_VALUE(InstanceTypeID) AS InstanceTypeID,
+  ANY_VALUE(Category) AS Category,
+  ANY_VALUE(Class) AS Class,
+  ANY_VALUE(CatClass) AS CatClass,
+  SUM(ROUND(IF(InstanceTypeID = 1, TotalTime, GroundSim)*?qf))/?qf AS TotalTime,
   SUM(ROUND(InstructionReceived*?qf))/?qf AS InstructionReceived,
-  IF(InstanceTypeID = 1, SUM(ROUND(SoloTime*?qf))/?qf, 0) AS SoloTime,
-  IF(InstanceTypeID = 1, SUM(ROUND(PIC*?qf))/?qf, 0) AS PIC,
-  IF(InstanceTypeID = 1, SUM(ROUND(SIC*?qf))/?qf, 0) AS SIC,
-  IF(InstanceTypeID = 1, SUM(ROUND(XC*?qf))/?qf, 0) AS CrossCountry,
-  IF(InstanceTypeID = 1, SUM(ROUND(XCDual*?qf))/?qf, 0) AS CrossCountryDual,
-  IF(InstanceTypeID = 1, SUM(ROUND(XCSolo*?qf))/?qf, 0) AS CrossCountrySolo,
-  IF(InstanceTypeID = 1, SUM(ROUND(XCPIC*?qf))/?qf, 0) AS CrossCountryPIC,
-  IF(InstanceTypeID = 1, SUM(ROUND(XCSIC*?qf))/?qf, 0) AS CrossCountrySIC,
+  SUM(IF(InstanceTypeID = 1, ROUND(SoloTime*?qf), 0))/?qf AS SoloTime,
+  SUM(IF(InstanceTypeID = 1, ROUND(PIC*?qf), 0))/?qf AS PIC,
+  SUM(IF(InstanceTypeID = 1, ROUND(SIC*?qf), 0))/?qf AS SIC,
+  SUM(IF(InstanceTypeID = 1, ROUND(XC*?qf), 0))/?qf AS CrossCountry,
+  SUM(IF(InstanceTypeID = 1, ROUND(XCDual*?qf), 0))/?qf AS CrossCountryDual,
+  SUM(IF(InstanceTypeID = 1, ROUND(XCSolo*?qf), 0))/?qf AS CrossCountrySolo,
+  SUM(IF(InstanceTypeID = 1, ROUND(XCPIC*?qf), 0))/?qf AS CrossCountryPIC,
+  SUM(IF(InstanceTypeID = 1, ROUND(XCSIC*?qf), 0))/?qf AS CrossCountrySIC,
   SUM(ROUND(IMC*?qf))/?qf AS InstrumentTime,
-  IF(InstanceTypeID IN (1,4), SUM(ROUND(NightDual*?qf))/?qf, 0) AS NightDual,
-  IF(InstanceTypeID IN (1,4), SUM(NightLandings), 0) AS NightLandings,
-  IF(InstanceTypeID IN (1,4), SUM(NightTakeoffs), 0) AS NightTakeoffs,
-  IF(InstanceTypeID = 1, SUM(ROUND(NightPIC*?qf))/?qf, 0) AS NightPIC,
-  IF(InstanceTypeID = 1, SUM(ROUND(NightSIC*?qf))/?qf, 0) AS NightSIC,
-  IF(InstanceTypeID IN (1,4), SUM(NightPICLandings), 0) AS NightPICLandings,
-  IF(InstanceTypeID IN (1,4), SUM(NightSICLandings), 0) AS NightSICLandings,
-  IF(InstanceTypeID IN (1,4), SUM(NightPICTakeoffs), 0) AS NightPICTakeoffs,
-  IF(InstanceTypeID IN (1,4), SUM(NightSICTakeoffs), 0) AS NightSICTakeoffs,
-  IF(InstanceTypeID = 1, SUM(AeroTows), 0) AS AeroTows,
-  IF(InstanceTypeID = 1, SUM(WinchedLaunches), 0) AS WinchedLaunches,
-  IF(InstanceTypeID = 1, SUM(SelfLaunches), 0) AS SelfLaunches,
+  SUM(IF(InstanceTypeID IN (1,4), ROUND(NightDual*?qf), 0))/?qf AS NightDual,
+  SUM(IF(InstanceTypeID IN (1,4), NightLandings, 0)) AS NightLandings,
+  SUM(IF(InstanceTypeID IN (1,4), NightTakeoffs, 0)) AS NightTakeoffs,
+  SUM(IF(InstanceTypeID = 1, ROUND(NightPIC*?qf), 0))/?qf AS NightPIC,
+  SUM(IF(InstanceTypeID = 1, ROUND(NightSIC*?qf), 0))/?qf AS NightSIC,
+  SUM(IF(InstanceTypeID IN (1,4), NightPICLandings, 0)) AS NightPICLandings,
+  SUM(IF(InstanceTypeID IN (1,4), NightSICLandings, 0)) AS NightSICLandings,
+  SUM(IF(InstanceTypeID IN (1,4), NightPICTakeoffs, 0)) AS NightPICTakeoffs,
+  SUM(IF(InstanceTypeID IN (1,4), NightSICTakeoffs, 0)) AS NightSICTakeoffs,
+  SUM(IF(InstanceTypeID = 1, AeroTows, 0)) AS AeroTows,
+  SUM(IF(InstanceTypeID = 1, WinchedLaunches, 0)) AS WinchedLaunches,
+  SUM(IF(InstanceTypeID = 1, SelfLaunches, 0)) AS SelfLaunches,
   SUM(flightCount) AS NumberOfFlights
 FROM
 (SELECT
     categoryclass.idcatclass AS CatClassID,
-		categoryclass.Class,
+    categoryclass.Class,
     categoryclass.CatClass,
     ait.ID AS InstanceTypeID,
     ait.Description AS InstanceTypeDescription,
@@ -1076,39 +1076,39 @@ FROM
     GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title) SEPARATOR ' ') AS CustomProperties,
     flights.totalFlightTime AS TotalTime,
     flights.dualReceived AS InstructionReceived,
-    IF (fpSolo.decValue IS NULL, 0, fpSolo.decValue) AS SoloTime,
+    COALESCE(ANY_VALUE(fpSolo.decValue), 0) AS SoloTime,
     flights.pic AS PIC,
     flights.cficomment,
     flights.cfiname,
-    useraircraft.privatenotes AS AircraftPrivateNotes,
+    ANY_VALUE(useraircraft.privatenotes) AS AircraftPrivateNotes,
     IF (flights.sic IS NULL, 0, flights.sic) AS SIC,
     flights.crosscountry AS XC,
     LEAST(flights.crosscountry, flights.dualReceived) AS XCDual,
-    LEAST(flights.crosscountry, IF(fpSolo.decValue IS null, 0, fpSolo.decValue)) AS XCSolo,
+    LEAST(flights.crosscountry, COALESCE(ANY_VALUE(fpSolo.decValue), 0)) AS XCSolo,
     LEAST(flights.crosscountry, flights.PIC) AS XCPIC,
     LEAST(flights.crosscountry, IF(flights.SIC IS NULL, 0, flights.SIC)) AS XCSIC,
-    imc + simulatedInstrument AS IMC, 
+    imc + simulatedInstrument AS IMC,
     flights.GroundSim,
     LEAST(flights.night, flights.dualReceived) AS NightDual,
     flights.cNightLandings AS NightLandings,
     models.*,
     IF(models.family is null OR models.family='', models.model, models.family) AS FamilyDisplay,
-    IF (fpNightTakeoff.intValue IS NULL, 0, fpNightTakeoff.intValue) AS NightTakeoffs,
+    COALESCE(ANY_VALUE(fpNightTakeoff.intValue), 0) AS NightTakeoffs,
     LEAST(flights.night, flights.PIC) AS NightPIC,
     LEAST(flights.night, IF(flights.SIC IS NULL, 0, flights.SIC)) AS NightSIC,
-    IF (flights.PIC > 0, flights.cNightLandings, 0) AS NightPICLandings, 
+    IF (flights.PIC > 0, flights.cNightLandings, 0) AS NightPICLandings,
     IF (flights.SIC > 0, flights.cNightLandings, 0) AS NightSICLandings,
-    IF (flights.PIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightPICTakeoffs,
-    IF (flights.SIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightSICTakeoffs,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpAeroTow.intValue IS NOT NULL, fpAeroTow.intValue, 0) AS AeroTows,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpWinchedLaunch.intValue IS NOT NULL, fpWinchedLaunch.intValue, 0) AS WinchedLaunches,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpSelfLaunch.intValue IS NOT NULL, fpSelfLaunch.intValue, 0) AS SelfLaunches,
+    IF (flights.PIC > 0, COALESCE(ANY_VALUE(fpNightTakeoff.intValue), 0), 0) AS NightPICTakeoffs,
+    IF (flights.SIC > 0, COALESCE(ANY_VALUE(fpNightTakeoff.intValue), 0), 0) AS NightSICTakeoffs,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12), COALESCE(ANY_VALUE(fpAeroTow.intValue), 0), 0) AS AeroTows,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12), COALESCE(ANY_VALUE(fpWinchedLaunch.intValue), 0), 0) AS WinchedLaunches,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12), COALESCE(ANY_VALUE(fpSelfLaunch.intValue), 0), 0) AS SelfLaunches,
     IF(categoryclass.idcatclass IN (5, 10, 11, 12), flights.cLandings, 1) AS flightCount
   FROM flights
   INNER JOIN aircraft ON flights.idaircraft=aircraft.idaircraft
   INNER JOIN models ON aircraft.idmodel=models.idmodel
   INNER JOIN categoryclass ON IF(flights.idCatClassOverride = 0, models.idcategoryclass, flights.idcatclassoverride)=categoryclass.idcatclass
-  INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer 
+  INNER JOIN manufacturers ON manufacturers.idManufacturer=models.idmanufacturer
   INNER JOIN AircraftInstanceTypes ait ON ait.ID = aircraft.InstanceType
   INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft)
   LEFT JOIN flighttelemetry ft ON (flights.idflight=ft.idflight)
@@ -1116,14 +1116,14 @@ FROM
   LEFT JOIN flightproperties fpNightTakeoff ON (fpNightTakeOff.idFlight = flights.idFlight AND fpNightTakeoff.idPropType=73)
   LEFT JOIN flightproperties fpAeroTow ON (fpAeroTow.idFlight = flights.idFlight AND fpAeroTow.idPropType=222)
   LEFT JOIN flightproperties fpSelfLaunch ON (fpSelfLaunch.idFlight = flights.idFlight AND fpSelfLaunch.idPropType=227)
-  LEFT JOIN flightproperties fpWinchedLaunch ON (fpWinchedLaunch.idFlight = flights.idFlight AND fpWinchedLaunch.idPropType IN (226, 341, 349))
+  LEFT JOIN flightproperties fpWinchedLaunch ON (fpWinchedLaunch.idFlight = flights.idFlight AND fpWinchedLaunch.idPropType = 226)
   LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
   LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
   WHERE {0}
-  GROUP BY flights.idFlight, models.idmodel
+  GROUP BY flights.idFlight, models.idmodel, categoryclass.idcatclass
   {1}) f
 GROUP BY {2}
-ORDER BY f.InstanceTypeID, f.CatClassID;";
+ORDER BY MIN(f.InstanceTypeID), MIN(f.CatClassID);";
         #endregion
 
         /// <summary>
@@ -1585,26 +1585,26 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
 
             List<ModelRollupRow> lst = new List<ModelRollupRow>();
 
-            string szRollupQuery = $@"SELECT 
+            string szRollupQuery = $@"SELECT
     familydisplay,
-    ModelDisplay,
-    IF(InstanceTypeID=1, SUM(ROUND(PIC * ?qf))/?qf, 0) AS PIC,
-    IF(InstanceTypeID=1, SUM(ROUND(IF(PIC >= CFI, PIC - CFI, 0) * ?qf)) / ?qf, 0) AS PICNoCFI,
-    IF(InstanceTypeID=1, SUM(ROUND(SIC * ?qf))/?qf, 0) AS SIC,
+    ANY_VALUE(ModelDisplay) AS ModelDisplay,
+    SUM(IF(InstanceTypeID = 1, ROUND(PIC * ?qf), 0)) / ?qf AS PIC,
+    SUM(IF(InstanceTypeID = 1, ROUND(IF(PIC >= CFI, PIC - CFI, 0) * ?qf), 0)) / ?qf AS PICNoCFI,
+    SUM(IF(InstanceTypeID = 1, ROUND(SIC * ?qf), 0)) / ?qf AS SIC,
     SUM(ROUND(dualReceived * ?qf))/?qf AS DualReceived,
-    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 1, PIC, 0) * ?qf))/?qf, 0) AS TurboPropPIC,
-    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 1, SIC, 0) * ?qf))/?qf, 0) AS TurboPropSIC,
-    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 2, PIC, 0) * ?qf))/?qf, 0) AS JetPIC,
-    IF(instancetypeid=1, SUM(ROUND(IF(fTurbine = 2, SIC, 0) * ?qf))/?qf, 0) AS JetSIC,
+    SUM(IF(InstanceTypeID = 1 AND fTurbine = 1, ROUND(PIC * ?qf), 0)) / ?qf AS TurboPropPIC,
+    SUM(IF(InstanceTypeID = 1 AND fTurbine = 1, ROUND(SIC * ?qf), 0)) / ?qf AS TurboPropSIC,
+    SUM(IF(InstanceTypeID = 1 AND fTurbine = 2, ROUND(PIC * ?qf), 0)) / ?qf AS JetPIC,
+    SUM(IF(InstanceTypeID = 1 AND fTurbine = 2, ROUND(SIC * ?qf), 0)) / ?qf AS JetSIC,
     SUM(IF(instancetypeid=1 and f.CatClassID in (2, 4), ROUND(PIC * ?qf) / ?qf, 0)) AS MultiPIC,
     SUM(IF(instancetypeid=1 and f.CatClassID in (2, 4), ROUND(SIC * ?qf) / ?qf, 0)) AS MultiSIC,
-    IF(instancetypeid=1, SUM(ROUND(EngineerTime * ?qf))/?qf, 0) AS flightengineer,
-    IF(instancetypeid=1, SUM(ROUND(MilitaryTime * ?qf))/?qf, 0) AS MilTime,
+    SUM(IF(InstanceTypeID = 1, ROUND(EngineerTime * ?qf), 0)) / ?qf AS flightengineer,
+    SUM(IF(InstanceTypeID = 1, ROUND(MilitaryTime * ?qf), 0)) / ?qf AS MilTime,
     SUM(ROUND(CFI * ?qf))/?qf AS CFI,
-    IF(instancetypeid=1, SUM(ROUND(Night * ?qf))/?qf, 0) AS Night,
-    IF(instancetypeid=1, SUM(ROUND(IMC * ?qf))/?qf, 0) AS IMC,
+    SUM(ROUND(Night * ?qf))/?qf AS Night,
+    SUM(IF(InstanceTypeID = 1, ROUND(IMC * ?qf), 0)) / ?qf AS IMC,
     SUM(ROUND(SimulatedInstrument * ?qf))/?qf AS SimIMC,
-    IF(instancetypeid=1, SUM(ROUND(crossCountry * ?qf))/?qf, 0) AS XC,
+    SUM(IF(InstanceTypeID = 1, ROUND(crossCountry * ?qf), 0)) / ?qf AS XC,
     SUM(ROUND(IF(instancetypeid=1, TotalFlightTime, 0) * ?qf))/?qf AS Total,
     SUM(ROUND(IF(instancetypeid=1 and f.date > DATE_SUB(NOW(), INTERVAL 1 YEAR), TotalFlightTime, 0) * ?qf))/?qf AS _12MonthTotal,
     SUM(ROUND(IF(instancetypeid=1 and f.date > DATE_SUB(NOW(), INTERVAL 2 YEAR), TotalFlightTime, 0) * ?qf))/?qf AS _24MonthTotal,
@@ -1637,11 +1637,11 @@ ORDER BY f.InstanceTypeID, f.CatClassID;";
     SUM(IF (f.IsOther, f.daySIC, 0)) as DaySICOther,
     SUM(IF (f.IsOther, f.dayPICUS, 0)) as DayPICUSOther,
     SUM(IF (f.instancetypeid = 1 AND f.idcatclass IN (1, 3), f.CFI, 0)) AS CFISE,
-    SUM(IF (instancetypeid = 1 AND f.idcatclass IN (2, 4), f.CFI, 0)) AS CFIME,
+    SUM(IF (f.instancetypeid = 1 AND f.idcatclass IN (2, 4), f.CFI, 0)) AS CFIME,
     SUM(IF (f.instancetypeid <> 1, f.CFI, 0)) AS CFIFSTD,
     SUM(groundSim) AS groundSim,
     MAX(f.date) AS LastFlight
-FROM (SELECT 
+FROM (SELECT
         flights.*,
         categoryclass.idcatclass AS CatClassID,
         categoryclass.Class,
@@ -1653,11 +1653,11 @@ FROM (SELECT
         LEAST(flights.night, flights.pic) as NightPIC,
         LEAST(flights.night, flights.dualReceived) as NightDual,
         LEAST(flights.night, flights.sic) as NightSIC,
-        LEAST(flights.night, COALESCE(fpPicus.decValue, 0)) as NightPICUS,
+        LEAST(flights.night, COALESCE(ANY_VALUE(fpPicus.decValue), 0)) as NightPICUS,
         LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.pic) as DayPIC,
         LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.dualReceived) as DayDual,
         LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), flights.sic) as DaySIC,
-        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), COALESCE(fpPicus.decValue, 0)) as DayPICUS,
+        LEAST(IF(flights.totalFlightTime > flights.night, flights.totalFlightTime - flights.night, 0), COALESCE(ANY_VALUE(fpPicus.decValue), 0)) as DayPICUS,
         IF(categoryclass.idCatClass in (1,3), 1, 0) AS IsSingleEngine,
         IF(categoryclass.idCatClass in (2,4), 1, 0) AS IsMultiEngine,
         IF(categoryclass.idCatClass > 4, 1, 0) AS IsOther,
@@ -1669,11 +1669,11 @@ FROM (SELECT
             CONCAT('(', models.model, ')'),
             aircraft.tailnumber) AS 'TailNumberDisplay',
         aircraft.TailNumber AS RawTailNumber,
-        useraircraft.privatenotes AS AircraftPrivateNotes,
+        ANY_VALUE(useraircraft.privatenotes) AS AircraftPrivateNotes,
         {(fq.IsDefault ? string.Empty : "GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title) SEPARATOR ' ') AS CustomProperties,")}
         models.*,
-        fpEng.decValue AS EngineerTime,
-        fpMil.decValue AS MilitaryTime
+        ANY_VALUE(fpEng.decValue) AS EngineerTime,
+        ANY_VALUE(fpMil.decValue) AS MilitaryTime
     FROM
         flights
             INNER JOIN aircraft ON flights.idaircraft = aircraft.idaircraft
@@ -1681,7 +1681,7 @@ FROM (SELECT
             INNER JOIN categoryclass ON (IF(flights.idCatClassOverride = 0, models.idcategoryclass, flights.idcatclassoverride) = categoryclass.idcatclass)
             INNER JOIN manufacturers ON manufacturers.idManufacturer = models.idmanufacturer
             INNER JOIN AircraftInstanceTypes ait ON ait.ID = aircraft.InstanceType
-            INNER JOIN useraircraft ON (flights.username = useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) 
+            INNER JOIN useraircraft ON (flights.username = useraircraft.username AND flights.idaircraft = useraircraft.idaircraft)
             LEFT JOIN flighttelemetry ft ON (flights.idflight = ft.idflight)
             LEFT JOIN FlightProperties fpEng ON fpEng.idflight = flights.idflight AND fpEng.idproptype = 257
             LEFT JOIN flightproperties fpMil ON fpMil.idflight = flights.idflight AND fpMil.idproptype = 90
@@ -1690,7 +1690,7 @@ FROM (SELECT
             LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType")}
       WHERE
         {fq.RestrictClause}
-    GROUP BY flights.idFlight , models.idmodel {(String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause)}
+    GROUP BY flights.idFlight, models.idmodel, categoryclass.idcatclass {(String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause)}
     ORDER BY familyDisplay asc) f
 GROUP BY f.familyDisplay WITH ROLLUP";
 
