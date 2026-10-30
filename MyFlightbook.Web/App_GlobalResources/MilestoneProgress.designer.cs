@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "18.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class MilestoneProgress {
@@ -1420,7 +1420,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *10 solo* landings at *night* in *{0}* (flight in the traffic pattern and a control tower are assumed).
+        ///   Looks up a localized string similar to *10 solo* landings at *night* in *{0}* at an airport with an *operating control tower* (use the &quot;Landings - Night, towered Airport&quot; property to indicate this; flight in the traffic pattern is assumed).
         /// </summary>
         internal static string CommMinNightLandings {
             get {
@@ -1429,7 +1429,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *10 solo* takeoffs at *night* in *{0}*.
+        ///   Looks up a localized string similar to *10 solo* takeoffs at *night* in *{0}* at an airport with an *operating control tower* (use the &quot;Takeoffs - Night, towered Airport&quot; property to indicate this; flight in the traffic pattern is assumed).
         /// </summary>
         internal static string CommMinNightTakeoffs {
             get {
