@@ -422,6 +422,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         public ActionResult Shunt()
         {
+            ViewBag.SuppressAntiForgeryToken = true;    // don't do antiforgery token on the page.
             return View("shunt");
         }
 
