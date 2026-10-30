@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="GeoTimeZone" Version="6.1.0" />
-    <PackageReference Include="NodaTime" Version="3.3.5" />
+    <PackageReference Include="NodaTime" Version="3.3.7" />
   </ItemGroup>
 
   <ItemGroup>
