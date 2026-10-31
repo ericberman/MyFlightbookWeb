@@ -667,17 +667,6 @@ namespace MyFlightbook
         /// <param name="szUser"></param>
         private static void PrepareFlightForSubmission(LogbookEntry le, string szUser)
         {
-            // clean up user name in case an email address is passed in.
-            if (le.User.Contains("@"))
-                le.User = Membership.GetUserNameByEmail(le.User);
-
-            if (szUser.Length == 0)
-                throw new MyFlightbookException(Resources.WebService.errBadAuth);
-
-            // should never happen
-            if (String.IsNullOrEmpty(le.User) || szUser.CompareCurrentCultureIgnoreCase(le.User) != 0)
-                le.User = szUser;
-
             // fCommit from logbook (below) will do normal validation, but two more layers are needed for external edits:
             // a) make sure that an edit to an existing row actually belongs to the user, and
             // b) make sure that we have referential integrity w.r.t. the aircraft ID.
@@ -748,6 +737,7 @@ namespace MyFlightbook
             po?.ToString();  // avoid warning about unused po
 
             string szUser = GetEncryptedUser(szAuthUserToken);
+            le.User = szUser;   // slam in the authenticated user. Source of issue #1291?
 
             // Issue #1525: handle inconsistant \r vs \r\n vs \r\r\n
             le.Comment = Regex.Replace(le.Comment, @"(\r\n)|\r|\n|(\r\r\n)", Environment.NewLine);
