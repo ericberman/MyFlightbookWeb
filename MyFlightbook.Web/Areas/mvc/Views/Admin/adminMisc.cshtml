@@ -82,17 +82,26 @@
         });
     }
 
-    function startNightlyRun(sender) {
+    function startNightlyRun(fRestart) {
+        if (fRestart && !window.confirm("Discard today's progress and start the nightly run over?  This can re-send monthly emails and reminders."))
+            return;
         var params = new Object();
+        params.fRestart = fRestart;
         var d = JSON.stringify(params);
         $.ajax({
             url: '@Url.Action("KickOffNightlyRun", "Admin")',
             type: "POST", data: d, dataType: "text", contentType: "application/json",
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
-            success: function (response) {
-                sender.disabled = true;
-                window.alert("Success; run is in progress!");
-            }
+            success: function (response) { $("#preNightlyRunStatus").text(response); }
+        });
+    }
+
+    function nightlyRunStatus() {
+        $.ajax({
+            url: '@Url.Action("NightlyRunStatus", "Admin")',
+            type: "POST", data: "{}", dataType: "text", contentType: "application/json",
+            error: function (xhr, status, error) { window.alert(xhr.responseText); },
+            success: function (response) { $("#preNightlyRunStatus").text(response); }
         });
     }
 
@@ -162,9 +171,12 @@
     </table>
 </div>
 <p>
-    <button type="button" onclick="javascript: startNightlyRun(this);">Kick Off Nightly Run</button>
-    <span class="fineprint">BE CAREFUL! This can spam users.  Only click once, and only if it DIDN'T run last night.</span>
+    <button type="button" onclick="javascript: startNightlyRun(false);">Start / Resume Nightly Run</button>
+    <button type="button" onclick="javascript: nightlyRunStatus();">Nightly Run Status</button>
+    <button type="button" onclick="javascript: startNightlyRun(true);">Restart Nightly Run From Scratch</button>
+    <span class="fineprint">Start/Resume is safe to click: it does nothing if today's run is complete, and picks up where it left off otherwise.  Restart discards today's progress and CAN spam users.</span>
 </p>
+<pre id="preNightlyRunStatus"></pre>
 <h2>Out of Office</h2>
 <p>Control whether or not contact responds with an out-of-office message</p>
 <div><label><input type="checkbox" onclick="javascript: toggleOOF(this);" @((LocalConfig.SettingForKey("UseOOF").CompareCurrentCultureIgnoreCase("yes") == 0).ToChecked()) />Send an out-of-office message</label></div>

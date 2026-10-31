@@ -255,44 +255,63 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         #endregion
 
         #region Misc - Nightly run
-        private static void StartNightlyRun(int dbg = 0, string userRestriction = null, string tasksToRun = null)
+        private static EmailSubscriptionManager NightlyRunManager(string userRestriction, string tasksToRun)
         {
-            // request came from this machine - make a request to ourselves and send it out in email
             EmailSubscriptionManager em = new EmailSubscriptionManager() { ActiveBrand = Branding.CurrentBrand };
-            if (dbg != 0 && !String.IsNullOrEmpty(userRestriction))
+            if (!String.IsNullOrEmpty(userRestriction))
                 em.UserRestriction = userRestriction;
             if (!String.IsNullOrEmpty(tasksToRun))
                 em.TasksToRun = Enum.TryParse(tasksToRun, out EmailSubscriptionManager.SelectedTasks tasks) ? tasks : EmailSubscriptionManager.SelectedTasks.All;
-            new Thread(new ThreadStart(em.NightlyRun)).Start();
+            return em;
         }
 
+        /// <summary>
+        /// Starts, resumes, or restarts today's nightly run from the admin tool.  Safe to click more than once: if a run is complete, it does nothing; if it's partway through, it picks up where it left off.
+        /// </summary>
+        /// <param name="fRestart">If true, discards today's progress and starts over.  This CAN re-send monthly emails and reminders.</param>
         [HttpPost]
         [Authorize]
         [ValidateHeaderAntiForgeryToken]
-        public string KickOffNightlyRun()
+        public string KickOffNightlyRun(bool fRestart = false)
         {
             return SafeOp(ProfileRoles.maskSiteAdminOnly, () =>
             {
-                StartNightlyRun();
-                return string.Empty;
+                return NightlyRunManager(null, null).StartOrResumeNightlyRun(fRestart);
             });
         }
 
         /// <summary>
-        /// Kicks off a nightly email run MUST BE CALLED FROM LOCAL MACHINE
+        /// Reports the status of today's nightly run without starting anything.
         /// </summary>
-        /// <param name="dbg">If non-zero, then limits to the specified user</param>
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
+        public string NightlyRunStatus()
+        {
+            return SafeOp(ProfileRoles.maskSiteAdminOnly, () =>
+            {
+                return NightlyRunManager(null, null).NightlyRunStatus();
+            });
+        }
+
+        /// <summary>
+        /// Starts or resumes a nightly run MUST BE CALLED FROM LOCAL MACHINE.  Idempotent, so Task Scheduler can call it repeatedly (e.g., every 15 minutes for several hours);
+        /// once the run is complete, subsequent calls do nothing.
+        /// </summary>
+        /// <param name="dbg">If non-zero, then limits to the authenticated user.  Debug runs are tracked separately from the real run.</param>
         /// <param name="tasks">If provided, limits to the specified task (e.g., just cloud backup, for example)</param>
+        /// <param name="restart">If non-zero, discards any progress for this run and starts over</param>
+        /// <param name="status">If non-zero, just reports status without starting anything</param>
         /// <returns>Status</returns>
         /// <exception cref="UnauthorizedAccessException"></exception>
         [HttpGet]
-        public ActionResult NightlyRun(int dbg = 0, string tasks = null)
+        public ActionResult NightlyRun(int dbg = 0, string tasks = null, int restart = 0, int status = 0)
         {
             if (!IsLocalCall())
                 throw new UnauthorizedAccessException("NightlyRun can ONLY be called from the local machine.  Otherwise, use the admin tool");
 
-            StartNightlyRun(dbg, User.Identity.IsAuthenticated ? User.Identity.Name : null, tasks);
-            return Content("Success - nightly run has been started");
+            EmailSubscriptionManager em = NightlyRunManager((dbg != 0 && User.Identity.IsAuthenticated) ? User.Identity.Name : null, tasks);
+            return Content(status != 0 ? em.NightlyRunStatus() : em.StartOrResumeNightlyRun(restart != 0), "text/plain");
         }
         #endregion
 

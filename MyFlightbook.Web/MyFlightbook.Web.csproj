@@ -1763,6 +1763,7 @@
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
     <Compile Include="AppCode\UserAccounts\ImageAuthorization.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
+    <Compile Include="AppCode\UserAccounts\NightlyJobs.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLRoleProvider.cs" />
     <Compile Include="AppCode\UserAccounts\Profile.cs" />
     <Compile Include="AppCode\UserAccounts\Subscriptions.cs" />

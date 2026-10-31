@@ -45,4 +45,5 @@ truncate pendingvideos;
 truncate sponsoredads;
 truncate PkceAuthorization;
 truncate externalMaintenance;
+truncate nightlyjobs;
 SET FOREIGN_KEY_CHECKS=1;
