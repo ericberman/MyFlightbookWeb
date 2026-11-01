@@ -436,7 +436,7 @@ WHERE runKey=?rk AND attempts >= ?maxAttempts AND (status='pending' OR (status='
         /// <summary>
         /// Number of workers to run in parallel within a process.  Claims are atomic, so more than one is safe; 1 matches the old (serial) behavior.
         /// </summary>
-        public static int WorkerCount { get; set; } = 1;
+        public static int WorkerCount { get; set; } = 2;
         #endregion
 
         /// <summary>

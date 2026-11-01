@@ -1,19 +1,16 @@
 ﻿using MyFlightbook.CloudStorage;
-using MyFlightbook.Currency;
-using MyFlightbook.Payments;
+using MyFlightbook.Encryptors;
 using MyFlightbook.SharedUtility.EventRecorder;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
+using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using MyFlightbook.Encryptors;
 using static MyFlightbook.CloudStorage.BoxDrive;
-using System.Collections.Specialized;
-using System.Net.Http;
 
 /******************************************************
  * 
@@ -217,16 +214,13 @@ namespace MyFlightbook.Subscriptions
                 if (ts == MFBDropbox.TokenStatus.None)
                     return true;
 
-                System.Threading.Thread.Sleep(1);
                 Dropbox.Api.Files.FileMetadata result = null;
                 result =await lb.BackupToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
                 sb.AppendFormat(CultureInfo.CurrentCulture, "Dropbox: user {0} ", pf.UserName);
                 if (ts == MFBDropbox.TokenStatus.oAuth1)
                     sb.Append("Token UPDATED from oauth1! ");
                 sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                System.Threading.Thread.Sleep(1);
                 result = await lb.BackupImagesToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
-                System.Threading.Thread.Sleep(1);
                 sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
             }
             catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
@@ -325,11 +319,9 @@ namespace MyFlightbook.Subscriptions
                 if (await lb.BackupToOneDrive(od).ConfigureAwait(false))
                     sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} Logbook backed up for user {0}...", pf.UserName);
 
-                System.Threading.Thread.Sleep(0);
                 if (await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand).ConfigureAwait(false))
                     sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
 
-                System.Threading.Thread.Sleep(0);
                 // if we are here we were successful, so save the updated refresh token
                 pf.OneDriveAccessToken = od.AuthState;
                 pf.FCommit();
@@ -400,9 +392,7 @@ namespace MyFlightbook.Subscriptions
                 GoogleDriveResultDictionary meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand).ConfigureAwait(false);
                 if (meta != null)
                     sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                System.Threading.Thread.Sleep(0);
                 meta = await lb.BackupImagesToGoogleDrive(gd, Branding.CurrentBrand).ConfigureAwait(false);
-                System.Threading.Thread.Sleep(0);
                 if (meta != null)
                     sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
 
