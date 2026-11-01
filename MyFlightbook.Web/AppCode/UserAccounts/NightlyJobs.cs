@@ -69,16 +69,16 @@ namespace MyFlightbook.Subscriptions
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
             ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
-            RunKey = (string)dr["runKey"];
+            RunKey = util.ReadNullableString(dr, "runKey");
             RunDate = Convert.ToDateTime(dr["runDate"], CultureInfo.InvariantCulture);
-            JobType = (NightlyJobType)Enum.Parse(typeof(NightlyJobType), (string)dr["jobType"]);
-            Username = (string)util.ReadNullableField(dr, "username", string.Empty);
-            Payload = (string)util.ReadNullableField(dr, "payload", string.Empty);
-            Status = (NightlyJobStatus)Enum.Parse(typeof(NightlyJobStatus), (string)dr["status"]);
+            JobType = (NightlyJobType)Enum.Parse(typeof(NightlyJobType), util.ReadNullableString(dr, "jobType"));
+            Username = util.ReadNullableString(dr, "username");
+            Payload = util.ReadNullableString(dr, "payload");
+            Status = (NightlyJobStatus)Enum.Parse(typeof(NightlyJobStatus), util.ReadNullableString(dr, "status"));
             Attempts = Convert.ToInt32(dr["attempts"], CultureInfo.InvariantCulture);
-            Owner = (string)util.ReadNullableField(dr, "owner", string.Empty);
-            Result = (string)util.ReadNullableField(dr, "result", string.Empty);
-            Failures = (string)util.ReadNullableField(dr, "failures", string.Empty);
+            Owner = util.ReadNullableString(dr, "owner");
+            Result = util.ReadNullableString(dr, "result");
+            Failures = util.ReadNullableString(dr, "failures");
         }
 
         public override string ToString()
@@ -394,10 +394,10 @@ WHERE runKey=?rk AND attempts >= ?maxAttempts AND (status='pending' OR (status='
             DBHelper dbh = new DBHelper("SELECT jobType, status, COUNT(*) AS c FROM nightlyjobs WHERE runKey=?rk GROUP BY jobType, status");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("rk", runKey); }, (dr) =>
             {
-                string jt = (string)dr["jobType"];
+                string jt = Convert.ToString(dr["jobType"], CultureInfo.InvariantCulture);
                 if (!d.ContainsKey(jt))
                     d[jt] = new Dictionary<string, int>();
-                d[jt][(string)dr["status"]] = Convert.ToInt32(dr["c"], CultureInfo.InvariantCulture);
+                d[jt][Convert.ToString(dr["status"], CultureInfo.InvariantCulture)] = Convert.ToInt32(dr["c"], CultureInfo.InvariantCulture);
             });
             ThrowOnError(dbh, "status");
 

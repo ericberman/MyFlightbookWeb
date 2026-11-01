@@ -20,3 +20,5 @@ CREATE TABLE `nightlyjobs` (
   KEY `claim` (`runKey`,`status`,`priority`,`id`),
   KEY `rundate` (`runDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Work queue for the nightly run';
+
+ALTER TABLE nightlyjobs MODIFY `owner` varchar(36) DEFAULT NULL COMMENT 'GUID of the current claim';
