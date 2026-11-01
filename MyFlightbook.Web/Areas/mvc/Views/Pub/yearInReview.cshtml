@@ -16,8 +16,9 @@
     IEnumerable<IAirportVisitor> rgPotentialVisits = LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser, fq);
     IEnumerable<VisitedAirport> rgva = VisitedAirport.VisitedAirportsFromVisitors(rgPotentialVisits);
     IEnumerable<VisitedRegion> regions = VisitedAirport.VisitedCountriesAndAdmins(rgva);
-    GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = AirportList.PathsForAirportVisits(rgPotentialVisits, new AirportList(rgva), true) };
-    map.Options.fShowRoute = true;
+    VisitedLocations locations = new VisitedLocations(VisitedAirport.VisitedAirportsFromVisitors(LogbookEntryDisplay.GetPotentialVisitsForQuery(szUser, fq)));
+    // GoogleMap map = new GoogleMap("divMapVisited", GMap_Mode.Dynamic) { Airports = AirportList.PathsForAirportVisits(rgPotentialVisits, new AirportList(rgva), true) };
+    // map.Options.fShowRoute = true;
 
     double distance = LogbookEntryDisplay.DistanceFlownByUser(fq, false, out string szErr);
 
@@ -86,35 +87,39 @@
     <span id="lblRecentAchievementsTitle">@String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentStatsTitle, ra.StartDate, ra.EndDate)</span>
     <img style="vertical-align:text-bottom;" src="@VirtualPathUtility.ToAbsolute("~/images/copyflight.png")" alt="@Resources.LocalizedText.CopyToClipboard" title="@Resources.LocalizedText.CopyToClipboard"
          onclick="javascript:copyClipboard('lblRecentAchievementsTitle', 'raResults', false, 'lblCopied');return false;" />
-    <span id="lblCopied" class="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
+    <span id="lblCopied" class="hintPopup" class="dn b" style="font-size: 10pt; color:black; ">@Resources.LocalizedText.CopiedToClipboard</span>
 </div>
 <div id="raContainer">
     @{ Html.RenderAction("RenderRecentAchievements", "Training", new { ra, IsReadOnly = true }); }
 </div>
-<div class="reviewSectionHead"><img src="@VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/calendar.svg")" style="vertical-align:middle;" />  @Resources.Achievements.RecentAchievementsCalendarHeader</div>
-<div style="margin-left: auto; margin-right: auto;">
+<div class="reviewSectionHead"><img src="@VirtualPathUtility.ToAbsolute("~/Images/BadgeOverlays/calendar.svg")" class="imgMiddle" />  @Resources.Achievements.RecentAchievementsCalendarHeader</div>
+<div class="hc">
     @Html.Raw(ra.FlyingCalendar(false));
 </div>
-<div class="reviewSectionHead"><img src="@("~/Images/BadgeOverlays/globe.png".ToAbsolute())" style="vertical-align:middle;"> @Resources.Airports.visitedAirportTitle</div>
+<div class="reviewSectionHead"><img src="@("~/Images/BadgeOverlays/globe.png".ToAbsolute())" class="imgMiddle"> @Resources.Airports.visitedAirportTitle</div>
 <h3>@String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, rgva.Count()) @szDistance</h3>
-<div style="margin-left: auto; margin-right: auto; width: 90%; border: 1px solid lightgray;">
+<div class="hc" style="width: 90%; border: 1px solid lightgray;">
     @{ Html.RenderAction("VisitedAirportTable", "Airport", new { rgva, fAllowSearch = false }); }
 </div>
 <input type="hidden" id="hdnLastSortDir" value="asc" />
 <input type="hidden" id="hdnSortIndex" value="0" />
 @if (regions.Any())
 {
-    <div class="reviewSectionHead"><img src="@("~/Images/BadgeOverlays/globe.png".ToAbsolute())" style="vertical-align:middle;"> @Resources.Airports.ViewRegions <span style="font-weight: unset; font-size: unset;">@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }</span></div>
+    <div class="reviewSectionHead"><img src="@("~/Images/BadgeOverlays/globe.png".ToAbsolute())" class="imgMiddle"> @Resources.Airports.ViewRegions <span style="font-weight: unset; font-size: unset;">@{ Html.RenderAction("RenderTooltip", "MFBTemplate", new { tipID = "countryTips2", tipTextHTML = Branding.ReBrand(Resources.Airports.airportCountryDisclaimer) }); }</span></div>
 
-    <div>
+    int iAdmin1 = 0;
+    <div class="callout" style="margin-left: auto; margin-right: auto; margin-top: 1em; margin-bottom: 1em;">
         @foreach (VisitedRegion vr in regions)
         {
-            <div style="display:inline-block; vertical-align: top; margin-left: 8px; margin-right: 8px;">
-                <div style="font-size: larger; font-weight: bold;">@vr.Name</div>
-                @foreach (VisitedRegion admin1 in vr.SubRegions)
-                {
-                    <div>@admin1.Name</div>
-                }
+            string divID = String.Format(CultureInfo.InvariantCulture, "divAdmin1_{0}", iAdmin1++);
+            <div><a class="b" href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights?ap={0}", vr.JoinedCodes))">@vr.Name</a> @{ Html.RenderAction("RenderExpandoImg", "MFBTemplate", new { fExpanded = false, targetID = divID }); }</div>
+            <div class="dn" id="@divID">
+                <ul>
+                    @foreach (VisitedRegion admin1 in vr.SubRegions)
+                    {
+                        <li><a href="@VirtualPathUtility.ToAbsolute(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/mvc/flights?ap={0}", admin1.JoinedCodes))">@admin1.Name</a></li>
+                    }
+                </ul>
             </div>
         }
     </div>
@@ -125,10 +130,5 @@ else
 }
 @if (rgva.Any())
 {
-    <p>
-        <a href="javascript:mfbMapForContainerID('@map.Options.divContainer').ZoomOut();">@Resources.Airports.MapZoomAllAirports</a>
-    </p>
-    <div id="divMapContainer" style="height: 400px; width:100%">
-        @{ Html.RenderAction("MapDiv", "Airport", new { map = map }); }
-    </div>
+    Html.RenderAction("VisitedMap2Content", "Airport", new { locations = locations });
 }

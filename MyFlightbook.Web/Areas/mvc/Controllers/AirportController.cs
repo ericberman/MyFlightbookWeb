@@ -681,6 +681,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         private ActionResult VisitedMap2ForLocations(VisitedLocations locations)
         {
+            ViewBag.locations = locations;
+            return View("visitedMap2");
+        }
+
+        [ChildActionOnly]
+        public ActionResult VisitedMap2Content(VisitedLocations locations)
+        {
+            if (locations == null)
+                throw new ArgumentNullException(nameof(locations));
             // EscapeHtml so that a "</script>" in an airport name can't break out of the script block.
             JsonSerializerSettings jss = new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeHtml };
             ViewBag.DataToMap = JsonConvert.SerializeObject(locations, jss);
@@ -688,7 +697,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.PlaceIDs = JsonConvert.SerializeObject(ISOMap.CachedMap.PlaceIDsForLocations(locations), jss);
             ViewBag.MapID = JsonConvert.SerializeObject(LocalConfig.SettingForKey("GoogleMapIDVisited") ?? string.Empty, jss);
             ViewBag.CanPersistPlaceIDs = MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData;
-            return View("visitedMap2");
+            return PartialView("_visitedMap");
         }
 
         /// <summary>

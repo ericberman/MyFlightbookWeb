@@ -1647,6 +1647,7 @@
     <Content Include="Areas\mvc\Views\oAuth\_actionSummary.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_endorsementTemplate.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\newModel.cshtml" />
+    <Content Include="Areas\mvc\Views\Airport\_visitedMap.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.js" />
     <Content Include="Scripts\jHtmlArea.ColorPickerMenu.min.js" />
