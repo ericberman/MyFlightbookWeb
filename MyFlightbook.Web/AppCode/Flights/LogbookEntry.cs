@@ -3203,6 +3203,8 @@ WHERE f1.username = ?uName ");
             if (sf.On.HasValue)
                 FlightEnd = sf.On.Value;
 
+            AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(Profile.GetUser(User));
+
             // Autofill, but only if there's an on/off pair (otherwise it could be a return-to-gate, and autofill will look silly, computing XC time and high-speed to go from, say, LAX to JFK in 20 minutes.
             if (sf.On.HasValue && sf.Off.HasValue && sf.On.Value.CompareTo(sf.Off.Value) > 0)
             {
@@ -3211,21 +3213,21 @@ WHERE f1.username = ?uName ");
 
                 // Issue #1587 - do autofill, then put in the block time if available, since autofill will override it.  This allows for United Airline's "Crew" time as the start, which precedes block out.
                 using (FlightData fd = new FlightData())
-                    fd.AutoFill(this, AutoFillOptions.DefaultOptionsForUser(Profile.GetUser(User)));
+                    fd.AutoFill(this, afo);
 
                 // Autofill may have filled in total time, but if the scanned flight has a block time, use that instead.
                 if (sf.Block.HasValue)
-                    TotalFlightTime = sf.Block.Value;
+                    TotalFlightTime = afo.RoundedTime(sf.Block.Value);
                 if (CrossCountry > 0 && CrossCountry < TotalFlightTime)
                     CrossCountry = TotalFlightTime;
-                // Autofill may also have computed SIC/PIC from block time, when it might have needed to do sousing CrewStart.
-                SIC = sicOld;
-                PIC = picOld;
+                // Autofill may also have computed SIC/PIC from block time, when it might have needed to do so using CrewStart.
+                SIC = afo.RoundedTime(sicOld);
+                PIC = afo.RoundedTime(picOld);
                 if (AircraftID > 0)
                     AutofillForAircraft(new UserAircraft(User).GetUserAircraftByID(this.AircraftID));
             }
             else if (sf.Block.HasValue)
-                TotalFlightTime = sf.Block.Value;
+                TotalFlightTime = afo.RoundedTime(sf.Block.Value);
         }
 
         public void InitFromScannedFlightJSON(string sfJSON, bool adjustToLocalDate)

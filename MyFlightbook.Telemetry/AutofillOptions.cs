@@ -281,5 +281,15 @@ namespace MyFlightbook.Telemetry
             else
                 return Math.Max(TOSpeed - LandingSpeedDifferentialLow, _rgSpeeds[0] - LandingSpeedDifferentialLow);
         }
+
+        /// <summary>
+        /// Handles round-to-tenth
+        /// </summary>
+        /// <param name="time">The time</param>
+        /// <returns>The time, rounded to either 1 or 2 decimal places</returns>
+        public decimal RoundedTime(decimal time)
+        {
+            return Math.Round(time, RoundToTenth ? 1 : 2);
+        }
     }
 }

@@ -795,7 +795,7 @@ namespace MyFlightbook.Telemetry
                 string szNewRoute = RouteSoFar.ToString().Trim();
                 if (!String.IsNullOrEmpty(szNewRoute))
                     ActiveFlight.Route = szNewRoute;
-                ActiveFlight.Nighttime = Convert.ToDecimal(Math.Round(TotalNight, opt.RoundToTenth ? 1 : 2));
+                ActiveFlight.Nighttime = opt.RoundedTime((decimal) TotalNight);
 
                 // Issue #1492: ending times with autofill might have an extra few seconds on them; strip them off.
                 ActiveFlight.EngineEnd = ActiveFlight.EngineEnd.StripSeconds();
@@ -991,10 +991,10 @@ namespace MyFlightbook.Telemetry
             le.AutoTotals(opt);
             le.AutoHobbs(opt);
 
-            le.TotalFlightTime = Math.Round(le.TotalFlightTime, opt.RoundToTenth ? 1 : 2);
+            le.TotalFlightTime = opt.RoundedTime(le.TotalFlightTime);
 
             // Issue #1502 - if the whole flight was night, make sure it matches.  Avoid things like 0.98 night and 0.99 hours of total, or - weirder - 0.98 hours total and 0.99 hours of night!
-            if (le.Nighttime > 0 && le.Nighttime > 0 && Math.Abs(le.TotalFlightTime - le.Nighttime) < 0.02m)
+            if (le.Nighttime > 0 && le.TotalFlightTime > 0 && Math.Abs(le.TotalFlightTime - le.Nighttime) < 0.02m)
                 le.Nighttime = le.TotalFlightTime;
 
             le.AutoFillFinish(opt);
