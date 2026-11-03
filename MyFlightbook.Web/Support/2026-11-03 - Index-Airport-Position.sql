@@ -1,0 +1,1 @@
+ALTER TABLE airports ADD INDEX ix_lat_lon_type (latitude, longitude, type);

@@ -919,7 +919,11 @@ namespace MyFlightbook.Airports
         #region constructors
         public AdminAirport() : base() { }
 
-        public AdminAirport(MySqlDataReader dr) : base(dr) { }
+        public AdminAirport(MySqlDataReader dr) : base(dr) 
+        {
+            IsPreferred = ((int) dr["Preferred"]) != 0;
+            SourceUserName = util.ReadNullableString(dr, "SourceUserName");
+        }
         #endregion
 
         public static AdminAirport AirportWithCodeAndType(string szCode, string szType)
@@ -982,33 +986,124 @@ namespace MyFlightbook.Airports
         /// <returns>A list of clusters of potential duplicate airports.</returns>
         public static IEnumerable<AdminAirport[]> GetDupeAirports(int start, int count, string dupeSeed)
         {
-            string szLimit = string.Empty;
-            if (!String.IsNullOrWhiteSpace(dupeSeed))
+            const double radius_nm = 0.5;  // 1km radius for potential duplicates
+            const double radius_deg = radius_nm / 60.0;  // approximate degrees for 1km
+
+            string szLimitSeed = string.Empty;
+            if (!String.IsNullOrEmpty(dupeSeed))
             {
-                AirportList al = new AirportList(dupeSeed);
-                airport[] rgap = al.GetNormalizedAirports();
-                if (rgap.Length > 0)
+                airport ap = airport.AirportsWithExactMatch(dupeSeed).FirstOrDefault();
+                if (ap != null)
                 {
-                    airport ap = rgap[0];
-                    szLimit = String.Format(CultureInfo.InvariantCulture, " AND latitude between {0:F8} and {1:F8} and longitude between {2:F8} and {3:F8} ", ap.LatLong.Latitude - 0.02, ap.LatLong.Latitude + 0.02, ap.LatLong.Longitude - 0.02, ap.LatLong.Longitude + 0.02);
+                    double dLon = radius_deg / Math.Cos(ap.LatLong.Latitude * Math.PI / 180);
+                    szLimitSeed = String.Format(CultureInfo.InvariantCulture, "AND latitude between {0} AND {1} AND longitude between {2} AND {3}", ap.LatLong.Latitude - radius_deg, ap.LatLong.Latitude + radius_deg, ap.LatLong.Longitude - dLon, ap.LatLong.Longitude + dLon);
                 }
             }
 
-            // Issue #1117: if a seed is provided, don't restrict to num > 1 or differing lat/lon; just find all of the potential dupes.
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"select JSON_ARRAYAGG(JSON_OBJECT(""Code"", airportid, ""Name"", facilityname, ""FacilityTypeCode"", type, ""IsPreferred"", preferred, ""SourceUserName"", sourceusername,  ""LatLong"", JSON_OBJECT(""Latitude"", latitude, ""Longitude"", longitude), ""Country"", country, ""Admin1"", admin1)) as ports, type, count(*) as num, max(latitude)-min(latitude) as dlat, max(longitude)-min(Longitude) as dlon, max(Preferred) as hasPref
-from airports 
-where type in ('A', 'H', 'S') {0}
-group by type, CONCAT(Round(latitude, 2), '/', round(longitude, 2))
-{1}
-order by type asc, num desc
-limit ?start, ?count", szLimit, String.IsNullOrWhiteSpace(dupeSeed) ? "having num > 1 and ((dlat > 0 or dlon > 0)  OR hasPref=0)" : string.Empty));
+            List<AdminAirport> ports = new List<AdminAirport>();
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE type IN ('A', 'H', 'S') {1} ORDER BY type, latitude;", DefaultSelectStatement("0.0"), szLimitSeed));
+            dbh.ReadRows((comm) => { }, (dr) => { ports.Add(new AdminAirport(dr)); });
 
-            List<AdminAirport[]> lst = new List<AdminAirport[]>();
+            /*
+The idea: every cluster is a tree
 
-            // First pass: get all of the airport circles:
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("start", start); comm.Parameters.AddWithValue("count", count); },
-            (dr) => { lst.Add(JsonConvert.DeserializeObject<AdminAirport[]>((string)dr["ports"])); });
-            return lst;
+parent[i] stores one link per airport: “my parent is airport X.” Following those links upward always ends at an airport whose parent is itself. That airport is the root, and it serves as the cluster’s ID. Two airports are in the same cluster exactly when they reach the same root.
+
+At the start, parent[i] = i for every airport, so each one is its own root in a cluster of one.
+
+Find: “what cluster am I in?”
+csharp
+int Find(int x)
+{
+    while (parent[x] != x)          // not at the root yet?
+    {
+        parent[x] = parent[parent[x]];  // path compression (see below)
+        x = parent[x];              // step up the tree
+    }
+    return x;                       // x is its own parent: it's the root
+}
+
+Without the compression line, it simply walks up: go to my parent, then that one’s parent, and so on until reaching an airport that points to itself, then return it.
+
+Union: “these two are in the same cluster”
+csharp
+void Union(int x, int y) { parent[Find(x)] = Find(y); }
+
+This finds the root of x’s cluster and the root of y’s cluster, then makes x’s root point to y’s root. That single assignment merges the two trees. Every member of x’s cluster now walks up through its old root to y’s root, so all of them report the new root without anyone else being touched. If x and y are already in the same cluster, both roots are the same airport and the assignment does nothing.
+
+Walking through an example
+
+Suppose airports 0–4 have these neighbor pairs: (0,1), (1,2), (3,4).
+
+Step	Action	parent array	Clusters
+start		[0,1,2,3,4]	{0} {1} {2} {3} {4}
+Union(0,1)	root 0 → root 1	[1,1,2,3,4]	{0,1} {2} {3} {4}
+Union(1,2)	root 1 → root 2	[1,2,2,3,4]	{0,1,2} {3} {4}
+Union(3,4)	root 3 → root 4	[1,2,2,4,4]	{0,1,2} {3,4}
+
+Now Find(0) goes 0 → 1 → 2, and 2 is its own parent, so it returns 2. Find(1) returns 2 and Find(2) returns 2. Find(3) and Find(4) both return 4. The GroupBy(i => Find(i)) therefore produces {0,1,2} and {3,4}.
+
+The chaining you wanted happens automatically. Airport 0 was never directly paired with 2, but it reaches root 2 through 1.
+
+Path compression: keeping the trees flat
+
+The danger is that the trees become long chains, like 0 → 1 → 2 → 3 → … → 50. Then every Find(0) walks 50 steps, and every later call repeats that walk.
+
+Path compression fixes this. While Find walks up, it shortens the path behind it:
+
+csharp
+parent[x] = parent[parent[x]];   // skip over my parent: point to my grandparent
+
+Each airport visited gets re-pointed one level higher, so a walk roughly halves the path length. In the example, Find(0) sets parent[0] to 0’s grandparent, 2. Next time, Find(0) reaches the root in a single step.
+
+The answer Find returns never changes, only the route to it, because pointing at your grandparent keeps you in the same tree. Over many calls the trees flatten until almost every airport points straight at its root. That makes Find effectively constant time, so union-find stays fast even for 65k airports.
+            */
+
+            // Union-find over indices into ports
+            int[] parent = Enumerable.Range(0, ports.Count).ToArray();
+            int Find(int x)
+            {
+                while (parent[x] != x)
+                {
+                    parent[x] = parent[parent[x]];  // path compression
+                    x = parent[x];
+                }
+                return x;
+            }
+            void Union(int x, int y) { parent[Find(x)] = Find(y); }
+
+            for (int i = 0; i < ports.Count; i++)
+            {
+                var a = ports[i];
+                double dLon = radius_deg / Math.Cos(a.LatLong.Latitude * Math.PI / 180);
+                for (int j = i + 1; j < ports.Count; j++)
+                {
+                    var b = ports[j];
+                    if (b.FacilityTypeCode != a.FacilityTypeCode || b.LatLong.Latitude - a.LatLong.Latitude > radius_deg) break;  // left the window
+                    if (Math.Abs(b.LatLong.Longitude - a.LatLong.Longitude) > dLon) continue;
+                    if (a.DistanceFromFix(b) <= radius_nm)
+                        Union(i, j);
+                }
+            }
+
+            // Group indices by root; anything with 2+ members is a cluster
+            IEnumerable<AdminAirport[]> clusters = Enumerable.Range(0, ports.Count)
+                .GroupBy(i => Find(i))
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Select(i => ports[i]).ToArray());
+
+            // Same rule as your old HAVING clause: drop clusters that are all at one spot AND already have a preferred entry
+            if (String.IsNullOrEmpty(dupeSeed))
+                clusters = clusters.Where(c => !(
+                    c.Any(ap => ap.IsPreferred) &&
+                    c.All(ap => ap.LatLong.Latitude == c[0].LatLong.Latitude && ap.LatLong.Longitude == c[0].LatLong.Longitude)));
+
+            return clusters
+                .OrderBy(c => c[0].FacilityTypeCode)
+                .ThenByDescending(c => c.Length)
+                .Skip(start)
+                .Take(count)
+                .ToList();
         }
 
         public static IEnumerable<AdminAirport> UntaggedAirportsInBox(LatLongBox llb)
