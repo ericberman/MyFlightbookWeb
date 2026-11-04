@@ -75,7 +75,7 @@
 </div>
 @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmSelectInstr", name = "frmSelectInstr" }))
 {
-    <div id="vwPickInstructor" class="@(sm.Instructors.Any() ? string.Empty : "dn")">
+    <div id="vwPickInstructor">
         @Resources.SignOff.ChooseInstructorsPrompt
         <input type="hidden" id="hdnCfiName" name="cfiName" />
         <input type="hidden" id="hdnCfiCert" name="cfiCert" />
@@ -129,7 +129,7 @@
             }
         }
     </div>
-    <div id="vwAcceptTerms" class="@(sm.Instructors.Any() ? "dn" : string.Empty)">
+    <div id="vwAcceptTerms" class="dn">
         <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
         <p class="b">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
         <p><label><input type="checkbox" name="acceptSelfSign" id="ckAccept" />@Resources.SignOff.SignAcceptResponsibility</label></p>
