@@ -917,9 +917,9 @@ namespace MyFlightbook.Airports
         #endregion
 
         #region constructors
-        public AdminAirport() : base() { }
+        protected AdminAirport() : base() { }
 
-        public AdminAirport(MySqlDataReader dr) : base(dr) 
+        protected AdminAirport(MySqlDataReader dr) : base(dr) 
         {
             IsPreferred = ((int) dr["Preferred"]) != 0;
             SourceUserName = util.ReadNullableString(dr, "SourceUserName");
