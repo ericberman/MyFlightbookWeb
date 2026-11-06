@@ -603,7 +603,7 @@ namespace OAuthAuthorizationServer.Code
     ANY_VALUE(CreatedOnUtc) AS CreatedOnUTC,
     oca.ClientId,
     oca.UserId,
-    '' AS Scope,
+    ANY_VALUE(oca.Scope) AS Scope,
     ANY_VALUE(oca.ExpirationDateUtc) AS ExpirationDateUtc,
     aoc.ClientName
 FROM
