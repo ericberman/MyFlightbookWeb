@@ -613,7 +613,7 @@ FROM
 WHERE
     (ExpirationDateUtc IS NULL
         OR ExpirationDateUTC > UTC_TIMESTAMP())
-        AND userID = 'ericbe'
+        AND userID = ?uname
 GROUP BY clientID;");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("uname", username); },
                 (dr) => { lst.Add(new MFBOauthClientAuth(dr)); });
