@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `oauthauthcodes` (
   `CodeChallengeMethod` varchar(10) DEFAULT NULL,
   `ExpiresUtc` datetime NOT NULL,
   `FamilyId` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `Used` tinyint(1) NOT NULL DEFAULT 0,
+  `Used` tinyint NOT NULL DEFAULT 0,
   PRIMARY KEY (`CodeHash`),
   KEY `Expires` (`ExpiresUtc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='OAuth authorization codes (hashes only; minutes-lived)';
