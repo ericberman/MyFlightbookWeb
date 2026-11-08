@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using Dropbox.Api;
+﻿using Dropbox.Api;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
@@ -214,7 +213,7 @@ namespace MyFlightbook.CloudStorage
                     // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
                     Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
 
-                    AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string scopes) ? OAuthUtilities.SplitScopes(scopes) : null)
+                    AuthorizationState authstate = new AuthorizationState(d.TryGetValue("scope", out string scopes) ? OAuthScopes.SplitScopes(scopes) : null)
                     {
                         AccessToken = d.TryGetValue("access_token", out string acctok) ? acctok : string.Empty,
                         AccessTokenIssueDateUtc = DateTime.UtcNow
@@ -411,7 +410,8 @@ namespace MyFlightbook.CloudStorage
         {
             if (ex == null)
                 return;
-            GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
+            string szBody = (ex as OAuthProtocolException)?.ResponseBody ?? ExtractResponseString(ex.InnerException as WebException);
+            GDriveError error = String.IsNullOrEmpty(szBody) ? null : JsonConvert.DeserializeObject<GDriveError>(szBody);
             if (error == null)
                 throw new MyFlightbookException("Unknown error refreshing access token", ex);
             else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
@@ -444,7 +444,7 @@ namespace MyFlightbook.CloudStorage
                     CurrentUser.FCommit();
                 }
             }
-            catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+            catch (OAuthProtocolException ex)
             {
                 ThrowGDriveError(ex);
             }
@@ -1163,10 +1163,10 @@ namespace MyFlightbook.CloudStorage
             if (ex == null)
                 throw new ArgumentNullException(nameof(ex));
 
-            string szResponse = ExtractResponseString(ex.InnerException as WebException);
+            string szResponse = (ex as OAuthProtocolException)?.ResponseBody ?? ExtractResponseString(ex.InnerException as WebException);
             try
             {
-                dynamic error = JsonConvert.DeserializeObject(szResponse);
+                dynamic error = String.IsNullOrEmpty(szResponse) ? null : JsonConvert.DeserializeObject(szResponse);
                 if (error == null)
                     throw new MyFlightbookException("Unknown error refreshing access token", ex);
                 else if (error.error != null && String.Compare(error.error.ToString(), "invalid_grant", StringComparison.InvariantCulture) == 0)
@@ -1239,7 +1239,7 @@ namespace MyFlightbook.CloudStorage
                     CurrentUser.FCommit();
                 }
             }
-            catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+            catch (OAuthProtocolException ex)
             {
                 HandleInvalidAuth(ex);
             }
@@ -1405,7 +1405,7 @@ namespace MyFlightbook.CloudStorage
                     CurrentUser.FCommit();
                 }
                 catch (JsonException) { }
-                catch (DotNetOpenAuth.Messaging.ProtocolException ex) { throw new UnauthorizedAccessException(ex.Message, ex); }
+                catch (OAuthProtocolException ex) { throw new UnauthorizedAccessException(ex.Message, ex); }
             }
 
             using (DropboxClient dbx = new DropboxClient(szToken))
@@ -1658,7 +1658,7 @@ namespace MyFlightbook.CloudStorage
                 if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
                     CurrentUser.SetPreferenceForKey(PrefKeyAuthToken, AuthState);
             }
-            catch (DotNetOpenAuth.Messaging.ProtocolException)
+            catch (OAuthProtocolException)
             {
                 return null;
             }

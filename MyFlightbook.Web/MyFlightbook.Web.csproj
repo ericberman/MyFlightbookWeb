@@ -1205,6 +1205,7 @@
     <Content Include="Areas\mvc\Views\Admin\_invalidSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminProps.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminAchievements.cshtml" />
+    <Content Include="Areas\mvc\Views\AdminOAuth\legacyTokenCheck.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\adminGeocoder.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_airportsNeedingCodingTable.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminEndorsements.cshtml" />
@@ -1692,6 +1693,7 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
+    <Compile Include="Areas\mvc\Controllers\AdminOAuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\AircraftControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\CheckFlightController.cs" />
@@ -1988,6 +1990,10 @@
     <ProjectReference Include="..\MyFlightbook.FlightQueries\MyFlightbook.FlightQueries.csproj">
       <Project>{b28290a0-eaf3-4da7-b332-5ab73e3dfd92}</Project>
       <Name>MyFlightbook.FlightQueries</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyFlightbook.OAuth\MyFlightbook.OAuth.csproj">
+      <Project>{f457fc8d-667b-4a88-aa08-f375ccb73c04}</Project>
+      <Name>MyFlightbook.OAuth</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj">
       <Project>{e44b743c-99dd-4ae6-8a87-53475e545c20}</Project>

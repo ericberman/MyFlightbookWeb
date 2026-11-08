@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 /******************************************************
@@ -18,6 +19,12 @@ namespace MyFlightbook
     public static class SharedHttpClient
     {
         private static readonly HttpClient _client = new HttpClient();
+
+        /// <summary>
+        /// Same as _client, but never follows redirects.  For fetching untrusted URLs (e.g., OAuth Client ID Metadata Documents),
+        /// where a redirect could bounce the request to an internal address.
+        /// </summary>
+        private static readonly HttpClient _clientNoRedirect = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false });
 
         /// <summary>
         /// GetResponseForAuthenticatedUri - assumes a POST
@@ -63,7 +70,11 @@ namespace MyFlightbook
         /// <param name="content">HttpContent to post (REQUIRES POST/PUT)</param>
         /// <param name="method">The http method to use (GET or POST)</param>
         /// <param name="dictHeaders">Any additional request headers</param>
-        public async static Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, HttpMethod method, HttpContent content, Func<HttpResponseMessage, object> OnResult, IDictionary<string, string> dictHeaders = null)
+        /// <param name="fFollowRedirects">False to return 3xx responses as-is instead of following them</param>
+        /// <param name="timeout">Optional per-request timeout (the shared client's default is 100 seconds)</param>
+        /// <param name="completionOption">ResponseHeadersRead to let OnResult read the body as a stream (e.g., to cap its size) rather than buffering it all first</param>
+        public async static Task<object> GetResponseForAuthenticatedUri(Uri uri, string szAuth, HttpMethod method, HttpContent content, Func<HttpResponseMessage, object> OnResult, IDictionary<string, string> dictHeaders = null,
+            bool fFollowRedirects = true, TimeSpan? timeout = null, HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead)
         {
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
@@ -87,9 +98,12 @@ namespace MyFlightbook
                 if (content != null)
                     requestMessage.Content = content;
 
-                using (HttpResponseMessage response = await _client.SendAsync(requestMessage).ConfigureAwait(false))
+                using (CancellationTokenSource cts = timeout.HasValue ? new CancellationTokenSource(timeout.Value) : new CancellationTokenSource())
                 {
-                    result = OnResult(response);
+                    using (HttpResponseMessage response = await (fFollowRedirects ? _client : _clientNoRedirect).SendAsync(requestMessage, completionOption, cts.Token).ConfigureAwait(false))
+                    {
+                        result = OnResult(response);
+                    }
                 }
             }
             return result;

@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;

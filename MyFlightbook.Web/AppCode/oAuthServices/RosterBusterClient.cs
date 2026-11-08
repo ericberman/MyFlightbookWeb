@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using MyFlightbook.ImportFlights;
+﻿using MyFlightbook.ImportFlights;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;

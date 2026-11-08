@@ -1,4 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
+﻿using MyFlightbook.OAuth;
 using MyFlightbook.OAuth.RosterBuster;
 using QRCoder;
 using System;

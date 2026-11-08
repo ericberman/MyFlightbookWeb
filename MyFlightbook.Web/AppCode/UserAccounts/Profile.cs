@@ -1,5 +1,4 @@
 ﻿using Andri.Web;
-using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Achievements;
 using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
@@ -7,6 +6,7 @@ using MyFlightbook.Currency;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.OAuth;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;

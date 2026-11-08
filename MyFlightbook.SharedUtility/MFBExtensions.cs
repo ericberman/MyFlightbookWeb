@@ -481,6 +481,26 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Inverse of ToBase64URL: restores "+" and "/" and the "=" padding that ToBase64URL trims.
+        /// </summary>
+        /// <param name="sz">A base64url string (RFC 4648 section 5), with or without padding</param>
+        /// <returns>The decoded bytes</returns>
+        /// <exception cref="FormatException">If sz isn't valid base64url</exception>
+        public static byte[] FromBase64URL(this string sz)
+        {
+            if (sz == null)
+                throw new ArgumentNullException(nameof(sz));
+            string s = sz.Replace('-', '+').Replace('_', '/');
+            switch (s.Length % 4)
+            {
+                case 2: s += "=="; break;
+                case 3: s += "="; break;
+                default: break; // 0 needs no padding; 1 can't be valid, and Convert.FromBase64String will throw FormatException
+            }
+            return Convert.FromBase64String(s);
+        }
+
+        /// <summary>
         /// Compresses a string and converts it to base 64 in a manner that does NOT require URL encoding so that it can be passed as a parameter in a URL
         /// </summary>
         /// <param name="sz"></param>

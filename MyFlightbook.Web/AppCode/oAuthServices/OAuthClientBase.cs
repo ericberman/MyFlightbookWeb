@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using MyFlightbook.OAuth.CloudAhoy;
+﻿using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.OAuth.FlightCrewView;
 using MyFlightbook.OAuth.Leon;
 using MyFlightbook.OAuth.RosterBuster;
@@ -7,6 +6,7 @@ using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ClientType = DotNetOpenAuth.OAuth2.ClientType;   // Server-side type (allowedoauthclients.ClientType); goes away with the server cutover
 
 /******************************************************
  * 
@@ -264,30 +265,21 @@ namespace MyFlightbook.OAuth
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
 
-        private AuthorizationServerDescription Description()
-        {
-            AuthorizationServerDescription desc = new AuthorizationServerDescription
-            {
-                AuthorizationEndpoint = new Uri(oAuth2AuthorizeEndpoint),
-                ProtocolVersion = ProtocolVersion.V20,
-                TokenEndpoint = new Uri(oAuth2TokenEndpoint)
-            };
-            return desc;
-        }
-
-        private WebServerClient Client()
-        {
-            WebServerClient client = new WebServerClient(Description(), AppKey, AppSecret);
-            return client;
-        }
-
         /// <summary>
-        /// Redirects for oAuth2 authorization.
+        /// Redirects for oAuth2 authorization.  Sets an anti-XSRF state cookie (checked in ConvertToken) and ENDS the response, as DotNetOpenAuth did.
         /// </summary>
-        /// <param name="szCallbackUri">The redirect URL after the user authorizes</param>
+        /// <param name="szCallbackUri">The redirect URL after the user authorizes (the current URL if null)</param>
         public void Authorize(Uri szCallbackUri)
         {
-            Client().RequestUserAuthorization(Scopes, szCallbackUri);
+            HttpContext context = HttpContext.Current ?? throw new InvalidOperationException("Authorize requires an HTTP context");
+            Uri callback = szCallbackUri ?? context.Request.Url;
+            string state = OAuthClientProtocol.NewState();
+            context.Response.Cookies.Add(new HttpCookie(OAuthClientProtocol.StateCookieName, OAuthClientProtocol.StateCookieValue(state, callback))
+            {
+                HttpOnly = true,
+                Secure = context.Request.IsSecureConnection
+            });
+            context.Response.Redirect(OAuthClientProtocol.AuthorizationRequestUri(new Uri(oAuth2AuthorizeEndpoint), AppKey, callback, Scopes, state).AbsoluteUri, true);
         }
 
         protected static Uri RedirectUri(HttpRequestBase request, string basepath, string param)
@@ -372,38 +364,54 @@ namespace MyFlightbook.OAuth
         /// <summary>
         /// Refreshes the access token if (a) there is a refresh token, and (b) there is not an unexpired accesstoken
         /// </summary>
-        /// <returns>True if the update happened and was successful</returns>
-        /// <exception cref="DotNetOpenAuth.Messaging.ProtocolException"
+        /// <returns>True if the update happened and was successful.  AuthState is updated IN PLACE (the refresh token is kept if the server doesn't send a new one).</returns>
+        /// <exception cref="OAuthProtocolException">If the refresh fails</exception>
         public async Task<bool> RefreshAccessToken()
         {
-            return await Task.Run<bool>(() =>
-            {
-                // Don't refresh if no refresh token, or if current access token is still valid
-                if (CheckAccessToken() || String.IsNullOrEmpty(AuthState.RefreshToken))
-                    return false;
+            // Don't refresh if no refresh token, or if current access token is still valid
+            if (CheckAccessToken() || String.IsNullOrEmpty(AuthState?.RefreshToken))
+                return false;
 
-                WebServerClient client = Client();
-                client.RefreshAuthorization(AuthState); // Throws DotNetOpenAuth.Messaging.ProtocolException if failure.
-                return true;
-            }).ConfigureAwait(false);    // CA2007 - we don't know if we need to be on the same thread.
+            // HTTP Basic client authentication, as DotNetOpenAuth did by default
+            await OAuthClientProtocol.RefreshAsync(AuthState, new Uri(oAuth2TokenEndpoint), AppKey, AppSecret).ConfigureAwait(false);
+            return true;
         }
 
         /// <summary>
-        /// Convert an authorization token for an access token, using DotNetOpenAuth
+        /// Processes the authorization response (the redirect back from the provider): verifies the state against the cookie set in Authorize,
+        /// then exchanges the code for tokens (client credentials in the POST body).  Same contract as DotNetOpenAuth's ProcessUserAuthorization:
+        /// returns null if the request isn't an authorization response; returns a token-less state with IsDeleted=true if the user declined.
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
+        /// <exception cref="OAuthProtocolException">State mismatch, or the code exchange failed</exception>
         public virtual IAuthorizationState ConvertToken(HttpRequestBase Request)
         {
-            WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret)
-            {
-                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret)
-            };
-            return consumer.ProcessUserAuthorization(Request);
+            if (Request == null)
+                throw new ArgumentNullException(nameof(Request));
+
+            NameValueCollection p = String.Equals(Request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase) ? Request.Form : Request.QueryString;
+            string code = p["code"];
+            string error = p["error"];
+            if (String.IsNullOrEmpty(code) && String.IsNullOrEmpty(error))
+                return null;    // not an authorization response
+
+            HttpCookie cookie = Request.Cookies[OAuthClientProtocol.StateCookieName];
+            if (!OAuthClientProtocol.TryParseStateCookie(cookie?.Value, out string expectedState, out Uri callback) || !OAuthClientProtocol.StateMatches(p["state"], expectedState))
+                throw new OAuthProtocolException("invalid_state", "The authorization response doesn't match this browser session; please try again.");
+
+            // The state is single-use
+            HttpContext.Current?.Response.Cookies.Add(new HttpCookie(OAuthClientProtocol.StateCookieName, string.Empty) { Expires = DateTime.UtcNow.AddDays(-1), HttpOnly = true });
+
+            if (!String.IsNullOrEmpty(error))
+                return new AuthorizationState() { Callback = callback, IsDeleted = true };
+
+            // Sync-over-async (callers are synchronous); Task.Run avoids the ASP.NET context deadlock
+            return Task.Run(() => OAuthClientProtocol.ExchangeCodeAsync(new Uri(oAuth2TokenEndpoint), code, callback, AppKey, AppSecret)).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Convert an authorization token for an access token, using DotNetOpenAuth
+        /// Convert an authorization token for an access token
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
@@ -426,7 +434,7 @@ namespace MyFlightbook.OAuth
                 throw new InvalidOperationException(d.error.ToString());
 
             string scopes = d.scope;
-            AuthorizationState authstate = new AuthorizationState(scopes != null ? OAuthUtilities.SplitScopes(scopes) : null)
+            AuthorizationState authstate = new AuthorizationState(scopes != null ? OAuthScopes.SplitScopes(scopes) : null)
             {
                 AccessToken = (string)d.access_token ?? string.Empty,
                 AccessTokenIssueDateUtc = DateTime.UtcNow
@@ -444,7 +452,7 @@ namespace MyFlightbook.OAuth
         }
 
         /// <summary>
-        /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work; see https://github.com/ericberman/MyFlightbookWeb/issues/178 and https://github.com/DotNetOpenAuth/DotNetOpenAuth/issues/312
+        /// Convert an authorization token for an access token (originally written to bypass DotNetOpenAuth, which sometimes didn't work; see https://github.com/ericberman/MyFlightbookWeb/issues/178 and https://github.com/DotNetOpenAuth/DotNetOpenAuth/issues/312)
         /// </summary>
         /// <param name="code">The code returned from the authorization step</param>
         /// <param name="redirEndpoint">The redirect Uri used originally</param>
@@ -537,7 +545,7 @@ namespace MyFlightbook.OAuth
 
 
         /// <summary>
-        /// Convert an authorization token for an access token, bypassing DotNetOpenAuth (which surprisingly sometimes doesn't work); this includes the redirect URI
+        /// Refresh an access token directly; this includes the redirect URI
         /// </summary>
         /// <param name="redirEndpoint">The redirect endpoint from the original request</param>
         /// <param name="refreshToken">The refresh token</param>
@@ -568,7 +576,11 @@ namespace MyFlightbook.OAuth
                     return szResult;
                 });
 
-                return ParseAuthResponse(result, redirEndpoint);
+                IAuthorizationState authstate = ParseAuthResponse(result, redirEndpoint);
+                // If the server didn't issue a new refresh token, the old one is still good - don't lose it.
+                if (String.IsNullOrEmpty(authstate.RefreshToken))
+                    authstate.RefreshToken = refreshToken;
+                return authstate;
             }
         }
 

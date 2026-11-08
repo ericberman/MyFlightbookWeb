@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <CodeAnalysisRuleSet>..\myFlightbook rules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MyFlightbook.OAuth.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj" />
+    <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
+  </ItemGroup>
+
+</Project>

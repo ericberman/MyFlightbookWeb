@@ -344,7 +344,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     string tokenURL = Request["tokenTarget"] ?? (fUsePKCS ? $"~/mvc/oAuth/OAuthToken?code_verifier={pkce.CodeVerifier}" : "~/mvc/oAuth/OAuthToken").ToAbsoluteURL(Request).ToString();
                     string redirectURL = Request["targetRedir"] ?? Request.Url.GetLeftPart(UriPartial.Path);
                     string scope = Request["scopes"] ?? "currency totals addflight readflight addaircraft readaircraft visited namedqueries images";
-                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthUtilities.SplitScopes(scope).ToArray(), fUsePKCS ? ClientType.Public : ClientType.Confidential) { PKCE = pkce };
+                    Session[sessionKeyOAuthClient] = client = new OAuth2AdHocClient(clientID, clientSecret, authURL, tokenURL, redirectURL, OAuthScopes.SplitScopes(scope).ToArray(), fUsePKCS ? ClientType.Public : ClientType.Confidential) { PKCE = pkce };
                 }
                 return client;
             }

@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using MyFlightbook.AircraftSupport.Maintenance;
+﻿using MyFlightbook.AircraftSupport.Maintenance;
 using MyFlightbook.AircraftSupport.Maintenance.MyTailLog;
 using Newtonsoft.Json;
 using System;

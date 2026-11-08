@@ -5,6 +5,8 @@ using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OAuth2.ChannelElements;
 using DotNetOpenAuth.OAuth2.Messages;
 using MyFlightbook;
+using MyFlightbook.OAuth;
+using MyFlightbook.OAuth.Server;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -246,6 +248,22 @@ namespace OAuthAuthorizationServer.Code
         {
         }
 
+        public OAuthClient ToOAuthClient()
+        {
+            OAuthClient c = new OAuthClient()
+            {
+                ClientId = ClientIdentifier,
+                ClientName = ClientName,
+                IsPublic = ClientType == ClientType.Public,
+                ClientSecret = ClientSecret,
+                UseLegacyRedirectComparison = true,       // today's lenient host+path+query match
+                AllowPlainPkce = ClientType == ClientType.Public
+            };
+            foreach (string cb in Callbacks) c.RedirectHREFs.Add(cb);
+            c.AllowedScopes.UnionWith(OAuthScopes.SplitScopes(Scope));
+            return c;
+        }
+
         /// <summary>
         /// Reads all available authorized clients from the database.  NOT CACHED.
         /// </summary>
@@ -284,6 +302,8 @@ namespace OAuthAuthorizationServer.Code
                 throw new MyFlightbookValidationException("Client secret cannot be empty");
             if (String.IsNullOrWhiteSpace(ClientIdentifier))
                 throw new MyFlightbookValidationException("Client identifier cannot be empty");
+            if (ClientIdentifier.Contains("://"))
+                throw new MyFlightbookValidationException("Client identifier cannot be a URL (URL client IDs are reserved for Client ID Metadata Documents)");
             if (Callbacks == null || !Callbacks.Any())
                 throw new MyFlightbookValidationException("Callback URL cannot be empty");
 

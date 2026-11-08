@@ -1,0 +1,63 @@
+﻿@using MyFlightbook.Web.Areas.mvc.Controllers
+@{
+    ViewBag.Title = "Admin Tools - Legacy OAuth token check";
+    Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
+    ViewBag.defaultTab = tabID.tabAdmin;
+    LegacyTokenCheckResult result = ViewBag.result;
+}
+<h2>Legacy (DotNetOpenAuth) token check</h2>
+<p>Paste a refresh token or access token issued by DotNetOpenAuth. It's decoded two ways against <b>this server's</b> keys: with DotNetOpenAuth itself and with the new <code>LegacyDnoaTokenReader</code>.
+    Nothing is stored, and the token is not echoed back. <b>Use only tokens for your own account.</b></p>
+@using (Html.BeginForm("LegacyTokenCheck", "AdminOAuth", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div><textarea name="token" rows="5" style="width: 100%; font-family: monospace;" autocomplete="off" spellcheck="false" placeholder="Token"></textarea></div>
+    <div style="margin-top: 4px;">Presenting client ID (optional; needed for PKCE-proxy refresh tokens): <input type="text" name="presentingClientId" value="@(ViewBag.presentingClientId ?? string.Empty)" /></div>
+    <div style="margin-top: 4px;"><button type="submit">Check</button></div>
+}
+@if (!String.IsNullOrEmpty(ViewBag.error))
+{
+    <div class="error">@ViewBag.error</div>
+}
+@if (result != null)
+{
+    <h3>@result.TokenKind</h3>
+    if (result.AllMatch)
+    {
+        <p class="success">DotNetOpenAuth and the new reader agree on every field.</p>
+    }
+    else
+    {
+        <div class="error">Mismatch or failure - see below.</div>
+    }
+    if (result.DnoaError != null)
+    {
+        <div class="error">DotNetOpenAuth: @result.DnoaError</div>
+    }
+    if (!result.NewReaderSucceeded)
+    {
+        <div class="error">New reader: could not decode/authenticate the token.</div>
+    }
+    <table cellpadding="4" cellspacing="0" style="border-collapse: collapse; margin-top: 8px;">
+        <tr><th style="text-align: left;">Field</th><th style="text-align: left;">DotNetOpenAuth</th><th style="text-align: left;">New reader</th><th></th></tr>
+        @foreach (LegacyTokenCheckRow row in result.Rows)
+        {
+            <tr style="border-top: 1px solid lightgray;">
+                <td>@row.Field</td>
+                <td>@(row.Dnoa ?? "(none)")</td>
+                <td>@(row.New ?? "(none)")</td>
+                <td>@(row.Matches ? "✓" : "✗")</td>
+            </tr>
+        }
+    </table>
+    <ul>
+        @foreach (string note in result.Notes)
+        {
+            <li>@note</li>
+        }
+    </ul>
+    if (result.WouldAccept.HasValue)
+    {
+        <p class="@(result.WouldAccept.Value ? "success" : "error")">New server would @(result.WouldAccept.Value ? "ACCEPT" : "REJECT") this token right now.</p>
+    }
+}
