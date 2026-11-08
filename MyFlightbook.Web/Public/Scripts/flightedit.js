@@ -160,7 +160,7 @@ function getGooglePhotoNew() {
         },
         success: function (r) {
             window.open(r.sess.pickerHref, "_blank");
-            setTimeout(function () { pollGS(r.sess, r.token); }, googleTimeToMS(r.sess.pollingConfig.pollInterval));
+            setTimeout(function () { pollGS(r.sess); }, googleTimeToMS(r.sess.pollingConfig.pollInterval));
         }
     });
 }
@@ -169,23 +169,17 @@ function googleTimeToMS(s) {
     return (s == "") ? 3000 : parseInt(s.slice(0, -1)) * 1000;
 }
 
-function pollGS(sess, token) {
+function pollGS(sess) {
     $.ajax({
-        url: "https://photospicker.googleapis.com/v1/sessions/" + sess.id,
-        beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'Bearer ' + token); },
-        type: "GET", contentType: "text",
-        error: function (xhr, a, b) { $("#gPhotoPrg").hide(); },
+        url: "/logbook/mvc/oAuth/GooglePhotoPickerPoll",
+        type: "POST", data: JSON.stringify({ sessionId: sess.id }), dataType: "json", contentType: "application/json",
+        error: function (xhr) { window.alert(xhr.responseText); $("#gPhotoPrg").hide(); },
         success: function (newsession) {
             if (newsession.mediaItemsSet) {
-                const lstTarget = new URL("https://photospicker.googleapis.com/v1/mediaItems");
-                lstTarget.searchParams.append("sessionId", newsession.id);
-                lstTarget.searchParams.append("pageSize", 10);
-
                 $.ajax({
-                    url: lstTarget,
-                    type: "GET", contentType: "text",
-                    beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'Bearer ' + token); },
-                    error: function (xhr, a, b) { window.alert(xhr.responseText); $("#gPhotoPrg").hide(); },
+                    url: "/logbook/mvc/oAuth/GooglePhotoPickerPoll",
+                    type: "POST", data: JSON.stringify({ sessionId: newsession.id, fItems: true }), dataType: "json", contentType: "application/json",
+                    error: function (xhr) { window.alert(xhr.responseText); $("#gPhotoPrg").hide(); },
                     success: function (items) {
                         $("#hdnGPhotoLastResponse").val(JSON.stringify(items));
                         var f = $("#frmEditFlight");
@@ -200,7 +194,7 @@ function pollGS(sess, token) {
                     }
                 });
             } else {
-                setTimeout(function () { pollGS(newsession, token); }, googleTimeToMS(newsession.pollingConfig.pollInterval));
+                setTimeout(function () { pollGS(newsession); }, googleTimeToMS(newsession.pollingConfig.pollInterval));
             }
         }
     });

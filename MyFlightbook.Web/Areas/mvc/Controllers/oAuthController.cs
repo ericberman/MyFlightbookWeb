@@ -161,6 +161,19 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return Json(await gpn.GetSession());
             });
         }
+
+        [Authorize]
+        public async Task<ActionResult> GooglePhotoPickerPoll(string sessionId, bool fItems = false)
+        {
+            return await SafeOp(async () =>
+            {
+                if (!Guid.TryParse(sessionId, out Guid _))
+                    throw new ArgumentException("Invalid session ID", nameof(sessionId));
+                GooglePhoto gpn = new GooglePhoto(MyFlightbook.Profile.GetUser(User.Identity.Name));
+                string json = fItems ? await gpn.GetAllPickedItems(sessionId) : await gpn.PickerGet("sessions/" + sessionId);
+                return Content(json, "application/json");
+            });
+        }
         #endregion
 
         #region Cloud Storage

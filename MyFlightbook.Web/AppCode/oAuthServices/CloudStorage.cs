@@ -1675,7 +1675,7 @@ namespace MyFlightbook.CloudStorage
                         szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
                         GooglePhotoPickerSession gpsess = JsonConvert.DeserializeObject<GooglePhotoPickerSession>(szResult);
-                        return new { sess = gpsess, token = AuthState.AccessToken };
+                        return new { sess = gpsess };
                     }
                     catch (HttpRequestException ex)
                     {
@@ -1689,6 +1689,45 @@ namespace MyFlightbook.CloudStorage
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Server-side proxy for picker GET calls (the picker API doesn't support CORS from the browser)
+        /// </summary>
+        /// <param name="relativePath">e.g., "sessions/{id}" or "mediaItems?sessionId={id}&amp;pageSize=10"</param>
+        /// <returns>The raw JSON from Google</returns>
+        public async Task<string> PickerGet(string relativePath)
+        {
+            if (AuthState == null)
+                throw new UnauthorizedAccessException("Not authorized for Google Photos");
+
+            if (await RefreshAccessToken().ConfigureAwait(false) && CurrentUser != null)
+                CurrentUser.SetPreferenceForKey(PrefKeyAuthToken, AuthState);
+
+            return (string)await SharedHttpClient.GetResponseForAuthenticatedUri(new Uri("https://photospicker.googleapis.com/v1/" + relativePath), AuthState.AccessToken, HttpMethod.Get, (response) =>
+            {
+                string szResult = response.Content.ReadAsStringAsync().Result;
+                if (!response.IsSuccessStatusCode)
+                    throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                return szResult;
+            });
+        }
+
+        public async Task<string> GetAllPickedItems(string sessionId)
+        {
+            List<GPickerMediaItem> all = new List<GPickerMediaItem>();
+            string pageToken = null;
+            do
+            {
+                string path = String.Format(CultureInfo.InvariantCulture, "mediaItems?sessionId={0}&pageSize=100{1}",
+                    Uri.EscapeDataString(sessionId),
+                    String.IsNullOrEmpty(pageToken) ? string.Empty : "&pageToken=" + Uri.EscapeDataString(pageToken));
+                GPickerMediaResponse page = JsonConvert.DeserializeObject<GPickerMediaResponse>(await PickerGet(path));
+                all.AddRange(page?.mediaItems ?? Array.Empty<GPickerMediaItem>());
+                pageToken = page?.nextPageToken;
+            } while (!String.IsNullOrEmpty(pageToken));
+
+            return JsonConvert.SerializeObject(new GPickerMediaResponse { mediaItems = all });
         }
 
         /// <summary>
