@@ -20,7 +20,7 @@
             }
             else
             {
-                Uri authLink = new MyTailLogClient().AuthorizationUri(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), string.Empty, m_pf);
+                Uri authLink = new MyTailLogClient(Branding.CurrentBrand.MatchesHost(Request.Url.Host)).AuthorizationUri(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), string.Empty, m_pf);
                 <a href="@(authLink)">@Branding.ReBrand(Resources.Preferences.ExternalMaintenanceAuthorizeMyTailLog)</a>
             }
         </td>

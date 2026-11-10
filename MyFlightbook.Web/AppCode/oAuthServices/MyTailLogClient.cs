@@ -40,24 +40,22 @@ namespace MyFlightbook.OAuth.MyTailLog
     {
         private const string clientConfigKey = "MyTailLogClientID";
         private const string clientSecretConfigKey = "MyTailLogClientSecret";
-        private const string authEndpoint = "https://mytaillog.com/api/oidc/auth";
-        private const string tokenEndpoint = "https://mytaillog.com/api/oidc/token";
-        private const string revokeEndpoint = "https://mytaillog.com/api/oidc/revoke";
+        private const string hostProd = "mytaillog.com";
+        private const string hostDev = "mfb-test.mytaillog.com";
+        private static string authEndpoint(bool fProd) { return $"https://{(fProd ? hostProd : hostDev)}/api/oidc/auth"; }
+        private static string tokenEndpoint(bool fProd) { return $"https://{(fProd ? hostProd : hostDev)}/api/oidc/token"; }
+        private static string revokeEndpoint(bool fProd) { return $"https://{(fProd ? hostProd : hostDev)}/api/oidc/revoke"; }
         private static readonly string[] scopes = new string[] { "airworthiness:read", "aircraft:read", "hours:read", "weightbalance:read", "equipment:read", "oil:read", "hours:write", "offline_access" };
         private const string szCachedCodeVerifier = "myTailLogCodeVerifier";
-        private const string dataEndpointBase = "https://mytaillog.com/api/v1/aircraft";
+        private readonly bool fProduction = true;
+        private string dataEndpointBase => $"https://{(fProduction ? hostProd : hostDev)}/api/v1/aircraft";
 
-        private string TokenPrefKey => ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey();
+        private static string TokenPrefKey => ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey();
 
         #region constructors
-        public MyTailLogClient() : base(clientConfigKey, clientSecretConfigKey, authEndpoint, tokenEndpoint, scopes, null, revokeEndpoint)
-        {
-        }
+        public MyTailLogClient(bool fProd) : base(clientConfigKey, clientSecretConfigKey, authEndpoint(fProd), tokenEndpoint(fProd), scopes, null, revokeEndpoint(fProd)) { fProduction = fProd; }
 
-        public MyTailLogClient(IAuthorizationState state) : this()
-        {
-            AuthState = state;
-        }
+        public MyTailLogClient(bool fProd, IAuthorizationState state) : this(fProd) { AuthState = state; }
         #endregion
 
         #region oAuth flow
@@ -213,7 +211,7 @@ namespace MyFlightbook.OAuth.MyTailLog
                     string szResult;
                     using (StringContent sc = new StringContent(szJSON))
                     {
-                        Uri endpoint = new Uri($"https://mytaillog.com/api/v1/aircraft/{aw.AircraftId}/hours");
+                        Uri endpoint = new Uri($"{dataEndpointBase}/{aw.AircraftId}/hours");
                         _ = await SharedHttpClient.GetResponseForAuthenticatedUri(endpoint, AuthState.AccessToken, HttpMethod.Post, sc, (response) => {
                             szResult = response.Content.ReadAsStringAsync().Result;
                             if (!response.IsSuccessStatusCode)

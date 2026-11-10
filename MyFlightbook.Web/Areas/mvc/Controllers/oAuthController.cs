@@ -412,7 +412,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             if (!IsLocalCall())
                 throw new UnauthorizedAccessException("Attempt to call PushHighWaterMaintenance from other than localhost");
-            bool fResult = await ExternalMaintenanceRecord.PushHighWaterMarks((id, user) => id.PushHighWaterForUser(user));
+            bool fResult = await ExternalMaintenanceRecord.PushHighWaterMarks((id, user) => id.PushHighWaterForUser(user, Branding.CurrentBrand.MatchesHost(Request.Url.Host)));
             string resultText = fResult ? "Success" : "Failure";
             util.NotifyAdminEvent("Nightly High Watermark Push", resultText, ProfileRoles.maskSiteAdminOnly);
             return  Content(resultText);
@@ -469,7 +469,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             {
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
                 PKCEPair pkce = MyTailLogClient.PendingCodeVerifier(pf);
-                IAuthorizationState authorizationState = await new MyTailLogClient().ConvertToken(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
+                IAuthorizationState authorizationState = await new MyTailLogClient(Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConvertToken(Url.Action("MyTailLogRedir", "oAuth", new { area = "mvc" }, Request.Url.Scheme), code, pkce.CodeVerifier);
                 pf.SetPreferenceForKey(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey(), authorizationState);
             }
             return Redirect("~/mvc/Prefs?pane=maint");
@@ -494,7 +494,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
                 if (!pf.PreferenceExists(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey()))
                     throw new UnauthorizedAccessException();
-                ViewBag.summaryLog = await new MyTailLogClient(pf.GetPreferenceForKey<AuthorizationState>(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey())).UpdateMaintenanceFromMyTailLog(User.Identity.Name);
+                ViewBag.summaryLog = await new MyTailLogClient(Branding.CurrentBrand.MatchesHost(Request.Url.Host), pf.GetPreferenceForKey<AuthorizationState>(ExternalMaintenanceSourceID.MyTailLog.TokenPreferenceKey())).UpdateMaintenanceFromMyTailLog(User.Identity.Name);
                 return PartialView("_actionSummary");
             });
         }

@@ -14,7 +14,7 @@ namespace MyFlightbook.OAuth.Maintenance
 {
     public static class ExternalMaintenanceSource
     {
-        public static IPushHighWater PushHighWaterForUser(this ExternalMaintenanceSourceID id, string userName)
+        public static IPushHighWater PushHighWaterForUser(this ExternalMaintenanceSourceID id, string userName, bool fProd)
         {
             if (String.IsNullOrEmpty(userName))
                 throw new ArgumentNullException(nameof(userName));
@@ -31,7 +31,7 @@ namespace MyFlightbook.OAuth.Maintenance
                 case ExternalMaintenanceSourceID.TachTime:
                     return new TachTimeClient(authorizationState, Branding.CurrentBrand.HostName);
                 case ExternalMaintenanceSourceID.MyTailLog:
-                    return new MyTailLogClient(authorizationState);
+                    return new MyTailLogClient(fProd, authorizationState);
                 default:
                     throw new InvalidOperationException($"No client known for service {id.SourceName()}");
             }

@@ -251,7 +251,7 @@ SELECT
     h.MaxHobbsDate,
     h.MaxHobbsFlightID
 FROM externalmaintenance em
-INNER JOIN hobbs_ranked h ON h.idaircraft = em.idaircraft AND h.rn = 1
+LEFT JOIN hobbs_ranked h ON h.idaircraft = em.idaircraft AND h.rn = 1
 LEFT JOIN tach_ranked t ON t.idaircraft = em.idaircraft AND t.rn = 1
 WHERE COALESCE(t.MaxTach, 0)  > em.highWaterTach
    OR COALESCE(h.MaxHobbs, 0) > em.highWaterHobbs;");
