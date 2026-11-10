@@ -1168,12 +1168,15 @@ namespace MyFlightbook
             return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static string AuthTokenFromOAuthToken(DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag token)
+        /// <summary>
+        /// A web-service auth token for the user named in a validated oAuth access token
+        /// </summary>
+        public static string AuthTokenFromOAuthToken(string szUser)
         {
-            if (token == null)
-                throw new ArgumentNullException(nameof(token));
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
 
-            return AuthTokenForValidatedUser(token.User);
+            return AuthTokenForValidatedUser(szUser);
         }
 
         /// <summary>

@@ -127,6 +127,7 @@ namespace MyFlightbook.OAuth.Server.Tests
                 IntrospectionClientIds = { "mcp-sidecar" },
                 TokenExchangeClients = { { "mcp-sidecar", Api } },
                 OnLegacyTokenUsed = (k, c, u) => legacyLog.Add(k + ":" + c + ":" + u),
+                SupportsMetadataDocumentClients = true,
                 UtcNow = () => now
             };
             server = new OAuthServer(opts, store, new CompositeClientRegistry(id => registered.TryGetValue(id, out OAuthClient c) ? c : null, resolver));
@@ -243,7 +244,7 @@ namespace MyFlightbook.OAuth.Server.Tests
 
             code = GetCode(Q("response_type", "code", "client_id", "mobileapp", "redirect_uri", "com.example.app:/oauth", "scope", "currency readflight", "code_challenge", challenge, "code_challenge_method", "S256"));
             var withSecret = server.HandleTokenRequest(Q("grant_type", "authorization_code", "code", code, "client_id", "mobileapp", "client_secret", "x", "code_verifier", verifier), null);
-            Check(withSecret.StatusCode == 401, "public client sending a secret rejected");
+            Check(withSecret.StatusCode == 200, "public client sending a (meaningless) secret is tolerated, as the old PKCE proxy did: " + withSecret.Body);
 
             code = GetCode(Q("response_type", "code", "client_id", "mobileapp", "redirect_uri", "com.example.app:/oauth", "scope", "currency readflight", "code_challenge", challenge, "code_challenge_method", "S256"));
             var j = J(server.HandleTokenRequest(Q("grant_type", "authorization_code", "code", code, "client_id", "mobileapp", "code_verifier", verifier), null));

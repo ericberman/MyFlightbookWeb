@@ -16,7 +16,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using ClientType = DotNetOpenAuth.OAuth2.ClientType;   // Server-side type (allowedoauthclients.ClientType); goes away with the server cutover
 
 /******************************************************
  * 
@@ -637,14 +636,6 @@ namespace MyFlightbook.OAuth
             OAuthClientType = clientType;
             if (OAuthClientType == ClientType.Public)
                 PKCE = new PKCEPair();
-        }
-
-        /// <summary>
-        /// For PKCE clients, we have a proxy in front of the token endpoint that is configured with the same clientID/secret as the public client, and then we call that with the PKCE code and verifier, and it proxies to the real token endpoint.
-        /// </summary>
-        public static MFBOauth2Client ConfidentialProxyClient
-        {
-            get { return MFBOauth2Client.GetClientByID(OAuth2AuthorizationServer.publicClientProxyID)?.First() ?? throw new InvalidOperationException($"misconfiguration - need a client configured with id of {OAuth2AuthorizationServer.publicClientProxyID}"); }
         }
     }
 }

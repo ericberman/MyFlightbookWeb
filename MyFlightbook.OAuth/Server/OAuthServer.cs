@@ -365,7 +365,9 @@ namespace MyFlightbook.OAuth.Server
                     throw new OAuthException("invalid_grant", "Refresh token expired");
 
                 grantedScope = OAuthScopes.SplitScopes(rec.Scope);
-                if (!store.HasActiveAuthorization(rec.ClientId, rec.UserId, rec.IssuedUtc, grantedScope))
+                // New-format tokens are deleted when the user revokes, so this is just a liveness check.  Compare against a time well in the
+                // future so that clock skew between the database (which stamps CreatedOnUtc) and this server can't reject a fresh token.
+                if (!store.HasActiveAuthorization(rec.ClientId, rec.UserId, Now.AddDays(1), grantedScope))
                     throw new OAuthException("invalid_grant", "Authorization has been revoked");
 
                 if (ShouldRotate(client))
@@ -390,14 +392,15 @@ namespace MyFlightbook.OAuth.Server
             }
             else if (LegacyDnoaTokenReader.TryReadRefreshToken(refreshToken, store.GetLegacyCryptoKey, out LegacyTokenContents legacy))
             {
-                if (String.Equals(legacy.ClientIdentifier, options.LegacyProxyClientId, StringComparison.Ordinal))
+                // Case-insensitive, as DNOA-era client lookup was (OAuth2AuthorizationServer.GetClient)
+                if (String.Equals(legacy.ClientIdentifier, options.LegacyProxyClientId, StringComparison.OrdinalIgnoreCase))
                 {
                     // Minted via the old PKCE proxy: the real client isn't in the token.  Only a public client may present it,
                     // and (unlike before) it must hold a live authorization for this user - see the check below.
                     if (!client.IsPublic)
                         throw new OAuthException("invalid_grant", "Refresh token was issued to a different client");
                 }
-                else if (!String.Equals(legacy.ClientIdentifier, client.ClientId, StringComparison.Ordinal))
+                else if (!String.Equals(legacy.ClientIdentifier, client.ClientId, StringComparison.OrdinalIgnoreCase))
                     throw new OAuthException("invalid_grant", "Refresh token was issued to a different client");
 
                 grantedScope = new HashSet<string>(legacy.Scope, StringComparer.Ordinal);
@@ -591,8 +594,8 @@ namespace MyFlightbook.OAuth.Server
 
             if (client.IsPublic)
             {
-                if (!String.IsNullOrEmpty(secret))
-                    throw new OAuthException("invalid_client", "Public clients must not send a secret", 401);
+                // A public client has no secret to check.  Some send one anyway (the old PKCE proxy ignored it), so ignore it too;
+                // nothing is ever trusted on the basis of it, and PKCE (or a rotated refresh token) is what protects the grant.
             }
             else
             {
@@ -766,7 +769,7 @@ namespace MyFlightbook.OAuth.Server
                 ["code_challenge_methods_supported"] = new JArray("S256"),     // MCP clients refuse to proceed without this
                 ["token_endpoint_auth_methods_supported"] = new JArray("client_secret_basic", "client_secret_post", "none"),
                 ["scopes_supported"] = new JArray(options.ScopesSupported.OrderBy(s => s, StringComparer.Ordinal).ToArray()),
-                ["client_id_metadata_document_supported"] = true,
+                ["client_id_metadata_document_supported"] = options.SupportsMetadataDocumentClients,
                 ["authorization_response_iss_parameter_supported"] = true
             };
             if (options.RevocationEndpoint != null)

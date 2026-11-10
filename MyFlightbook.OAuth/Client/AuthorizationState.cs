@@ -67,6 +67,17 @@ namespace MyFlightbook.OAuth
     }
 
     /// <summary>
+    /// Replacement for DotNetOpenAuth.OAuth2.ClientType.  Numeric values MUST stay as-is: they're persisted in allowedoauthclients.ClientType.
+    /// </summary>
+    public enum ClientType
+    {
+        /// <summary>Has a secret (server-side apps)</summary>
+        Confidential = 0,
+        /// <summary>No secret (mobile/desktop/browser apps); must use PKCE</summary>
+        Public = 1
+    }
+
+    /// <summary>
     /// Replacement for DotNetOpenAuth.Messaging.ProtocolException on the client side: thrown when a remote OAuth server rejects a request
     /// (e.g., a refresh fails) or can't be reached.
     /// </summary>

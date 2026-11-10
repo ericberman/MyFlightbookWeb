@@ -1,18 +1,17 @@
-﻿using DotNetOpenAuth.Messaging;
-using DotNetOpenAuth.OAuth2;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.ImportFlights;
+using MyFlightbook.OAuth;
+using MyFlightbook.OAuth.Server;
 using MyFlightbook.Telemetry;
-using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Services;
@@ -107,7 +106,7 @@ namespace OAuthAuthorizationServer.Services
             if (sz == null)
                 return lst;
 
-            return ScopesFromStrings(OAuthUtilities.SplitScopes(sz));
+            return ScopesFromStrings(OAuthScopes.SplitScopes(sz));
         }
 
         /// <summary>
@@ -295,9 +294,9 @@ namespace OAuthAuthorizationServer.Services
         public string GeneratedAuthToken { get; set; }
 
         /// <summary>
-        /// The oAuth token itself
+        /// The validated oAuth token (user, client, scopes)
         /// </summary>
-        public AccessToken Token { get; set; }
+        public AccessTokenPrincipal Token { get; set; }
 
         /// <summary>
         /// Result format - JSON or XML
@@ -343,23 +342,24 @@ namespace OAuthAuthorizationServer.Services
             ResponseCallback = request["callback"] ?? string.Empty;
             ResultFormat = (int.TryParse(request["json"], NumberStyles.Integer, CultureInfo.InvariantCulture, out int fJson) && fJson != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
-            using (RSACryptoServiceProvider rsaSigning = new RSACryptoServiceProvider())
-            {
-                using (RSACryptoServiceProvider rsaEncryption = new RSACryptoServiceProvider())
-                {
-                    rsaSigning.ImportParameters(OAuth2AuthorizationServer.AuthorizationServerSigningPublicKey);
-                    rsaEncryption.ImportParameters(OAuth2AuthorizationServer.CreateAuthorizationServerSigningKey());
-                    ResourceServer server = new ResourceServer(new StandardAccessTokenAnalyzer(rsaSigning, rsaEncryption));
-                    Token = server.GetAccessToken();
+            // Legacy (DotNetOpenAuth) access tokens are still accepted until they expire; see OAuth2AuthorizationServer.ServerForRequest
+            Token = OAuth2AuthorizationServer.ServerForRequest(request).ValidateAccessToken(BearerToken(request)) ?? throw new UnauthorizedAccessException("Invalid, expired, or missing oAuth2 access token");
+            if (String.IsNullOrEmpty(Token.User))
+                throw new UnauthorizedAccessException("Invalid oAuth token - no user");
 
-                    if (Token.Lifetime.HasValue && Token.UtcIssued.Add(Token.Lifetime.Value).CompareTo(DateTime.UtcNow) < 0)
-                        throw new UnauthorizedAccessException("oAuth2 - Token has expired!");
-                    if (String.IsNullOrEmpty(Token.User))
-                        throw new UnauthorizedAccessException("Invalid oAuth token - no user");
+            GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token.User);
+        }
 
-                    GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
-                }
-            }
+        /// <summary>
+        /// Finds the bearer token the way DotNetOpenAuth's resource server did: Authorization header, then form, then query string.
+        /// </summary>
+        private static string BearerToken(HttpRequestBase request)
+        {
+            string header = request.Headers["Authorization"];
+            if (!String.IsNullOrEmpty(header) && header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                return header.Substring(7).Trim();
+            string form = request.Form["access_token"];
+            return String.IsNullOrEmpty(form) ? request.QueryString["access_token"] : form;
         }
 
         public OAuthServiceCall(HttpRequestBase request, string requestedService = null)
@@ -564,6 +564,11 @@ namespace OAuthAuthorizationServer.Services
                 Response.ClearHeaders();
                 Response.ContentType = "text/plain";
                 Response.StatusCode = (ex is UnauthorizedAccessException) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.InternalServerError;
+                if (ex is UnauthorizedAccessException)
+                {
+                    Response.SuppressFormsAuthenticationRedirect = true;    // keep it a 401 (so clients know to refresh) rather than a 302 to the login page
+                    Response.AppendHeader("WWW-Authenticate", OAuthServer.BearerChallenge("invalid_token"));
+                }
                 Response.TrySkipIisCustomErrors = true;
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Write("Error: " + ex.Message + "\r\n");

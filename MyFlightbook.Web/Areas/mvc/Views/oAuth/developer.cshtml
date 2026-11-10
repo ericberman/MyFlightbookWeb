@@ -217,8 +217,8 @@
                         </td>
                         <td>
                             <div class="displayCell">@client.ClientSecret</div>
-                            <div class="editCell"><input type="text" name="clientSecret" value="@client.ClientSecret" @((client.ClientType == DotNetOpenAuth.OAuth2.ClientType.Confidential) ? "disabled" : string.Empty) /></div>
-                            @if (client.ClientType == DotNetOpenAuth.OAuth2.ClientType.Public)
+                            <div class="editCell"><input type="text" name="clientSecret" value="@client.ClientSecret" @((client.ClientType == MyFlightbook.OAuth.ClientType.Confidential) ? "disabled" : string.Empty) /></div>
+                            @if (client.ClientType == MyFlightbook.OAuth.ClientType.Public)
                             {
                                 <div>(Client is public, MUST use the PKCE path)</div>
                                 <input type="hidden" name="isPublic" value="true" />

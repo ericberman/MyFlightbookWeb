@@ -1,11 +1,9 @@
-﻿using DotNetOpenAuth.Messaging;
-using DotNetOpenAuth.OAuth2;
-using DotNetOpenAuth.OAuth2.Messages;
-using MyFlightbook.Image;
-using MyFlightbook.Injection;
+﻿using MyFlightbook.Image;
 using MyFlightbook.OAuth;
+using MyFlightbook.OAuth.Server;
 using OAuthAuthorizationServer.Code;
 using OAuthAuthorizationServer.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -31,216 +29,90 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     public class oAuthControllerServer : AdminControllerBase
     {
         #region oAuth server functions
-        [Authorize]
-        [HttpGet]
-        public ActionResult Authorize()
+        /// <summary>
+        /// Writes one of the server's responses verbatim (status, headers, body).
+        /// </summary>
+        private ActionResult OAuthResult(OAuthHttpResult r)
         {
-            ViewBag.error = string.Empty;
-            try
+            Response.StatusCode = r.StatusCode;
+            Response.TrySkipIisCustomErrors = true;
+            Response.SuppressFormsAuthenticationRedirect = true;    // otherwise Forms auth turns a 401 (e.g., invalid_client) into a 302 to the login page
+            foreach (KeyValuePair<string, string> kv in r.Headers)
+                Response.AppendHeader(kv.Key, kv.Value);
+            return Content(r.Body, r.ContentType);
+        }
+
+        /// <summary>
+        /// Redirects to an exact URL.  Redirect() would try to resolve non-http schemes (e.g., "com.example.app:/oauth") as relative paths.
+        /// </summary>
+        private ActionResult RedirectExact(string href)
+        {
+            Response.RedirectLocation = href;
+            return new HttpStatusCodeResult(HttpStatusCode.Found);
+        }
+
+        /// <summary>
+        /// Consent screen, or the error page (or an error redirect back to the client, when the client and redirect URI are trustworthy).
+        /// </summary>
+        private ActionResult AuthorizeView(AuthorizeValidationResult v, NameValueCollection originalRequest)
+        {
+            if (!v.IsValid)
             {
-                if (!Request.IsSecureConnection)
-                    throw new HttpException((int)HttpStatusCode.Forbidden, Resources.LocalizedText.oAuthErrNotSecure);
-
-                AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
-                EndUserAuthorizationRequest pendingRequest;
-
-                if ((pendingRequest = authorizationServer.ReadAuthorizationRequest()) == null)
-                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrMissingRequest);
-
-                MFBOauth2Client client = (MFBOauth2Client)authorizationServer.AuthorizationServerServices.GetClient(pendingRequest.ClientIdentifier);
-
-                bool fIsValidCallback = false;
-                foreach (string callback in client.Callbacks)
-                {
-                    if (Uri.Compare(pendingRequest.Callback, new Uri(callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.SafeUnescaped, StringComparison.CurrentCultureIgnoreCase) == 0)
-                    {
-                        fIsValidCallback = true;
-                        break;
-                    }
-                }
-                if (!fIsValidCallback)
-                    throw new HttpException((int)HttpStatusCode.BadRequest, String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.oAuthErrBadRedirectURL, pendingRequest.Callback.ToString()));
-
-                HashSet<string> allowedScopes = OAuthUtilities.SplitScopes(client.Scope);
-
-                if (!pendingRequest.Scope.IsSubsetOf(allowedScopes))
-                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrUnauthorizedScopes);
-
-                IEnumerable<MFBOAuthScope> requestedScopes = MFBOauthServer.ScopesFromStrings(pendingRequest.Scope);
-
-                // In Authorize, after ValidateClient:
-                if (client.ClientType == ClientType.Public)
-                    throw new HttpException((int)HttpStatusCode.BadRequest,
-                        "Public clients must use the PKCE flow");
-
-                // See if there are any scopes that are requested that are not allowed.
-
-                ViewBag.scopesList = MFBOauthServer.ScopeDescriptions(requestedScopes);
-                ViewBag.clientName = client.ClientName;
-                ViewBag.clientLogoHref = (client.Logo?.Length ?? 0) == 0 ? null : $"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientIdentifier)}".ToAbsolute();
-            }
-            catch (Exception ex) when (ex is HttpException || ex is ProtocolException || ex is ProtocolFaultResponseException || ex is MyFlightbookException)
-            {
-                ViewBag.error = ex.Message;
+                if (v.ErrorRedirectHREF != null)
+                    return RedirectExact(v.ErrorRedirectHREF);
+                ViewBag.error = v.ErrorDescription;
+                return View("authorize");
             }
 
+            OAuthClient client = v.Request.Client;
+            MFBOauth2Client registered = OAuth2AuthorizationServer.RegisteredClient(client.ClientId);
+            ViewBag.clientName = client.ClientName;
+            ViewBag.clientLogoHref = (registered?.Logo?.Length ?? 0) == 0 ? null : $"~/mvc/oAuth/ViewOAuthLogo?clientID={WebUtility.UrlEncode(client.ClientId)}".ToAbsolute();
+            ViewBag.clientHost = client.IsMetadataDocumentClient ? new Uri(client.ClientId).Host : null;   // the name is self-asserted for these; show where it came from
+            ViewBag.scopesList = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromStrings(v.Request.Scope));
+            ViewBag.redirectHost = Uri.TryCreate(v.Request.RedirectHREF, UriKind.Absolute, out Uri redir) && !String.IsNullOrEmpty(redir.Host) ? redir.Host : redir?.Scheme ?? v.Request.RedirectHREF;
+            ViewBag.authRequest = originalRequest.ToString();   // re-posted verbatim and re-validated by CommitAuth
             return View("authorize");
         }
 
         [Authorize]
         [HttpGet]
-        public ActionResult AuthorizePKCE()
+        public ActionResult Authorize()
         {
-            ViewBag.error = string.Empty;
-            try
+            if (!Request.IsSecureConnection)
             {
-                if (!Request.IsSecureConnection)
-                    throw new HttpException((int)HttpStatusCode.Forbidden, Resources.LocalizedText.oAuthErrNotSecure);
-
-                string clientId = Request["client_id"];
-                string redirectUri = Request["redirect_uri"];
-                string codeChallenge = Request["code_challenge"];
-                string method = Request["code_challenge_method"] ?? "plain";
-
-                // Validate the REAL client (not the proxy)
-                MFBOauth2Client realClient = MFBOauth2Client.GetClientByID(clientId)?.FirstOrDefault()
-                    ?? throw new HttpException((int)HttpStatusCode.BadRequest, "Unknown client");
-
-                // In AuthorizePKCE, after loading realClient:
-                if (realClient.ClientType != ClientType.Public)
-                    throw new HttpException((int)HttpStatusCode.BadRequest,
-                        "PKCE flow is only available for public clients");
-
-                // Validate redirect URI against real client
-                bool fIsValidCallback = false;
-                foreach (string callback in realClient.Callbacks)
-                {
-                    if (Uri.Compare(new Uri(redirectUri), new Uri(callback),
-                        UriComponents.HostAndPort | UriComponents.PathAndQuery,
-                        UriFormat.SafeUnescaped, StringComparison.CurrentCultureIgnoreCase) == 0)
-                    {
-                        fIsValidCallback = true;
-                        break;
-                    }
-                }
-                if (!fIsValidCallback)
-                    throw new HttpException((int)HttpStatusCode.BadRequest,
-                        String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.oAuthErrBadRedirectURL, redirectUri));
-
-                // Parse and validate scopes against the real client
-                string scopeParam = Request["scope"] ?? string.Empty;
-                HashSet<string> requestedScopes = OAuthUtilities.SplitScopes(scopeParam);
-                HashSet<string> allowedScopes = OAuthUtilities.SplitScopes(realClient.Scope);
-                if (!requestedScopes.IsSubsetOf(allowedScopes))
-                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrUnauthorizedScopes);
-
-                // Store PKCE state - keyed by our state value, NOT the one from the client
-                string state = Guid.NewGuid().ToString("N");
-                new PkceTempRecord
-                {
-                    State = state,
-                    ClientId = clientId,
-                    RedirectEndpoint = redirectUri,
-                    CodeChallenge = codeChallenge,
-                    CodeChallengeMethod = method,
-                    Scope = scopeParam,    // store the requested scope too - see CommitAuth below
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(5)
-                }.Commit();
-
-                // Show the consent page using the REAL client's identity
-                ViewBag.scopesList = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromStrings(requestedScopes));
-                ViewBag.clientName = realClient.ClientName;
-                ViewBag.pkceState = state;  // pass our state to the view so CommitAuth can find the record
-
-                MFBOauth2Client proxy = OAuth2AdHocClient.ConfidentialProxyClient;
-                ViewBag.proxyClientId = proxy.ClientIdentifier;
-                ViewBag.proxyRedirectUri = proxy.Callbacks.First();
-                ViewBag.proxyScope = scopeParam;  // scope stays the same
-                ViewBag.pkceState = state;
+                ViewBag.error = Resources.LocalizedText.oAuthErrNotSecure;
+                return View("authorize");
             }
-            catch (Exception ex) when (ex is HttpException || ex is MyFlightbookException)
-            {
-                ViewBag.error = ex.Message;
-            }
-
-            return View("authorize");  // same view as normal Authorize
+            NameValueCollection query = HttpUtility.ParseQueryString(Request.Url.Query);
+            return AuthorizeView(OAuth2AuthorizationServer.ServerForRequest(Request).ValidateAuthorizeRequest(query), query);
         }
 
-        private static void RejectWithError(AuthorizationServer authorizationServer, EndUserAuthorizationRequest pendingRequest, string szError)
+        /// <summary>
+        /// The old PKCE-proxy entry point.  Existing public clients still send users here; PKCE is native now, so it's the same as Authorize.
+        /// </summary>
+        [Authorize]
+        [HttpGet]
+        public ActionResult AuthorizePKCE()
         {
-            EndUserAuthorizationFailedResponse resp = authorizationServer.PrepareRejectAuthorizationRequest(pendingRequest);
-            resp.Error = szError;
-            OutgoingWebResponse wr = authorizationServer.Channel.PrepareResponse(resp);
-            wr.Send();
+            return Authorize();
         }
 
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult CommitAuth()
+        public ActionResult CommitAuth(string authRequest, string authAction)
         {
-            AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
-            EndUserAuthorizationRequest pendingRequest = authorizationServer.ReadAuthorizationRequest();
+            if (!Request.IsSecureConnection)
+                throw new HttpException((int)HttpStatusCode.Forbidden, Resources.LocalizedText.oAuthErrNotSecure);
 
-            string authAction = Request["authAction"];
-            if (authAction == "authorize")
-            {
-                if (pendingRequest == null)
-                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrMissingRequest);
+            OAuthServer server = OAuth2AuthorizationServer.ServerForRequest(Request);
+            NameValueCollection query = HttpUtility.ParseQueryString(authRequest ?? string.Empty);
+            AuthorizeValidationResult v = server.ValidateAuthorizeRequest(query);
+            if (!v.IsValid)
+                return AuthorizeView(v, query);
 
-                PkceTempRecord pkce = PkceTempRecord.LoadFromState(Request["pkcestate"] ?? string.Empty);
-
-                // For PKCE, record auth against the REAL client (pkce.ClientId).
-                // For normal flow, record auth against the requesting client.
-                // Either way the proxy client is pre-authorized via IsAuthorizationValid short-circuit.
-                string clientIdToRecord = pkce != null ? pkce.ClientId : pendingRequest.ClientIdentifier;
-
-                MFBOauthClientAuth ca = new MFBOauthClientAuth { Scope = OAuthUtilities.JoinScopes(pendingRequest.Scope), ClientId = clientIdToRecord, UserId = User.Identity.Name, ExpirationDateUtc = DateTime.UtcNow.AddYears(10) };
-
-                if (!ca.fCommit())
-                {
-                    RejectWithError(authorizationServer, pendingRequest, Resources.LocalizedText.oAuthErrCreationFailed);
-                    return new EmptyResult();
-                }
-
-                EndUserAuthorizationSuccessResponseBase resp = authorizationServer.PrepareApproveAuthorizationRequest(pendingRequest, User.Identity.Name);
-                OutgoingWebResponse wr = authorizationServer.Channel.PrepareResponse(resp);
-                string location = wr.Headers["Location"];
-
-                if (pkce != null)
-                {
-                    var uri = new Uri(location);
-                    var query = HttpUtility.ParseQueryString(uri.Query);
-                    string legacyCode = query["code"];
-                    string publicCode = Guid.NewGuid().ToString("N");
-
-                    new PkceTempRecord
-                    {
-                        State = Request["state"],
-                        PublicCode = publicCode,
-                        LegacyCode = legacyCode,
-                        ClientId = pkce.ClientId,
-                        RedirectEndpoint = pkce.RedirectEndpoint,
-                        CodeChallenge = pkce.CodeChallenge,
-                        CodeChallengeMethod = pkce.CodeChallengeMethod,
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(5)
-                    }.Commit();
-
-                    query["code"] = publicCode;
-                    var builder = new UriBuilder(pkce.RedirectEndpoint)
-                    {
-                        Query = query.ToString()
-                    };
-                    wr.Headers["Location"] = builder.Uri.ToString();
-                }
-
-                wr.Send();
-            }
-            else if (authAction == "reject")
-            {
-                RejectWithError(authorizationServer, pendingRequest, Resources.LocalizedText.oAuthErrNotAuthorized);
-            }
-            return new EmptyResult();
+            return RedirectExact(authAction == "authorize" ? server.ApproveAuthorizeRequest(v.Request, User.Identity.Name) : server.DenyAuthorizeRequest(v.Request));
         }
 
         public ActionResult OAuthResource(string id = null)
@@ -252,84 +124,49 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult OAuthToken()
         {
+            if (!Request.IsSecureConnection)
+                return OAuthResult(new OAuthHttpResult() { StatusCode = (int)HttpStatusCode.Forbidden, Body = "{\"error\":\"invalid_request\",\"error_description\":\"Token and refresh requests MUST be on a secure channel\"}" });
+            return OAuthEndpoint(() => OAuth2AuthorizationServer.ServerForRequest(Request).HandleTokenRequest(Request.Form, Request.Headers["Authorization"]));
+        }
+
+        /// <summary>
+        /// Runs an endpoint, guaranteeing a JSON response even for an unexpected exception (rather than an HTML error page)
+        /// </summary>
+        private ActionResult OAuthEndpoint(Func<OAuthHttpResult> f)
+        {
             try
             {
-                // Check to see if this is a PKCE token request first - if so, validate the code verifier and swap the legacy code for the public code before processing the request.
-                string clientId = Request["client_id"];
-                if (String.IsNullOrEmpty(clientId))
-                    throw new ArgumentNullException(nameof(clientId));
-                if (!Request.IsSecureConnection)
-                    throw new HttpException((int)HttpStatusCode.Forbidden, "Token and refresh requests MUST be on a secure channel");
-
-
-                MFBOauth2Client client = MFBOauth2Client.GetClientByID(clientId)?.FirstOrDefault() ?? throw new InvalidOperationException("Unknown client");
-
-                AuthorizationServer authorizationServer = new AuthorizationServer(new OAuth2AuthorizationServer());
-
-                HttpRequestBase requestBase = null;
-
-                if (client.ClientType == ClientType.Public)
-                {
-                    // Look up the clientID
-                    MFBOauth2Client confidentialProxyClient = OAuth2AdHocClient.ConfidentialProxyClient;
-
-                    OAuth2AdHocClient proxyClient = new OAuth2AdHocClient(confidentialProxyClient.ClientIdentifier, confidentialProxyClient.ClientSecret, string.Empty, Request.Url.GetLeftPart(UriPartial.Path), confidentialProxyClient.Callbacks.First());
-
-                    string grantType = Request["grant_type"] ?? string.Empty;
-
-                    if (grantType.CompareCurrentCultureIgnoreCase("authorization_code") == 0)
-                    {
-                        string publicCode = Request["code"];
-                        if (String.IsNullOrEmpty(publicCode))
-                            throw new ArgumentNullException(nameof(publicCode));
-                        string verifier = Request["code_verifier"];
-                        if (String.IsNullOrEmpty(verifier))
-                            throw new ArgumentNullException(nameof(verifier));
-
-                        var pkce = PkceTempRecord.LoadFromPublicCode(publicCode) ?? throw new InvalidOperationException("invalid grant");
-                        pkce.ValidateGrant(verifier, clientId);
-
-                        // Fake the request environment DNOA needs
-                        // by using DNOA's AuthorizationServer directly
-                        // against a NameValueCollection instead of HttpRequest
-                        requestBase = new SyntheticTokenRequest(
-                            new Uri($"https://{Request.Url.Host}/logbook/mvc/oAuth/OAuthToken"),
-                            new NameValueCollection
-                            {
-                                { "grant_type", "authorization_code" },
-                                { "client_id", proxyClient.clientID },
-                                { "client_secret", proxyClient.clientSecret },
-                                { "code", pkce.LegacyCode },
-                                { "redirect_uri", confidentialProxyClient.Callbacks.First() }
-                            });
-                    }
-                    else if (grantType.CompareCurrentCultureIgnoreCase("refresh_token") == 0)
-                    {
-                        string refreshToken = Request["refresh_token"];
-                        if (String.IsNullOrEmpty(refreshToken))
-                            throw new ArgumentNullException(nameof(refreshToken));
-
-                        requestBase = new SyntheticTokenRequest(
-                            new Uri("https://developer.myflightbook.com/logbook/mvc/oAuth/OAuthToken"),
-                            new NameValueCollection
-                            {
-                                { "grant_type", "refresh_token" },
-                                { "client_id", confidentialProxyClient.ClientIdentifier },
-                                { "client_secret", confidentialProxyClient.ClientSecret },
-                                { "refresh_token", refreshToken }
-                            });
-                    }
-                }
-                OutgoingWebResponse wr = authorizationServer.HandleTokenRequest(requestBase);
-                // At this point, wr.Body should contain the JSON response
-                return Content(wr.Body, "application/json; charset=utf-8");
+                return OAuthResult(f());
             }
-            catch (Exception e) when (e.IsNonFatal())
+            catch (Exception ex) when (ex.IsNonFatal())
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                Response.TrySkipIisCustomErrors = true;
-                return Content(e.Message);
+                return OAuthResult(new OAuthHttpResult()
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Body = Newtonsoft.Json.JsonConvert.SerializeObject(new Dictionary<string, string>() { { "error", "server_error" }, { "error_description", ex.Message } })
+                });
             }
+        }
+
+        /// <summary>
+        /// RFC 7009 token revocation
+        /// </summary>
+        [HttpPost]
+        public ActionResult Revoke()
+        {
+            if (!Request.IsSecureConnection)
+                return OAuthResult(new OAuthHttpResult() { StatusCode = (int)HttpStatusCode.Forbidden, Body = "{\"error\":\"invalid_request\"}" });
+            return OAuthEndpoint(() => OAuth2AuthorizationServer.ServerForRequest(Request).HandleRevocationRequest(Request.Form, Request.Headers["Authorization"]));
+        }
+
+        /// <summary>
+        /// RFC 8414 authorization server metadata.  To be discoverable it must ALSO be reachable at /.well-known/oauth-authorization-server
+        /// on the site root (see Support/OAuthMigration/README.md); this is the target of that rewrite.
+        /// </summary>
+        [HttpGet]
+        public ActionResult Metadata()
+        {
+            return OAuthEndpoint(() => OAuth2AuthorizationServer.ServerForRequest(Request).AuthorizationServerMetadata());
         }
         #endregion
 

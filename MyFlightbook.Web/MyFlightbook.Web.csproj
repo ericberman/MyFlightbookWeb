@@ -57,29 +57,6 @@
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.100.25" />
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="CoordinateSharp" Version="3.5.1.1" />
-    <PackageReference Include="DotNetOpenAuth" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.Core" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.Core.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.InfoCard" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.InfoCard.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth.Common" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth.Consumer" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth.Core" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth.ServiceProvider" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.AuthorizationServer" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.Client" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.Client.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.ClientAuthorization" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.Core" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OAuth2.ResourceServer" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.Core" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.Core.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.Provider" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.Provider.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.RelyingParty" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenId.RelyingParty.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenIdInfoCard.UI" Version="4.3.4.13329" />
-    <PackageReference Include="DotNetOpenAuth.OpenIdOAuth" Version="4.3.4.13329" />
     <PackageReference Include="Dropbox.Api" Version="7.4.0" />
     <PackageReference Include="GeoTimeZone" Version="7.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.36.2" />
@@ -1204,7 +1181,6 @@
     <Content Include="Areas\mvc\Views\Admin\_invalidSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminProps.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminAchievements.cshtml" />
-    <Content Include="Areas\mvc\Views\AdminOAuth\legacyTokenCheck.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\adminGeocoder.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_airportsNeedingCodingTable.cshtml" />
     <Content Include="Areas\mvc\Views\Admin\adminEndorsements.cshtml" />
@@ -1692,7 +1668,6 @@
     </Compile>
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
-    <Compile Include="Areas\mvc\Controllers\AdminOAuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\AircraftControllerBase.cs" />
     <Compile Include="Areas\mvc\Controllers\AuthController.cs" />
     <Compile Include="Areas\mvc\Controllers\CheckFlightController.cs" />

@@ -1,5 +1,4 @@
-﻿using DotNetOpenAuth.OAuth2;
-using MyFlightbook.Airports;
+﻿using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Geography.SolarTools;
 using MyFlightbook.Image;

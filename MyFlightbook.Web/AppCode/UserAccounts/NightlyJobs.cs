@@ -582,6 +582,7 @@ WHERE runKey=?rk AND attempts >= ?maxAttempts AND (status='pending' OR (status='
         {
             EventRecorder.LogCall("Starting nightly run {runKey}: planning", runKey);
             NightlyJobQueue.PurgeOldRuns();
+            MyFlightbook.OAuth.Server.MySqlOAuthServerStore.PurgeExpired(TimeSpan.FromDays(1));   // expired access tokens, long-rotated refresh tokens, stale auth codes
 
             List<PlannedNightlyJob> lst = new List<PlannedNightlyJob>();
             bool fAll = TasksToRun == SelectedTasks.All;

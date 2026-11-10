@@ -157,6 +157,38 @@ into the past and use it again. Confirm the refresh token survives in the stored
 | TachTime, MyTailLog, FlightCrewView, RosterBuster | their own flows (PKCE / hand-rolled) | their own (hand-rolled) |
 Nightly cloud backups exercise the Dropbox/Google Drive/OneDrive/Box refresh paths for real users, so watch the first few nightly runs after deploy.
 
+## Server cutover - DONE in code (2026-11-10), pending dev testing
+
+* DNOA packages and the `dotNetOpenAuth` config section are gone. `MyFlightbook.OAuth.ClientType` replaces DNOA's (same 0/1 values).
+* `OAuth2AuthorizationServer.cs`: `MFBOauth2Client` (no `IClientDescription`; `ToOAuthClient()` maps it), `MFBOauthClientAuth`
+  (revoking now also deletes the app's new-format tokens), and a static `OAuth2AuthorizationServer.ServerForRequest(request)` factory:
+  issuer = scheme+host of the request, the API resource = `~/mvc/oAuth/OAuthResource`, scopes = `MFBOAuthScope`, legacy access tokens
+  via the `MyFlightbookContainer` RSA key, and legacy-token use logged through `EventRecorder.LogCall`.
+  Metadata-document (MCP) clients are OFF: the registry has no resolver, and `SupportsMetadataDocumentClients` is false.
+* `oAuthControllerServer`: `Authorize` (and `AuthorizePKCE`, now just an alias, for existing public clients) validates and shows consent.
+  The consent form re-posts the original query string (`authRequest`), and `CommitAuth` re-validates it before approving or denying.
+  New: `OAuthToken` (JSON errors per RFC 6749), `Revoke` (RFC 7009), `Metadata` (RFC 8414). Removed: the PKCE proxy, `PkceTempRecord`, `SyntheticTokenRequest`.
+* `OAuthServiceCall`: bearer token from the header, then the form, then the query (as DNOA did), checked by `ValidateAccessToken`. Failures are now **401** with
+  `WWW-Authenticate: Bearer error="invalid_token"`, where DNOA failures used to surface as 500s.
+* Nightly run purges expired access tokens, rotated refresh tokens, and stale codes.
+
+### Testing on dev
+1. Playpen OAuth client test, **confidential**: authorize, consent, token, call `currency`/`totals`, refresh, and decline once.
+2. Same with **PKCE (public)**: note that the refresh token rotates for public clients.
+3. User's "Authorized apps" page: revoke, then confirm the access token AND the refresh token stop working immediately.
+4. **Legacy rehearsal:** check out the commit before the DNOA removal, mint tokens with the Playpen page (one confidential, one public), save them,
+   switch back, then: refresh with each (you should get `mfb.rt.` back, the old token keeps working, and the log shows "Legacy ... token used");
+   call the API with the old access token; revoke the app and confirm the old refresh token is rejected.
+5. Partners' error parsing: errors from `OAuthToken` are JSON now (`{"error":"invalid_grant",...}`) instead of plain text.
+
+### Follow-ups
+* **+14 days after deploy:** delete the "Legacy (DotNetOpenAuth) access tokens" region in `OAuth2AuthorizationServer.cs` and the
+  `LegacyAccessTokenReader` line. That retires the RSA key container.
+* **Whenever:** the `publicClientProxy` row in `allowedoauthclients` is no longer used (proxy-minted refresh tokens are accepted from the real public client).
+  `pkceauthorization` and `nonce` can be dropped. **Never** delete `cryptokeys` rows in bucket `https://localhost/dnoa/oauth_refresh_token`.
+* **For MCP:** serve `/.well-known/oauth-authorization-server` at the site ROOT (IIS URL Rewrite on the root site to `/logbook/mvc/oAuth/Metadata`),
+  turn on the metadata-document resolver, set `SupportsMetadataDocumentClients`, add the MCP resource, and `LEFT JOIN oauthmetadataclients` in `GrantedAuthsForUser`.
+
 ## Suggested sequence
 
 1. **Client swap** (OAuthClientBase, CloudStorage, the partner clients, Profile, controllers, Playpen, developer.cshtml).

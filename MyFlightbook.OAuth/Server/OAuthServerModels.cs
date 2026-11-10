@@ -169,6 +169,12 @@ namespace MyFlightbook.OAuth.Server
         /// <summary>The DNOA-era PKCE proxy client id; refresh tokens it minted carry this id instead of the real client</summary>
         public string LegacyProxyClientId { get; set; } = "publicClientProxy";
 
+        /// <summary>
+        /// Advertise Client ID Metadata Document support in the RFC 8414 metadata.  Set this only when the registry actually has a
+        /// MetadataDocumentClientResolver (i.e., when MCP clients are being accepted).
+        /// </summary>
+        public bool SupportsMetadataDocumentClients { get; set; }
+
         /// <summary>Optional: validates a legacy (DNOA) access token.  Only needed for 14 days after cutover; then set to null.</summary>
         public Func<string, Legacy.LegacyTokenContents> LegacyAccessTokenReader { get; set; }
 
