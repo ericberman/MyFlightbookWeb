@@ -62,9 +62,9 @@
             <div>@le.HobbsDisplay</div>
             <div>@le.EngineTimeDisplay</div>
             <div>@le.FlightTimeDisplay</div>
-            @foreach (CustomFlightProperty cfp in le.CustomProperties)
+            @foreach (string s in CustomFlightProperty.PropDisplayAsList(le.CustomProperties, CurrentUser.UsesHHMM, true, true))
             {
-                <div>@(CurrentUser.UsesHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString)</div>
+                <div>@Html.Raw(s)</div>
             }
         </td>
     </tr>

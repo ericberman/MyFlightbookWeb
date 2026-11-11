@@ -108,14 +108,14 @@ else if (fPickSigner)
             </div>
             @if (fShowMore)
             {
-                <div style="font-weight: bold; margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
+                <div class="b" style="margin-top: 18pt;" id="divShowAllInstructors"><a href="#" onclick="javascript: $('.expiredCert').show(); $(this).hide(); return false;">@Resources.LogbookEntry.SearchAllProperties</a></div>
             }
         </div>
-        <div id="vwAcceptTerms" style="display:none;">
+        <div id="vwAcceptTerms" class="dn">
             <p>@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1)</p>
-            <p style="font-weight:bold">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
+            <p class="b">@Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2)</p>
             <p><label><input type="checkbox" id="ckAcceptNoSelfSign" name="ckNoSelfSign" />@Resources.SignOff.SignAcceptResponsibility</label></p>
-            <p style="text-align:center"><button type="button" onclick="javascript: pickInstructor(); return false">@Resources.LocalizedText.PreviousPrompt</button> <button type="submit">@Resources.LocalizedText.NextPrompt</button></p>
+            <p class="c"><button type="button" onclick="javascript: pickInstructor(); return false">@Resources.LocalizedText.PreviousPrompt</button> <button type="submit">@Resources.LocalizedText.NextPrompt</button></p>
         </div>
     }
 }
