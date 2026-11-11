@@ -1161,7 +1161,7 @@ namespace MyFlightbook.Printing
                                 return;
                             }
 
-                            if (!p.WaitForExit(180_000))
+                            if (!p.WaitForExit(30_000))
                             {
                                 try { p.Kill(); } catch (InvalidOperationException) { }
                             }
