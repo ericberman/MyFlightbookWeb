@@ -1147,10 +1147,28 @@ namespace MyFlightbook.Printing
                         p.StandardInput.Close(); // required: signals EOF so wkhtmltopdf starts converting
 
                         using (var pdfStream = new MemoryStream())
+                        using (var cts = new CancellationTokenSource(TimeSpan.FromMinutes(3)))
                         {
-                            await p.StandardOutput.BaseStream.CopyToAsync(pdfStream);
+                            try
+                            {
+                                await p.StandardOutput.BaseStream.CopyToAsync(pdfStream, 81920, cts.Token);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                try { p.Kill(); } catch (InvalidOperationException) { /* already exited */ }
+                                onError?.Invoke("wkhtmltopdf timed out after 3 minutes");
+                                tcs.SetResult(Array.Empty<byte>());
+                                return;
+                            }
 
-                            p.WaitForExit();
+                            if (!p.WaitForExit(180_000))
+                            {
+                                try { p.Kill(); } catch (InvalidOperationException) { }
+                            }
+                            else
+                            {
+                                p.WaitForExit();   // no-arg overload: waits for the async stderr handler to finish
+                            }
 
                             if (pdfStream.Length == 0)
                             {
