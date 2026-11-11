@@ -290,6 +290,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult PublicFlightRows(string uid, int skip, int pageSize)
         {
             return SafeOp(() =>
