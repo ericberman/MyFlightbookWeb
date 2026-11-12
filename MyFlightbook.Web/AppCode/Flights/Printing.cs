@@ -1221,7 +1221,7 @@ namespace MyFlightbook.Printing
         /// <param name="dFileMap">A dictionary where the keys are the human readable file names of the files to add, and the values are the human-readable file names.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static byte[] CreateZipFromBytes(params (string entryName, byte[] data)[] files)
+        public static byte[] CreateZipFromBytes(params (string EntryName, byte[] Data)[] files)
         {
             if (files == null)
                 throw new ArgumentNullException(nameof(files));
@@ -1232,11 +1232,11 @@ namespace MyFlightbook.Printing
                 {
                     foreach (var file in files)
                     {
-                        var entry = archive.CreateEntry(file.entryName, CompressionLevel.Optimal);
+                        var entry = archive.CreateEntry(file.EntryName, CompressionLevel.Optimal);
 
                         using (var entryStream = entry.Open())
                         {
-                            entryStream.Write(file.data, 0, file.data.Length);
+                            entryStream.Write(file.Data, 0, file.Data.Length);
                         }
                     }
                 }
