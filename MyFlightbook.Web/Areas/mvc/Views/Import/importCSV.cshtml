@@ -44,6 +44,7 @@
         $("#btnWizNext").text(newStep == 0 ? "@Resources.LogbookEntry.ImportWizardBeginButton" : "@Resources.LocalizedText.NextPrompt");
         $("#btnWizNewFile").toggle(newStep == 3);
         $("#pnlAcuLog").toggle(newStep == 0);
+        $("#imgImportPrg").hide();
         $("#btnWizNext").attr("disabled", newStep == 1);
         if (newStep < 3)
             $("#divImportPreview").html("");
@@ -88,9 +89,13 @@
             prevButton: $("#btnWizPrev"),
             finishButton: $("#btnWizFinish"),
             onStepChange: stepChange,
-            onFinish: function () {
-                if ($("div.error[name='error']").length == 0 || confirm($("#divConfirmHome")[0].innerText))
+            onFinish: function() {
+                if ($("div.error[name='error']").length == 0 || confirm($("#divConfirmHome")[0].innerText)) {
+                    $("#btnWizFinish").attr("disabled", true);
+                    $("#imgImportPrg").show();
+                    $("#divImportPreview").html("");
                     $("#frmDoImport").submit();
+                }
             }
         });
 
@@ -159,37 +164,37 @@
     <div>
         <div>@Html.Raw(Branding.ReBrand(Resources.LogbookEntry.ImportOverview).Replace("%SAMPLEREF%", "~/images/flightimportsample.png".ToAbsoluteURL(Request).ToString()))</div>
         <ul class="nextStep">
-            <li><img style="vertical-align: middle" src="@("~/images/csvicon_sm.png".ToAbsolute())" /> <a href="@Url.Action("ImportTemplate", "Import")" style="font-weight: bold;">@Resources.LogbookEntry.ImportStartingTemplate</a></li>
-            <li><a style="font-weight:bold;" href="@("~/mvc/pub/ImportTable".ToAbsolute())" target="_blank">@Resources.LogbookEntry.ImportColumnDescriptions</a></li>
-            <li><a style="font-weight:bold;" href="@("~/mvc/faq?q=44#44".ToAbsolute())">@Resources.LogbookEntry.ImportFAQTipsLink</a></li>
-            <li><a style="font-weight:bold;" href="@("https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html")">@Resources.LogbookEntry.ImportBlogLink</a></li>
+            <li><img class="imgMiddle" src="@("~/images/csvicon_sm.png".ToAbsolute())" /> <a href="@Url.Action("ImportTemplate", "Import")" class="b">@Resources.LogbookEntry.ImportStartingTemplate</a></li>
+            <li><a class="b" href="@("~/mvc/pub/ImportTable".ToAbsolute())" target="_blank">@Resources.LogbookEntry.ImportColumnDescriptions</a></li>
+            <li><a class="b" href="@("~/mvc/faq?q=44#44".ToAbsolute())">@Resources.LogbookEntry.ImportFAQTipsLink</a></li>
+            <li><a class="b" href="@("https://myflightbookblog.blogspot.com/2020/05/importing-in-depth.html")">@Resources.LogbookEntry.ImportBlogLink</a></li>
         </ul>
     </div>
     <div class="dn">
         <p>@Resources.LogbookEntry.ImportWizardUploadPrompt</p>
         <table>
-            <tr style="vertical-align:top">
+            <tr class="topAlign">
                 <td><input type="radio" id="rbAutofillNone" name=autoFillOpt checked value="" /></td>
                 <td><label for="rbAutofillNone">@Resources.LogbookEntry.ImportWizardAutofillNone</label></td>
             </tr>
             <tr>
                 <td colspan="2">@Resources.LogbookEntry.ImportWizardAutofillPromptPart1</td>
             </tr>
-            <tr style="vertical-align:top">
+            <tr class="topAlign">
                 <td><input type="radio" id="rbAutofillUtc" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.None" /></td>
                 <td><label for="rbAutofillUtc">@Html.Raw(Resources.LogbookEntry.ImportWizardAutofillPrompt.Linkify())</label></td>
             </tr>
-            <tr style="vertical-align:top">
+            <tr class="topAlign">
                 <td><input type="radio" id="rbAutofillLocal" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.Local" /></td>
                 <td>
                     <div><label for="rbAutofillLocal">@Html.Raw(Resources.LogbookEntry.ImportWizardAutofillTryLocal.Linkify())</label></div>
                     <div class="fineprint">
-                        <span style="font-weight:bold;">@Resources.LocalizedText.Note</span>
+                        <span class="b">@Resources.LocalizedText.Note</span>
                         @Html.Raw(Resources.LogbookEntry.ImportWizardAutofillTryLocalNote.Linkify())
                     </div>
                 </td>
             </tr>
-            <tr style="vertical-align:top;">
+            <tr class="topAlign">
                 <td><input type="radio" id="rbAutofillPreferred" name=autoFillOpt value="@AutoFillOptions.TimeConversionCriteria.Preferred" /></td>
                 <td><label for="rbAutofillPreferred">@Html.Raw(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportWizardAutofillTryPreferred, pf.PreferredTimeZone.DisplayName).Linkify())</label></td>
             </tr>
@@ -202,7 +207,7 @@
                 <div><img src="@("~/images/csvicon_med.png".ToAbsolute())" /></div>
             </div>
         </div>
-        <div style="white-space:pre" class="error" id="lblUploadErr"></div>
+        <div class="wsprel error" id="lblUploadErr"></div>
     </div>
     <div class="dn">
         <div id="divImportReviewaircraft">
@@ -211,28 +216,28 @@
     </div>
     <div class="dn">
         <p>@Resources.LogbookEntry.ImportWizardPreviewHeader</p>
-        <p><span style="font-weight: bold;">@Resources.LogbookEntry.ImportWizardImportant</span> @Resources.LogbookEntry.ImportWizardOnlyClickOnce</p>
+        <p><span class="b">@Resources.LogbookEntry.ImportWizardImportant</span> @Resources.LogbookEntry.ImportWizardOnlyClickOnce</p>
         <div>
             @Resources.LogbookEntry.ImportWizardUpdateVsNew
             <table cellpadding="5">
-                <tr style="vertical-align:middle">
+                <tr class="imgMiddle">
                     <td>&nbsp;&nbsp;</td>
-                    <td><img src="@("~/images/add.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td><img src="@("~/images/add.png".ToAbsolute())" class="imgMiddle" /></td>
                     <td>@Resources.LogbookEntry.ImportIconNewFlight</td>
                 </tr>
-                <tr style="vertical-align:middle">
+                <tr class="imgMiddle">
                     <td>&nbsp;&nbsp;</td>
-                    <td><img src="@("~/images/update.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td><img src="@("~/images/update.png".ToAbsolute())" class="imgMiddle" /></td>
                     <td>@Resources.LogbookEntry.ImportIconUpdatedFlight</td>
                 </tr>
-                <tr style="vertical-align:middle">
+                <tr class="imgMiddle">
                     <td>&nbsp;&nbsp;</td>
-                    <td><img src="@("~/images/circleslash.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td><img src="@("~/images/circleslash.png".ToAbsolute())" class="imgMiddle" /></td>
                     <td>@Resources.LogbookEntry.ImportIconErrorFlight</td>
                 </tr>
-                <tr style="vertical-align:middle">
+                <tr class="imgMiddle">
                     <td>&nbsp;&nbsp;</td>
-                    <td><img src="@("~/images/pendingflights.png".ToAbsolute())" style="vertical-align: middle" /></td>
+                    <td><img src="@("~/images/pendingflights.png".ToAbsolute())" class="imgMiddle" /></td>
                     <td>@Resources.LogbookEntry.ImportIconPendingFlight</td>
                 </tr>
             </table>
@@ -242,12 +247,13 @@
         <div>&nbsp;</div>
     </div>
 </div>
-<div id="wizNav" style="width: 100%; text-align: center; margin-top: 18pt;">
-    <button type="button" id="btnWizNewFile" onclick="javascript: wiz.setStep(1); stepChange(4, 1); return false;" style="display:none;">@Resources.LogbookEntry.ImportUploadNewFile</button>
-    <button type="button" id="btnWizPrev" style="display:none;">@Resources.LocalizedText.PreviousPrompt</button>
+<div id="wizNav" class="w100 c" style="margin-top: 18pt;">
+    <button type="button" id="btnWizNewFile" onclick="javascript: wiz.setStep(1); stepChange(4, 1); return false;" class="dn">@Resources.LogbookEntry.ImportUploadNewFile</button>
+    <button type="button" id="btnWizPrev" class="dn">@Resources.LocalizedText.PreviousPrompt</button>
     <button type="button" id="btnWizNext">@Resources.LogbookEntry.ImportWizardBeginButton</button>
-    <button type="button" id="btnWizFinish" style="display:none;">@Resources.LogbookEntry.ImportWizardFinishButton</button>
+    <button type="button" id="btnWizFinish" class="dn">@Resources.LogbookEntry.ImportWizardFinishButton</button>
 </div>
+<div class="c"><img src="@("~/images/progress-x-256.gif".ToAbsolute())" class="dn" id="imgImportPrg" /></div>
 
 @using (Html.BeginForm("DoImport", "Import", FormMethod.Post, new { id = "frmDoImport", name = "frmDoImport" }))
 {
