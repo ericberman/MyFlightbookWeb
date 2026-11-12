@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2021-2024 MyFlightbook LLC
+ * Copyright (c) 2021-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -147,7 +147,7 @@ namespace MyFlightbook.Currency
 
             cfr.FlightProps.ForEachEvent((cfp) =>
             {
-                if (cfp.PropertyType.IsPrecisionApproach)
+                if (cfp.PropertyType.Is3DApproach)
                 {
                     AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     Query.PropertyTypes.Add(cfp.PropertyType);
@@ -181,7 +181,7 @@ namespace MyFlightbook.Currency
 
             cfr.FlightProps.ForEachEvent((cfp) =>
             {
-                if (cfp.PropertyType.IsApproach && !cfp.PropertyType.IsPrecisionApproach)
+                if (cfp.PropertyType.IsApproach && !cfp.PropertyType.Is3DApproach)
                     Query.PropertyTypes.Add(cfp.PropertyType);
             });
 

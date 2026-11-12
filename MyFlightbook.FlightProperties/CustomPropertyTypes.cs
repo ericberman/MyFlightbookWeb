@@ -162,6 +162,7 @@ namespace MyFlightbook
             IDPropHighAltitudeLandings = 504,
             IDPropMilitaryPrimaryTime = 511,
             IDPropMilitarySecondaryTime = 512,
+            IDPropApproachLNAVVNAV = 524,
             IDPropInstructionChargeSpent = 526,
             IDPropUASKnowledgeTest10773 = 527,
             IDPropUASTrainingCourse10774 = 528,
@@ -385,6 +386,15 @@ namespace MyFlightbook
         public Boolean IsPrecisionApproach
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagPrecisionApproach) != CFPPropertyFlag.cfpFlagNone); }
+        }
+
+        /// <summary>
+        /// Is this a 3D approach?  All precision approaches are 3D approaches, as is LNAV/VNAV.  If we find others to be 3D, perhaps we should make this a flag.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean Is3DApproach
+        {
+            get { return IsPrecisionApproach || PropTypeID == (int)KnownProperties.IDPropApproachLNAVVNAV; }
         }
 
         /// <summary>
