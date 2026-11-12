@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2023 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -355,9 +355,9 @@ namespace MyFlightbook.Currency
             {
                 double totalRemaining = MaxFlying - TotalFlying;
 
-                return totalRemaining > 0 ?
-                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BDiscrepancy, totalRemaining.FormatDecimal(UseHHMM), MaxFlying) :
-                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BPastLimit, (-totalRemaining).FormatDecimal(UseHHMM), MaxFlying);
+                return totalRemaining > 0
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BDiscrepancy, totalRemaining.FormatDecimal(UseHHMM), MaxFlying)
+                    : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BPastLimit, (-totalRemaining).FormatDecimal(UseHHMM), MaxFlying);
             }
         }
 

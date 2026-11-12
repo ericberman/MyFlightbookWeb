@@ -1650,9 +1650,9 @@ ORDER BY f.idFlight DESC;");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("szUser", szUser); },
                 (dr) =>
                 {
-                    TelemetryReference tr = (Convert.ToInt32(dr["HasFT"], CultureInfo.InvariantCulture) == 0) ?
-                        new TelemetryReference(dr["telemetry"].ToString(), Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture)) { Compressed = Convert.ToInt32(dr["compressed"], CultureInfo.InvariantCulture) } :
-                        new TelemetryReference(dr) { Compressed = 0, RawData = dr["telemetry"].ToString() };
+                    TelemetryReference tr = (Convert.ToInt32(dr["HasFT"], CultureInfo.InvariantCulture) == 0)
+                        ? new TelemetryReference(dr["telemetry"].ToString(), Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture)) { Compressed = Convert.ToInt32(dr["compressed"], CultureInfo.InvariantCulture) }
+                        : new TelemetryReference(dr) { Compressed = 0, RawData = dr["telemetry"].ToString() };
                     lst.Add(tr);
                 });
 
@@ -1807,10 +1807,9 @@ ORDER BY f.idFlight DESC;");
                     {
                         const int maxTimeDiscrepancy = 20;
                         // find best starting time.
-                        List<LogbookEntry> lstMatchesByTime = Date.HasValue ? lstPossibleMatches.FindAll(le =>
-                            (le.EngineStart.HasValue() && Math.Abs(le.EngineStart.Subtract(Date.Value).TotalMinutes) < maxTimeDiscrepancy) ||
-                            (le.FlightStart.HasValue() && Math.Abs(le.FlightStart.Subtract(Date.Value).TotalMinutes) < maxTimeDiscrepancy)) :
-                            new List<LogbookEntry>();
+                        List<LogbookEntry> lstMatchesByTime = Date.HasValue
+                            ? lstPossibleMatches.FindAll(le => (le.EngineStart.HasValue() && Math.Abs(le.EngineStart.Subtract(Date.Value).TotalMinutes) < maxTimeDiscrepancy) || (le.FlightStart.HasValue() && Math.Abs(le.FlightStart.Subtract(Date.Value).TotalMinutes) < maxTimeDiscrepancy))
+                            : new List<LogbookEntry>();
 
                         leMatch = lstMatchesByTime.Count == 1
                             ? lstMatchesByTime[0]

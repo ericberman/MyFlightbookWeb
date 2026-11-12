@@ -1374,10 +1374,7 @@ namespace MyFlightbook
         /// <returns>The updated signature state (which is reflected in the object)</returns>
         public SignatureState UpdateSignatureState()
         {
-            CFISignatureState = !String.IsNullOrEmpty(FlightHash) &&
-                !String.IsNullOrEmpty(SignatureHash) &&
-                !String.IsNullOrEmpty(CFICertificate) &&
-                (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail))
+            CFISignatureState = !String.IsNullOrEmpty(FlightHash) && !String.IsNullOrEmpty(SignatureHash) && !String.IsNullOrEmpty(CFICertificate) && (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail))
                 ? (IsValidSignature() && IsValidSigningDetails()) ? SignatureState.Valid : SignatureState.Invalid
                 : SignatureState.None;
             return CFISignatureState;
@@ -3322,9 +3319,9 @@ WHERE f1.username = ?uName ");
             if (mc.Count > 0 && mc[0].Groups["rate"] != null && decimal.TryParse(mc[0].Groups["rate"].Value, NumberStyles.Float, CultureInfo.CurrentCulture, out decimal rate))
             {
                 // Find the best value of elapsed time to use.  Hobbs, else tach, else total
-                decimal time = (HobbsEnd > HobbsStart && HobbsStart > 0) ? HobbsEnd - HobbsStart :
-                    (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachEnd) && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachStart) ?
-                    CustomProperties[CustomPropertyType.KnownProperties.IDPropTachEnd].DecValue - CustomProperties[CustomPropertyType.KnownProperties.IDPropTachStart].DecValue : TotalFlightTime);
+                decimal time = (HobbsEnd > HobbsStart && HobbsStart > 0)
+                    ? HobbsEnd - HobbsStart
+                    : (CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachEnd) && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropTachStart) ? CustomProperties[CustomPropertyType.KnownProperties.IDPropTachEnd].DecValue - CustomProperties[CustomPropertyType.KnownProperties.IDPropTachStart].DecValue : TotalFlightTime);
                 if (time > 0)
                     CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightCost, rate * time));
             }
@@ -4165,9 +4162,9 @@ WHERE f1.username = ?uName ");
         [System.Xml.Serialization.XmlIgnore]
         public string SignatureMainLine
         {
-            get { return CFIExpiration.HasValue() ?
-                    String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplate, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate, CFIExpiration.ToShortDateString()) :
-                    String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplateNoExpiration, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate); }
+            get { return CFIExpiration.HasValue()
+                ? String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplate, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate, CFIExpiration.ToShortDateString())
+                : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplateNoExpiration, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate); }
         }
 
         [System.Xml.Serialization.XmlIgnore]
@@ -4585,7 +4582,8 @@ WHERE f1.username = ?uName ");
 
             if (dictCatClassTotals == null)
                 dictCatClassTotals = new Dictionary<int, decimal>();
-            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.TryGetValue(led.EffectiveCatClass, out decimal value) ? value.AddMinutes(led.TotalFlightTime, RoundingUnit)
+            dictCatClassTotals[led.EffectiveCatClass] = dictCatClassTotals.TryGetValue(led.EffectiveCatClass, out decimal value)
+                ? value.AddMinutes(led.TotalFlightTime, RoundingUnit)
                 : led.TotalFlightTime;
         }
 
@@ -4601,7 +4599,8 @@ WHERE f1.username = ?uName ");
                 dictCatClassTotals = new Dictionary<int, decimal>();
 
             foreach (int idcatclass in led.dictCatClassTotals.Keys)
-                dictCatClassTotals[idcatclass] = dictCatClassTotals.TryGetValue(idcatclass, out decimal value) ? value.AddMinutes(led.dictCatClassTotals[idcatclass], RoundingUnit)
+                dictCatClassTotals[idcatclass] = dictCatClassTotals.TryGetValue(idcatclass, out decimal value)
+                    ? value.AddMinutes(led.dictCatClassTotals[idcatclass], RoundingUnit)
                     : led.dictCatClassTotals[idcatclass];
         }
 

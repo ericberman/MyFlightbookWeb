@@ -13,7 +13,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
 
 /******************************************************
  * 
@@ -179,9 +178,9 @@ namespace MyFlightbook.Printing
 
         public string OtherCatClassValue(LogbookEntryDisplay led)
         {
-            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(Options.OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ?
-                String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)) :
-                string.Empty;
+            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(Options.OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass))
+                ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM))
+                : string.Empty;
         }
 
         public static string FormatTakeoffs(int i)
@@ -1659,9 +1658,9 @@ namespace MyFlightbook.Printing
 
         protected string OtherCatClassValue(LogbookEntryDisplay led)
         {
-            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ?
-                String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)) :
-                string.Empty;
+            return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass))
+                ? String.Format(CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM))
+                : string.Empty;
         }
 
         protected static string FormatTakeoffs(int i)

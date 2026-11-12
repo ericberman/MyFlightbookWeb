@@ -235,9 +235,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (fAsFile)
                 {
                     string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.Club.ClubReportFlying, club.Name.Replace(" ", "-"), DateTime.Now.YMDString());
-                return fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0 ?
-                    File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".kml") :
-                    File(cfr.RefreshCSV(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
+                return fileFormat.CompareCurrentCultureIgnoreCase("kml") == 0
+                    ? File(cfr.RefreshKML(), "application/vnd.google-earth.kml+xml", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".kml")
+                    : File(cfr.RefreshCSV(), "text/csv", RegexUtility.UnSafeFileChars.Replace(szFilename, string.Empty) + ".csv");
                 }
                 else
                 {
@@ -765,8 +765,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             IEnumerable<Club> clubsForUser = FillClubViewBag();
 
             // Exactly one club: redirect unless "noredir=1" is specified.
-            return (clubsForUser.Count() == 1 && noredir == 0) ? (ActionResult)
-                Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", clubsForUser.First().ID)) : View("clubs");
+            return (clubsForUser.Count() == 1 && noredir == 0)
+                ? (ActionResult) Redirect(String.Format(CultureInfo.InvariantCulture, "~/mvc/Club/Details/{0}", clubsForUser.First().ID))
+                : View("clubs");
         }
     }
 }

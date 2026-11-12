@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2024 MyFlightbook LLC
+ * Copyright (c) 2013-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -736,9 +736,9 @@ namespace MyFlightbook.RatingsProgress
         {
             get
             {
-                Collection<MilestoneItem> result = (miHeavierThanAir.IsSatisfied) ?
-                    new Collection<MilestoneItem>() { miHeavierThanAir, miGliderFlightsPIC2i, miFlightTrainingTime, miTrainingFlights, miTestPrep, miSoloFlights2ii } :
-                    new Collection<MilestoneItem>() { miGliderTime, miGliderFlightsPIC1i, miFlightTrainingTime, miTrainingFlights, miTestPrep, miSoloFlightTime, miSoloFlights1ii };
+                Collection<MilestoneItem> result = (miHeavierThanAir.IsSatisfied)
+                    ? new Collection<MilestoneItem>() { miHeavierThanAir, miGliderFlightsPIC2i, miFlightTrainingTime, miTrainingFlights, miTestPrep, miSoloFlights2ii }
+                    : new Collection<MilestoneItem>() { miGliderTime, miGliderFlightsPIC1i, miFlightTrainingTime, miTrainingFlights, miTestPrep, miSoloFlightTime, miSoloFlights1ii };
 
                 if (miFlightTrainingTime.IsSatisfied && !miTrainingFlights.IsSatisfied)
                     result.Remove(miTrainingFlights);

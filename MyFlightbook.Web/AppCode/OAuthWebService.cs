@@ -16,7 +16,6 @@ using System.Text;
 using System.Web;
 using System.Web.Services;
 
-
 /******************************************************
  * 
  * Copyright (c) 2018-2026 MyFlightbook LLC
@@ -402,9 +401,9 @@ namespace OAuthAuthorizationServer.Services
         private void AddFlight(Stream s, MFBWebService mfbSvc)
         {
             string szFormat = GetOptionalParam("format") ?? "Native";
-            LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
-                JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
-                GetRequiredParam<LogbookEntry>("le");
+            LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0)
+                ? JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry()
+                : GetRequiredParam<LogbookEntry>("le");
             WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, null));
         }
         #endregion

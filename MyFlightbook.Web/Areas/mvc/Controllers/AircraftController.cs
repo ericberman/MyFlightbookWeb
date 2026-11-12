@@ -214,15 +214,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         public ActionResult Makes(bool fAdvancedSearch)
         {
             ModelQuery mq;
-            mq = (fAdvancedSearch) ? new ModelQuery()
-            {
-                ManufacturerName = Request["manufacturer"],
-                Model = Request["model"],
-                ModelName = Request["modelName"],
-                TypeName = Request["typeName"],
-                CatClass = Request["catClass"]
-            } :
-                new ModelQuery() { FullText = Request["searchText"] };
+            mq = (fAdvancedSearch)
+                ? new ModelQuery() { ManufacturerName = Request["manufacturer"], Model = Request["model"], ModelName = Request["modelName"], TypeName = Request["typeName"], CatClass = Request["catClass"] }
+                : new ModelQuery() { FullText = Request["searchText"] };
 
             if (Enum.TryParse(Request["sortDir"], true, out SortDirection sortDirection))
                 mq.SortDir = sortDirection;

@@ -464,12 +464,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ExternalFlightSource source = ExternalFlightSource.SourceForID(externalSourceID, ExternalFlightSource.ExternalSourcesForUser(pf));
             PendingFlight.FlushCacheForUser(User.Identity.Name);    // pre-emptively, since there may not be any context available during the async import
 
-            string result = (source == null) ? "Unknown source ID " + externalSourceID :
-                await source.GetClient(pf, Request).ImportFlights(User.Identity.Name,
-                DateTime.TryParse(startDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtStart) ? dtStart : (DateTime?)null,
-                DateTime.TryParse(endDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtEnd) ? dtEnd : (DateTime?)null,
-                Request["autofillImport"] != null,
-                Request);
+            string result = (source == null)
+                ? "Unknown source ID " + externalSourceID
+                : await source.GetClient(pf, Request).ImportFlights(User.Identity.Name, DateTime.TryParse(startDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtStart) ? dtStart : (DateTime?)null, DateTime.TryParse(endDate, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtEnd) ? dtEnd : (DateTime?)null, Request["autofillImport"] != null, Request);
 
             if (String.IsNullOrEmpty(result))
                 return Redirect("~/mvc/flightedit/pending");

@@ -22,9 +22,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             bool fBypassCache = GetIntParam("ut", 0) != 0;
 
-            IEnumerable<FAQGroup> results = string.IsNullOrEmpty(searchText) ?
-                (fBypassCache ? FAQGroup.CategorizeFAQItems(FAQItem.AllFAQItems) : FAQGroup.CategorizedFAQs) :
-                FAQGroup.CategorizedFAQItemsContainingWords(searchText);
+            IEnumerable<FAQGroup> results = string.IsNullOrEmpty(searchText)
+                ? (fBypassCache ? FAQGroup.CategorizeFAQItems(FAQItem.AllFAQItems) : FAQGroup.CategorizedFAQs)
+                : FAQGroup.CategorizedFAQItemsContainingWords(searchText);
             ViewBag.faqList = results;
             ViewBag.error = results.Any() ? string.Empty : Resources.LocalizedText.FAQSearchNoResults; return View("_faq");
         }

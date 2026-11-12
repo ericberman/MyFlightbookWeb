@@ -469,8 +469,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ViewBag.snark = score == 100
                     ? Resources.LocalizedText.AirportGameSnarkPerfect
                     : score >= 70
-                    ? Resources.LocalizedText.AirportGameSnark75
-                    : score >= 50 ? Resources.LocalizedText.AirportGameSnark50 : Resources.LocalizedText.AirportGameSnarkPoor;
+                        ? Resources.LocalizedText.AirportGameSnark75
+                        : score >= 50
+                            ? Resources.LocalizedText.AirportGameSnark50
+                            : Resources.LocalizedText.AirportGameSnarkPoor;
 
                 Session.Remove(quizRef);    // clear out the session
                 return PartialView("_quizSnark");
@@ -726,9 +728,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         public ActionResult AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast, bool fIncludeHeliports = false)
         {
-            IEnumerable<airport> result = Request.IsLocal || (Request.UrlReferrer?.Host ?? string.Empty).EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase) ?
-                airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports) :
-                Array.Empty<airport>();
+            IEnumerable<airport> result = Request.IsLocal || (Request.UrlReferrer?.Host ?? string.Empty).EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase)
+                ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast, fIncludeHeliports)
+                : Array.Empty<airport>();
 
             return Json(result);
         }

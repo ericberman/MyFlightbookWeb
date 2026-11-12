@@ -409,9 +409,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             if (!String.IsNullOrEmpty(userPW))
             {
-                string szErr = Membership.ValidateUser(szUser, userPW) ?
-                    ((fCollectTFA && !Check2FA(MyFlightbook.Profile.GetUser(szUser), tfaCode)) ? Resources.Profile.TFACodeFailed : string.Empty) :
-                    Resources.Profile.errInvalidPassword;
+                string szErr = Membership.ValidateUser(szUser, userPW)
+                    ? ((fCollectTFA && !Check2FA(MyFlightbook.Profile.GetUser(szUser), tfaCode)) ? Resources.Profile.TFACodeFailed : string.Empty)
+                    : Resources.Profile.errInvalidPassword;
 
                 if (String.IsNullOrEmpty(szErr))
                 {

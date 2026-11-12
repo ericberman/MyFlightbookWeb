@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal.Transform;
-using MyFlightbook.CSV;
+﻿using MyFlightbook.CSV;
 using MyFlightbook.SharedUtility.EventRecorder;
 using MyFlightbook.Telemetry;
 using System;
@@ -568,10 +567,9 @@ namespace MyFlightbook.ImportFlights
                 // Handle approaches where approach might be a string and properly mapped to approach name(s) property
                 string szApproaches = GetMappedString(m_cm.iColApproaches);
                 int parsedApproaches = 0;
-                le.Approaches = String.IsNullOrEmpty(szApproaches) ? 0 :
-                        (int.TryParse(szApproaches, NumberStyles.Integer, CultureInfo.CurrentCulture, out parsedApproaches) ? parsedApproaches : 
-                        (regForeFlightApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regForeFlightApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : 
-                        (regGarminApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regGarminApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : 0)));
+                le.Approaches = String.IsNullOrEmpty(szApproaches)
+                    ? 0
+                    : (int.TryParse(szApproaches, NumberStyles.Integer, CultureInfo.CurrentCulture, out parsedApproaches) ? parsedApproaches : (regForeFlightApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regForeFlightApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : (regGarminApproaches.IsMatch(szApproaches) ? Convert.ToInt32(regGarminApproaches.Matches(szApproaches)[0].Groups["count"].Value, CultureInfo.CurrentCulture) : 0)));
 
                 // If we pulled the approach count out from the approaches above, then add the full string to the approach Name(s) property
                 if (parsedApproaches != le.Approaches && !String.IsNullOrEmpty(szApproaches))

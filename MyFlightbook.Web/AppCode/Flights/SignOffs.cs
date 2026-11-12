@@ -290,8 +290,9 @@ namespace MyFlightbook.Instruction
 
         public void FCommit()
         {
-            string szQ = (this.ID < 0) ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig " :
-                "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig WHERE ID=?id";
+            string szQ = (this.ID < 0)
+                ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig "
+                : "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig WHERE ID=?id";
 
             Validate();
 
@@ -694,8 +695,9 @@ namespace MyFlightbook.Instruction
 
         public void FCommit()
         {
-            string szQ = (this.ID < 0) ? "INSERT INTO endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt" :
-                "UPDATE endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt WHERE ID=?id";
+            string szQ = (this.ID < 0)
+                ? "INSERT INTO endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt"
+                : "UPDATE endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt WHERE ID=?id";
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery(

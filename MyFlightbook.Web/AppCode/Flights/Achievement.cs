@@ -1285,9 +1285,9 @@ KHSI KLBF KLNK KLXN NE12 NE17 NE18 NE20 NE25 NE29 NE33 NE36 NE38 NE40 NE45 NE53 
             get
             {
                 // Set the name to indicate whether we have met the month or a leap month!
-                return Level == AchievementLevel.None ?
-                    base.Name : (DateEarned.Month == 2 && DateEarned.Day == 29 ? Resources.Achievements.AchievementAllDaysInMonthLeapYear :
-                    String.Format(CultureInfo.InvariantCulture, Resources.Achievements.AchievementAllDaysInMonth, CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[DateEarned.Month - 1]));
+                return Level == AchievementLevel.None
+                    ? base.Name
+                    : (DateEarned.Month == 2 && DateEarned.Day == 29 ? Resources.Achievements.AchievementAllDaysInMonthLeapYear : String.Format(CultureInfo.InvariantCulture, Resources.Achievements.AchievementAllDaysInMonth, CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[DateEarned.Month - 1]));
             }
             set => base.Name = value;
         }

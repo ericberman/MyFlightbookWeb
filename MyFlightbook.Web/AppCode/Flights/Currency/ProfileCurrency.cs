@@ -148,8 +148,11 @@ namespace MyFlightbook.Currency
                 TimeSpan ts = dt.Subtract(DateTime.Now);
                 int days = (int)Math.Ceiling(ts.TotalDays);
                 CurrencyState cs = (days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
-                return new CurrencyStatusItem(szLabel, CurrencyExaminer.StatusDisplayForDate(dt), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty)
+                return new CurrencyStatusItem(szLabel, CurrencyExaminer.StatusDisplayForDate(dt), cs, (cs == CurrencyState.GettingClose)
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days)
+                    : (cs == CurrencyState.NotCurrent)
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days)
+                        : string.Empty)
                 { CurrencyGroup = rt };
             }
             else
@@ -254,9 +257,9 @@ namespace MyFlightbook.Currency
         {
             if (monthsToMedical > 0)
             {
-                lst.Add(StatusForDate(fUsesICAOMedical ?
-                        lastMedical.AddMonths(monthsToMedical) :
-                        lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
+                lst.Add(StatusForDate(fUsesICAOMedical
+                    ? lastMedical.AddMonths(monthsToMedical)
+                    : lastMedical.AddCalendarMonths(monthsToMedical), Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical));
             }
         }
 

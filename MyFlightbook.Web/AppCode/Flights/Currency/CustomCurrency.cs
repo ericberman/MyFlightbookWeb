@@ -654,15 +654,15 @@ ORDER BY cc.name ASC;";
                 {
                     case LimitType.Minimum:
                         if (CurrencyTimespanType.IsAligned())
-                            return CurrentState == CurrencyState.OK ?
-                                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusCompleted, RequiredEvents, EventTypeLabel(RequiredEvents, EventType), AlignedDueDate.Value.ToShortDateString()) :
-                                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusIncomplete, NumEvents, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
+                            return CurrentState == CurrencyState.OK
+                                ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusCompleted, RequiredEvents, EventTypeLabel(RequiredEvents, EventType), AlignedDueDate.Value.ToShortDateString())
+                                : String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusIncomplete, NumEvents, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
                         else
                             return base.StatusDisplay;
                     case LimitType.Maximum:
-                        return CurrentState == CurrencyState.NotCurrent ?
-                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitExceeded, (CurrencyTimespanType.IsAligned() ? AlignedDueDate.Value : ExpirationDate).ToShortDateString()) :
-                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitOK, Discrepancy, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
+                        return CurrentState == CurrencyState.NotCurrent
+                            ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitExceeded, (CurrencyTimespanType.IsAligned() ? AlignedDueDate.Value : ExpirationDate).ToShortDateString())
+                            : String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitOK, Discrepancy, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
                     default:
                         return Resources.Currency.FormatNeverCurrent;
                 }
@@ -784,9 +784,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             StringBuilder sb = new StringBuilder();
             string szLimit = (CurrencyLimitType == LimitType.Minimum) ? Resources.Currency.CustomCurrencyMinEventsPrompt : Resources.Currency.CustomCurrencyMaxEventsPrompt;
             string szMinEvents = String.Format(CultureInfo.CurrentCulture, EventType.IsIntegerOnly() ? "{0:0}" : "{0:#,#.0#}", RequiredEvents);
-            string szBase = CurrencyTimespanType.IsAligned() ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), CurrencyTimespanType.DisplayString()) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, CurrencyTimespanType.DisplayString());
+            string szBase = CurrencyTimespanType.IsAligned()
+                ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), CurrencyTimespanType.DisplayString())
+                : String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, CurrencyTimespanType.DisplayString());
 
             if (ModelsRestriction.Any())
                 sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyModel, m_szModelNames);

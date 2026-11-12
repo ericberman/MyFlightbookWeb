@@ -4,7 +4,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2020 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -124,8 +124,11 @@ namespace MyFlightbook.Currency
                 TimeSpan ts = ExpirationDate.Subtract(DateTime.Now);
                 int days = (int)Math.Ceiling(ts.TotalDays);
                 CurrencyState cs = CurrentState;
-                return (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty;
+                return (cs == CurrencyState.GettingClose)
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days)
+                    : (cs == CurrencyState.NotCurrent)
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days)
+                        : string.Empty;
             }
         }
     }

@@ -1315,9 +1315,9 @@ FROM clubs c
             ClubMember cmExisting = members.FirstOrDefault<ClubMember>(cm => cm.UserName.CompareCurrentCulture(UserName) == 0);
 
             // We don't use REPLACE INTO here because doing so loses the original joindate
-            DBHelper dbh = new DBHelper(cmExisting == null ?
-                "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
-                "UPDATE clubmembers SET role=?role, cluboffice=?office WHERE idclub=?id AND username=?user");
+            DBHelper dbh = new DBHelper(cmExisting == null
+                ? "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()"
+                : "UPDATE clubmembers SET role=?role, cluboffice=?office WHERE idclub=?id AND username=?user");
             bool fResult = dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("id", ClubID);

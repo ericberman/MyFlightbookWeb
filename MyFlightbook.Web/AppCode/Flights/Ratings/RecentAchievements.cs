@@ -107,8 +107,9 @@ namespace MyFlightbook.RatingsProgress
 
         public override string ToString()
         {
-            return IsMet ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsBase, Threshold) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsNotAchieved, Threshold);
+            return IsMet
+                ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsBase, Threshold)
+                : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.FastestHrsNotAchieved, Threshold);
         }
 
         public RecentAchievementMilestone ToMilestone(string Username)
@@ -484,8 +485,9 @@ namespace MyFlightbook.RatingsProgress
                 miAircraft.Progress = DistinctAircraft.Count;
                 miModels.Progress = DistinctModels.Count;
                 miAircraft.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctAircraft, DistinctAircraft.Count);
-                miModels.MatchingEventText = (DistinctModels.Count == DistinctICAO.Count) ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModels, DistinctModels.Count) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModelsAndFamilies, DistinctModels.Count, DistinctICAO.Count);
+                miModels.MatchingEventText = (DistinctModels.Count == DistinctICAO.Count)
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModels, DistinctModels.Count)
+                    : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModelsAndFamilies, DistinctModels.Count, DistinctICAO.Count);
 
                 miAirports.Progress = Airports.Count;
                 miAirports.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsVisited, Airports.Count);

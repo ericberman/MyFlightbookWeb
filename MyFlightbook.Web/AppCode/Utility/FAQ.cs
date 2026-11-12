@@ -132,9 +132,9 @@ namespace MyFlightbook
             if (!Validate(out results))
                 throw new InvalidOperationException("Cannot save FAQ.  First reason is: " + results[0].ErrorMessage);
 
-            DBHelper dbh = new DBHelper(idFAQ > 0 ?
-                "UPDATE FAQ SET Category=?Category, Question=?Question, Answer=?Answer WHERE idFAQ=?id" :
-                "INSERT INTO FAQ SET Category=?Category, Question=?Question, Answer=?Answer");
+            DBHelper dbh = new DBHelper(idFAQ > 0
+                ? "UPDATE FAQ SET Category=?Category, Question=?Question, Answer=?Answer WHERE idFAQ=?id"
+                : "INSERT INTO FAQ SET Category=?Category, Question=?Question, Answer=?Answer");
             if (dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("Category", Category);

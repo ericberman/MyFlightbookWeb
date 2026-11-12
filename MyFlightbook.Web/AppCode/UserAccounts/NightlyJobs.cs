@@ -810,14 +810,14 @@ WHERE runKey=?rk AND attempts >= ?maxAttempts AND (status='pending' OR (status='
 
             // Issue #1168 - if Jan 1 mail, be clear that this includes year in review!
             DateTime dtLastMonth = job.RunDate.AddMonths(-1);
-            string szSubject = (job.RunDate.Month == 1) ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubjectYearInReview, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture), dtLastMonth.Year) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubject, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture));
+            string szSubject = (job.RunDate.Month == 1)
+                ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubjectYearInReview, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture), dtLastMonth.Year)
+                : String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlySubject, dtLastMonth.ToString("MMMM", CultureInfo.InvariantCulture));
 
             // We don't update the last-email sent on this because this email is asynchronous - i.e., not dependent on any other mail that was sent.
-            return await SendMailForUser(pf, szSubject, "monthly").ConfigureAwait(false) ?
-                new NightlyJobOutcome("Monthly email sent") :
-                new NightlyJobOutcome(string.Empty, String.Format(CultureInfo.InvariantCulture, "Monthly email NOT sent for {0}\r\n", pf.UserName)) { Succeeded = false };
+            return await SendMailForUser(pf, szSubject, "monthly").ConfigureAwait(false)
+                ? new NightlyJobOutcome("Monthly email sent")
+                : new NightlyJobOutcome(string.Empty, String.Format(CultureInfo.InvariantCulture, "Monthly email NOT sent for {0}\r\n", pf.UserName)) { Succeeded = false };
         }
 
         private static NightlyJobOutcome RunPendingFlightsJob(NightlyJob job)

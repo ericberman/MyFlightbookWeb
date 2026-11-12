@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2022 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -351,12 +351,12 @@ namespace MyFlightbook.Currency
                 CompositeDiscrepancy = !fcHours.IsCurrent()
                     ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHours.Discrepancy, Resources.Currency.Hours)
                     : !fcLaunches.IsCurrent()
-                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLaunches.Discrepancy, Resources.Currency.Launches)
-                    : !fcTrainingFlights.IsCurrent()
-                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
-                    : !fcProficiency.IsCurrent() 
-                    ? Resources.Currency.ProficiencyCheckRequired
-                    : string.Empty;
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLaunches.Discrepancy, Resources.Currency.Launches)
+                        : !fcTrainingFlights.IsCurrent()
+                            ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
+                            : !fcProficiency.IsCurrent()
+                                ? Resources.Currency.ProficiencyCheckRequired
+                                : string.Empty;
             }
         }
     }
@@ -428,12 +428,12 @@ namespace MyFlightbook.Currency
                     CompositeDiscrepancy = !fcHoursSPL.IsCurrent()
                         ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHoursSPL.Discrepancy, Resources.Currency.HoursSailPlane)
                         : !fcHoursTMG.IsCurrent()
-                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHoursTMG.Discrepancy, Resources.Currency.HoursTMG)
-                        : !fcLandings.IsCurrent()
-                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLandings.Discrepancy, Resources.Currency.Landings)
-                        : !fcTrainingFlights.IsCurrent()
-                        ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
-                        : Resources.Currency.ProficiencyCheckRequired;
+                            ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcHoursTMG.Discrepancy, Resources.Currency.HoursTMG)
+                            : !fcLandings.IsCurrent()
+                                ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcLandings.Discrepancy, Resources.Currency.Landings)
+                                : !fcTrainingFlights.IsCurrent()
+                                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcTrainingFlights.Discrepancy, Resources.Currency.TrainingFlights)
+                                    : Resources.Currency.ProficiencyCheckRequired;
                 }
             }
         }

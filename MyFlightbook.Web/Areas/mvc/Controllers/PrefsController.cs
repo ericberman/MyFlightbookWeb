@@ -443,8 +443,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 bool fUseHours = !String.IsNullOrEmpty(Request["deadlineUsesHours"]);
-                DeadlineCurrency.RegenUnit ru = Request["deadlineRegenType"].CompareCurrentCultureIgnoreCase("None") == 0 ?
-                    DeadlineCurrency.RegenUnit.None : (fUseHours ? DeadlineCurrency.RegenUnit.Hours : (DeadlineCurrency.RegenUnit)Enum.Parse(typeof(DeadlineCurrency.RegenUnit), Request["deadlineRegenRange"]));
+                DeadlineCurrency.RegenUnit ru = Request["deadlineRegenType"].CompareCurrentCultureIgnoreCase("None") == 0
+                    ? DeadlineCurrency.RegenUnit.None
+                    : (fUseHours ? DeadlineCurrency.RegenUnit.Hours : (DeadlineCurrency.RegenUnit)Enum.Parse(typeof(DeadlineCurrency.RegenUnit), Request["deadlineRegenRange"]));
                 bool fCreateShared = bool.Parse(Request["deadlineShared"]);
                 DeadlineCurrency dc = new DeadlineCurrency()
                 {

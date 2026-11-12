@@ -46,9 +46,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             int modelID = int.TryParse(Request["aircraftAutoCompleteModel"], out int idAutocomplete) ? idAutocomplete : (int.TryParse(Request["aircraftSelectedModel"], out int idModel) ? idModel : MakeModel.UnknownModel);
             string type = Request["aircraftType"] ?? "Registered";
-            AircraftInstanceTypes instanceType = Enum.TryParse(Request["aircraftInstanceType"] ?? string.Empty, true, out AircraftInstanceTypes acInstType) ?
-                acInstType :
-                (type.CompareCurrentCultureIgnoreCase("Sim") == 0 ? (Enum.TryParse(Request["aircraftSimType"] ?? string.Empty, true, out AircraftInstanceTypes ait) ? ait : AircraftInstanceTypes.UncertifiedSimulator) : AircraftInstanceTypes.RealAircraft);
+            AircraftInstanceTypes instanceType = Enum.TryParse(Request["aircraftInstanceType"] ?? string.Empty, true, out AircraftInstanceTypes acInstType)
+                ? acInstType
+                : (type.CompareCurrentCultureIgnoreCase("Sim") == 0 ? (Enum.TryParse(Request["aircraftSimType"] ?? string.Empty, true, out AircraftInstanceTypes ait) ? ait : AircraftInstanceTypes.UncertifiedSimulator) : AircraftInstanceTypes.RealAircraft);
 
             MakeModel.AvionicsTechnologyType avionicsTechnology = Enum.TryParse(Request["aircraftAvionics"] ?? string.Empty, true, out MakeModel.AvionicsTechnologyType att) ? att : MakeModel.AvionicsTechnologyType.None;
 
@@ -395,8 +395,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 szResult = hwTach == 0
                     ? hwHobbs == 0 ? String.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkHobbsOnly, hwHobbs)
                     : hwHobbs == 0
-                    ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach)
-                    : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachOnly, hwTach)
+                        : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.HighWaterMarkTachAndHobbs, hwTach, hwHobbs);
                 return Content(szResult);
             });
         }

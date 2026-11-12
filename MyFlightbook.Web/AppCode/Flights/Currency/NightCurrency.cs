@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2024 MyFlightbook LLC
+ * Copyright (c) 2007-2026 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,9 +90,9 @@ namespace MyFlightbook.Currency
             {
                 CompositeExpiration = fcStrict.ExpirationDate;
                 CompositeCurrencyState = fcStrict.CurrentState;
-                CompositeDiscrepancy = fcStrict.CurrentState == CurrencyState.NotCurrent ? 
-                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, Math.Max(NightTakeoffCurrency.Discrepancy, fc6157b.Discrepancy), NightTakeoffCurrency.Discrepancy > fc6157b.Discrepancy ? Resources.Currency.NightTakeoffs : (fc6157b.Discrepancy > 1 ? Resources.Totals.Landings : Resources.Totals.Landing)) : 
-                    string.Empty;
+                CompositeDiscrepancy = fcStrict.CurrentState == CurrencyState.NotCurrent
+                    ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, Math.Max(NightTakeoffCurrency.Discrepancy, fc6157b.Discrepancy), NightTakeoffCurrency.Discrepancy > fc6157b.Discrepancy ? Resources.Currency.NightTakeoffs : (fc6157b.Discrepancy > 1 ? Resources.Totals.Landings : Resources.Totals.Landing))
+                    : string.Empty;
             }
             // else if we met the loose definition but not strict - meaning takeoffs were not found; Give a reminder about required takeoffs
             else if (CompositeCurrencyState.IsCurrent())

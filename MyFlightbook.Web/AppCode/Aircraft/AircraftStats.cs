@@ -48,18 +48,17 @@ namespace MyFlightbook
                 else
                 {
                     Profile pf = Profile.GetUser(User);
-                    string szTotalHours = Hours > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHours, pf.UsesHHMM ?
-                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursHHMM, Hours.ToHHMM()) :
-                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursDecimal, Hours)) : string.Empty;
+                    string szTotalHours = Hours > 0
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHours, pf.UsesHHMM ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursHHMM, Hours.ToHHMM()) : String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursDecimal, Hours))
+                        : string.Empty;
 
                     return
 
                         new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown,
                                             UserFlights,
-                                            EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture,
-                                                    Resources.Aircraft.AircraftStatsDate,
-                                                    EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) :
-                                            string.Empty) + szTotalHours,
+                                            EarliestDate.HasValue && LatestDate.HasValue
+                                                ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsDate, EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString())
+                                                : string.Empty) + szTotalHours,
                     String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString()));
                 }
             }
@@ -219,8 +218,9 @@ WHERE
 
             FlightQuery fq = new FlightQuery(szUser);
             fq.MakeList.Add(mm);
-            string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue ?
-            String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value) : string.Empty);
+            string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, userStats.NumFlights, userStats.EarliestFlight.HasValue && userStats.LatestFlight.HasValue
+                ? String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, userStats.EarliestFlight.Value, userStats.LatestFlight.Value)
+                : string.Empty);
             return new LinkedString(szStatsLabel, String.Format(CultureInfo.InvariantCulture, "~/mvc/flights?ft=Totals&fq={0}", fq.ToBase64CompressedJSONString()));
         }
 

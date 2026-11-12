@@ -281,8 +281,9 @@ namespace MyFlightbook.RatingsProgress
         {
             get
             {
-                return DecayingCurrency == null || !DecayingCurrency.HasBeenCurrent ? string.Empty : string.Format(CultureInfo.CurrentCulture,
-                    DecayingCurrency.CurrentState == CurrencyState.NotCurrent ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, DecayingCurrency.ExpirationDate.ToShortDateString());
+                return DecayingCurrency == null || !DecayingCurrency.HasBeenCurrent
+                    ? string.Empty
+                    : string.Format(CultureInfo.CurrentCulture, DecayingCurrency.CurrentState == CurrencyState.NotCurrent ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, DecayingCurrency.ExpirationDate.ToShortDateString());
             }
         }
     }
@@ -538,9 +539,9 @@ namespace MyFlightbook.RatingsProgress
 
         protected string ResolvedFAR(string sz)
         {
-            return String.IsNullOrEmpty(FARLink) ?
-                String.Format(CultureInfo.CurrentCulture, "{0}{1}", BaseFAR, sz) :
-                String.Format(CultureInfo.CurrentCulture, "[{0}{1}]({2})", BaseFAR, sz, FARLink);
+            return String.IsNullOrEmpty(FARLink)
+                ? String.Format(CultureInfo.CurrentCulture, "{0}{1}", BaseFAR, sz)
+                : String.Format(CultureInfo.CurrentCulture, "[{0}{1}]({2})", BaseFAR, sz, FARLink);
         }
 
         /// <summary>

@@ -1686,8 +1686,7 @@ FROM (SELECT
             LEFT JOIN FlightProperties fpEng ON fpEng.idflight = flights.idflight AND fpEng.idproptype = 257
             LEFT JOIN flightproperties fpMil ON fpMil.idflight = flights.idflight AND fpMil.idproptype = 90
             LEFT JOIN flightproperties fpPICUS on fpPicus.idflight = flights.idflight AND fpPicus.idpropType = 840
-            {(fq.IsDefault ? string.Empty : @"LEFT JOIN FlightProperties fdc ON flights.idFlight = fdc.idFlight
-            LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType")}
+            {(fq.IsDefault ? string.Empty : @"LEFT JOIN FlightProperties fdc ON flights.idFlight = fdc.idFlight LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType")}
       WHERE
         {fq.RestrictClause}
     GROUP BY flights.idFlight, models.idmodel, categoryclass.idcatclass {(String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause)}

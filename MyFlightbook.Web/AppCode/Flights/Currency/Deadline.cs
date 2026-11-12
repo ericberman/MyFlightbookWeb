@@ -88,9 +88,9 @@ namespace MyFlightbook.Currency
         {
             get
             {
-                return UsesHours ?
-                    String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateHours, AircraftHours) :
-                    String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateDate, Expiration.ToShortDateString());
+                return UsesHours
+                    ? String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateHours, AircraftHours)
+                    : String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDueTemplateDate, Expiration.ToShortDateString());
             }
         }
 
@@ -237,9 +237,9 @@ namespace MyFlightbook.Currency
 
         public override string ToString()
         {
-            return (AircraftID > 0) ?
-                String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormatAircraft, TailNumber, Name, ExpirationDisplay, RegenDescription) : 
-                String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormat, Name, ExpirationDisplay, RegenDescription);
+            return (AircraftID > 0)
+                ? String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormatAircraft, TailNumber, Name, ExpirationDisplay, RegenDescription)
+                : String.Format(CultureInfo.CurrentCulture, Properties.Currency.deadlineDisplayFormat, Name, ExpirationDisplay, RegenDescription);
         }
 
         /// <summary>
@@ -336,8 +336,8 @@ GROUP BY d.iddeadlines";
             szWhere = idAircraft <= 0
                 ? "d.username=?user"
                 : fIncludeSharedDeadlines
-                ? "d.aircraftID=?id AND (d.username=?user OR d.username IS NULL)"
-                : "d.aircraftID=?id AND d.username=?user ";
+                    ? "d.aircraftID=?id AND (d.username=?user OR d.username IS NULL)"
+                    : "d.aircraftID=?id AND d.username=?user ";
 
             List<DeadlineCurrency> lst = new List<DeadlineCurrency>();
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQBase, szWhere));
@@ -447,8 +447,11 @@ GROUP BY d.iddeadlines";
                     TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);
                     int days = (int)Math.Ceiling(ts.TotalDays);
                     CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
-                    lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                               (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty)
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose
+                        ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days)
+                        : (cs == CurrencyState.NotCurrent)
+                            ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days)
+                            : string.Empty)
                     { AssociatedResourceID = dc.AircraftID, CurrencyGroup = (dc.IsSharedAircraftDeadline ? CurrencyStatusItem.CurrencyGroups.AircraftDeadline : CurrencyStatusItem.CurrencyGroups.Deadline) });
                 }
 

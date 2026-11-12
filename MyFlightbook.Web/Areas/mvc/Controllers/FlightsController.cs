@@ -666,9 +666,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             string szUser = MyFlightbook.Profile.EncryptedUserName(uid);
 
             Profile pf = MyFlightbook.Profile.GetUser(szUser) ?? throw new UnauthorizedAccessException();
-            ViewBag.Title = String.IsNullOrEmpty(pf.UserName) ?
-                Branding.ReBrand(Resources.LogbookEntry.PublicFlightPageHeaderAll) :
-                String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
+            ViewBag.Title = String.IsNullOrEmpty(pf.UserName)
+                ? Branding.ReBrand(Resources.LogbookEntry.PublicFlightPageHeaderAll)
+                : String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
             ViewBag.uid = uid;
             return View("myFlights");
         }
@@ -784,12 +784,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             // Set up the return link
             bool isViewingStudent = !fIsAdmin && szFlightOwner.CompareCurrentCulture(User.Identity.Name) != 0;
-            ViewBag.returnLink = isViewingStudent ?
-                String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/studentlogbook?student={0}", szFlightOwner).ToAbsolute() :
-                "~/mvc/flights".ToAbsolute();
-            ViewBag.returnLinkText = isViewingStudent ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, pfFlightOwner.UserFullName) :
-                Resources.LogbookEntry.flightDetailsReturnToLogbook;
+            ViewBag.returnLink = isViewingStudent
+                ? String.Format(CultureInfo.InvariantCulture, "~/mvc/flights/studentlogbook?student={0}", szFlightOwner).ToAbsolute()
+                : "~/mvc/flights".ToAbsolute();
+            ViewBag.returnLinkText = isViewingStudent
+                ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, pfFlightOwner.UserFullName)
+                : Resources.LogbookEntry.flightDetailsReturnToLogbook;
 
             // Set up the query, possibly from the passed query, possibly handling any deleted items.
             FlightQuery query = ProcessDetailsQuery(szFlightOwner, fq, fPropDeleteClicked, propToDelete);
