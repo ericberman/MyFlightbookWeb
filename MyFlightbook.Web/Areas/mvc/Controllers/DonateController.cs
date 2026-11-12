@@ -78,10 +78,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         ///      - Do a test transaction: 
         ///        *** Verify that the version=xxxold return 400
         ///        *** Verify that the version yyynew processes the notification
-        ///   - Step 4: deploy
-        ///   - Step 5: enable the new webhook, disable/delete the old webhook.
+        ///   - Step 4: enable the new webhook
+        ///   - Step 5: deploy
         ///   - Step 6: copy the webhook key for the new webhook into main/standby as needed.
-        ///   - Step 7: update the default version under Developer->Workbench->OverView->API Versions.
+        ///   - Step 7: disable/delete the old webhook.
+        ///   - Step 8: update the default version under Developer->Workbench->OverView->API Versions.
         /// </summary>
         /// <returns>Emptyresult</returns>
         /// <exception cref="InvalidOperationException"></exception>
@@ -96,6 +97,27 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             }
 
             return new HttpStatusCodeResult(StripeUtility.ProcessStripeNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, Request["version"] ?? StripeUtility.CURRENT_API_VERSION, json, (user) => { EarnedGratuity.UpdateEarnedGratuities(user, true); }));
+        }
+
+        /// <summary>
+        /// Endpoint for THIN stripe events (an event destination with "Use thin events" on), subscribed to v1.payment_intent.succeeded, v1.charge.succeeded, v1.charge.updated.
+        /// Thin notifications are unversioned, so once this is the only active destination, upgrading Stripe.net is just: update the NuGet package, fix any compile/breaking changes, deploy.
+        /// No standby webhook, no ?version= parameter, no two-step.
+        /// Signing secrets: production uses StripeLiveThinWebhook (from the live thin destination); test mode reuses StripeTestWebhook (stripe listen uses one secret for both).
+        /// Local testing: `stripe listen --thin-events "v1.payment_intent.succeeded,v1.charge.succeeded,v1.charge.updated" --forward-thin-to https://developer.myflightbook.com/logbook/mvc/donate/StripeThinNotify`
+        ///   (same whsec_ as for snapshot forwarding).
+        /// </summary>
+        [HttpPost]
+        public async Task<ActionResult> StripeThinNotify()
+        {
+            Request.InputStream.Seek(0, SeekOrigin.Begin);
+            string json = string.Empty;
+            using (StreamReader sr = new StreamReader(Request.InputStream))
+            {
+                json = await sr.ReadToEndAsync();
+            }
+
+            return new HttpStatusCodeResult(StripeUtility.ProcessStripeThinNotification(Request.IsLocal, Request.Headers["Stripe-Signature"] ?? string.Empty, json, (user) => { EarnedGratuity.UpdateEarnedGratuities(user, true); }));
         }
         #endregion
 
