@@ -102,7 +102,8 @@ and the application should be called "logbook" and point to the /logbook branch.
  * ShuntState - "shunted" to shunt the site, otherwise empty
  * ShuntMessage - the message to display while the site is shunted.
  * StripeLiveKey - key for interacting with stripe in the live environment
- * StripeLiveWebhook - webhook for receiving notifications in the live environment from Stripe
+ * StripeLiveWebhook - webhook for receiving notifications in the live environment from Stripe (Obsolete)
+ * StripeLiveThinWebhook - webhook for receiving notifications in the live environment from Stripe (no longer stripe version dependent).
  * StripeTestKey - key for interacting with stripe in the development environment
  * StripeTestWebhook - webhook for receiving notifications in the development environment from Stripe
  * TwitterAccessID - oAuth ID for Twitter (obsolete)
