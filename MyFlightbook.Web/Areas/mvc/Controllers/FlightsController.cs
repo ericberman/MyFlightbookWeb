@@ -291,10 +291,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         [HttpPost]
         [ValidateHeaderAntiForgeryToken]
-        public ActionResult PublicFlightRows(string uid, int skip, int pageSize)
+        public ActionResult PublicFlightRows(string uid, int skip = -1, int pageSize = -1)
         {
             return SafeOp(() =>
             {
+                if (String.IsNullOrEmpty(uid))
+                    throw new UnauthorizedAccessException();
+                if (skip < 0 || pageSize < 1)
+                    throw new ArgumentOutOfRangeException("Invalid skip or page size for public flights: " + skip + ", " + pageSize);
+
                 string szUser = MyFlightbook.Profile.EncryptedUserName(uid);
                 IEnumerable<LogbookEntry> rgle = LogbookEntryBase.GetPublicFlightsForUser(szUser, skip, pageSize);
 
