@@ -7,6 +7,7 @@ using MyFlightbook.StartingFlights;
 using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -370,7 +371,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(() =>
             {
                 SaveImportResult(keyResultIsPendingOnly, isPendingOnly);
-                Dictionary<int, string> errorContext = new Dictionary<int, string>();
+                // Written from the background parse task below and read by PreviewFlightsResult, possibly concurrently.
+                ConcurrentDictionary<int, string> errorContext = new ConcurrentDictionary<int, string>();
                 SaveImportResult(keyResultErrorContext, errorContext);
                 CSVImporter importer = (CSVImporter)GetImportResult(keyResultImporter);
                 importer.Progress.Clear();
