@@ -563,18 +563,18 @@ namespace MyFlightbook
                 // by date first, then by block, engine, flight, hobbs, ID.  
                 comp = dir * l1.Date.CompareTo(l2.Date);
 
-                if (comp == 0 && l1.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) && l2.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut))
-                    comp = dir * l1.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue.CompareTo(l2.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue);
-
-                if (comp == 0 && (l1.EngineStart.HasValue() || l2.EngineStart.HasValue()))
+                if (comp == 0)
+                {
+                    DateTime bo1 = l1.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) ? l1.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue : DateTime.MinValue;
+                    DateTime bo2 = l2.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) ? l2.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue : DateTime.MinValue;
+                    comp = dir * bo1.CompareTo(bo2);
+                }
+                if (comp == 0)
                     comp = dir * l1.EngineStart.CompareTo(l2.EngineStart);
-
-                if (comp == 0 && (l1.FlightStart.HasValue() || l2.FlightStart.HasValue()))
+                if (comp == 0)
                     comp = dir * l1.FlightStart.CompareTo(l2.FlightStart);
-
                 if (comp == 0)
                     comp = dir * l1.HobbsStart.CompareTo(l2.HobbsStart);
-
                 if (comp == 0)
                     comp = dir * l1.FlightID.CompareTo(l2.FlightID);
             }
