@@ -1220,10 +1220,10 @@ namespace MyFlightbook
         /// <returns>The number of new signed flights that were examined.  If 0, stop calling!</returns>
         /// <exception cref="InvalidOperationException">If offset < 0</exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public static int AdminGetProblemSignedFlights(int offset, IList<LogbookEntryBase> lstToFix, IList<LogbookEntryBase> lstAutoFix)
+        public static int AdminGetProblemSignedFlights(int lastID, IList<LogbookEntryBase> lstToFix, IList<LogbookEntryBase> lstAutoFix, out int newLastID)
         {
-            if (offset < 0)
-                throw new InvalidOperationException("starting index is < 0");
+            if (lastID < 0)
+                throw new InvalidOperationException("starting ID is < 0");
             if (lstToFix == null)
                 throw new ArgumentNullException(nameof(lstToFix));
             if (lstAutoFix == null)
@@ -1233,10 +1233,12 @@ namespace MyFlightbook
 
             const int chunkSize = 1000;
 
-            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 LIMIT ?lim, ?chunk");
-            dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lim", offset); comm.Parameters.AddWithValue("chunk", chunkSize); },
+            DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE idFlight > ?lastID AND signatureState<>0 ORDER BY idFlight ASC LIMIT ?chunk");
+            dbh.CommandArgs.Timeout = 300;
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("lastID", lastID); comm.Parameters.AddWithValue("chunk", chunkSize); },
                 (dr) => { lstSigned.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
+
+            newLastID = lstSigned.Count > 0 ? lstSigned[lstSigned.Count - 1] : lastID;
 
             lstSigned.ForEach((idFlight) =>
             {
@@ -1244,7 +1246,6 @@ namespace MyFlightbook
                 le.FLoadFromDB(idFlight, string.Empty, LoadTelemetryOption.None, true);
                 if (le.AdminSignatureSanityCheckState != SignatureSanityCheckState.OK)
                 {
-                    // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
                     if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
                     {
                         lstAutoFix.Add(le);

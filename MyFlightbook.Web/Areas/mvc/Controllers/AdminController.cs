@@ -192,18 +192,20 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return SafeOp(ProfileRoles.maskCanSupport, () =>
             {
                 if (Session[szSessKeyInvalidSigProgress] == null)
-                    Session[szSessKeyInvalidSigProgress] = new { offset = 0, lstToFix = new List<LogbookEntryBase>(), lstAutoFix = new List<LogbookEntryBase>(), progress = string.Empty, additionalFlights = 0 };
+                    Session[szSessKeyInvalidSigProgress] = new { lastID = 0, offset = 0, lstToFix = new List<LogbookEntryBase>(), lstAutoFix = new List<LogbookEntryBase>(), progress = string.Empty, additionalFlights = 0 };
 
                 dynamic state = Session[szSessKeyInvalidSigProgress];
 
-                int cFlights = LogbookEntryBase.AdminGetProblemSignedFlights(state.offset, state.lstToFix, state.lstAutoFix);
+                int cFlights = LogbookEntryBase.AdminGetProblemSignedFlights(state.lastID, state.lstToFix, state.lstAutoFix, out int newLastID);
+                int cTotal = state.offset + cFlights;
                 dynamic newState = new
                 {
                     additionalFlights = cFlights,
-                    offset = state.offset + cFlights,
+                    lastID = newLastID,
+                    offset = cTotal,
                     lstToFix = state.lstToFix,
                     lstAutoFix = state.lstAutoFix,
-                    progress = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", state.offset, state.lstToFix.Count, state.lstAutoFix.Count)
+                    progress = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", cTotal, state.lstToFix.Count, state.lstAutoFix.Count)
                 };
                 Session[szSessKeyInvalidSigProgress] = newState;
                 return (ActionResult)Json(newState);
