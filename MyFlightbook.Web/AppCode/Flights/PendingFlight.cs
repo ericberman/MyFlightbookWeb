@@ -297,7 +297,8 @@ namespace MyFlightbook
         {
             if (FlightID >= 0)
                 FlightID = idFlightNew;    // might have been 0 to go up/down the wire.
-            bool fSuccess = base.FCommit(fUpdateFlightData, fUpdateSignature);
+            // Issue #1622 - a pending flight cannot be signed, so don't try to update the signature.
+            bool fSuccess = base.FCommit(fUpdateFlightData, false);
             if (fSuccess)
                 Delete();
             return fSuccess;
