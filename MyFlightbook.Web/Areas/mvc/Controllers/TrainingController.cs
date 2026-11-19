@@ -295,7 +295,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
+                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.Endorsement, szKey ?? User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), Request.ImageFile(0).FileName ?? string.Empty, null);
                 return Content(mfbii.URLThumbnail);
             });
         }
