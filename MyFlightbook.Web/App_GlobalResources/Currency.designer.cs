@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Currency {
@@ -909,6 +909,24 @@ namespace Resources {
         internal static string CustomCurrencyEventGliderTows {
             get {
                 return ResourceManager.GetString("CustomCurrencyEventGliderTows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go-around.
+        /// </summary>
+        internal static string CustomCurrencyEventGoAround {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventGoAround", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go-arounds.
+        /// </summary>
+        internal static string CustomCurrencyEventGoArounds {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventGoArounds", resourceCulture);
             }
         }
         

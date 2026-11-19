@@ -1216,4 +1216,10 @@
   <data name="DeadlineCurrentGapNegative" xml:space="preserve">
     <value>(over by {0:#,##0.0#})</value>
   </data>
+  <data name="CustomCurrencyEventGoAround" xml:space="preserve">
+    <value>Go-around</value>
+  </data>
+  <data name="CustomCurrencyEventGoArounds" xml:space="preserve">
+    <value>Go-arounds</value>
+  </data>
 </root>

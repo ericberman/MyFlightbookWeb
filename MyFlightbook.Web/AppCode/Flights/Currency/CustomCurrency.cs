@@ -216,11 +216,12 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach, new string[] { Resources.Currency.CustomCurrencyEventEVApproach, Resources.Currency.CustomCurrencyEventEVApproaches } },
                         { CustomCurrency.CustomCurrencyEventType.NVUnaidedTime, new string[] { Resources.Currency.CustomCurrencyEventNVUnaidedHour , Resources.Currency.CustomCurrencyEventNVUnaidedHours} },
                         { CustomCurrency.CustomCurrencyEventType.OffshoreTakeoff, new string[] {Resources.Currency.CustomCurrencyEventOffshoreTakeoff, Resources.Currency.CustomCurrencyEventOffshoreTakeoffs}},
-                        { CustomCurrency.CustomCurrencyEventType.OffshoreLanding, new string[] {Resources.Currency.CustomCurrencyEventOffshoreLanding, Resources.Currency.CustomCurrencyEventOffshoreLandings}}
+                        { CustomCurrency.CustomCurrencyEventType.OffshoreLanding, new string[] {Resources.Currency.CustomCurrencyEventOffshoreLanding, Resources.Currency.CustomCurrencyEventOffshoreLandings}},
+                        { CustomCurrency.CustomCurrencyEventType.GoArounds, new string[] {Resources.Currency.CustomCurrencyEventGoAround, Resources.Currency.CustomCurrencyEventGoArounds} },
                     };
             }
 
-            return s_eventTypeLabels.ContainsKey(ccet) ? s_eventTypeLabels[ccet] : null;
+            return s_eventTypeLabels.TryGetValue(ccet, out string[] value1) ? value1 : null;
         }
 
         /// <summary>
@@ -350,7 +351,8 @@ namespace MyFlightbook.Currency
             InstructionGiven = 37,
             NVUnaidedTime = 38,
             OffshoreTakeoff = 39,
-            OffshoreLanding = 40
+            OffshoreLanding = 40,
+            GoArounds = 41
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -901,7 +903,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.InstructionGiven, (fq, lst, ap) => { fq.HasCFI = true; } },
             { CustomCurrencyEventType.NVUnaidedTime, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropNVUnaided); } },
             { CustomCurrencyEventType.OffshoreTakeoff, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropOffshoreTakeoff); } },
-            { CustomCurrencyEventType.OffshoreLanding, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropOffshoreLanding); } }
+            { CustomCurrencyEventType.OffshoreLanding, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropOffshoreLanding); } },
+            { CustomCurrencyEventType.GoArounds, (fq, lst, ap) => { ap(CustomPropertyType.KnownProperties.IDPropGoAround); } }
         };
 
         /// <summary>
@@ -1117,6 +1120,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             { CustomCurrencyEventType.NVUnaidedTime, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropNVUnaided)); } },
             { CustomCurrencyEventType.OffshoreLanding, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropOffshoreLanding)); } },
             { CustomCurrencyEventType.OffshoreTakeoff, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropOffshoreTakeoff)); } },
+            { CustomCurrencyEventType.GoArounds, (fc, cfr) => { fc.AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropGoAround)); } },
         };
 
         /// <summary>

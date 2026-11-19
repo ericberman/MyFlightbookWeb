@@ -39,6 +39,7 @@ namespace MyFlightbook
             // But as a practical matter renumbering/deletion doesn't happen and these are unlikely to expand beyond the single property.
             IDPropInvalid = -1,
             None = 0,
+            IDPropGoAround = 19,
             IDPropManeuverChandelle = 22,
             IDPropNVGoggleTime = 26,
             IDPropPowerOffStall = 27,
