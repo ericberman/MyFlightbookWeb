@@ -1519,6 +1519,7 @@
     <Compile Include="AppCode\Places\FlightData.cs" />
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
+    <Compile Include="AppCode\UserAccounts\Endorsements.cs" />
     <Compile Include="AppCode\UserAccounts\ImageAuthorization.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
     <Compile Include="AppCode\UserAccounts\NightlyJobs.cs" />

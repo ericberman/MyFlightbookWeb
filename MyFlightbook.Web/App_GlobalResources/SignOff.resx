@@ -266,7 +266,7 @@
     <value>Expiration (cert./recent exp.):</value>
   </data>
   <data name="EditEndorsementFARPrompt" xml:space="preserve">
-    <value>Relevant FAR:</value>
+    <value>FAR or Reg. Ref.:</value>
   </data>
   <data name="EditEndorsementInstructorPrompt" xml:space="preserve">
     <value>Instructor:</value>
@@ -367,7 +367,7 @@
     <value>Download as a spreadsheet</value>
   </data>
   <data name="DownloadEndorsementFARRef" xml:space="preserve">
-    <value>FAR Reference</value>
+    <value>FAR or Reg. Reference</value>
   </data>
   <data name="DownloadEndorsementsAllStudents" xml:space="preserve">
     <value>AllStudents</value>
