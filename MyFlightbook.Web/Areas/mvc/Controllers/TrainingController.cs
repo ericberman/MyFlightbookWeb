@@ -344,6 +344,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         {
             return SafeOp(() =>
             {
+                if (!Enum.IsDefined(typeof(EndorsementCategory), newCategory))
+                    throw new ArgumentOutOfRangeException(nameof(newCategory));
                 Endorsement e = EndorsementWithID(idEndorsement) ?? throw new InvalidOperationException("Can't find endorsement with ID=" + idEndorsement.ToString(CultureInfo.InvariantCulture));
                 if (e.StudentType == StudentTypes.Member && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
                     throw new UnauthorizedAccessException();
