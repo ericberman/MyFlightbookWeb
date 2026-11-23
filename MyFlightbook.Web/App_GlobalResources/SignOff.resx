@@ -266,7 +266,7 @@
     <value>Expiration (cert./recent exp.):</value>
   </data>
   <data name="EditEndorsementFARPrompt" xml:space="preserve">
-    <value>FAR or Reg. Ref.:</value>
+    <value>FAR or Reg. Ref.</value>
   </data>
   <data name="EditEndorsementInstructorPrompt" xml:space="preserve">
     <value>Instructor:</value>

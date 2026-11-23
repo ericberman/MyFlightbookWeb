@@ -340,6 +340,23 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [HttpPost]
         [Authorize]
         [ValidateHeaderAntiForgeryToken]
+        public ActionResult UpdateCategoryForEndorsement(int idEndorsement, EndorsementCategory newCategory)
+        {
+            return SafeOp(() =>
+            {
+                Endorsement e = EndorsementWithID(idEndorsement) ?? throw new InvalidOperationException("Can't find endorsement with ID=" + idEndorsement.ToString(CultureInfo.InvariantCulture));
+                if (e.StudentType == StudentTypes.Member && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
+                if (e.StudentType == StudentTypes.External && e.InstructorName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)
+                    throw new UnauthorizedAccessException();
+                e.FUpdateCategory(newCategory, CategorySource.User);
+                return new EmptyResult();
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
         public ActionResult GetEndorsementTemplate(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
         {
             return SafeOp(() =>
@@ -403,6 +420,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 endorsement.StudentName = Request["studentName"];
                 endorsement.Title = Request["endorsementTitle"];
                 endorsement.FARReference = Request["endorsementFAR"];
+                endorsement.SourceTemplateID = Convert.ToInt32(Request["templateID"], CultureInfo.InvariantCulture);
+                if (endorsement.SourceTemplateID > 0)
+                {
+                    EndorsementType et = EndorsementType.GetEndorsementByID(endorsement.SourceTemplateID);
+                    if ((et?.DefaultCategory ?? EndorsementCategory.None) != EndorsementCategory.None)
+                    {
+                        endorsement.Category = et.DefaultCategory;
+                        endorsement.Source = CategorySource.Template;
+                    }
+                }
                 endorsement.FCommit();
 
                 return new EmptyResult();
@@ -502,7 +529,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         }
 
         [ChildActionOnly]
-        public ActionResult RenderEndorsements(IEnumerable<Endorsement> endorsements, string userName, bool fCanDelete = false, bool fCanSort = false, bool fCanDownload = false, string onCopy = "")
+        public ActionResult RenderEndorsements(IEnumerable<Endorsement> endorsements, string userName, bool fCanDelete = false, bool fCanSort = false, bool fCanDownload = false, string onCopy = "", bool fPrintView = false, bool fCanCategorize = false)
         {
             ViewBag.endorsements = endorsements;
             ViewBag.canDelete = fCanDelete;
@@ -510,6 +537,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.canSort = fCanSort;
             ViewBag.canDownload = endorsements.Any() && fCanDownload;
             ViewBag.userName = userName;
+            ViewBag.fPrintView = fPrintView;
+            ViewBag.fCanCategorize = fCanCategorize;
             return PartialView("_endorsementList");
         }
 
@@ -535,8 +564,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ChildActionOnly]
         public ActionResult RenderEndorsementBody(string sourceUser, string targetUser, int idTemplate, StudentTypes studentType, EndorsementMode mode, int idSrc = -1)
         {
-            ViewBag.template = EndorsementType.GetEndorsementByID((idSrc > 0 || idTemplate < 0) ? EndorsementType.IDCustomTemplate : idTemplate) ?? EndorsementType.GetEndorsementByID(EndorsementType.IDCustomTemplate);
+            EndorsementType endorsementType = EndorsementType.GetEndorsementByID((idSrc > 0 || idTemplate < 0) ? EndorsementType.IDCustomTemplate : idTemplate) ?? EndorsementType.GetEndorsementByID(EndorsementType.IDCustomTemplate);
             Endorsement e = (idSrc > 0) ? EndorsementWithID(idSrc) : null;
+            if ((e?.SourceTemplateID ?? 0) > EndorsementType.IDCustomTemplate && endorsementType.ID == EndorsementType.IDCustomTemplate)
+                endorsementType.ID = e.SourceTemplateID;  // if the source endorsement is from a template, claim to use that template for the body even though it's technically free-form.
+            ViewBag.template = endorsementType;
             ViewBag.source = (studentType == StudentTypes.External || ((e?.StudentName) ?? string.Empty).CompareCurrentCulture(targetUser) == 0) ? e : null;  // don't allow copy from someone else's endorsement.
             ViewBag.targetUser = targetUser;
             ViewBag.sourceUser = sourceUser;

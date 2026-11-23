@@ -277,7 +277,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FAR or Reg. Ref.:.
+        ///   Looks up a localized string similar to FAR or Reg. Ref..
         /// </summary>
         internal static string EditEndorsementFARPrompt {
             get {

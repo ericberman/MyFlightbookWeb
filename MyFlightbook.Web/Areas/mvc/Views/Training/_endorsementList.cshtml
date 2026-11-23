@@ -1,8 +1,11 @@
 ﻿@using MyFlightbook.Instruction
+@using System.Globalization
 @{
     bool canDelete = ViewBag.canDelete;
     bool canSort = ViewBag.canSort;
     bool canDownload = ViewBag.canDownload;
+    bool printView = ViewBag.fPrintView;
+    bool canCategorize = ViewBag.fCanCategorize;
     string onCopy = ViewBag.onCopy;
     string szStudent = ViewBag.userName;
     List<Endorsement> lstUndeleted = new List<Endorsement>(ViewBag.endorsements);
@@ -12,6 +15,25 @@
     List<Endorsement> lstMerged = new List<Endorsement>();
     lstMerged.AddRange(lstUndeleted);
     lstMerged.AddRange(lstDeleted);
+    Dictionary<int, List<Endorsement>> dictEndorsements = new Dictionary<int, List<Endorsement>>();
+    foreach (Endorsement e in lstMerged)
+    {
+        int majorCat = EndorsementType.MajorCategoryForSubCategory(e.Category);
+        if (!dictEndorsements.ContainsKey(majorCat))
+        {
+            dictEndorsements[majorCat] = new List<Endorsement>();
+        }
+        dictEndorsements[majorCat].Add(e);
+    }
+    List<int> lstKeys = new List<int>(dictEndorsements.Keys);
+    lstKeys.Sort();
+    // don't stripe things unless there are at least 5 items and at least 3 categories.
+    if (lstKeys.Count <= 2 || lstMerged.Count < 5 || printView)
+    {
+        lstKeys.Clear();
+        lstKeys.Add(0);
+        dictEndorsements[0] = lstMerged;
+    }
 }
 <script type="text/javascript">
     function deleteExternalEndorsement(sender, id) {
@@ -45,6 +67,30 @@
             });
         }
     }
+
+    function editEndorsementCategory(sender, id, currentCategory) {
+        var parent = $(sender).closest('div');
+        var select = $("#cmbSelectCategories");
+        parent.html("");
+        parent.append(select);
+        select.val(currentCategory);
+        select.off("change").on("change", function () {
+            var params = new Object();
+            params.idEndorsement = id;
+            params.newCategory = $(this).val();
+            $.ajax({
+                url: '@Url.Action("UpdateCategoryForEndorsement", "Training")',
+                type: "POST",
+                data: JSON.stringify(params),
+                dataType: "text",
+                contentType: 'application/json',
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (response) {
+                    window.location.reload();
+                }
+            });
+        });
+    }
 </script>
 @using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDelete", name = "frmDelete" }))
 {
@@ -57,57 +103,109 @@
 {
     using (Html.BeginForm("DownloadEndorsements", "Training", FormMethod.Post, new { id = "frmDownloadEndorsements", name = "frmDownloadEndorsements" }))
     {
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="userName" value="@szStudent" />
-    <a style="cursor: pointer; vertical-align: middle;" onclick="javascript: $('#frmDownloadEndorsements')[0].submit()">
-        <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
-        <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
-        @Resources.SignOff.DownloadCSVEndorsements
-    </a>
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="userName" value="@szStudent" />
+        <a style="cursor: pointer; vertical-align: middle;" onclick="javascript: $('#frmDownloadEndorsements')[0].submit()">
+            <img src="@("~/images/download.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+            <img src="@("~/images/csvicon_sm.png".ToAbsolute())" style="padding-right: 5px; vertical-align: middle;" />
+            @Resources.SignOff.DownloadCSVEndorsements
+        </a>
     }
 }
 @if (lstMerged.Any())
 {
-    <div class="@(lstDeleted.Any() ? string.Empty : "dn")"><label><input type="checkbox" onclick="javascript:$('.deletedEndorsement').toggle();" />@Resources.SignOff.EndorsementViewDeleted</label></div>
-    <table>
-        <thead>
-            <tr>
-                <th class="dn"></th>
-                <th class="dn"></th>
-                <th class="headerBase gvcCentered headerSortDesc" style="width: 45%" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
-                <th class="headerBase gvcCentered" style="width: 45%" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
-                <th class="dn"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Endorsement e in lstMerged)
-            {
-                <tr class="@(e.DateDeleted != null ? "dn deletedEndorsement" : string.Empty)">
-                    <td class="dn">@e.Date.YMDString()</td>
-                    <td class="dn">@e.Title</td>
-                    <td colspan="2" style="width: 90%;">@Html.Raw(e.RenderHTML())</td>
-                    <td class="noprint">
-                        @if (e.IsExternalEndorsement && e.DateDeleted == null)
+    <div class="@(lstDeleted.Any() ? string.Empty : "dn") noprint"><label><input type="checkbox" onclick="javascript:$('.deletedEndorsement').toggle();" />@Resources.SignOff.EndorsementViewDeleted</label></div>
+    foreach (int key in lstKeys)
+    {
+        string idTarget = "divEndorsementCategory" + key.ToString(CultureInfo.InvariantCulture);
+        // See if any of the endorsements in this category are "recent" or undeleted
+        List<Endorsement> lst = dictEndorsements[key];
+        bool hasRecent = lst.Find(e => e.Date >= DateTime.Now.AddDays(-30)) != null;
+        bool fAllDeleted = lst.Find(e => e.DateDeleted == null) == null;
+        if (lstKeys.Count > 1)
+        {
+            Html.RenderAction("RenderAccordion", "MFBTemplate", new { containerID = idTarget, active = hasRecent ? "0" : "false" });
+        }
+        <div id="@idTarget" class="@(fAllDeleted ? "dn deletedEndorsement" : string.Empty)">
+            <h3 class="@(lstKeys.Count <= 1 ? "dn" : string.Empty)">@EndorsementType.EndorsementMajorCategory(key)</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="dn"></th>
+                            <th class="dn"></th>
+                            <th class="dn"></th>
+                            <th class="headerBase gvcCentered headerSortDesc" style="width: 30%;" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
+                            <th class="headerBase gvcCentered" style="width: 30%;" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EditEndorsementFARPrompt</th>
+                            <th class="headerBase gvcCentered" style="width: 30%;" onclick="javascript: sortTable(this, 2, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
+                            <th class="dn"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Endorsement e in lst)
                         {
-                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID);" />
+                            <tr class="@(e.DateDeleted != null ? "dn deletedEndorsement" : string.Empty)">
+                                <td class="dn">@e.Date.YMDString()</td>
+                                <td class="dn">@e.FARReference</td>
+                                <td class="dn">@e.Title</td>
+                                <td colspan="3" class="w90">
+                                    @Html.Raw(e.RenderHTML())
+                                    @if (canCategorize && !printView)
+                                    {
+                                        <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: editEndorsementCategory(this, @e.ID, '@e.Category.ToString()');" alt="@Resources.Endorsements.EditCategoryPrompt" title="@Resources.Endorsements.EditCategoryPrompt" /></div>
+                                    }
+                                </td>
+                                <td class="noprint">
+                                    @if (e.IsExternalEndorsement && e.DateDeleted == null)
+                                    {
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID);" />
+                                    }
+                                    @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                                    {
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID);" />
+                                    }
+                                    @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
+                                    {
+                                        <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
+                                    }
+                                </td>
+                            </tr>
                         }
-                        @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
-                        {
-                            <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID);" />
-                        }
-                        @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
-                        {
-                            <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
 }
 else
 {
-    <div>@Resources.SignOff.NoExistingEndorsements</div>
+<div>@Resources.SignOff.NoExistingEndorsements</div>
 }
 <div id="lblErr" class="error"></div>
+<div class="dn">
+    <select id="cmbSelectCategories" name="newCategory">
+        @{
+            Dictionary<int, List<EndorsementCategory>> d = new Dictionary<int, List<EndorsementCategory>>();
+            foreach (EndorsementCategory ec in Enum.GetValues(typeof(EndorsementCategory)))
+            {
+                int mc = EndorsementType.MajorCategoryForSubCategory(ec);
+                if (!d.TryGetValue(mc, out List<EndorsementCategory> categories))
+                {
+                    d[mc] = categories = new List<EndorsementCategory>();
+                }
+                categories.Add(ec);
+            }
+            foreach (int mc in d.Keys)
+            {
+                <optgroup label="@EndorsementType.EndorsementMajorCategory(mc)">
+                    @foreach (EndorsementCategory ec in d[mc])
+                    {
+                    <option value="@ec.ToString()">@EndorsementType.EndorsementCategoryName(ec)</option>
+                    }
+                </optgroup>
+                }
+            }
+        }
+    </select>
+</div>
 

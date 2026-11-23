@@ -1582,6 +1582,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EmailTemplates.resx</DependentUpon>
     </Compile>
+    <Compile Include="App_GlobalResources\Endorsements.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Endorsements.resx</DependentUpon>
+    </Compile>
     <Compile Include="App_GlobalResources\FlightData.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1994,6 +1999,12 @@
       <Project>{f487e951-5414-49fb-9481-f05a54a0d51b}</Project>
       <Name>MyFlightbook.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\Endorsements.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Endorsements.Designer.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -49,6 +49,10 @@ namespace MyFlightbook.Instruction
     {
         public enum StudentTypes { Member, External }
 
+        public enum EndorsementKind { Regular, Image }
+
+        public enum CategorySource {  None = 0, Template = 1, Rule = 2, Model = 3, User = 4 }
+
         #region Properties
         /// <summary>
         /// UserName of the student being endorsed
@@ -112,7 +116,7 @@ namespace MyFlightbook.Instruction
         /// <summary>
         /// Username of the instructor
         /// </summary>
-        protected string InstructorName { get; set; }
+        public string InstructorName { get; set; }
 
         /// <summary>
         /// Date of the endorsement
@@ -191,6 +195,39 @@ namespace MyFlightbook.Instruction
                 return String.IsNullOrEmpty(InstructorName) || String.IsNullOrEmpty(szFullName) ? CFICachedName : szFullName;
             }
         }
+
+        /// <summary>
+        /// The category for this endorsement
+        /// </summary>
+        public EndorsementCategory Category { get; set; } = EndorsementCategory.None;
+
+        /// <summary>
+        /// Where did the categorization come from?
+        /// </summary>
+        public CategorySource Source { get; set; } = CategorySource.None;
+
+        /// <summary>
+        /// Is this a regular endorsement or an encapsulated image?
+        /// </summary>
+        public EndorsementKind Kind { get; set; } = EndorsementKind.Regular;
+
+        /// <summary>
+        /// For EndorsementKind.Image, what is the thumbfile for this?  Note that virtualpathid will depend on whether studentkind is external or internal
+        /// </summary>
+        public string ThumbFileName { get; set; } = null;
+
+        /// <summary>
+        /// For EndorsementKind.Image, if this was scanned, on what page was the endorsement text found?
+        /// </summary>
+        public int PageNumber { get; set; } = 0;
+        /// <summary>
+        /// For EndorsementKind.Image, the raw text of any OCR
+        /// </summary>
+        public string RawText { get; set; } = null;
+        /// <summary>
+        /// If this came from a template, lets preserve its source ID.  0 = unknown (legacy).
+        /// </summary>
+        public int SourceTemplateID { get; set; } = 0;
         #endregion
 
         #region Constructors
@@ -220,6 +257,14 @@ namespace MyFlightbook.Instruction
             Title = dr["Title"].ToString();
             FARReference = dr["FARRef"].ToString();
             CFICachedName = util.ReadNullableString(dr, "CFIFullName");
+
+            Category = (EndorsementCategory)Convert.ToInt32(dr["Category"], CultureInfo.InvariantCulture);
+            Source = (CategorySource) Convert.ToInt32(dr["CategorySource"], CultureInfo.InvariantCulture);
+            Kind = (EndorsementKind)Convert.ToInt32(dr["Kind"], CultureInfo.InvariantCulture);
+            ThumbFileName = util.ReadNullableString(dr, "ThumbFileName");
+            PageNumber = Convert.ToInt32(dr["PageNumber"], CultureInfo.InvariantCulture);
+            RawText = util.ReadNullableString(dr, "RawText");
+            SourceTemplateID = Convert.ToInt32(dr["TemplateID"], CultureInfo.InvariantCulture);
 
             byte[] rgb;
 
@@ -281,11 +326,15 @@ namespace MyFlightbook.Instruction
                 throw new MyFlightbookException(Resources.SignOff.errNoTitle);
         }
 
+        /// <summary>
+        /// Commits the endorsement.  The bulk of an endorsement is only ever read-only, so this will fail if it is not new
+        /// </summary>
+        /// <exception cref="MyFlightbookException"></exception>
         public void FCommit()
         {
-            string szQ = (this.ID < 0)
-                ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig "
-                : "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig WHERE ID=?id";
+            if (this.ID >= 0)
+                throw new InvalidOperationException("Can't update an endorsement");
+            string szQ = "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig, Category=?category, CategorySource = ?source, Kind = ?kind, ThumbFileName = ?thumbfilename, PageNumber = ?pageNum, RawText = ?rawText, TemplateID = ?templateID";
 
             Validate();
 
@@ -304,17 +353,23 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("farref", FARReference);
                 cmd.Parameters.AddWithValue("cfifullname", IsAdHocEndorsement ? CFICachedName : Profile.GetUser(InstructorName).UserFullName);
                 cmd.Parameters.AddWithValue("digsig", IsAdHocEndorsement ? GetDigitizedSig() : null);
+                cmd.Parameters.AddWithValue("category", (int)Category);
+                cmd.Parameters.AddWithValue("source", (int)Source);
+                cmd.Parameters.AddWithValue("kind", (int)Kind);
+                cmd.Parameters.AddWithValue("thumbfilename", ThumbFileName);
+                cmd.Parameters.AddWithValue("pageNum", PageNumber);
+                cmd.Parameters.AddWithValue("rawText", RawText);
+                cmd.Parameters.AddWithValue("templateID", SourceTemplateID);
             });
 
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException(Resources.SignOff.errCommitFailed + dbh.LastError);
 
-            if (ID < 0)
-                ID = dbh.LastInsertedRowId;
+            ID = dbh.LastInsertedRowId;
         }
 
         /// <summary>
-        /// Delete the specified endorsement.  
+        /// Delete the specified endorsement.  Note that the endorsement is never actually removed; it is simply marked as deleted.
         /// </summary>
         public void FDelete()
         {
@@ -323,6 +378,25 @@ namespace MyFlightbook.Instruction
             {
                 cmd.Parameters.AddWithValue("id", this.ID);
                 cmd.Parameters.AddWithValue("st", (int)this.StudentType);
+            });
+        }
+
+        /// <summary>
+        /// Updates the category for the specified endorsement.  This is entirely user controlled - does NOT touch the body of the endorsement
+        /// </summary>
+        /// <param name="ec">The new category</param>
+        /// <param name="cs">The source of the category (user by default)</param>
+        public void FUpdateCategory(EndorsementCategory ec, CategorySource cs = CategorySource.User)
+        {
+            if (ID < 0)
+                throw new InvalidOperationException("Can't update an endorsement that hasn't been committed");
+            DBHelper dbh = new DBHelper("UPDATE endorsements SET Category=?cat, CategorySource = ?src WHERE StudentType=?st AND ID=?id");
+            dbh.DoNonQuery((cmd) =>
+            {
+                cmd.Parameters.AddWithValue("id", ID);
+                cmd.Parameters.AddWithValue("st", (int)StudentType);
+                cmd.Parameters.AddWithValue("cat", (int)ec);
+                cmd.Parameters.AddWithValue("src", (int) cs);
             });
         }
 
@@ -662,6 +736,8 @@ namespace MyFlightbook.Instruction
         {
             get { return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, (FARReference.Length > 0) ? String.Format(CultureInfo.CurrentCulture, "({0})", FARReference) : String.Empty, Title); }
         }
+
+        public EndorsementCategory DefaultCategory { get; set; } = EndorsementCategory.None;
         #endregion
 
         #region constructors
@@ -675,18 +751,19 @@ namespace MyFlightbook.Instruction
         {
             if (dr == null)
                 throw new ArgumentNullException(nameof(dr));
-            this.ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
-            this.FARReference = dr["FARRef"].ToString();
-            this.Title = dr["Title"].ToString();
-            this.BodyTemplate = dr["Text"].ToString();
+            ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
+            FARReference = dr["FARRef"].ToString();
+            Title = dr["Title"].ToString();
+            BodyTemplate = dr["Text"].ToString();
+            DefaultCategory = (EndorsementCategory) Convert.ToInt32(util.ReadNullableField(dr, "DefaultCategory", (int)EndorsementCategory.None), CultureInfo.InvariantCulture);
         }
         #endregion
 
         public void FCommit()
         {
             string szQ = (this.ID < 0)
-                ? "INSERT INTO endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt"
-                : "UPDATE endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt WHERE ID=?id";
+                ? "INSERT INTO endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt, DefaultCategory=?defaultcat"
+                : "UPDATE endorsementtemplates SET FARRef=?fref, Title=?title, Text=?txt, DefaultCategory=?defaultcat WHERE ID=?id";
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery(
@@ -696,6 +773,7 @@ namespace MyFlightbook.Instruction
                     cmd.Parameters.AddWithValue("fref", this.FARReference);
                     cmd.Parameters.AddWithValue("txt", this.BodyTemplate);
                     cmd.Parameters.AddWithValue("title", this.Title);
+                    cmd.Parameters.AddWithValue("defaultcat", (int)this.DefaultCategory);
                 });
         }
 
@@ -751,5 +829,146 @@ namespace MyFlightbook.Instruction
                     return et;
             return null;
         }
+
+        public static string EndorsementMajorCategory(int category)
+        {
+            switch (category)
+            {
+                case 0: return Resources.Endorsements.EndorsementCategoryNone;
+                case 1: return Resources.Endorsements.EndorsementCategoryStudent;
+                case 2: return Resources.Endorsements.EndorsementCategoryTestPrep;
+                case 3: return Resources.Endorsements.EndorsementCategoryAircraft;
+                case 4: return Resources.Endorsements.EndorsementCategoryReviews;
+                case 5: return Resources.Endorsements.EndorsementCategoryWINGS;
+                case 6: return Resources.Endorsements.EndorsementCategoryInstructor;
+                case 7: return Resources.Endorsements.EndorsementCategorySecurity;
+                case 8: return Resources.Endorsements.EndorsementCategoryDocuments;
+                case 9: return Resources.Endorsements.EndorsementCategoryOther;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(category), $"Endorsement category {category} is not in a valid range");
+            }
+        }
+
+        public static string EndorsementMajorCategory(EndorsementCategory category)
+        {
+            return EndorsementMajorCategory(MajorCategoryForSubCategory(category));
+        }
+
+        public static int MajorCategoryForSubCategory(EndorsementCategory category)
+        {
+            return (int)category / 100;
+        }
+
+#pragma warning disable CA1502 
+        public static string EndorsementCategoryName(EndorsementCategory category)
+        {
+            switch (category)
+            {
+                case EndorsementCategory.None: return Resources.Endorsements.EndorsementCategoryNone;
+                case EndorsementCategory.PresoloKnowledge: return Resources.Endorsements.SubCatPresoloKnowledge;
+                case EndorsementCategory.PresoloFlight: return Resources.Endorsements.SubCatPresoloFlight;
+                case EndorsementCategory.Solo: return Resources.Endorsements.SubCatSolo;
+                case EndorsementCategory.SoloLocalAndAirspace: return Resources.Endorsements.SubCatSoloLocalAndAirspace;
+                case EndorsementCategory.SoloCrossCountry: return Resources.Endorsements.SubCatSoloCrossCountry;
+                case EndorsementCategory.RecreationalPrivileges: return Resources.Endorsements.SubCatRecreationalPrivileges;
+                case EndorsementCategory.StageCheck: return Resources.Endorsements.SubCatStageCheck;
+                case EndorsementCategory.KnowledgeTestPrep: return Resources.Endorsements.SubCatKnowledgeTestPrep;
+                case EndorsementCategory.KnowledgeTestDeficiencies: return Resources.Endorsements.SubCatKnowledgeTestDeficiencies;
+                case EndorsementCategory.PracticalTestPrep: return Resources.Endorsements.SubCatPracticalTestPrep;
+                case EndorsementCategory.Retest: return Resources.Endorsements.SubCatRetest;
+                case EndorsementCategory.TestResult: return Resources.Endorsements.SubCatTestResult;
+                case EndorsementCategory.CertificationTrainingProgram: return Resources.Endorsements.SubCatCertificationTrainingProgram;
+                case EndorsementCategory.Complex: return Resources.Endorsements.SubCatComplex;
+                case EndorsementCategory.HighPerformance: return Resources.Endorsements.SubCatHighPerformance;
+                case EndorsementCategory.Tailwheel: return Resources.Endorsements.SubCatTailwheel;
+                case EndorsementCategory.HighAltitude: return Resources.Endorsements.SubCatHighAltitude;
+                case EndorsementCategory.WithoutRating: return Resources.Endorsements.SubCatWithoutRating;
+                case EndorsementCategory.GliderAndTowing: return Resources.Endorsements.SubCatGliderAndTowing;
+                case EndorsementCategory.NightVisionGoggles: return Resources.Endorsements.SubCatNightVisionGoggles;
+                case EndorsementCategory.LightSport: return Resources.Endorsements.SubCatLightSport;
+                case EndorsementCategory.SecondInCommand: return Resources.Endorsements.SubCatSecondInCommand;
+                case EndorsementCategory.TypeAndDifferences: return Resources.Endorsements.SubCatTypeAndDifferences;
+                case EndorsementCategory.Checkout: return Resources.Endorsements.SubCatCheckout;
+                case EndorsementCategory.OperationalAuthorization: return Resources.Endorsements.SubCatOperationalAuthorization;
+                case EndorsementCategory.FlightReview: return Resources.Endorsements.SubCatFlightReview;
+                case EndorsementCategory.InstrumentProficiencyCheck: return Resources.Endorsements.SubCatInstrumentProficiencyCheck;
+                case EndorsementCategory.ProficiencyCheck: return Resources.Endorsements.SubCatProficiencyCheck;
+                case EndorsementCategory.WingsActivity: return Resources.Endorsements.SubCatWingsActivity;
+                case EndorsementCategory.WingsPhase: return Resources.Endorsements.SubCatWingsPhase;
+                case EndorsementCategory.SafetyCourse: return Resources.Endorsements.SubCatSafetyCourse;
+                case EndorsementCategory.SpinTraining: return Resources.Endorsements.SubCatSpinTraining;
+                case EndorsementCategory.InstructorQualification: return Resources.Endorsements.SubCatInstructorQualification;
+                case EndorsementCategory.GroundInstructorRecency: return Resources.Endorsements.SubCatGroundInstructorRecency;
+                case EndorsementCategory.Citizenship: return Resources.Endorsements.SubCatCitizenship;
+                case EndorsementCategory.SecurityAwareness: return Resources.Endorsements.SubCatSecurityAwareness;
+                case EndorsementCategory.FlightTrainingSecurityProgram: return Resources.Endorsements.SubCatFlightTrainingSecurityProgram;
+                case EndorsementCategory.PilotCertificate: return Resources.Endorsements.SubCatPilotCertificate;
+                case EndorsementCategory.Medical: return Resources.Endorsements.SubCatMedical;
+                case EndorsementCategory.LogbookPages: return Resources.Endorsements.SubCatLogbookPages;
+                case EndorsementCategory.TrainingRecord: return Resources.Endorsements.SubCatTrainingRecord;
+                case EndorsementCategory.OtherDocument: return Resources.Endorsements.SubCatOtherDocument;
+                case EndorsementCategory.Other: return Resources.Endorsements.SubCatOther;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(category), $"Endorsement category {category} is not in a valid range");
+            }
+        }
+#pragma warning restore CA1502
+    }
+
+    public enum EndorsementCategory
+    {
+        None = 0,
+        /* 100 -199: Student Endorsements */
+        PresoloKnowledge = 101, /* E.g. 61.87(b) */
+        PresoloFlight = 102, /* E.g. 61.87(c) */
+        Solo = 103, /* E.g. 61.87(n)/(p)/(o), SFAR 73 2(b)(3)/(4), "cleared for solo" */
+        SoloLocalAndAirspace = 104, /* E.g. 61.93(b)(1), 61.94, 61.95, 61.101(b)/(d) */
+        SoloCrossCountry = 105, /* E.g. 61.93(c), 61.93(b)(2), 61.101(c) */
+        RecreationalPrivileges = 106, /* E.g. 61.101(g)/(j) */
+        StageCheck = 107, /* E.g. stage/progress checks, "10-hour dual check", SACAA progress checks */
+        /* 200 - 299 : Test Prep and Checkrides */
+        KnowledgeTestPrep = 201, /* E.g. 61.35, 61.105(a), 61.65(b), 61.125, home study, 61.183(d)/(f), 61.405(a)(1) */
+        KnowledgeTestDeficiencies = 202, /* E.g. 61.39(a)(6)(iii) */
+        PracticalTestPrep = 203, /* E.g. 61.39(a), 61.107/109, 61.65(c)/(d), 61.127/129, 61.63, 61.157, 61.160, 61.183(g), 61.187, 61.309–313, 61.321 (ready), 61.409–419 (ready) */
+        Retest = 204, /* E.g. 61.49 */
+        TestResult = 205, /* E.g. 61.189 record of test result, "PASSED" titles, knowledge test reports, 61.321/61.409 passed */
+        CertificationTrainingProgram = 206, /* E.g. 61.153(e) ATP CTP */
+        /* 300 - 399 : Aircraft & Privileges */
+        Complex = 301, /* E.g. 61.31(e) */
+        HighPerformance = 302, /* E.g. 61.31(f) */
+        Tailwheel = 303, /* E.g. 61.31(i) */
+        HighAltitude = 304, /* E.g. 61.31(g) */
+        WithoutRating = 305, /* E.g. 61.31(d)(2) */
+        GliderAndTowing = 306, /* E.g. 61.31(j), 61.69 */
+        NightVisionGoggles = 307, /* E.g. 61.31(k) */
+        LightSport = 308, /* E.g. 61.325, 61.327, 61.329 */
+        SecondInCommand = 309, /* E.g. 61.55, 61.159(c), 135.99(c) */
+        TypeAndDifferences = 310, /* E.g. SFAR 73 2(a)(3) and 2(b)(1)/(2), type/differences training, EASA variants */
+        Checkout = 311, /* E.g. club, rental and insurance checkouts */
+        OperationalAuthorization = 312, /* E.g. RVSM, PBN, oceanic RNP, DC SFRA, mountain, 90-day endorsement, 61.52 ultralight credit */
+        /* 400 - 499 : Proficiency and Recency */
+        FlightReview = 401, /* E.g. 61.56, SFAR 73 2(c) flight reviews */
+        InstrumentProficiencyCheck = 402, /* E.g. 61.57(d) */
+        ProficiencyCheck = 403, /* E.g. 61.57(g), 61.58, LPC/OPC/PPC, foreign revalidations */
+        /* 500 - 599 : WINGS and Safety */
+        WingsActivity = 501, /* E.g. AC 61-91 activity */
+        WingsPhase = 502, /* E.g. AC 61-91 phase */
+        SafetyCourse = 503, /* E.g. FAASTeam and other course certificates */
+        /* 600 - 699 : Instructor and Training */
+        SpinTraining = 601, /* E.g. 61.183(i), 61.405(b)(1)(ii) */
+        InstructorQualification = 602, /* E.g. 61.195, SFAR 73 2(b)(5), "qualified to train first-time CFIs" */
+        GroundInstructorRecency = 603, /* E.g. 61.217 */
+        /* 700 - 799 : Security and Citizenship */
+        Citizenship = 701, /* E.g. 49 CFR 1552.3(h), 1552.15(c), passports and birth certificates */
+        SecurityAwareness = 702, /* E.g. 49 CFR 1552.23 */
+        FlightTrainingSecurityProgram = 703, /* E.g. FTSP approvals */
+        /* 800 - 899 : Documentation */
+        PilotCertificate = 801, /* E.g. certificates and licenses, temporary airman certificates */
+        Medical = 802, /* E.g. medicals, BasicMed */
+        LogbookPages = 803, /* E.g. logbook scans */
+        TrainingRecord = 804, /* E.g. ground instruction logs, training summaries, syllabus records */
+        OtherDocument = 805, /* E.g. FCC permits, sim LOAs, ID cards */
+        /* 900 - 999 : Other */
+        Other = 901, /* E.g. classified, but fits nowhere */
     }
 }

@@ -32,19 +32,20 @@
 
     });
 
-    function updateEndorsement(id, title, farref, templateText) {
+    function updateEndorsement(id, title, farref, templateText, category) {
         var szAction = (id < 0) ? "Add Template" : "Update Template";
         $("#btnUpdate")[0].innerText = szAction;
         $("#txtEndorsementTitle").val(title);
         $("#txtEndorsementFAR").val(farref);
         $("#txtEndorsementTemplate").val(templateText);
+        $("#cmbEndorsementCategory").val(category);
         $("#hdnIDToEdit").val(id);
         showModalById("divEditEndorsement", szAction, 600);
         $("#txtEndorsementTitle")[0].focus();
     }
 
     function newEndorsement() {
-        updateEndorsement(-1, "", "", "");
+        updateEndorsement(-1, "", "", "", "@EndorsementCategory.None");
     }
 </script>
 <div id="divEditEndorsement" class="dn">
@@ -79,6 +80,17 @@
                 <td>
                     @Html.TextAreaFor(e => e.BodyTemplate, 4, 60, new { @id = "txtEndorsementTemplate", @name = "BodyTemplate", htmlAttributes = new { @style = "width: 400px;" } })
                     @Html.ValidationMessageFor(cpt => cpt.BodyTemplate, "Template body is required", new { @class = "error" }, "div")
+                </td>
+            </tr>
+            <tr>
+                <td>Template Category:</td>
+                <td>
+                    <select name="endorsementCategory" id="cmbEndorsementCategory" value="@Html.ValueFor(e => e.DefaultCategory)">
+                        @foreach (EndorsementCategory ec in Enum.GetValues(typeof(EndorsementCategory)))
+                        {
+                            <option value="@ec.ToString()">@EndorsementType.EndorsementCategoryName(ec)</option>
+                        }
+                    </select>
                 </td>
             </tr>
         </table>
@@ -117,7 +129,7 @@
         @foreach (EndorsementType et in ViewBag.templates)
         {
             <tr style="vertical-align:top;">
-                <td><a style="cursor: pointer;" onclick="javascript: updateEndorsement(@et.ID, '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.Title))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.FARReference))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.BodyTemplate))');">Edit</a></td>
+                <td><a style="cursor: pointer;" onclick="javascript: updateEndorsement(@et.ID, '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.Title))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.FARReference))', '@Html.Raw(HttpUtility.JavaScriptStringEncode(et.BodyTemplate))', '@et.DefaultCategory.ToString()');">Edit</a></td>
                 <td>
                     <table>
                         <tr>
@@ -135,6 +147,10 @@
                         <tr>
                             <td class="b">Template:</td>
                             <td>@et.BodyTemplate</td>
+                        </tr>
+                        <tr>
+                            <td class="b">Category</td>
+                            <td>@et.DefaultCategory.ToString() (@EndorsementType.EndorsementCategoryName(et.DefaultCategory))</td>
                         </tr>
                     </table>
                 </td>

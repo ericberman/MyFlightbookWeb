@@ -61,16 +61,16 @@
 </script>
 @if (!printView)
 {
-    <div class="flR"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath)">@Resources.SignOff.EndorsementsPrintView</a></div>
+    <div class="flR"><a target="_blank" href="@String.Format(CultureInfo.InvariantCulture, "{0}?print=1", Request.Url.AbsolutePath)"><span class="l">🖨️</span> @Resources.SignOff.EndorsementsPrintView</a></div>
 }
 <h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
-<p><a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a></p>
+<p class="noprint"><a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a></p>
 @if (!printView)
 {
     <p class="noprint"><img src="@("~/images/add.png".ToAbsolute())" class="imgMiddle" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
 }
 <div>
-    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
+    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name, fPrintView = printView, fCanCategorize = true }); }
 </div>
 @if (printView)
 {

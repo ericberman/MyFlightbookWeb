@@ -701,7 +701,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Endorsements(int id, string FARRef, string BodyTemplate, string Title)
+        public ActionResult Endorsements(int id, string FARRef, string BodyTemplate, string Title, EndorsementCategory endorsementCategory)
         {
             CheckAuth(ProfileRoles.maskCanManageData);
             EndorsementType et = new EndorsementType()
@@ -709,7 +709,8 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 ID = id,
                 FARReference = FARRef,
                 BodyTemplate = BodyTemplate,
-                Title = Title
+                Title = Title,
+                DefaultCategory = endorsementCategory
             };
             et.FCommit();
             ViewBag.templates = EndorsementType.LoadTemplates();
