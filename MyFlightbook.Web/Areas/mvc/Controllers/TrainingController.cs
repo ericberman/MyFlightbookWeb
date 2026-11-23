@@ -741,7 +741,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DownloadEndorsements(string userName = null)
         {
-            IEnumerable<Endorsement> endorsements = EndorsementsForUser(userName, User.Identity.Name, SortDirection.Descending, EndorsementSortKey.Date, true);
+            IEnumerable<Endorsement> endorsements = EndorsementsForUser(userName, User.Identity.Name, true);
             using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
             {
                 EndorsementsToDataTable(endorsements, dt);
@@ -801,7 +801,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.student = User.Identity.Name;
             ViewBag.instructor = string.Empty;
 
-            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, SortDirection.Descending, EndorsementSortKey.Date);
+            ViewBag.endorsements = EndorsementsForUser(User.Identity.Name, string.Empty, true);
             return View("endorsements");
         }
         #endregion

@@ -41,8 +41,6 @@ namespace MyFlightbook.Instruction
         StudentPullAdHoc
     }
 
-    public enum EndorsementSortKey { Date, Title };
-
     /// <summary>
     /// Summary description for Endorsement
     /// </summary>
@@ -334,10 +332,8 @@ namespace MyFlightbook.Instruction
         /// <param name="szInstructor">The username of the instructor, or null/empty for all records for the student</param>
         /// <param name="szStudent">The username of the student, or null/empty for all records for the instructor</param>
         /// <param name="fIncludeDeleted">True to include deleted endorsements</param>
-        /// <param name="sortDirection">Sort direction</param>
-        /// <param name="sortKey">Sort key</param>
         /// <returns>An array of Endorsement objects representing the associated users</returns>
-        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor, SortDirection sortDirection = SortDirection.Descending, EndorsementSortKey sortKey = EndorsementSortKey.Date, bool fIncludeDeleted = false)
+        public static IEnumerable<Endorsement> EndorsementsForUser(string szStudent, string szInstructor, bool fIncludeDeleted = false)
         {
             if (String.IsNullOrEmpty(szStudent) && String.IsNullOrEmpty(szInstructor))
                 throw new MyFlightbookException(Resources.SignOff.errNoStudentOrInstructor);
@@ -353,10 +349,8 @@ namespace MyFlightbook.Instruction
             string szRestrict = String.Join(" AND ", lstConditions);
 
             List<Endorsement> lst = new List<Endorsement>();
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0} ORDER BY {1} {2}",
-                szRestrict,
-                sortKey == EndorsementSortKey.Date ? "Date" : "Title",
-                sortDirection.ToMySQLSort()
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0} ORDER BY DATE DESC",
+                szRestrict
                 ));
 
             if (!dbh.ReadRows(
