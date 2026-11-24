@@ -26,8 +26,8 @@ namespace MyFlightbook.Image
     /// </summary>
     public static class AWSConfiguration
     {
-        public const string S3BucketName = "mfbimages";
-        public const string S3BucketNameDebug = "mfbdebug";
+        internal const string S3ConfigBucketNameDebug = "S3BucketNameDebug";
+        internal const string S3ConfigBucketName = "S3BucketName";
 
         #region Properties
         public static bool UseS3 { get { return String.Compare(LocalConfig.SettingForKey("UseAWSS3"), "yes", StringComparison.OrdinalIgnoreCase) == 0; } }
@@ -55,7 +55,7 @@ namespace MyFlightbook.Image
         /// </summary>
         public static string CurrentS3Bucket
         {
-            get { return UseDebugBucket ? S3BucketNameDebug : Branding.CurrentBrand.AWSBucket; }
+            get { return UseDebugBucket ? LocalConfig.SettingForKey(S3ConfigBucketNameDebug) : Branding.CurrentBrand.AWSBucket; }
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace MyFlightbook.Image
                 var job = await mcClient.CreateJobAsync(new CreateJobRequest()
                 {
                     Role = LocalConfig.SettingForKey("AWSMediaConvertRoleArn"),
-                    UserMetadata = new Dictionary<string, string> { { "Debug", (szBucket.CompareCurrentCultureIgnoreCase(AWSConfiguration.S3BucketNameDebug) == 0).ToString() } },
+                    UserMetadata = new Dictionary<string, string> { { "Debug", (szBucket.CompareCurrentCultureIgnoreCase(LocalConfig.SettingForKey(AWSConfiguration.S3ConfigBucketNameDebug)) == 0).ToString() } },
                     Settings = SettingsForBucketAndKey(mfbii, szBasePath, szBucket, por.Key)
                 });
                 if (job != null)
@@ -382,7 +382,7 @@ namespace MyFlightbook.Image
 
             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
             {
-                ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketName, Prefix = szBasePath };
+                ListObjectsRequest request = new ListObjectsRequest() { BucketName = LocalConfig.SettingForKey(AWSConfiguration.S3ConfigBucketName), Prefix = szBasePath };
 
                 /*
                  * Need to get the files from S3 FIRST, otherwise there is a race condition
@@ -461,7 +461,7 @@ namespace MyFlightbook.Image
                         cOrphansFound++;
                         cBytesToFree += o.Size ?? 0;
                         if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
-                            _ = s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key });  // no need to await the result
+                            _ = s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = LocalConfig.SettingForKey(AWSConfiguration.S3ConfigBucketName), Key = o.Key });  // no need to await the result
                     }
                 });
 
@@ -477,15 +477,15 @@ namespace MyFlightbook.Image
         {
             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
             {
-                ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketNameDebug };
+                ListObjectsRequest request = new ListObjectsRequest() { BucketName = LocalConfig.SettingForKey(AWSConfiguration.S3ConfigBucketNameDebug) };
 
                 do
                 {
                     ListObjectsResponse response = await s3.ListObjectsAsync(request);
 
-                    foreach (S3Object o in response.S3Objects)
+                    foreach (S3Object o in response.S3Objects ?? new List<S3Object>())
                     {
-                        DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketNameDebug, Key = o.Key };
+                        DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = LocalConfig.SettingForKey(AWSConfiguration.S3ConfigBucketNameDebug), Key = o.Key };
                         _ = s3.DeleteObjectAsync(dor);
                     }
 
