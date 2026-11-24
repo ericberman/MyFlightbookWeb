@@ -51,7 +51,7 @@ namespace MyFlightbook.Instruction
 
         public enum EndorsementKind { Regular, Image }
 
-        public enum CategorySource {  None = 0, Template = 1, Rule = 2, Model = 3, User = 4 }
+        public enum CategorySource { None = 0, Template = 1, Rule = 2, Model = 3, User = 4 }
 
         #region Properties
         /// <summary>
@@ -259,7 +259,7 @@ namespace MyFlightbook.Instruction
             CFICachedName = util.ReadNullableString(dr, "CFIFullName");
 
             Category = (EndorsementCategory)Convert.ToInt32(dr["Category"], CultureInfo.InvariantCulture);
-            Source = (CategorySource) Convert.ToInt32(dr["CategorySource"], CultureInfo.InvariantCulture);
+            Source = (CategorySource)Convert.ToInt32(dr["CategorySource"], CultureInfo.InvariantCulture);
             Kind = (EndorsementKind)Convert.ToInt32(dr["Kind"], CultureInfo.InvariantCulture);
             ThumbFileName = util.ReadNullableString(dr, "ThumbFileName");
             PageNumber = Convert.ToInt32(dr["PageNumber"], CultureInfo.InvariantCulture);
@@ -396,7 +396,7 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("id", ID);
                 cmd.Parameters.AddWithValue("st", (int)StudentType);
                 cmd.Parameters.AddWithValue("cat", (int)ec);
-                cmd.Parameters.AddWithValue("src", (int) cs);
+                cmd.Parameters.AddWithValue("src", (int)cs);
             });
         }
 
@@ -501,185 +501,6 @@ namespace MyFlightbook.Instruction
             Endorsement en = null;
             dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("idEndorsement", id); }, (dr) => { en = new Endorsement(dr); });
             return en;
-        }
-
-        /// <summary>
-        /// Renders the endorsement to HTML.  We render explicitly so that writing to a ZIP - which may have neither page context nor HttpContext.Current - can work.
-        /// </summary>
-        /// <param name="tw"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void RenderHTML(HtmlTextWriter tw)
-        {
-            if (tw == null)
-                throw new ArgumentNullException(nameof(tw));
-
-            tw.AddAttribute("style", "padding: 5px;");
-            tw.RenderBeginTag(HtmlTextWriterTag.Div);
-
-            tw.AddAttribute("class", "endorsement");
-            tw.RenderBeginTag(HtmlTextWriterTag.Table);
-            if (IsExternalEndorsement)
-            {
-                // disclaimer
-                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:white");
-                tw.AddAttribute("colspan", "2");
-                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.Write(Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer));
-                tw.RenderEndTag(); // td
-                tw.RenderEndTag(); // tr
-            }
-
-            if (DateDeleted != null)
-            {
-                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:red");
-                tw.AddAttribute("colspan", "2");
-                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.Write(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, DateDeleted.Value));
-                tw.RenderEndTag();  // td
-                tw.RenderEndTag();  // tr
-            }
-
-            // Body text
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("colspan", "2");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            if (!IsAdHocEndorsement)
-            {
-                tw.AddAttribute("style", "float:right; margin: 3px;");
-                tw.AddAttribute("title", Resources.SignOff.EndorsementValid);
-                tw.AddAttribute("alt", Resources.SignOff.EndorsementValid);
-                tw.RenderBeginTag(HtmlTextWriterTag.Div);
-                tw.AddAttribute("src", "~/images/sigok.png".ToAbsoluteBrandedUri().ToString());
-                tw.RenderBeginTag(HtmlTextWriterTag.Img);
-                tw.RenderEndTag();  // img
-                tw.RenderEndTag();  // div
-            }
-
-            // Text and FAR row
-            tw.AddAttribute("style", "font-weight:bold;");
-            tw.RenderBeginTag(HtmlTextWriterTag.Div);
-            tw.Write(HttpUtility.HtmlEncode(FullTitleAndFar));
-            tw.RenderEndTag();  // div
-
-            tw.RenderBeginTag(HtmlTextWriterTag.Hr);
-            tw.RenderEndTag();  // hr
-
-            tw.Write(HttpUtility.HtmlEncode(EndorsementText));
-
-            tw.RenderBeginTag(HtmlTextWriterTag.Hr);
-            tw.RenderEndTag();  // hr
-
-            tw.RenderEndTag(); // td
-            tw.RenderEndTag(); // row
-
-            // Date row
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold;");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Resources.SignOff.EditEndorsementDatePrompt);
-            tw.RenderEndTag();  // td
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Date.ToShortDateString());
-            tw.RenderEndTag();  // td
-            tw.RenderEndTag();  // trw
-
-            // if dates are off row
-            if (CreationDate.Date.CompareTo(Date.Date) != 0)
-            {
-                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold;");
-                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.Write(Resources.SignOff.EditEndorsementDateCreatedPrompt);
-                tw.RenderEndTag();  // td
-
-                if (CreationDate.Date.Subtract(Date).Days > 10)
-                    tw.AddAttribute("style", "font-weight: bold;");
-                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.Write(CreationDate.ToShortDateString());
-                tw.Write(" (UTC)");
-                tw.RenderEndTag();  // td
-
-                tw.RenderEndTag();  // tr
-            }
-
-            // Student name row
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Resources.SignOff.EditEndorsementStudentPrompt);
-            tw.RenderEndTag();  // td
-
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(HttpUtility.HtmlEncode(StudentDisplayName));
-            tw.RenderEndTag();  // td
-            tw.RenderEndTag();  // tr
-
-            // CFI Display nam row
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Resources.SignOff.EditEndorsementInstructorPrompt);
-            tw.RenderEndTag();  // td
-
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(HttpUtility.HtmlEncode(CFIDisplayName));
-            tw.RenderEndTag();  // td
-            tw.RenderEndTag();  // tr
-
-            // CFI Certificate Row
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Resources.SignOff.EditEndorsementCFIPrompt);
-            tw.RenderEndTag();  // td
-
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(HttpUtility.HtmlEncode(CFICertificate));
-            tw.RenderEndTag();  // td
-
-            tw.RenderEndTag();  // tr
-
-            // CFI Certificate Expiration Row
-            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(Resources.SignOff.EditEndorsementExpirationPrompt);
-            tw.RenderEndTag();  // td
-            tw.RenderBeginTag(HtmlTextWriterTag.Td);
-            tw.Write(CFIExpirationDate.HasValue() ? CFIExpirationDate.ToShortDateString() : Resources.SignOff.EndorsementNoDate);
-            tw.RenderEndTag();  // td
-            tw.RenderEndTag();  // tr
-
-            // Digitized Signature row
-            if (HasDigitizedSig)
-            {
-                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("colspan", "2");
-                tw.RenderBeginTag(HtmlTextWriterTag.Td);
-                tw.AddAttribute("src", DigitizedSigLink);
-                tw.RenderBeginTag(HtmlTextWriterTag.Img);
-                tw.RenderEndTag();  // td
-                tw.RenderEndTag();  // img
-                tw.RenderEndTag();  // tr
-            }
-
-            tw.RenderEndTag();  // table
-
-            tw.RenderEndTag();  // div
-        }
-
-        public string RenderHTML()
-        {
-            using (StringWriter sw = new StringWriter())
-            {
-                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
-                {
-                    RenderHTML(tw);
-                    return sw.ToString();
-                }
-            }
         }
     }
 
