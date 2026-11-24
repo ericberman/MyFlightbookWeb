@@ -257,16 +257,16 @@ namespace MyFlightbook.Image
         {
             get
             {
-                switch (ImageType)
-                {
-                    default:
-                    case ImageFileType.JPEG:
-                    case ImageFileType.S3VideoMP4:
-                    case ImageFileType.S3PDF:
-                        return String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewPic?r={0}&k={1}&t={2}", WebUtility.UrlEncode(Class.ToString()), WebUtility.UrlEncode(Key), WebUtility.UrlEncode(ThumbnailFile)).ToAbsolute();
-                    case ImageFileType.PDF:
-                        return PathThumbnail.ToAbsolute();
-                }
+                // Aircraft images are public.  Everything else goes through ViewPic with a signed URL (see ResourceUrlSigner);
+                // the page that renders this is responsible for having authorized the viewer.
+                bool fPublic = Class == ImageClass.Aircraft;
+
+                // Local PDFs have historically been served directly; keep doing that for public images, or until signing is configured.
+                if (ImageType == ImageFileType.PDF && (fPublic || !ResourceUrlSigner.IsConfigured))
+                    return PathThumbnail.ToAbsolute();
+
+                string szUrl = String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/ViewPic?r={0}&k={1}&t={2}", WebUtility.UrlEncode(Class.ToString()), WebUtility.UrlEncode(Key), WebUtility.UrlEncode(ThumbnailFile)).ToAbsolute();
+                return fPublic ? szUrl : ResourceUrlSigner.AppendSignature(szUrl, ResourceUrlSigner.ImagePayload(Class, Key, ThumbnailFile));
             }
             set { }
         }
@@ -283,7 +283,11 @@ namespace MyFlightbook.Image
                 {
                     default:
                     case ImageFileType.JPEG:
-                        return VirtualPath + ThumbnailFile;
+                        // Aircraft thumbnails are public and served statically (free!).  Others are served by the Thumb action with a signed URL
+                        // once signing is configured.
+                        if (Class == ImageClass.Aircraft || !ResourceUrlSigner.IsConfigured)
+                            return VirtualPath + ThumbnailFile;
+                        return ResourceUrlSigner.AppendSignature(String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/Thumb?r={0}&k={1}&t={2}", WebUtility.UrlEncode(Class.ToString()), WebUtility.UrlEncode(Key), WebUtility.UrlEncode(ThumbnailFile)).ToAbsolute(), ResourceUrlSigner.ImagePayload(Class, Key, ThumbnailFile));
                     case ImageFileType.S3PDF:
                     case ImageFileType.PDF:
                         // Icon used per text of http://www.adobe.com/misc/linking.html

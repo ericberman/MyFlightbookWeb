@@ -126,11 +126,11 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il = new ImageList(MFBPendingImage.PendingImagesInSession().ToArray()) { Class = imageClass };
                 else
                 {
+                    // Viewing is authorized by class+key, so check once up front rather than per image (pending images are in this user's own session)
+                    ImageAuthorization.ValidateViewAuth(imageClass, szKey, User.Identity.Name);
                     il = new ImageList(imageClass, szKey);
                     il.Refresh(fIncludeDocs);
                 }
-                foreach (MFBImageInfo mfbii in il.ImageArray)
-                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.View);
                 return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, confirmText, defaultImage, onMakeDefault, onDelete, onAnnotate);
             });
         }
@@ -494,32 +494,6 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             return fKey && pf.HasHeadShot ? (ActionResult)File(pf.HeadShot.ToArray(), "image/jpeg") : File("~/Public/tabimages/ProfileTab.png".MapAbsoluteFilePath(), "image/png");
         }
 
-        public ActionResult ViewPic(string r, string k, string t)
-        {
-            // issue #1389 - seeing a bunch of requests that include an encoded ampersand.  If we see that, redirect to notfound
-            if (t?.Contains('\\') ?? true)
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-
-            if (Enum.TryParse(r, out MFBImageInfoBase.ImageClass ic) && !String.IsNullOrEmpty(k) && !String.IsNullOrEmpty(t) && !t.Contains("?"))  // Googlebot seems to be adding "?resize=300,300
-            {
-                MFBImageInfo mfbii = new MFBImageInfo(ic, k, t);
-                return (mfbii == null) ? (ActionResult)HttpNotFound() : Redirect(mfbii.ResolveFullImage());
-            }
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        }
-
-        public ActionResult FlightSig(int id)
-        {
-            if (id == LogbookEntryCore.idFlightNew)
-                return HttpNotFound();
-
-            LogbookEntry le = new LogbookEntry { FlightID = id };
-            le.LoadDigitalSig();
-
-            byte[] sig = le.GetDigitizedSignature();
-
-            return (sig != null && sig.Length > 0) ? (ActionResult)File(sig, "image/png") : HttpNotFound();
-        }
         #endregion
 
         // GET: mvc/Image

@@ -1691,6 +1691,7 @@
     <Compile Include="Areas\mvc\Controllers\FlightEditController.cs" />
     <Compile Include="Areas\mvc\Controllers\FlightsController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImageController.cs" />
+    <Compile Include="Areas\mvc\Controllers\ImageServeController.cs" />
     <Compile Include="Areas\mvc\Controllers\ImportController.cs" />
     <Compile Include="Areas\mvc\Controllers\InternalController.cs" />
     <Compile Include="Areas\mvc\Controllers\MFBTemplateController.cs" />

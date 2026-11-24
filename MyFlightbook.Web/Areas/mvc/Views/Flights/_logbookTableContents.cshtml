@@ -118,7 +118,7 @@ else
                                             @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
                                             {
                                                 <video width="320" heght="240" controls>
-                                                    <source src="@img.ResolveFullImage()" type="video/mp4" />
+                                                    <source src="@img.URLFullImage" type="video/mp4" />
                                                     <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
                                                 </video>
                                             }
@@ -184,7 +184,7 @@ else
                                             @if (img.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
                                             {
                                                 <video width="320" heght="240" controls>
-                                                    <source src="@img.ResolveFullImage()" type="video/mp4" />
+                                                    <source src="@img.URLFullImage" type="video/mp4" />
                                                     <img src="@img.URLThumbnail" width="@img.WidthThumbnail" height="@img.HeightThumbnail" title="@img.Comment" alt="@img.Comment" />
                                                 </video>
                                             }

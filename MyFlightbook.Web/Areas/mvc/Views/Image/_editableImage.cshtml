@@ -21,7 +21,7 @@
         @if (isVideo)
         {
             <video width="320" heght="240" controls>
-                <source src="@mfbii.ResolveFullImage()" type="video/mp4" />
+                <source src="@mfbii.URLFullImage" type="video/mp4" />
                 <img src="@mfbii.URLThumbnail" @thumbWidth @thumbHeight title="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" alt="@(String.IsNullOrEmpty(altText) ? mfbii.Comment : altText)" />
             </video>
         }

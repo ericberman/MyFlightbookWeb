@@ -33,7 +33,8 @@ namespace MyFlightbook.HtmlUtility
             tw.AddStyleAttribute(HtmlTextWriterStyle.Padding, "3px");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            tw.AddAttribute(HtmlTextWriterAttribute.Href, mfbii.ResolveFullImage());
+            // Link to the full image via ViewPic (signed, for non-public images), absolute since this is typically viewed from a local file.
+            tw.AddAttribute(HtmlTextWriterAttribute.Href, String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, mfbii.URLFullImage));
             tw.RenderBeginTag(HtmlTextWriterTag.A);
 
             tw.AddAttribute(HtmlTextWriterAttribute.Src, (mfbii.ImageType == ImageFileType.PDF || mfbii.ImageType == ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, "~/images/pdficon_large.png".ToAbsolute()) : szThumbFolder + mfbii.ThumbnailFile);

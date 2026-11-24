@@ -229,9 +229,9 @@
                                     <div class="flR">
                                         @if (led.HasDigitizedSig)
                                         {
-                                            <img class="flR w2cm" src="@String.Format(CultureInfo.InvariantCulture, "~/mvc/Image/FlightSig/{0}", led.FlightID).ToAbsolute()" />
+                                            <img class="flR w2cm" src="@MyFlightbook.Image.ResourceUrlSigner.FlightSignatureUrl(led.FlightID)" />
                                         }
-                                        <img class="imgMiddle flL" style="width: .7cm margin-right: 1pt;" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
+                                        <img class="imgMiddle flL" style="width: .7cm; margin-right: 1pt;" src="@((led.HasValidSig ? "~/Images/sigok.png" : "~/Images/siginvalid.png").ToAbsolute())" alt="@led.SignatureStateDescription" title="@led.SignatureStateDescription" />
                                         <div class="@(led.HasValidSig ? "signatureValid" : "signatureInvalid")">
                                             @led.SignatureMainLine
                                             @led.SignatureCommentLine

@@ -405,6 +405,8 @@ namespace MyFlightbook
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
 
+            // Links in the zip file are stored and used later, so sign them for the long haul.
+            using (ResourceUrlSigner.UseLifetime(ResourceUrlSigner.LongLifetime))
             using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
             {
                 using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))

@@ -78,6 +78,22 @@ namespace MyFlightbook.Web.Areas.mvc
                 "mvc/AllMakes/{idman}/{idmodel}",
                 new { controller = "AllMakes", action = "Index", idman = "0", idmodel = "0"}
                 );
+            // Image serving lives in a session-less controller, but keeps its historical /mvc/Image/... URLs (they persist in exports and app caches)
+            context.MapRoute(
+                "imageViewPic",
+                "mvc/Image/ViewPic",
+                new { controller = "ImageServe", action = "ViewPic" }
+            );
+            context.MapRoute(
+                "imageThumb",
+                "mvc/Image/Thumb",
+                new { controller = "ImageServe", action = "Thumb" }
+            );
+            context.MapRoute(
+                "imageFlightSig",
+                "mvc/Image/FlightSig/{id}",
+                new { controller = "ImageServe", action = "FlightSig" }
+            );
             context.MapRoute(
                 "mvc_default",
                 "mvc/{controller}/{action}/{id}",
