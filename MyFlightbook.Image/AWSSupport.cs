@@ -76,6 +76,30 @@ namespace MyFlightbook.Image
             return new AmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
         }
 
+        /// <summary>
+        /// Returns a presigned GET URL for the specified key in the current bucket.  This is computed locally using our AWS credentials (no call to AWS);
+        /// S3 honors it until it expires, even if the bucket blocks all public access.
+        /// The caller is responsible for having authorized the request.
+        /// </summary>
+        /// <param name="szKey">The S3 key of the object</param>
+        /// <param name="lifetime">How long the URL should be valid</param>
+        public static string PresignedGetUrl(string szKey, TimeSpan lifetime)
+        {
+            if (String.IsNullOrEmpty(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            using (IAmazonS3 s3 = S3Client())
+            {
+                return s3.GetPreSignedURL(new GetPreSignedUrlRequest()
+                {
+                    BucketName = CurrentS3Bucket,
+                    Key = szKey,
+                    Verb = HttpVerb.GET,
+                    Expires = DateTime.UtcNow.Add(lifetime)
+                });
+            }
+        }
+
         public static IAmazonMediaConvert MediaConvertClient()
         {
             return new AmazonMediaConvertClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
@@ -144,7 +168,7 @@ namespace MyFlightbook.Image
                     cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
                     cor.DestinationKey = szDst;
                     cor.SourceKey = dor.Key = szSrc;
-                    cor.CannedACL = S3CannedACL.PublicRead;
+                    // No public ACL: objects are private and are served via presigned URLs (see ImageServeController.ViewPic)
                     cor.StorageClass = Amazon.S3.S3StorageClass.Standard; // vs. reduced
 
                     // We do get some stray failures to move, so check for successful copy before deleting
@@ -214,7 +238,7 @@ namespace MyFlightbook.Image
                     ContentType = mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG ? ContentTypeJPEG : ContentTypePDF,
                     AutoCloseStream = true,
                     Key = mfbii.S3Key,
-                    CannedACL = S3CannedACL.PublicRead,
+                    // No public ACL: objects are private and are served via presigned URLs (see ImageServeController.ViewPic)
                     StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 
@@ -320,7 +344,7 @@ namespace MyFlightbook.Image
                     ContentType = szContentType,
                     AutoCloseStream = true,
                     Key = szBaseFile + FileExtensions.VidInProgress,
-                    CannedACL = S3CannedACL.PublicRead,
+                    // No public ACL: objects are private and are served via presigned URLs (see ImageServeController.ViewPic)
                     StorageClass = Amazon.S3.S3StorageClass.Standard // vs. reduced
                 };
 

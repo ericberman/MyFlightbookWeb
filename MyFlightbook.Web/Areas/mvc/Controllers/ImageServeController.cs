@@ -26,6 +26,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
     [SessionState(SessionStateBehavior.Disabled)]
     public class ImageServeController : Controller
     {
+        // Lifetimes for presigned S3 URLs.  Videos get longer, since the player makes range requests throughout playback and S3 checks each against the expiration.
+        private static readonly TimeSpan presignLifetimeDefault = TimeSpan.FromMinutes(15);
+        private static readonly TimeSpan presignLifetimeVideo = TimeSpan.FromHours(6);
+        // A cached redirect must expire comfortably before the presigned URL it points to.
+        private static readonly TimeSpan presignCacheMargin = TimeSpan.FromMinutes(5);
+
         private static readonly char[] rgUnsafePathChars = new char[] { '/', '\\', ':', '?', '*', '"', '<', '>', '|' };
 
         /// <summary>
@@ -96,7 +102,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 MFBImageInfo mfbii = new MFBImageInfo(ic, k, t);
                 if (mfbii.IsLocal)
                     return fPublic ? Redirect(mfbii.PathFullImage) : ServeLocalImageFile(ic, mfbii.PathFullImage);
-                return Redirect(mfbii.PathFullImageS3);
+
+                // On S3: redirect to a short-lived presigned URL (for ALL classes, aircraft included), so that the bucket itself can be private.
+                TimeSpan presignLifetime = mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4 ? presignLifetimeVideo : presignLifetimeDefault;
+
+                // CheckSignedRequest may have allowed caching for up to a day; the redirect must not outlive the presigned URL.
+                // (SetMaxAge only ever lowers an already-set max-age, and we want the lower value anyhow.)
+                Response.Cache.SetCacheability(HttpCacheability.Private);
+                Response.Cache.SetMaxAge(presignLifetime - presignCacheMargin);
+                return Redirect(mfbii.PresignedUrlFullImageS3(presignLifetime));
             }
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }

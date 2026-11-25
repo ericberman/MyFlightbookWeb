@@ -298,24 +298,6 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Returns a URI to the full-sized video thumbnail that's up on S3
-        /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        public Uri UriS3VideoThumbnail
-        {
-            get
-            {
-                switch (ImageType)
-                {
-                    case ImageFileType.S3VideoMP4:
-                        return new Uri(AWSConfiguration.AmazonS3Prefix + VirtualPath.Substring(1) + ThumbnailFile.Replace("_.jpg", "_00001.jpg"));
-                    default:
-                        return null;
-                }
-            }
-        }
-
-        /// <summary>
         /// Returns a virtual path to the full image.  This may not be usable as a URL to the full image as the file may not actually exist here.
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -352,6 +334,15 @@ namespace MyFlightbook.Image
         public string PathFullImageS3
         {
             get { return AWSConfiguration.AmazonS3Prefix + S3Key; }
+        }
+
+        /// <summary>
+        /// Returns a presigned URL to the full image on S3, valid for the specified lifetime.  This works even if the bucket is private.
+        /// The caller is responsible for having authorized the request.
+        /// </summary>
+        public string PresignedUrlFullImageS3(TimeSpan lifetime)
+        {
+            return AWSConfiguration.PresignedGetUrl(S3Key, lifetime);
         }
 
         /// <summary>
@@ -509,28 +500,11 @@ namespace MyFlightbook.Image
         {
             unchecked
             {
+                // Must be consistent with Equals, which (via CompareTo) compares ImageType and SortKey (case-insensitive).
+                // Don't include derived properties: the URLs carry time-varying signatures, and others hit the file system or depend on the request.
                 var hashCode = -750829556;
                 hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
-                hashCode = hashCode * -1521134295 + Class.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
-                hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
-                hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
+                hashCode = hashCode * -1521134295 + StringComparer.OrdinalIgnoreCase.GetHashCode(SortKey ?? string.Empty);
                 return hashCode;
             }
         }
@@ -751,15 +725,6 @@ namespace MyFlightbook.Image
             {
                 inf?.Image.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Resolves a link to the full image usable by a browser (assumes Key/Class/Thumb are all set)
-        /// </summary>
-        /// <returns></returns>
-        public string ResolveFullImage()
-        {
-            return (IsLocal) ? PathFullImage : PathFullImageS3;
         }
 
         /// <summary>

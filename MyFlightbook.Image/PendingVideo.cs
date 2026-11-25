@@ -238,9 +238,8 @@ namespace MyFlightbook.Image
                     if (originalVideo != null)
                         await s3.DeleteObjectAsync(new DeleteObjectRequest() { BucketName = Bucket, Key = originalVideo.Key });
 
-                    // Now set the ACLs so that it's all public
-                    await s3.PutObjectAclAsync(new PutObjectAclRequest() { BucketName = Bucket, Key = thumbFileNew, ACL = S3CannedACL.PublicRead });
-                    await s3.PutObjectAclAsync(new PutObjectAclRequest() { BucketName = Bucket, Key = mp4Video.Key, ACL = S3CannedACL.PublicRead });
+                    // No public ACLs: objects stay private and are served via presigned URLs (see ImageServeController.ViewPic).
+                    // (Setting a public ACL would FAIL once the bucket blocks public access, and the catch below would then mistake that for a missing thumbnail.)
                 }
                 catch (AmazonS3Exception)
                 {
