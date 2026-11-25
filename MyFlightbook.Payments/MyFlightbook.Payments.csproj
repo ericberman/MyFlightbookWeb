@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stripe.net" Version="53.1.0" />
+    <PackageReference Include="Stripe.net" Version="53.2.0" />
   </ItemGroup>
 
   <ItemGroup>
