@@ -100,13 +100,9 @@
     <li><a href="https://github.com/ericberman/MyFlightbookWeb" target="_blank">MyFlightbookWeb</a> has the code for the website, which backs the mobile apps.  This is where the real database lives and where all the main logic lies.</li>
     <li><a href="https://github.com/ericberman/MyFlightbookAndroid" target="_blank">MyFlightbookAndroid</a> has the code for the Android app.</li>
     <li><a href="https://github.com/ericberman/MyFlightbookiOS" target="_blank">MyFlightbookiOS</a> has the code for the the iOS app.</li>
-    <li>
-        <a href="https://github.com/ericberman/WSDLtoObjC" target="_blank">WSDLtoObjC</a> has support code for the iOS app.  This code consumes the <a href="https://en.wikipedia.org/wiki/Web_Services_Description_Language" target="_blank">WSDL</a> (Web Service Description Language) from the website and generates
-        Objective-C classes that talk to the web service and encapsulate the data.
-    </li>
 </ul>
 <p>To set up the web server, you will need Windows running IIS and a MySQL database.  The <a href="https://github.com/ericberman/MyFlightbookWeb/blob/master/README.md" target="_blank">README.md</a> file on GitHub provides walk-through instructions</p>
-<p><span style="font-weight:bold">PLEASE DO NOT TEST AGAINST THE LIVE SITE.</span>  <a href="@("~/mvc/pub/contact".ToAbsolute())">Contact us</a> and we can point you to a safe staging/development server that you can use.</p>
+<p><span class="b">PLEASE DO NOT TEST AGAINST THE LIVE SITE.</span>  <a href="@("~/mvc/pub/contact".ToAbsolute())">Contact us</a> and we can point you to a safe staging/development server that you can use.</p>
 <h2>Web Service</h2>
 <p>The available calls (some of which are deprecated) can be found <a href="@("~/public/WebService.asmx".ToAbsolute())" target="_blank">here</a>; a formal XML-based description of the data structures can be found <a href="@("~/public/WebService.asmx?WSDL".ToAbsolute())" target="_blank">here</a>.</p>
 <p>Please read the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki" target="_blank">wiki</a> on github for more information.</p>
@@ -116,24 +112,19 @@
 <p>There is an <a href="@("~/mvc/PlayPen/ClientTestBed".ToAbsolute())">oAuth testbed</a> in the <a href="@("~/mvc/PlayPen".ToAbsolute())">playpen</a> (where widgets and tools that aren't officially supported live) that you can use to test this out.</p>
 @if (User.Identity.IsAuthenticated)
 {
-    <style type="text/css">
-        .boldHeader {
-            font-weight: bold;
-        }
-    </style>
-    <div style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px;">
-        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.error), targetID = "divNewClient", labelText = "Add a client", labelClass = "boldHeader" }); }
-        <div id="divNewClient" style="@(String.IsNullOrEmpty(ViewBag.error) ? "display: none;" : string.Empty)">
+    <div class="calloutBackground calloutSmall shadowed w100">
+        @{ Html.RenderAction("RenderExpandoText", "MFBTemplate", new { fExpanded = !String.IsNullOrEmpty(ViewBag.error), targetID = "divNewClient", labelText = "Add a client", labelClass = "b" }); }
+        <div id="divNewClient" class="@(String.IsNullOrEmpty(ViewBag.error) ? "dn" : string.Empty)">
             @using (Html.BeginForm("", "oAuth", FormMethod.Post, new { id = "frmNewClient", name = "frmNewClient" }))
             {
                 @Html.AntiForgeryToken()
                 <table style="padding:3px;">
-                    <tr style="vertical-align:top">
+                    <tr class="topAlign">
                         <td>Client ID</td>
                         <td><input type="text" maxlength="45" id="txtClient" data-1p-ignore name="clientID" required value="@(newClient?.ClientIdentifier ?? string.Empty)" /></td>
                         <td>This is the unique ID for your client.</td>
                     </tr>
-                    <tr style="vertical-align:top">
+                    <tr class="topAlign">
                         <td>Client Secret</td>
                         <td>
                             <div><input type="text" maxlength="255" required id="txtSecret" name="clientSecret" value="@(newClient?.ClientSecret ?? string.Empty)" /></div>
@@ -141,17 +132,17 @@
                         </td>
                         <td>This is the secret for your client.  Keep it safe!!!</td>
                     </tr>
-                    <tr style="vertical-align:top">
+                    <tr class="topAlign">
                         <td>Client Name</td>
                         <td><input type="text" id="txtName" maxlength="255" name="clientName" required value="@(newClient?.ClientName ?? string.Empty)" /></td>
                         <td>This is the name for your client, as displayed to your users.</td>
                     </tr>
-                    <tr style="vertical-align:top">
+                    <tr class="topAlign">
                         <td>Callback URL(s):<br /><span class="fineprint">Separate multiple urls with a space or a newline.</span></td>
                         <td><textarea id="txtCallback" name="clientCallback" maxlength="1023" ValidationGroup="newClient" rows="4" required>@(newClient?.CallbacksAsString ?? "https://")</textarea></td>
                         <td>When authorizing a user, the redirect URL MUST match this.  These MUST be https.</td>
                     </tr>
-                    <tr style="vertical-align:top">
+                    <tr class="topAlign">
                         <td>Requested Scopes</td>
                         <td>
                             @foreach (MFBOAuthScope scope in Enum.GetValues(typeof(MFBOAuthScope)))
@@ -197,7 +188,7 @@
                     string divID = "divUploadLogo_" + iClient;
                     string promptID = "promptUploadLogo_" + iClient;
                     iClient++;
-                    <tr style="vertical-align: top;">
+                    <tr class="topAlign">
                         <td>
                             <img src="@("~/images/x.gif".ToAbsolute())" onclick="javascript: deleteClient('@client.ClientIdentifier'); return false;" />
                             <script type="text/javascript">
