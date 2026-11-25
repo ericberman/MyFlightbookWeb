@@ -16,7 +16,7 @@
                 <div style="max-height:480px; max-width: 480px">
                     @if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4)
                     {
-                        <div><video width="480" height="360" controls><source src='@mfbii.ResolveFullImage()' type="video/mp4"></video></div>
+                        <div><video width="480" height="360" controls><source src='@mfbii.URLFullImage' type="video/mp4"></video></div>
                         <div>@mfbii.Comment</div>
                     }
                     else
