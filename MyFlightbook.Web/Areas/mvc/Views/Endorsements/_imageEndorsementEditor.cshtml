@@ -54,7 +54,7 @@
                 return;
             }
             $.ajax({
-                url: '@Url.Action("SaveImageEndorsement", "Training")',
+                url: '@Url.Action("SaveImageEndorsement", "Endorsements")',
                 type: "POST", data: JSON.stringify(params), dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) { $("#lblImageEndorsementErr").text(xhr.responseText); },
                 success: function (response) { window.location.reload(); }

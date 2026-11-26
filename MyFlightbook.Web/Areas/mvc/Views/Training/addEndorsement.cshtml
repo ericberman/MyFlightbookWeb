@@ -36,7 +36,7 @@
         var form = $("#frmSelectInstr");
         var f = form.serialize();
         $.ajax({
-            url: "@Url.Action("EndorsementEditorForUserAddEndorsement", "Training")",
+            url: "@Url.Action("EndorsementEditorForUserAddEndorsement", "Endorsements")",
             type: "POST", data: f, dataType: "html", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function (r) {
@@ -58,7 +58,7 @@
         var form = $("#frmRequestEndorsement");
         var f = form.serialize();
         $.ajax({
-            url: "@Url.Action("RequestEndorsement", "Training")",
+            url: "@Url.Action("RequestEndorsement", "Endorsements")",
             type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             success: function (r) { window.alert('@Resources.SignOff.RequestEndorsementSuccess'); }
@@ -143,5 +143,5 @@
 <hr />
 <h2>@Resources.SignOff.EndorsementsYourEndorsements</h2>
 <div>
-    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = ViewBag.endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
+    @{ Html.RenderAction("RenderEndorsements", "Endorsements", new { endorsements = ViewBag.endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name }); }
 </div>

@@ -29,7 +29,7 @@
 
     $(() => {
         ajaxFileUpload($("#divUploadEndorsements"), {
-            uploadURL: "@Url.Action("UploadEndorsement", "Training")",
+            uploadURL: "@Url.Action("UploadEndorsement", "Endorsements")",
             allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
             onUpload: function () {
                 var params = new Object();
@@ -71,7 +71,7 @@
     <p class="noprint"><img src="@("~/images/add.png".ToAbsolute())" class="imgMiddle" /> <a href="@("~/mvc/Training/AddEndorsement".ToAbsolute())">@Resources.SignOff.EndorsementsAddEndorsement</a></p>
 }
 <div>
-    @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name, fPrintView = printView, fCanCategorize = true }); }
+    @{ Html.RenderAction("RenderEndorsements", "Endorsements", new { endorsements = endorsements, fCanDelete = true, fCanSort = true, fCanCopy = false, userName = User.Identity.Name, fPrintView = printView, fCanCategorize = true }); }
 </div>
 @if (printView)
 {
@@ -97,7 +97,7 @@ else
             <span class="b">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
         </div>
         <p>@Resources.Endorsements.ImageScanDescription</p>
-        @{ Html.RenderAction("RenderImageEndorsementScanner", "Training", new { imageClass = MFBImageInfo.ImageClass.Endorsement }); }
+        @{ Html.RenderAction("RenderImageEndorsementScanner", "Endorsements", new { imageClass = MFBImageInfo.ImageClass.Endorsement }); }
     </div>
     <div class="dib">
         <div class="noprint" id="divUploadEndorsements"></div>

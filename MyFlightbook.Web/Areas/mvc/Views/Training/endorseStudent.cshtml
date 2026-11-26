@@ -26,7 +26,7 @@
 
         ajaxFileUpload($("#divUploadEndorsements"), {
             additionalParams: [{ name: "szKey", value: "@szTargetUser" }],
-            uploadURL: "@Url.Action("UploadEndorsement", "Training")",
+            uploadURL: "@Url.Action("UploadEndorsement", "Endorsements")",
             allowedTypes: "@MyFlightbook.Image.FileExtensions.AllowedExtensionsForTypes(true, true, false)",
             onUpload: function () {
                 var params = new Object();
@@ -64,7 +64,7 @@
 </div>
 @if (!String.IsNullOrEmpty(szTargetUser) || studentType == Endorsement.StudentTypes.External)
 {
-    Html.RenderAction("RenderEndorsementEditor", "Training", new
+    Html.RenderAction("RenderEndorsementEditor", "Endorsements", new
     {
         sourceUser = User.Identity.Name,
         targetUser = szTargetUser,
@@ -81,7 +81,7 @@
     }
     <p>
         <a target="_blank" href="@("~/mvc/faq?q=23#23".ToAbsolute())">@Resources.SignOff.DigitalEndorsementDisclaimer</a>
-        @{ Html.RenderAction("RenderEndorsements", "Training", new { endorsements = endorsements, fCanDelete = false, fCanSort = true, fCanDownload = true, onCopy = (studentType == Endorsement.StudentTypes.External || !String.IsNullOrEmpty(szTargetUser)) ? "copyEndorsement" : string.Empty, userName = szTargetUser }); }
+        @{ Html.RenderAction("RenderEndorsements", "Endorsements", new { endorsements = endorsements, fCanDelete = false, fCanSort = true, fCanDownload = true, onCopy = (studentType == Endorsement.StudentTypes.External || !String.IsNullOrEmpty(szTargetUser)) ? "copyEndorsement" : string.Empty, userName = szTargetUser }); }
 </div>
 @if (canViewStudent)
 {
@@ -90,7 +90,7 @@
         <br />
         <hr />
         <h2>@String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNotOwnedEndorsementHeader, pfStudent.UserFullName)</h2>
-        Html.RenderAction("RenderEndorsements", "Training", new { endorsements = nonOwnedEndorsements, fCanDelete = false, fCanSort = true, onCopy = string.Empty, userName = szTargetUser });
+        Html.RenderAction("RenderEndorsements", "Endorsements", new { endorsements = nonOwnedEndorsements, fCanDelete = false, fCanSort = true, onCopy = string.Empty, userName = szTargetUser });
     }
     if (canEditStudent)
     {

@@ -65,7 +65,7 @@
         <hr />
         <div class="mHem">
             <div id="templateBody">
-                @{ Html.RenderAction("RenderEndorsementTemplateBody", "Training", new { endorsementType = template, targetUserName = pfTargetUser.UserName, source = source }); }
+                @{ Html.RenderAction("RenderEndorsementTemplateBody", "Endorsements", new { endorsementType = template, targetUserName = pfTargetUser.UserName, source = source }); }
             </div>
         </div>
         <hr />
@@ -148,7 +148,7 @@
 </div>
 @if (mode == EndorsementMode.StudentPullAuthenticated && template.ID > 1)
 {
-    using (Html.BeginForm("RequestEndorsement", "Training", FormMethod.Post, new { name = "frmRequestEndorsement", id = "frmRequestEndorsement" }))
+    using (Html.BeginForm("RequestEndorsement", "Endorsements", FormMethod.Post, new { name = "frmRequestEndorsement", id = "frmRequestEndorsement" }))
     {
         @Html.AntiForgeryToken()
         <input type="hidden" name="student" value="@User.Identity.Name" />

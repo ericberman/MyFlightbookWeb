@@ -35,7 +35,7 @@
 
         function imageScanGrantConsent() {
             $.ajax({
-                url: '@Url.Action("GrantImageScanConsent", "Training")',
+                url: '@Url.Action("GrantImageScanConsent", "Endorsements")',
                 type: "POST", data: "{}", dataType: "text", contentType: "application/json",
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 success: function (response) {
@@ -57,7 +57,7 @@
                 $("#btnStartImageScan").prop("disabled", true);
                 $("#divImageScanDone").hide();
                 $.ajax({
-                    url: '@Url.Action("PendingImageScans", "Training")',
+                    url: '@Url.Action("PendingImageScans", "Endorsements")',
                     type: "POST", data: JSON.stringify({ imageClass: imageScan.imageClass }), dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) { window.alert(xhr.responseText); $("#btnStartImageScan").prop("disabled", false); },
                     success: function (r) {
@@ -101,7 +101,7 @@
             var img = imageScan.queue[imageScan.index];
             $("#lblImageScanStatus").text("@JSString(Resources.Endorsements.ImageScanProgressTemplate)".replace("{0}", imageScan.index + 1).replace("{1}", imageScan.queue.length).replace("{2}", img.comment));
             $.ajax({
-                url: '@Url.Action("ScanEndorsementImage", "Training")',
+                url: '@Url.Action("ScanEndorsementImage", "Endorsements")',
                 type: "POST", data: JSON.stringify({ imageClass: imageScan.imageClass, szThumb: img.thumb, fForce: false }), dataType: "json", contentType: "application/json",
                 error: function (xhr, status, error) {
                     imageScan.errors++;
@@ -148,7 +148,7 @@
                 var lblText = $("<span></span>").text("@JSString(Resources.Endorsements.ImageScanReadingOne)");
                 lbl.append($("<img></img>").attr("src", "@("~/images/progress.gif".ToAbsolute())").css({ width: "16px", height: "16px", verticalAlign: "middle", marginRight: "3px" })).append(lblText);
                 $.ajax({
-                    url: '@Url.Action("ScanEndorsementImage", "Training")',
+                    url: '@Url.Action("ScanEndorsementImage", "Endorsements")',
                     type: "POST", data: JSON.stringify({ imageClass: imageClass, szThumb: thumb, fForce: true }), dataType: "json", contentType: "application/json",
                     error: function (xhr, status, error) { lbl.remove(); links.show(); window.alert(xhr.responseText); },
                     success: function (r) {
@@ -193,4 +193,4 @@ else
         function scanSingleEndorsementImage(sender, imageClass, thumb) { window.alert("@JSString(Resources.Endorsements.ImageScanNotConfigured)"); }
     </script>
 }
-@{ Html.RenderAction("RenderImageEndorsementEditor", "Training"); }
+@{ Html.RenderAction("RenderImageEndorsementEditor", "Endorsements"); }

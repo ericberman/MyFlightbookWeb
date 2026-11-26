@@ -1241,13 +1241,13 @@
     <Content Include="Areas\mvc\Views\Training\_scribbleSignature.cshtml" />
     <Content Include="Areas\mvc\Views\Training\requestSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorsements.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_endorsementList.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_endorsementCategoryOptions.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_imageEndorsementEditor.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_imageEndorsementScanner.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_endorsementList.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_endorsementCategoryOptions.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_imageEndorsementEditor.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_imageEndorsementScanner.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorseStudent.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_editEndorsement.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_editableEndorsement.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_editEndorsement.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_editableEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Training\addEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Pub\unsubscribe.cshtml" />
     <Content Include="Areas\mvc\Views\Training\reports.cshtml" />
@@ -1407,7 +1407,7 @@
     <Content Include="Areas\mvc\Views\Print\USAFacing.cshtml" />
     <Content Include="Areas\mvc\Views\Prefs\_prefExternalMaint.cshtml" />
     <Content Include="Areas\mvc\Views\oAuth\_actionSummary.cshtml" />
-    <Content Include="Areas\mvc\Views\Training\_endorsementTemplate.cshtml" />
+    <Content Include="Areas\mvc\Views\Endorsements\_endorsementTemplate.cshtml" />
     <Content Include="Areas\mvc\Views\Aircraft\newModel.cshtml" />
     <Content Include="Areas\mvc\Views\Airport\_visitedMap.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
@@ -1710,6 +1710,7 @@
     <Compile Include="Areas\mvc\Controllers\PubController.cs" />
     <Compile Include="Areas\mvc\Controllers\rbredirectController.cs" />
     <Compile Include="Areas\mvc\Controllers\SearchController.cs" />
+    <Compile Include="Areas\mvc\Controllers\EndorsementsController.cs" />
     <Compile Include="Areas\mvc\Controllers\TrainingController.cs" />
     <Compile Include="Areas\mvc\mvcAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">

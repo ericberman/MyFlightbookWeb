@@ -22,7 +22,7 @@
         params.mode = "@mode";
         var d = JSON.stringify(params);
         $.ajax({
-            url: '@Url.Action("GetEndorsementTemplate", "Training")',
+            url: '@Url.Action("GetEndorsementTemplate", "Endorsements")',
             type: "POST", data: d, dataType: "html", contentType: "application/json",
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             complete: function (response) { },
@@ -45,7 +45,7 @@
         params.searchText = idTxt.value;
         var d = JSON.stringify(params);
         $.ajax({
-            url: '@Url.Action("TemplatesMatchingTerm", "Training")',
+            url: '@Url.Action("TemplatesMatchingTerm", "Endorsements")',
             type: "POST", data: d, dataType: "json", contentType: "application/json",
             error: function (xhr, status, error) { window.alert(xhr.responseText); },
             complete: function (response) { },
@@ -74,7 +74,7 @@
 
             var f = form.serialize();
             $.ajax({
-                url: "@Url.Action("AddEndorsementForStudent", "training")",
+                url: "@Url.Action("AddEndorsementForStudent", "Endorsements")",
                 type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 success: function (r) {
@@ -118,6 +118,6 @@
         <h2>@Resources.SignOff.EndorsementEditTemplate</h2>
     }
     <div id="divNewEndorsement">
-        @{ Html.RenderAction("RenderEndorsementBody", "Training", new { sourceUser = sourceUser, targetUser = targetUser, idTemplate = idTemplateRequested > 0 ? idTemplateRequested : EndorsementType.IDCustomTemplate, studentType = studentType, mode = mode }); }
+        @{ Html.RenderAction("RenderEndorsementBody", "Endorsements", new { sourceUser = sourceUser, targetUser = targetUser, idTemplate = idTemplateRequested > 0 ? idTemplateRequested : EndorsementType.IDCustomTemplate, studentType = studentType, mode = mode }); }
     </div>
 </div>

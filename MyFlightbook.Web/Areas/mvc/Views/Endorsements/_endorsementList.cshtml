@@ -52,7 +52,7 @@
             $("#hdnEndorsementToDelete").val(id);
             var f = $("#frmDelete").serialize();
             $.ajax({
-                url: '@Url.Action("DeleteExternalEndorsement", "Training")',
+                url: '@Url.Action("DeleteExternalEndorsement", "Endorsements")',
                 type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 complete: function (response) { },
@@ -68,7 +68,7 @@
             $("#hdnEndorsementToDelete").val(id);
             var f = $("#frmDelete").serialize();
             $.ajax({
-                url: '@Url.Action("DeleteOwnedEndorsement", "Training")',
+                url: '@Url.Action("DeleteOwnedEndorsement", "Endorsements")',
                 type: "POST", data: f, dataType: "text", contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 complete: function (response) { },
@@ -97,7 +97,7 @@
         params.idEndorsement = parseInt(dlg.find("[name='ecID']").val());
         params.newCategory = dlg.find("[name='newCategory']").val();
         $.ajax({
-            url: '@Url.Action("UpdateCategoryForEndorsement", "Training")',
+            url: '@Url.Action("UpdateCategoryForEndorsement", "Endorsements")',
             type: "POST",
             data: JSON.stringify(params),
             dataType: "text",
@@ -110,7 +110,7 @@
         });
     }
 </script>
-@using (Html.BeginForm("", "Training", FormMethod.Post, new { id = "frmDelete", name = "frmDelete" }))
+@using (Html.BeginForm("", "Endorsements", FormMethod.Post, new { id = "frmDelete", name = "frmDelete" }))
 {
     @Html.AntiForgeryToken()
     <input type="hidden" id="hdnEndorsementToDelete" name="id" />
@@ -119,7 +119,7 @@
 <input type="hidden" id="hdnCurSortDir" value="desc" />
 @if (canDownload)
 {
-    using (Html.BeginForm("DownloadEndorsements", "Training", FormMethod.Post, new { id = "frmDownloadEndorsements", name = "frmDownloadEndorsements" }))
+    using (Html.BeginForm("DownloadEndorsements", "Endorsements", FormMethod.Post, new { id = "frmDownloadEndorsements", name = "frmDownloadEndorsements" }))
     {
         @Html.AntiForgeryToken()
         <input type="hidden" name="userName" value="@szStudent" />
@@ -237,5 +237,5 @@ else
             <button type="button" onclick="javascript: saveEndorsementCategory();">@Resources.LocalizedText.OK</button>
         </div>
     </div>
-    Html.RenderAction("RenderImageEndorsementEditor", "Training");
+    Html.RenderAction("RenderImageEndorsementEditor", "Endorsements");
 }
