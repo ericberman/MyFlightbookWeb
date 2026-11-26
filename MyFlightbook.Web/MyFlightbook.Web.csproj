@@ -1242,6 +1242,7 @@
     <Content Include="Areas\mvc\Views\Training\requestSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorsements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_endorsementList.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_endorsementCategoryOptions.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_imageEndorsementEditor.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_imageEndorsementScanner.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorseStudent.cshtml" />

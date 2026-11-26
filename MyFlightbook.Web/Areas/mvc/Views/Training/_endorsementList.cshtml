@@ -79,27 +79,34 @@
         }
     }
 
-    function editEndorsementCategory(sender, id, currentCategory) {
-        var parent = $(sender).closest('div');
-        var select = $("#cmbSelectCategories");
-        parent.html("");
-        parent.append(select);
-        select.val(currentCategory);
-        select.off("change").on("change", function () {
-            var params = new Object();
-            params.idEndorsement = id;
-            params.newCategory = $(this).val();
-            $.ajax({
-                url: '@Url.Action("UpdateCategoryForEndorsement", "Training")',
-                type: "POST",
-                data: JSON.stringify(params),
-                dataType: "text",
-                contentType: 'application/json',
-                error: function (xhr, status, error) { window.alert(xhr.responseText); },
-                success: function (response) {
-                    window.location.reload();
-                }
-            });
+    function editEndorsementCategory(sender) {
+        var img = $(sender);
+        var dlg = $("#divEditEndorsementCategory");
+        dlg.find("[name='ecID']").val(img.attr("data-id"));
+        dlg.find("[name='ecTitle']").text(img.attr("data-title"));
+        var category = img.attr("data-category");
+        dlg.find("[name='newCategory']").val(category && category != "None" ? category : "Other");
+        $("#lblEditCategoryErr").text("");
+        showModalById("divEditEndorsementCategory", "@Html.Raw(HttpUtility.JavaScriptStringEncode(Resources.Endorsements.EditCategoryPrompt))", 450);
+        dlg.find("[name='newCategory']").focus();
+    }
+
+    function saveEndorsementCategory() {
+        var dlg = $("#divEditEndorsementCategory");
+        var params = new Object();
+        params.idEndorsement = parseInt(dlg.find("[name='ecID']").val());
+        params.newCategory = dlg.find("[name='newCategory']").val();
+        $.ajax({
+            url: '@Url.Action("UpdateCategoryForEndorsement", "Training")',
+            type: "POST",
+            data: JSON.stringify(params),
+            dataType: "text",
+            contentType: 'application/json',
+            error: function (xhr, status, error) { $("#lblEditCategoryErr").text(xhr.responseText); },
+            success: function (response) {
+                // Page reloads, since the endorsement may move to a different section
+                window.location.reload();
+            }
         });
     }
 </script>
@@ -162,21 +169,6 @@
                                 <td class="dn">@e.FARReference</td>
                                 <td class="dn">@e.Title</td>
                                 <td class="noprint endorsementActions">
-                                    @if (e.IsExternalEndorsement && e.DateDeleted == null)
-                                    {
-                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID, '@szDeleteConfirm');" />
-                                    }
-                                    @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
-                                    {
-                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID, '@szDeleteConfirm');" />
-                                    }
-                                    @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
-                                    {
-                                        <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
-                                    }
-                                </td>
-                                <td colspan="3">
-                                    @Html.Raw(e.RenderHTML())
                                     @if (canCategorize && !printView)
                                     {
                                         if (e.IsImageEndorsement)
@@ -197,13 +189,28 @@
                                                 imageClass = e.ImageClass.ToString(),
                                                 thumb = e.ThumbFileName
                                             });
-                                            <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" style="cursor: pointer;" data-ie="@szImageData" onclick="javascript: editImageEndorsement(JSON.parse(this.getAttribute('data-ie')));" alt="@Resources.Endorsements.ImageEndorsementEditPrompt" title="@Resources.Endorsements.ImageEndorsementEditPrompt" /></div>
+                                            <img src="@("~/images/pencilsm.png".ToAbsolute())" style="cursor: pointer;" data-ie="@szImageData" onclick="javascript: editImageEndorsement(JSON.parse(this.getAttribute('data-ie')));" alt="@Resources.Endorsements.ImageEndorsementEditPrompt" title="@Resources.Endorsements.ImageEndorsementEditPrompt" />
                                         }
                                         else
                                         {
-                                            <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: editEndorsementCategory(this, @e.ID, '@e.Category.ToString()');" alt="@Resources.Endorsements.EditCategoryPrompt" title="@Resources.Endorsements.EditCategoryPrompt" /></div>
+                                            <img src="@("~/images/pencilsm.png".ToAbsolute())" style="cursor: pointer;" data-id="@e.ID" data-category="@e.Category.ToString()" data-title="@e.FullTitleAndFar" onclick="javascript: editEndorsementCategory(this);" alt="@Resources.Endorsements.EditCategoryPrompt" title="@Resources.Endorsements.EditCategoryPrompt" />
                                         }
                                     }
+                                    @if (e.IsExternalEndorsement && e.DateDeleted == null)
+                                    {
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID, '@szDeleteConfirm');" />
+                                    }
+                                    @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                                    {
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID, '@szDeleteConfirm');" />
+                                    }
+                                    @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
+                                    {
+                                        <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
+                                    }
+                                </td>
+                                <td colspan="3">
+                                    @Html.Raw(e.RenderHTML())
                                 </td>
                             </tr>
                         }
@@ -218,33 +225,17 @@ else
 <div>@Resources.SignOff.NoExistingEndorsements</div>
 }
 <div id="lblErr" class="error"></div>
-<div class="dn">
-    <select id="cmbSelectCategories" name="newCategory">
-        @{
-            Dictionary<int, List<EndorsementCategory>> d = new Dictionary<int, List<EndorsementCategory>>();
-            foreach (EndorsementCategory ec in Enum.GetValues(typeof(EndorsementCategory)))
-            {
-                int mc = EndorsementType.MajorCategoryForSubCategory(ec);
-                if (!d.TryGetValue(mc, out List<EndorsementCategory> categories))
-                {
-                    d[mc] = categories = new List<EndorsementCategory>();
-                }
-                categories.Add(ec);
-            }
-            foreach (int mc in d.Keys)
-            {
-                <optgroup label="@EndorsementType.EndorsementMajorCategory(mc)">
-                    @foreach (EndorsementCategory ec in d[mc])
-                    {
-                    <option value="@ec.ToString()">@EndorsementType.EndorsementCategoryName(ec)</option>
-                    }
-                </optgroup>
-                }
-            }
-        }
-    </select>
-</div>
 @if (canCategorize && !printView)
 {
+    <div id="divEditEndorsementCategory" style="display: none;">
+        <input type="hidden" name="ecID" />
+        <p class="b" name="ecTitle"></p>
+        <div><select name="newCategory">@{ Html.RenderPartial("_endorsementCategoryOptions"); }</select></div>
+        <div class="error" id="lblEditCategoryErr"></div>
+        <div style="text-align: center; margin-top: 8px;">
+            <button type="button" onclick="javascript: dismissDlg('#divEditEndorsementCategory');">@Resources.LocalizedText.Cancel</button>
+            <button type="button" onclick="javascript: saveEndorsementCategory();">@Resources.LocalizedText.OK</button>
+        </div>
+    </div>
     Html.RenderAction("RenderImageEndorsementEditor", "Training");
 }

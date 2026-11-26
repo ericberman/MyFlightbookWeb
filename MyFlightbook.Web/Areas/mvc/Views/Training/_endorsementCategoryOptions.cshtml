@@ -1,0 +1,27 @@
+﻿@using MyFlightbook.Instruction
+@* The <optgroup>/<option> elements for choosing an endorsement category, grouped by major category.  "None" (uncategorized) isn't offered: it's not a choice a user makes. *@
+@{
+    Dictionary<int, List<EndorsementCategory>> d = new Dictionary<int, List<EndorsementCategory>>();
+    foreach (EndorsementCategory ec in Enum.GetValues(typeof(EndorsementCategory)))
+    {
+        if (ec == EndorsementCategory.None)
+        {
+            continue;
+        }
+        int mc = EndorsementType.MajorCategoryForSubCategory(ec);
+        if (!d.TryGetValue(mc, out List<EndorsementCategory> categories))
+        {
+            d[mc] = categories = new List<EndorsementCategory>();
+        }
+        categories.Add(ec);
+    }
+}
+@foreach (int mc in d.Keys)
+{
+    <optgroup label="@EndorsementType.EndorsementMajorCategory(mc)">
+        @foreach (EndorsementCategory ec in d[mc])
+        {
+            <option value="@ec.ToString()">@EndorsementType.EndorsementCategoryName(ec)</option>
+        }
+    </optgroup>
+}
