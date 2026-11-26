@@ -228,6 +228,57 @@ namespace MyFlightbook.Instruction
         /// If this came from a template, lets preserve its source ID.  0 = unknown (legacy).
         /// </summary>
         public int SourceTemplateID { get; set; } = 0;
+
+        /// <summary>
+        /// For EndorsementKind.Image created by the model, the model's confidence (0-100).  -1 if not applicable.
+        /// </summary>
+        public int Confidence { get; set; } = -1;
+
+        /// <summary>
+        /// Below this confidence, a model-generated image endorsement is flagged for review.
+        /// </summary>
+        public const int ReviewConfidenceThreshold = 70;
+
+        /// <summary>
+        /// True if this is a reference to an image (scan) of an endorsement or document that exists elsewhere.
+        /// </summary>
+        public bool IsImageEndorsement
+        {
+            get { return Kind == EndorsementKind.Image; }
+        }
+
+        /// <summary>
+        /// True if this is an image endorsement that the model wasn't confident about and that nobody has edited since.
+        /// </summary>
+        public bool NeedsReview
+        {
+            get { return IsImageEndorsement && Source == CategorySource.Model && Confidence >= 0 && Confidence < ReviewConfidenceThreshold; }
+        }
+
+        /// <summary>
+        /// For image endorsements: who owns the underlying image?  For member endorsements, that's the student (endorsement images);
+        /// for external endorsements, it's the instructor (offline endorsement images)
+        /// </summary>
+        public string ImageOwner
+        {
+            get { return StudentType == StudentTypes.External ? InstructorName : StudentName; }
+        }
+
+        /// <summary>
+        /// For image endorsements: the class of the underlying image
+        /// </summary>
+        public MFBImageInfoBase.ImageClass ImageClass
+        {
+            get { return StudentType == StudentTypes.External ? MFBImageInfoBase.ImageClass.OfflineEndorsement : MFBImageInfoBase.ImageClass.Endorsement; }
+        }
+
+        /// <summary>
+        /// For image endorsements: the underlying image (not loaded from disk; sufficient for URLs)
+        /// </summary>
+        public MFBImageInfo UnderlyingImage
+        {
+            get { return (IsImageEndorsement && !String.IsNullOrEmpty(ThumbFileName)) ? new MFBImageInfo(ImageClass, ImageOwner, ThumbFileName) : null; }
+        }
         #endregion
 
         #region Constructors
@@ -265,6 +316,7 @@ namespace MyFlightbook.Instruction
             PageNumber = Convert.ToInt32(dr["PageNumber"], CultureInfo.InvariantCulture);
             RawText = util.ReadNullableString(dr, "RawText");
             SourceTemplateID = Convert.ToInt32(dr["TemplateID"], CultureInfo.InvariantCulture);
+            Confidence = Convert.ToInt32(util.ReadNullableField(dr, "Confidence", -1), CultureInfo.InvariantCulture);
 
             byte[] rgb;
 
@@ -274,6 +326,8 @@ namespace MyFlightbook.Instruction
                 rgb = new byte[FileSize];
                 dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, rgb, 0, FileSize);
             }
+            else if (Kind == EndorsementKind.Image)
+                rgb = null;     // image endorsements are never signed here; don't pick up the instructor's default scribble
             else
                 rgb = CFIStudentMap.DefaultScribbleForInstructor(InstructorName);
 
@@ -289,8 +343,35 @@ namespace MyFlightbook.Instruction
         public Endorsement() : this(string.Empty) { }
         #endregion
 
+        /// <summary>
+        /// Image endorsements are a summary of something that exists elsewhere, so they have far fewer requirements: no relationship, signature, or certificate checks.
+        /// </summary>
+        protected void ValidateImageEndorsement()
+        {
+            if (String.IsNullOrWhiteSpace(StudentName))
+                throw new MyFlightbookException(Resources.SignOff.errNoStudent);
+            if (String.IsNullOrEmpty(ThumbFileName))
+                throw new MyFlightbookException("Image endorsements require an image");
+            if (StudentType == StudentTypes.External && String.IsNullOrEmpty(InstructorName))
+                throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
+            if (String.IsNullOrWhiteSpace(Title))
+                throw new MyFlightbookException(Resources.SignOff.errNoTitle);
+            if (Date.CompareTo(DateTime.Now.AddDays(1).Date) > 0)
+                throw new MyFlightbookException(Resources.SignOff.errNoPostDating);
+            if (!Enum.IsDefined(typeof(EndorsementCategory), Category))
+                throw new ArgumentOutOfRangeException(nameof(Category));
+            if (GetDigitizedSig() != null)
+                throw new InvalidOperationException("Image endorsements can't have a digitized signature");
+        }
+
         protected void Validate()
         {
+            if (IsImageEndorsement)
+            {
+                ValidateImageEndorsement();
+                return;
+            }
+
             if (StudentName.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoStudent);
 
@@ -334,7 +415,7 @@ namespace MyFlightbook.Instruction
         {
             if (this.ID >= 0)
                 throw new InvalidOperationException("Can't update an endorsement");
-            string szQ = "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig, Category=?category, CategorySource = ?source, Kind = ?kind, ThumbFileName = ?thumbfilename, PageNumber = ?pageNum, RawText = ?rawText, TemplateID = ?templateID";
+            string szQ = "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), DateDeleted=NULL, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig, Category=?category, CategorySource = ?source, Kind = ?kind, ThumbFileName = ?thumbfilename, PageNumber = ?pageNum, RawText = ?rawText, TemplateID = ?templateID, Confidence = ?confidence";
 
             Validate();
 
@@ -351,7 +432,7 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("bodytext", EndorsementText);
                 cmd.Parameters.AddWithValue("title", Title);
                 cmd.Parameters.AddWithValue("farref", FARReference);
-                cmd.Parameters.AddWithValue("cfifullname", IsAdHocEndorsement ? CFICachedName : Profile.GetUser(InstructorName).UserFullName);
+                cmd.Parameters.AddWithValue("cfifullname", (IsAdHocEndorsement || IsImageEndorsement) ? (CFICachedName ?? string.Empty) : Profile.GetUser(InstructorName).UserFullName);
                 cmd.Parameters.AddWithValue("digsig", IsAdHocEndorsement ? GetDigitizedSig() : null);
                 cmd.Parameters.AddWithValue("category", (int)Category);
                 cmd.Parameters.AddWithValue("source", (int)Source);
@@ -360,6 +441,7 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("pageNum", PageNumber);
                 cmd.Parameters.AddWithValue("rawText", RawText);
                 cmd.Parameters.AddWithValue("templateID", SourceTemplateID);
+                cmd.Parameters.AddWithValue("confidence", (IsImageEndorsement && Confidence >= 0) ? (object)Math.Min(Confidence, 100) : null);
             });
 
             if (dbh.LastError.Length > 0)
@@ -370,9 +452,24 @@ namespace MyFlightbook.Instruction
 
         /// <summary>
         /// Delete the specified endorsement.  Note that the endorsement is never actually removed; it is simply marked as deleted.
+        /// EXCEPTION: image endorsements are just references to an image that the user owns, so they are actually deleted.  The underlying image is NOT deleted.
         /// </summary>
         public void FDelete()
         {
+            if (IsImageEndorsement)
+            {
+                DBHelper dbhImg = new DBHelper("DELETE FROM endorsements WHERE Kind=?kind AND StudentType=?st AND ID=?id");
+                dbhImg.DoNonQuery((cmd) =>
+                {
+                    cmd.Parameters.AddWithValue("id", ID);
+                    cmd.Parameters.AddWithValue("st", (int)StudentType);
+                    cmd.Parameters.AddWithValue("kind", (int)EndorsementKind.Image);
+                });
+                if (dbhImg.LastError.Length > 0)
+                    throw new MyFlightbookException(dbhImg.LastError);
+                return;
+            }
+
             DBHelper dbh = new DBHelper("UPDATE endorsements SET DateDeleted=Now() WHERE StudentType=?st AND ID=?id");
             dbh.DoNonQuery((cmd) =>
             {
@@ -398,6 +495,44 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("cat", (int)ec);
                 cmd.Parameters.AddWithValue("src", (int)cs);
             });
+        }
+
+        /// <summary>
+        /// Updates the editable fields of an image endorsement.  Unlike regular endorsements, image endorsements are just a summary of an
+        /// endorsement or document that exists elsewhere (and OCR - especially of handwriting - may need correcting), so they CAN be edited.
+        /// Sets the category source to User, which also clears any "needs review" flag.
+        /// </summary>
+        public void FUpdateImageEndorsement()
+        {
+            if (ID < 0)
+                throw new InvalidOperationException("Can't update an endorsement that hasn't been committed");
+            if (!IsImageEndorsement)
+                throw new InvalidOperationException("Only image endorsements can be edited");
+
+            Source = CategorySource.User;
+            ValidateImageEndorsement();
+
+            DBHelper dbh = new DBHelper(@"UPDATE endorsements SET Student=?student, Date=?dt, CFIFullName=?cfifullname, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, Category=?cat, CategorySource=?src 
+                WHERE Kind=?kind AND StudentType=?st AND ID=?id");
+            dbh.DoNonQuery((cmd) =>
+            {
+                cmd.Parameters.AddWithValue("id", ID);
+                cmd.Parameters.AddWithValue("st", (int)StudentType);
+                cmd.Parameters.AddWithValue("kind", (int)EndorsementKind.Image);
+                cmd.Parameters.AddWithValue("student", StudentName);
+                cmd.Parameters.AddWithValue("dt", Date);
+                cmd.Parameters.AddWithValue("cfifullname", CFICachedName ?? string.Empty);
+                cmd.Parameters.AddWithValue("cfiNumber", CFICertificate ?? string.Empty);
+                cmd.Parameters.AddWithValue("dtExp", CFIExpirationDate);
+                cmd.Parameters.AddWithValue("bodytext", EndorsementText ?? string.Empty);
+                cmd.Parameters.AddWithValue("title", Title);
+                cmd.Parameters.AddWithValue("farref", FARReference ?? string.Empty);
+                cmd.Parameters.AddWithValue("cat", (int)Category);
+                cmd.Parameters.AddWithValue("src", (int)Source);
+            });
+
+            if (dbh.LastError.Length > 0)
+                throw new MyFlightbookException(Resources.SignOff.errCommitFailed + dbh.LastError);
         }
 
         /// <summary>

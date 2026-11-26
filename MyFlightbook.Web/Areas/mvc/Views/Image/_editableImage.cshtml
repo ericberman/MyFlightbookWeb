@@ -1,6 +1,9 @@
 ﻿@using MyFlightbook.Image
+@using MyFlightbook.Instruction
 @using System.Globalization
 @{ 
+    // Non-null only for the owner's endorsement images; enables the image-endorsement tools (read with the model, add manually)
+    IDictionary<string, ImageScanStatus> scanStatus = ViewBag.scanStatus;
     MFBImageInfo mfbii = ViewBag.mfbii;
     string altText = ViewBag.altText;
     bool isVideo = mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3VideoMP4 && !(mfbii is MFBPendingImage);
@@ -72,6 +75,18 @@
     <div name="statComment" style="max-width: @(isVideo ? "320px" : (mfbii.WidthThumbnail > 0 ? mfbii.WidthThumbnail : "200px")); text-align:center;" >
         <span name="commentLabel">@mfbii.Comment</span>
     </div>
+    @if (scanStatus != null && scanStatus.TryGetValue(mfbii.ThumbnailFile, out ImageScanStatus imageScanStatus))
+    {
+        string szJSClass = HttpUtility.JavaScriptStringEncode(mfbii.Class.ToString());
+        string szJSThumb = HttpUtility.JavaScriptStringEncode(mfbii.ThumbnailFile);
+        <div class="noprint fineprint" name="imageEndorsementTools" style="text-align:center; max-width: @(mfbii.WidthThumbnail > 0 ? mfbii.WidthThumbnail.ToString(CultureInfo.InvariantCulture) + "px" : "200px");">
+            @if (imageScanStatus == ImageScanStatus.NothingFound)
+            {
+                <div><i>@Resources.Endorsements.ImageScanNothingFoundBadge</i></div>
+            }
+            <span name="imageEndorsementToolLinks"><a class="imageEndorsementTool" name="lnkScanImage" onclick="javascript: scanSingleEndorsementImage(this, '@szJSClass', '@szJSThumb');" title="@Resources.Endorsements.ImageScanReadOneTip">@Resources.Endorsements.ImageScanReadOne</a><a class="imageEndorsementTool" onclick="javascript: addImageEndorsementFromImage('@szJSClass', '@szJSThumb');" title="@Resources.Endorsements.ImageEndorsementAddManuallyTip">@Resources.Endorsements.ImageEndorsementAddManually</a></span>
+        </div>
+    }
     <div name="dynComment" style="display:none">
         <div style="padding:5px;">
             <input type="text" style="width:130px" value="@mfbii.Comment" name="txtImgComment" />

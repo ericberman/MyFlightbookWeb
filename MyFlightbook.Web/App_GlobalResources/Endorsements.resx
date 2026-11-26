@@ -282,4 +282,136 @@
   <data name="EditCategoryPrompt" xml:space="preserve">
     <value>Assign a category for this endorsement</value>
   </data>
+  <data name="ImageEndorsementAddManually" xml:space="preserve">
+    <value>Add endorsement</value>
+  </data>
+  <data name="ImageEndorsementAddManuallyTip" xml:space="preserve">
+    <value>Type in an endorsement or document found in this image yourself</value>
+  </data>
+  <data name="ImageEndorsementAddTitle" xml:space="preserve">
+    <value>Add an endorsement from this image</value>
+  </data>
+  <data name="ImageEndorsementBadDate" xml:space="preserve">
+    <value>Please enter dates as YYYY-MM-DD</value>
+  </data>
+  <data name="ImageEndorsementCantDeleteAbsorbed" xml:space="preserve">
+    <value>This image has endorsements that were read from it.  Delete those endorsements first.</value>
+  </data>
+  <data name="ImageEndorsementCategoryPrompt" xml:space="preserve">
+    <value>Category:</value>
+  </data>
+  <data name="ImageEndorsementConfirmDelete" xml:space="preserve">
+    <value>Delete this endorsement?  The image it was read from will NOT be deleted; it will go back to your list of images.</value>
+  </data>
+  <data name="ImageEndorsementDisclaimer" xml:space="preserve">
+    <value>This is a representation of an endorsement or document that exists elsewhere, reproduced here for convenience.  The original is shown below.</value>
+  </data>
+  <data name="ImageEndorsementEditDescription" xml:space="preserve">
+    <value>This summarizes an endorsement or document that exists elsewhere, so you can correct it - for example, if the handwriting was misread.  The original image is unchanged.</value>
+  </data>
+  <data name="ImageEndorsementEditPrompt" xml:space="preserve">
+    <value>Edit this endorsement summary</value>
+  </data>
+  <data name="ImageEndorsementEditTitle" xml:space="preserve">
+    <value>Edit endorsement summary</value>
+  </data>
+  <data name="ImageEndorsementNeedsReview" xml:space="preserve">
+    <value>Needs review</value>
+  </data>
+  <data name="ImageEndorsementNeedsReviewTip" xml:space="preserve">
+    <value>This was read automatically and may contain mistakes.  Compare it to the original and click the pencil to correct it.</value>
+  </data>
+  <data name="ImageEndorsementPage" xml:space="preserve">
+    <value>(Summary derived from page {0})</value>
+  </data>
+  <data name="ImageEndorsementRawTextPrompt" xml:space="preserve">
+    <value>Text as read:</value>
+  </data>
+  <data name="ImageEndorsementTitlePrompt" xml:space="preserve">
+    <value>Title:</value>
+  </data>
+  <data name="ImageEndorsementUnknownStudent" xml:space="preserve">
+    <value>(Unknown student)</value>
+  </data>
+  <data name="ImageEndorsementViewOriginal" xml:space="preserve">
+    <value>View the original</value>
+  </data>
+  <data name="ImageScanButton" xml:space="preserve">
+    <value>Categorize images</value>
+  </data>
+  <data name="ImageScanConsentAgree" xml:space="preserve">
+    <value>I agree</value>
+  </data>
+  <data name="ImageScanConsentManualAlternative" xml:space="preserve">
+    <value>If you prefer not to, you can still add endorsements from an image yourself, using "Add endorsement" under the image.</value>
+  </data>
+  <data name="ImageScanConsentText" xml:space="preserve">
+    <value>To find the endorsements in your images, %APP_NAME% sends each image or PDF (the first two pages) to a third-party AI service (Anthropic's Claude) to be read.  Your images may include medical certificates, pilot certificates, or other personal documents.  Medical details and certificate numbers are not saved in the summaries.  Do you want to continue?</value>
+  </data>
+  <data name="ImageScanConsentTitle" xml:space="preserve">
+    <value>Reading your images</value>
+  </data>
+  <data name="ImageScanContinueTemplate" xml:space="preserve">
+    <value>Continue ({0} more)</value>
+  </data>
+  <data name="ImageScanDescription" xml:space="preserve">
+    <value>"Categorize images" reads your scanned endorsements and documents and adds them to the list of endorsements above, by category.  Images that have been read move into the list above.</value>
+  </data>
+  <data name="ImageScanDescriptionOffline" xml:space="preserve">
+    <value>"Categorize images" reads your scanned records of endorsements given and adds them to the list of offline endorsements above.  Images that have been read move into the list above.</value>
+  </data>
+  <data name="ImageScanNeedsConsent" xml:space="preserve">
+    <value>Please agree to having your images read first.</value>
+  </data>
+  <data name="ImageScanNonePending" xml:space="preserve">
+    <value>All of your images have been read.</value>
+  </data>
+  <data name="ImageScanNotConfigured" xml:space="preserve">
+    <value>Reading images is not available right now.</value>
+  </data>
+  <data name="ImageScanNotScannable" xml:space="preserve">
+    <value>Only images and PDF files can be read.</value>
+  </data>
+  <data name="ImageScanNothingFoundBadge" xml:space="preserve">
+    <value>No endorsements found</value>
+  </data>
+  <data name="ImageScanNothingPending" xml:space="preserve">
+    <value>There are no images to read.</value>
+  </data>
+  <data name="ImageScanPDFUnreadable" xml:space="preserve">
+    <value>This PDF couldn't be opened (it may be protected or damaged), and is too large to send as-is.</value>
+  </data>
+  <data name="ImageScanPendingTemplate" xml:space="preserve">
+    <value>{0} image(s) not yet read; up to {1} will be read at a time.</value>
+  </data>
+  <data name="ImageScanProgressTemplate" xml:space="preserve">
+    <value>Reading {0} of {1}: {2}</value>
+  </data>
+  <data name="ImageScanReadOne" xml:space="preserve">
+    <value>Read</value>
+  </data>
+  <data name="ImageScanReadOneTip" xml:space="preserve">
+    <value>Read this image (again) to find endorsements</value>
+  </data>
+  <data name="ImageScanReadingOne" xml:space="preserve">
+    <value>Reading...</value>
+  </data>
+  <data name="ImageScanServiceError" xml:space="preserve">
+    <value>The image-reading service returned an error (HTTP {0}).  Please try again later.</value>
+  </data>
+  <data name="ImageScanServiceUnavailable" xml:space="preserve">
+    <value>The image-reading service didn't respond.  Please try again.</value>
+  </data>
+  <data name="ImageScanShowResults" xml:space="preserve">
+    <value>Show results</value>
+  </data>
+  <data name="ImageScanStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="ImageScanStopping" xml:space="preserve">
+    <value>Stopping after the current image...</value>
+  </data>
+  <data name="ImageScanSummaryTemplate" xml:space="preserve">
+    <value>Read {0} image(s) and found {1} endorsement(s).</value>
+  </data>
 </root>

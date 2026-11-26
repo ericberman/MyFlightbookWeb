@@ -20,6 +20,7 @@ truncate clubmembers;
 truncate clubs;
 truncate flightproperties;
 truncate endorsements;
+truncate endorsementimagescans;
 truncate flighttelemetry;
 truncate flights;
 truncate aircrafttombstones;

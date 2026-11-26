@@ -393,7 +393,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 IsNight = false;
             ViewBag.IsNight = IsNight;
             ViewBag.BrandCSS = String.IsNullOrEmpty(Branding.CurrentBrand.StyleSheet) ? String.Empty : VirtualPathUtility.ToAbsolute(Branding.CurrentBrand.StyleSheet) + "?v=1";
-            ViewBag.MobileCSS = IsMobileSession() ? "~/Public/CSS/MobileSheet.css?v=8".ToAbsolute() : string.Empty;
+            ViewBag.MobileCSS = IsMobileSession() ? "~/Public/CSS/MobileSheet.css?v=9".ToAbsolute() : string.Empty;
             ViewBag.NoIndex = NoIndex;
             ViewBag.BaseRef = AddBaseRef ? Request.Url.GetLeftPart(UriPartial.Authority) : null;
             ViewBag.sheets = AdditionalCSS ?? Array.Empty<string>();

@@ -96,6 +96,8 @@
     <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
     <PackageReference Include="MySql.Data" Version="26.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="PDFsharp" Version="6.5.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
     <PackageReference Include="NodaTime" Version="3.3.7" />
     <PackageReference Include="Portable.System.DateTimeOnly" Version="9.0.2" />
     <PackageReference Include="QRCoder" Version="1.9.0" />
@@ -1240,6 +1242,8 @@
     <Content Include="Areas\mvc\Views\Training\requestSigs.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorsements.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_endorsementList.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_imageEndorsementEditor.cshtml" />
+    <Content Include="Areas\mvc\Views\Training\_imageEndorsementScanner.cshtml" />
     <Content Include="Areas\mvc\Views\Training\endorseStudent.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_editEndorsement.cshtml" />
     <Content Include="Areas\mvc\Views\Training\_editableEndorsement.cshtml" />
@@ -1520,6 +1524,8 @@
     <Compile Include="AppCode\Places\VisitedRoute.cs" />
     <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
     <Compile Include="AppCode\UserAccounts\Endorsements.cs" />
+    <Compile Include="AppCode\UserAccounts\EndorsementImageScanner.cs" />
+    <Compile Include="AppCode\UserAccounts\ImageEndorsements.cs" />
     <Compile Include="AppCode\UserAccounts\ImageAuthorization.cs" />
     <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
     <Compile Include="AppCode\UserAccounts\NightlyJobs.cs" />

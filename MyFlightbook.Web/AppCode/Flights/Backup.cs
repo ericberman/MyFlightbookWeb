@@ -110,7 +110,7 @@ namespace MyFlightbook
                 return;
 
             if (fBoldKey)
-                tw.AddAttribute("style", "font-weight: bold;");
+                tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
             tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, "{0}: {1}", szKey, szValue));
             tw.RenderEndTag();  // div
@@ -119,7 +119,7 @@ namespace MyFlightbook
         private static void WriteProfileEvent(HtmlTextWriter tw, IDictionary<string, object> d)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.Li);
-            tw.AddAttribute("style", "font-weight: bold;");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Span);
             tw.WriteEncodedText(d["Date"].ToString());
             tw.RenderEndTag();  // span

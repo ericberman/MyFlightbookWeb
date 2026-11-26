@@ -256,7 +256,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (Request.Files.Count == 0)
                     throw new InvalidOperationException("No file uploaded");
 
-                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), string.Empty, null);
+                MFBImageInfo mfbii = await new MFBImageInfo(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name).InitWithFile(new MFBPostedFile(Request.ImageFile(0)), Request.ImageFile(0).FileName ?? string.Empty, null);  // preserve the filename as a hint for reading the image
                 return Content(mfbii.URLThumbnail);
             });
         }
@@ -313,7 +313,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (en.StudentType == StudentTypes.Member)
                     throw new MyFlightbookException(Resources.SignOff.errCantDeleteMemberEndorsement);
 
-                en.FDelete();
+                if (en.IsImageEndorsement)
+                    ImageEndorsementManager.DeleteImageEndorsement(en);
+                else
+                    en.FDelete();
                 return new EmptyResult();
             });
         }
@@ -332,7 +335,10 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 if (en.StudentType == StudentTypes.Member && en.StudentName.CompareCurrentCulture(User.Identity.Name) != 0)
                     throw new UnauthorizedAccessException();
 
-                en.FDelete();
+                if (en.IsImageEndorsement)
+                    ImageEndorsementManager.DeleteImageEndorsement(en);
+                else
+                    en.FDelete();
                 return new EmptyResult();
             });
         }
@@ -355,6 +361,157 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                 return new EmptyResult();
             });
         }
+
+        #region Image endorsements
+        private static void CheckEndorsementImageClass(MFBImageInfoBase.ImageClass imageClass)
+        {
+            if (!ImageEndorsementManager.IsEndorsementImageClass(imageClass))
+                throw new ArgumentOutOfRangeException(nameof(imageClass));
+        }
+
+        /// <summary>
+        /// Parses an optional yyyy-MM-dd date from the image endorsement editor: null if empty, but an error (rather than silently dropping it) if malformed.
+        /// </summary>
+        private static DateTime? ParseOptionalYMD(string sz)
+        {
+            return String.IsNullOrWhiteSpace(sz) ? (DateTime?)null : (sz.ParseYMD() ?? throw new MyFlightbookValidationException(Resources.Endorsements.ImageEndorsementBadDate));
+        }
+
+        /// <summary>
+        /// Returns the next batch (up to ImageEndorsementManager.MaxImagesPerRun) of the user's images that haven't been read, plus the total count.
+        /// </summary>
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
+        public ActionResult PendingImageScans(MFBImageInfoBase.ImageClass imageClass)
+        {
+            return SafeOp(() =>
+            {
+                CheckEndorsementImageClass(imageClass);
+                List<MFBImageInfo> lst = new List<MFBImageInfo>(ImageEndorsementManager.ImagesPendingScan(imageClass, User.Identity.Name));
+                return Json(new
+                {
+                    total = lst.Count,
+                    consented = ImageEndorsementManager.HasConsented(MyFlightbook.Profile.GetUser(User.Identity.Name)),
+                    images = lst.Take(ImageEndorsementManager.MaxImagesPerRun).Select(mfbii => new { thumb = mfbii.ThumbnailFile, comment = String.IsNullOrWhiteSpace(mfbii.Comment) ? mfbii.ThumbnailFile : mfbii.Comment })
+                });
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
+        public ActionResult GrantImageScanConsent()
+        {
+            return SafeOp(() =>
+            {
+                ImageEndorsementManager.GrantConsent(MyFlightbook.Profile.GetUser(User.Identity.Name));
+                return new EmptyResult();
+            });
+        }
+
+        /// <summary>
+        /// Reads a single endorsement image (one of the user's own) with the vision model, creating image endorsements for what it finds.
+        /// </summary>
+        /// <param name="imageClass">Endorsement or OfflineEndorsement</param>
+        /// <param name="szThumb">Thumbnail filename</param>
+        /// <param name="fForce">True to read the image even if it has already been read (e.g., "nothing found" or dismissed)</param>
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
+        public async Task<ActionResult> ScanEndorsementImage(MFBImageInfoBase.ImageClass imageClass, string szThumb, bool fForce = false)
+        {
+            return await SafeOp(async () =>
+            {
+                CheckEndorsementImageClass(imageClass);
+                if (!EndorsementImageScanner.IsConfigured)
+                    throw new MyFlightbookException(Resources.Endorsements.ImageScanNotConfigured);
+                if (!ImageEndorsementManager.HasConsented(MyFlightbook.Profile.GetUser(User.Identity.Name)))
+                    throw new UnauthorizedAccessException(Resources.Endorsements.ImageScanNeedsConsent);
+
+                MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(imageClass, User.Identity.Name, szThumb);
+                ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Annotate);
+                if (!ImageEndorsementManager.IsScannable(mfbii))
+                    throw new InvalidOperationException(Resources.Endorsements.ImageScanNotScannable);
+
+                // Already handled?  Don't pay to read it again unless asked to.
+                if (!fForce && (ImageEndorsementManager.IsAbsorbed(imageClass, User.Identity.Name, szThumb) || ImageEndorsementManager.ScanMarkers(imageClass, User.Identity.Name).ContainsKey(szThumb)))
+                    return Json(new { skipped = true, found = 0, titles = Array.Empty<string>() });
+
+                List<Endorsement> lst = new List<Endorsement>(await ImageEndorsementManager.ScanImage(mfbii));
+                return Json(new { skipped = false, found = lst.Count, titles = lst.Select(e => e.Title) });
+            });
+        }
+
+        /// <summary>
+        /// Creates (id &lt;= 0) or updates an image endorsement.  Unlike regular endorsements, image endorsements are editable.
+        /// </summary>
+        [HttpPost]
+        [Authorize]
+        [ValidateHeaderAntiForgeryToken]
+        public ActionResult SaveImageEndorsement(int id, MFBImageInfoBase.ImageClass imageClass, string szThumb, string title, string farRef, string date, string cfiName, string cfiCert, string cfiExpiration, string text, EndorsementCategory category, string student)
+        {
+            return SafeOp(() =>
+            {
+                if (!Enum.IsDefined(typeof(EndorsementCategory), category))
+                    throw new ArgumentOutOfRangeException(nameof(category));
+
+                Endorsement e;
+                if (id > 0)
+                {
+                    e = EndorsementWithID(id) ?? throw new InvalidOperationException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
+                    ImageEndorsementManager.ValidateOwnership(e, User.Identity.Name);
+                }
+                else
+                {
+                    CheckEndorsementImageClass(imageClass);
+                    MFBImageInfo mfbii = MFBImageInfo.LoadMFBImageInfo(imageClass, User.Identity.Name, szThumb);
+                    ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Annotate);
+                    if (!ImageEndorsementManager.IsScannable(mfbii))
+                        throw new InvalidOperationException(Resources.Endorsements.ImageScanNotScannable);
+                    e = ImageEndorsementManager.NewImageEndorsement(imageClass, User.Identity.Name, mfbii.ThumbnailFile);
+                }
+
+                e.Title = (title ?? string.Empty).Trim().LimitTo(255);
+                e.FARReference = (farRef ?? string.Empty).Trim().LimitTo(255);
+                e.Date = ParseOptionalYMD(date) ?? e.Date;
+                e.CFICachedName = (cfiName ?? string.Empty).Trim().LimitTo(255);
+                e.CFICertificate = (cfiCert ?? string.Empty).Trim().LimitTo(255);
+                e.CFIExpirationDate = ParseOptionalYMD(cfiExpiration) ?? DateTime.MinValue;
+                e.EndorsementText = (text ?? string.Empty).Trim();
+                e.Category = category;
+                if (e.StudentType == StudentTypes.External)
+                    e.StudentName = String.IsNullOrWhiteSpace(student) ? Resources.Endorsements.ImageEndorsementUnknownStudent : student.Trim().LimitTo(255);
+
+                if (e.ID > 0)
+                    e.FUpdateImageEndorsement();
+                else
+                {
+                    e.Source = CategorySource.User;
+                    e.FCommit();
+                    ImageEndorsementManager.ClearScanMarker(e.ImageClass, e.ImageOwner, e.ThumbFileName);
+                }
+                return new EmptyResult();
+            });
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderImageEndorsementScanner(MFBImageInfoBase.ImageClass imageClass)
+        {
+            CheckEndorsementImageClass(imageClass);
+            ViewBag.imageClass = imageClass;
+            ViewBag.pendingCount = ImageEndorsementManager.ImagesPendingScan(imageClass, User.Identity.Name).Count();
+            ViewBag.consented = ImageEndorsementManager.HasConsented(MyFlightbook.Profile.GetUser(User.Identity.Name));
+            ViewBag.configured = EndorsementImageScanner.IsConfigured;
+            return PartialView("_imageEndorsementScanner");
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderImageEndorsementEditor()
+        {
+            return PartialView("_imageEndorsementEditor");
+        }
+        #endregion
 
         [HttpPost]
         [Authorize]
@@ -664,6 +821,12 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             List<Endorsement> lst = new List<Endorsement>(EndorsementsForUser(null, User.Identity.Name));
             lst.RemoveAll(e => e.StudentType == StudentTypes.Member);
             ViewBag.externalEndorsements = lst;
+
+            ImageList il = new ImageList(MFBImageInfoBase.ImageClass.OfflineEndorsement, User.Identity.Name);
+            il.Refresh(true);
+            il = ImageEndorsementManager.UnabsorbedImages(il);
+            ViewBag.offlineImageList = il;
+            ViewBag.offlineScanStatus = ImageEndorsementManager.ScanStatusForImages(il);
             return View("students");
         }
 
@@ -830,7 +993,9 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
             ImageList il = new ImageList(MFBImageInfoBase.ImageClass.Endorsement, User.Identity.Name);
             il.Refresh(true);
-            ViewBag.imageList = il;
+            ImageList ilUnabsorbed = ImageEndorsementManager.UnabsorbedImages(il);
+            ViewBag.unabsorbedImageList = ilUnabsorbed;
+            ViewBag.scanStatus = ImageEndorsementManager.ScanStatusForImages(ilUnabsorbed);
 
             ViewBag.student = User.Identity.Name;
             ViewBag.instructor = string.Empty;

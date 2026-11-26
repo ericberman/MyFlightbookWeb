@@ -212,6 +212,10 @@
     padding-right: 1em;
 }
 
+.pHem {
+    padding: .5em;
+}
+
 /* Basic HTML */
 .mfbDefault {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -548,6 +552,18 @@ table.currencyTable tr:not(:last-child) td {
     font-size: smaller;
     text-indent: 0;
     text-align: left;
+}
+
+/* Image endorsement tools under an endorsement image: links separated by a bar */
+.imageEndorsementTool {
+    cursor: pointer;
+}
+
+.imageEndorsementTool + .imageEndorsementTool::before {
+    content: "|";
+    display: inline-block; /* keeps the link's underline off the separator */
+    padding: 0px 4px;
+    cursor: default;
 }
 
 /* Logbook rows */
@@ -921,6 +937,59 @@ td.totalsDateRange:last-of-type {
     border-radius: 5px;
     box-shadow: 2px 2px 3px 0px var(--box-shadow-color);
     page-break-inside: avoid;
+}
+
+.endorsementHeaderDisclaimer {
+    font-weight: bold;
+    background-color: darkgray;
+    color: white;
+    padding: .5em;
+}
+
+.endorsementHeaderDeleted {
+    font-weight: bold;
+    background-color: darkgray;
+    color: red;
+    padding: .5em;
+}
+
+.endorsementHeaderReview {
+    background-color: #FFD966;
+    color: black;
+    padding: 0px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.endorsementImageBodyPDF {
+    max-height: 60px; 
+}
+
+.endorsementImageBodyJPG {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Endorsement lists: the container that image endorsements size against (via cqw units, below) */
+.endorsementListContainer {
+    container-type: inline-size;
+}
+
+/* Column holding the delete/copy icons: as narrow as its contents, top-aligned next to the endorsement */
+.endorsementActions {
+    width: 1px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* Image endorsements with a full image: at least as wide as a regular endorsement, growing to fit the image up to 70% of the list's width.
+   (70vw is a fallback for browsers without container query units; outside of any container - e.g., the logbook print view - cqw falls back to the viewport.) */
+.endorsementImageContainer {
+    width: fit-content;
+    min-width: 600px;
+    max-width: 70vw;
+    max-width: 70cqw;
 }
 
 /* Sidebar UI */

@@ -6,7 +6,7 @@
     IEnumerable<Endorsement> endorsements = ViewBag.endorsements;
     ViewBag.defaultTab = tabID.tabTraining;
     bool printView = ViewBag.printView;
-    ImageList il = ViewBag.imageList;
+    ImageList ilUnabsorbed = ViewBag.unabsorbedImageList;
     ViewBag.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.TrainingHeader, pf.UserFullName);
     Layout = "~/Areas/mvc/Views/Shared/_Layout.cshtml";
 }
@@ -40,6 +40,7 @@
                 params.fIncludeDocs = true;
                 params.onDelete = "deleteOfflineEndorsement";
                 params.onAnnotate = "updateOfflineEndorsement";
+                params.fEndorsementTools = true;
                 var d = JSON.stringify(params);
                 $.ajax({
                     url: '@Url.Action("ImagesForClassAndKey", "Image")',
@@ -74,7 +75,8 @@
 </div>
 @if (printView)
 {
-    foreach (MFBImageInfo mfbii in il.ImageArray)
+    // Absorbed images are shown with their image endorsements above
+    foreach (MFBImageInfo mfbii in ilUnabsorbed.ImageArray)
     {
         if (mfbii.ImageType == MFBImageInfoBase.ImageFileType.JPEG)
         {
@@ -94,6 +96,8 @@ else
         <div>
             <span class="b">@Resources.LocalizedText.Note</span> @Resources.SignOff.EditEndorsementDisclaimer
         </div>
+        <p>@Resources.Endorsements.ImageScanDescription</p>
+        @{ Html.RenderAction("RenderImageEndorsementScanner", "Training", new { imageClass = MFBImageInfo.ImageClass.Endorsement }); }
     </div>
     <div class="dib">
         <div class="noprint" id="divUploadEndorsements"></div>
@@ -102,12 +106,13 @@ else
         @{
             Html.RenderAction("ImageListDisplay", "Image", new
             {
-                il = il,
+                il = ilUnabsorbed,
                 zoomLinkType = GeoLinkType.None,
                 fCanEdit = true,
                 fCanDelete = true,
                 onDelete = "deleteOfflineEndorsement",
-                onAnnotate = "updateOfflineEndorsement"
+                onAnnotate = "updateOfflineEndorsement",
+                scanStatus = ViewBag.scanStatus
             });
         }
     </div>

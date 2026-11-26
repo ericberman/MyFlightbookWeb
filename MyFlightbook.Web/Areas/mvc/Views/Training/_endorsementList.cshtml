@@ -1,6 +1,7 @@
 ﻿@using MyFlightbook.Instruction
 @using System.Globalization
 @using MyFlightbook.HtmlUtility
+@using Newtonsoft.Json
 @{
     bool canDelete = ViewBag.canDelete;
     bool canSort = ViewBag.canSort;
@@ -37,8 +38,17 @@
     }
 }
 <script type="text/javascript">
-    function deleteExternalEndorsement(sender, id) {
-        if (confirm('@Resources.SignOff.ExternalEndorsementConfirmDelete')) {
+    function endorsementDeleted(sender) {
+        // Deleting an image endorsement can return its image to the list of images, so reload in that case.
+        var row = $(sender).parents('tr');
+        if (row.attr("data-imageendorsement"))
+            window.location.reload();
+        else
+            row.hide();
+    }
+
+    function deleteExternalEndorsement(sender, id, confirmText) {
+        if (confirm(confirmText || '@Resources.SignOff.ExternalEndorsementConfirmDelete')) {
             $("#hdnEndorsementToDelete").val(id);
             var f = $("#frmDelete").serialize();
             $.ajax({
@@ -47,14 +57,14 @@
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 complete: function (response) { },
                 success: function (response) {
-                    $(sender).parents('tr').hide();
+                    endorsementDeleted(sender);
                 }
             });
         }
     }
 
-    function deleteOwnedEndorsement(sender, id) {
-        if (confirm('@Resources.SignOff.OwnedEndorsementConfirmDelete')) {
+    function deleteOwnedEndorsement(sender, id, confirmText) {
+        if (confirm(confirmText || '@Resources.SignOff.OwnedEndorsementConfirmDelete')) {
             $("#hdnEndorsementToDelete").val(id);
             var f = $("#frmDelete").serialize();
             $.ajax({
@@ -63,7 +73,7 @@
                 error: function (xhr, status, error) { window.alert(xhr.responseText); },
                 complete: function (response) { },
                 success: function (response) {
-                    $(sender).parents('tr').hide();
+                    endorsementDeleted(sender);
                 }
             });
         }
@@ -129,45 +139,70 @@
         }
         <div id="@idTarget" class="@(fAllDeleted ? "dn deletedEndorsement" : string.Empty)">
             <h3 class="@(lstKeys.Count <= 1 ? "dn" : string.Empty)">@EndorsementType.EndorsementMajorCategory(key)</h3>
-            <div>
+            <div class="endorsementListContainer">
                 <table>
                     <thead>
                         <tr>
+                            @* 3 hidden sort-key columns, then the (visible, empty) header over the delete/copy column, then the sort headers over the endorsement (colspan=3) *@
                             <th class="dn"></th>
                             <th class="dn"></th>
                             <th class="dn"></th>
-                            <th class="headerBase gvcCentered headerSortDesc" style="width: 30%;" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
-                            <th class="headerBase gvcCentered" style="width: 30%;" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EditEndorsementFARPrompt</th>
-                            <th class="headerBase gvcCentered" style="width: 30%;" onclick="javascript: sortTable(this, 2, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
-                            <th class="dn"></th>
+                            <th class="noprint endorsementActions"></th>
+                            <th class="headerBase gvcCentered headerSortDesc" onclick="javascript: sortTable(this, 0, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortDate</th>
+                            <th class="headerBase gvcCentered" onclick="javascript: sortTable(this, 1, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EditEndorsementFARPrompt</th>
+                            <th class="headerBase gvcCentered" onclick="javascript: sortTable(this, 2, '', 'hdnCurSort', 'hdnCurSortDir');">@Resources.SignOff.EndorsementSortTitle</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (Endorsement e in lst)
                         {
-                            <tr class="@(e.DateDeleted != null ? "dn deletedEndorsement" : string.Empty)">
+                            string szDeleteConfirm = e.IsImageEndorsement ? HttpUtility.JavaScriptStringEncode(Resources.Endorsements.ImageEndorsementConfirmDelete) : string.Empty;
+                            <tr class="@(e.DateDeleted != null ? "dn deletedEndorsement" : string.Empty)" @(e.IsImageEndorsement ? "data-imageendorsement=1" : string.Empty)>
                                 <td class="dn">@e.Date.YMDString()</td>
                                 <td class="dn">@e.FARReference</td>
                                 <td class="dn">@e.Title</td>
-                                <td colspan="3" class="w90">
-                                    @Html.Raw(e.RenderHTML())
-                                    @if (canCategorize && !printView)
-                                    {
-                                        <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: editEndorsementCategory(this, @e.ID, '@e.Category.ToString()');" alt="@Resources.Endorsements.EditCategoryPrompt" title="@Resources.Endorsements.EditCategoryPrompt" /></div>
-                                    }
-                                </td>
-                                <td class="noprint">
+                                <td class="noprint endorsementActions">
                                     @if (e.IsExternalEndorsement && e.DateDeleted == null)
                                     {
-                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID);" />
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.ExternalEndorsementDeleteTooltip" title="@Resources.SignOff.ExternalEndorsementDeleteTooltip" onclick="javascript: deleteExternalEndorsement(this, @e.ID, '@szDeleteConfirm');" />
                                     }
                                     @if (canDelete && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
                                     {
-                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID);" />
+                                        <img src="@("~/images/x.gif".ToAbsolute())" alt="@Resources.SignOff.OwnedEndorsementDeleteTooltip" title="@Resources.SignOff.OwnedEndorsementDeleteTooltip" onclick="javascript: deleteOwnedEndorsement(this, @e.ID, '@szDeleteConfirm');" />
                                     }
                                     @if (!String.IsNullOrEmpty(onCopy) && (e.IsExternalEndorsement || (e.IsMemberEndorsement && e.StudentName.CompareCurrentCultureIgnoreCase(User.Identity.Name) != 0)))
                                     {
                                         <img src="@("~/images/copyflight.png".ToAbsolute())" alt="@Resources.SignOff.CopyEndorsement" title="@Resources.SignOff.CopyEndorsement" onclick="javascript: @(onCopy)(@e.ID);" />
+                                    }
+                                </td>
+                                <td colspan="3">
+                                    @Html.Raw(e.RenderHTML())
+                                    @if (canCategorize && !printView)
+                                    {
+                                        if (e.IsImageEndorsement)
+                                        {
+                                            string szImageData = JsonConvert.SerializeObject(new
+                                            {
+                                                id = e.ID,
+                                                title = e.Title,
+                                                farRef = e.FARReference,
+                                                date = e.Date.YMDString(),
+                                                cfiName = e.CFICachedName ?? string.Empty,
+                                                cfiCert = e.CFICertificate ?? string.Empty,
+                                                cfiExpiration = e.CFIExpirationDate.YMDString(),
+                                                text = e.EndorsementText,
+                                                category = e.Category.ToString(),
+                                                student = e.IsExternalEndorsement ? e.StudentName : null,
+                                                rawText = e.RawText ?? string.Empty,
+                                                imageClass = e.ImageClass.ToString(),
+                                                thumb = e.ThumbFileName
+                                            });
+                                            <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" style="cursor: pointer;" data-ie="@szImageData" onclick="javascript: editImageEndorsement(JSON.parse(this.getAttribute('data-ie')));" alt="@Resources.Endorsements.ImageEndorsementEditPrompt" title="@Resources.Endorsements.ImageEndorsementEditPrompt" /></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="noprint"><img src="@("~/images/pencilsm.png".ToAbsolute())" onclick="javascript: editEndorsementCategory(this, @e.ID, '@e.Category.ToString()');" alt="@Resources.Endorsements.EditCategoryPrompt" title="@Resources.Endorsements.EditCategoryPrompt" /></div>
+                                        }
                                     }
                                 </td>
                             </tr>
@@ -209,4 +244,7 @@ else
         }
     </select>
 </div>
-
+@if (canCategorize && !printView)
+{
+    Html.RenderAction("RenderImageEndorsementEditor", "Training");
+}

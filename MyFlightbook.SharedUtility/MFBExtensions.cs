@@ -79,6 +79,18 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Parses a yyyy-MM-dd date (the inverse of YMDString), e.g., from an HTML date input or a JSON field.
+        /// </summary>
+        /// <param name="sz">The string to parse; leading/trailing whitespace is ignored</param>
+        /// <returns>The date, or null if the string is null/empty or isn't in yyyy-MM-dd format</returns>
+        public static DateTime? ParseYMD(this string sz)
+        {
+            if (String.IsNullOrWhiteSpace(sz))
+                return null;
+            return DateTime.TryParseExact(sz.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) ? dt : (DateTime?)null;
+        }
+
+        /// <summary>
         /// Looks ahead the specified number of calendar months, returns the last day of the valid month.
         /// E.g., if today is Jan 14, then AddCalendarMonths of 6 months should return July 31
         /// If cMonths is negative, returns the 1st day of the respective number of months back

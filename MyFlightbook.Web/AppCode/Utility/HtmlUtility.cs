@@ -32,7 +32,7 @@ namespace MyFlightbook.HtmlUtility
             if (!szThumbFolder.EndsWith("/", StringComparison.Ordinal))
                 szThumbFolder += "/";
 
-            tw.AddStyleAttribute(HtmlTextWriterStyle.Display, "inline-block");
+            tw.AddAttribute("class", "dib");
             tw.AddStyleAttribute(HtmlTextWriterStyle.Padding, "3px");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
 
@@ -68,7 +68,13 @@ namespace MyFlightbook.HtmlUtility
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
 
-            tw.AddAttribute("style", "padding: 5px;");
+            if (e.IsImageEndorsement)
+            {
+                RenderImageEndorsementHTML(e, tw);
+                return;
+            }
+
+            tw.AddAttribute("class", "pHem");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
 
             tw.AddAttribute("class", "endorsement");
@@ -77,7 +83,7 @@ namespace MyFlightbook.HtmlUtility
             {
                 // disclaimer
                 tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:white");
+                tw.AddAttribute("class", "endorsementHeaderDisclaimer");
                 tw.AddAttribute("colspan", "2");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
                 tw.Write(Branding.ReBrand(Resources.SignOff.ExternalEndorsementDisclaimer));
@@ -88,7 +94,7 @@ namespace MyFlightbook.HtmlUtility
             if (e.DateDeleted != null)
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold; background-color:darkgray; color:red");
+                tw.AddAttribute("class", "endorsementHeaderDeleted");
                 tw.AddAttribute("colspan", "2");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
                 tw.Write(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EndorsementDeleted, e.DateDeleted.Value));
@@ -102,7 +108,7 @@ namespace MyFlightbook.HtmlUtility
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             if (!e.IsAdHocEndorsement)
             {
-                tw.AddAttribute("style", "float:right; margin: 3px;");
+                tw.AddAttribute("class", "flR mHem");
                 tw.AddAttribute("title", Resources.SignOff.EndorsementValid);
                 tw.AddAttribute("alt", Resources.SignOff.EndorsementValid);
                 tw.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -113,7 +119,7 @@ namespace MyFlightbook.HtmlUtility
             }
 
             // Text and FAR row
-            tw.AddAttribute("style", "font-weight:bold;");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
             tw.Write(HttpUtility.HtmlEncode(e.FullTitleAndFar));
             tw.RenderEndTag();  // div
@@ -131,7 +137,7 @@ namespace MyFlightbook.HtmlUtility
 
             // Date row
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold;");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             tw.Write(Resources.SignOff.EditEndorsementDatePrompt);
             tw.RenderEndTag();  // td
@@ -144,13 +150,13 @@ namespace MyFlightbook.HtmlUtility
             if (e.CreationDate.Date.CompareTo(e.Date.Date) != 0)
             {
                 tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-                tw.AddAttribute("style", "font-weight: bold;");
+                tw.AddAttribute("class", "b");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
                 tw.Write(Resources.SignOff.EditEndorsementDateCreatedPrompt);
                 tw.RenderEndTag();  // td
 
                 if (e.CreationDate.Date.Subtract(e.Date).Days > 10)
-                    tw.AddAttribute("style", "font-weight: bold;");
+                    tw.AddAttribute("class", "b");
                 tw.RenderBeginTag(HtmlTextWriterTag.Td);
                 tw.Write(e.CreationDate.ToShortDateString());
                 tw.Write(" (UTC)");
@@ -161,7 +167,7 @@ namespace MyFlightbook.HtmlUtility
 
             // Student name row
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             tw.Write(Resources.SignOff.EditEndorsementStudentPrompt);
             tw.RenderEndTag();  // td
@@ -173,7 +179,7 @@ namespace MyFlightbook.HtmlUtility
 
             // CFI Display nam row
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             tw.Write(Resources.SignOff.EditEndorsementInstructorPrompt);
             tw.RenderEndTag();  // td
@@ -185,7 +191,7 @@ namespace MyFlightbook.HtmlUtility
 
             // CFI Certificate Row
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             tw.Write(Resources.SignOff.EditEndorsementCFIPrompt);
             tw.RenderEndTag();  // td
@@ -198,7 +204,7 @@ namespace MyFlightbook.HtmlUtility
 
             // CFI Certificate Expiration Row
             tw.RenderBeginTag(HtmlTextWriterTag.Tr);
-            tw.AddAttribute("style", "font-weight: bold");
+            tw.AddAttribute("class", "b");
             tw.RenderBeginTag(HtmlTextWriterTag.Td);
             tw.Write(Resources.SignOff.EditEndorsementExpirationPrompt);
             tw.RenderEndTag();  // td
@@ -222,6 +228,127 @@ namespace MyFlightbook.HtmlUtility
 
             tw.RenderEndTag();  // table
 
+            tw.RenderEndTag();  // div
+        }
+
+        private static void RenderLabeledRow(HtmlTextWriter tw, string szLabel, string szValue)
+        {
+            if (String.IsNullOrWhiteSpace(szValue))
+                return;
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("class", "b");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.Write(szLabel);
+            tw.RenderEndTag();  // td
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.WriteEncodedText(szValue);
+            tw.RenderEndTag();  // td
+            tw.RenderEndTag();  // tr
+        }
+
+        private static string AbsoluteBrandedUrl(string szUrl)
+        {
+            return String.IsNullOrEmpty(szUrl) || szUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? szUrl : String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, szUrl);
+        }
+
+        /// <summary>
+        /// Renders an image endorsement: a summary of an endorsement or document that exists elsewhere, along with a link to the scan.
+        /// Only shows instructor/student rows that have values, and NEVER shows the "valid signature" badge.
+        /// </summary>
+        private static void RenderImageEndorsementHTML(Endorsement e, HtmlTextWriter tw)
+        {
+            MFBImageInfo mfbii = e.UnderlyingImage;
+            bool fIsPDF = mfbii != null && (mfbii.ImageType == ImageFileType.PDF || mfbii.ImageType == ImageFileType.S3PDF);
+            bool fFullImage = mfbii != null && !fIsPDF;
+
+            // Endorsements that show a full image get the endorsementImageContainer class, which lets them grow past the usual 600px
+            // (to fit the image, up to 70% of the list's width - see stylesheet.css); the table fills the container and the image scales within it.
+            // PDFs (summary + icon) and image-less ones size like any other endorsement.
+            tw.AddAttribute("class", $"pHem {(fFullImage ? "endorsementImageContainer" : string.Empty)}");
+            tw.RenderBeginTag(HtmlTextWriterTag.Div);
+
+            tw.AddAttribute("class", "endorsement");
+            if (fFullImage)
+                tw.AddAttribute("style", "width: 100%");
+            tw.RenderBeginTag(HtmlTextWriterTag.Table);
+
+            // disclaimer
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("class", "endorsementHeaderDisclaimer");
+            tw.AddAttribute("colspan", "2");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.Write(HttpUtility.HtmlEncode(Branding.ReBrand(Resources.Endorsements.ImageEndorsementDisclaimer)));
+            if (e.NeedsReview)
+            {
+                tw.Write(" ");
+                tw.AddAttribute("class", "endorsementHeaderReview");
+                tw.AddAttribute("title", Resources.Endorsements.ImageEndorsementNeedsReviewTip);
+                tw.RenderBeginTag(HtmlTextWriterTag.Span);
+                tw.Write(HttpUtility.HtmlEncode(Resources.Endorsements.ImageEndorsementNeedsReview));
+                tw.RenderEndTag();  // span
+            }
+            tw.RenderEndTag(); // td
+            tw.RenderEndTag(); // tr
+
+            // Title/FAR, then body
+            tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+            tw.AddAttribute("colspan", "2");
+            tw.RenderBeginTag(HtmlTextWriterTag.Td);
+            tw.AddAttribute("class", "b");
+            tw.RenderBeginTag(HtmlTextWriterTag.Div);
+            tw.Write(HttpUtility.HtmlEncode(e.FullTitleAndFar));
+            tw.RenderEndTag();  // div
+            if (!String.IsNullOrWhiteSpace(e.EndorsementText))
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Hr);
+                tw.RenderEndTag();  // hr
+                tw.AddAttribute("class", "wsprel");
+                tw.RenderBeginTag(HtmlTextWriterTag.Div);
+                tw.Write(HttpUtility.HtmlEncode(e.EndorsementText));
+                tw.RenderEndTag();  // div
+            }
+            tw.RenderBeginTag(HtmlTextWriterTag.Hr);
+            tw.RenderEndTag();  // hr
+            tw.RenderEndTag(); // td
+            tw.RenderEndTag(); // tr
+
+            RenderLabeledRow(tw, Resources.SignOff.EditEndorsementDatePrompt, e.Date.ToShortDateString());
+            if (e.IsExternalEndorsement)
+                RenderLabeledRow(tw, Resources.SignOff.EditEndorsementStudentPrompt, e.StudentName);
+            RenderLabeledRow(tw, Resources.SignOff.EditEndorsementInstructorPrompt, e.IsExternalEndorsement ? e.CFIDisplayName : e.CFICachedName);
+            RenderLabeledRow(tw, Resources.SignOff.EditEndorsementCFIPrompt, e.CFICertificate);
+            if (e.CFIExpirationDate.HasValue())
+                RenderLabeledRow(tw, Resources.SignOff.EditEndorsementExpirationPrompt, e.CFIExpirationDate.ToShortDateString());
+
+            // The scan itself
+            if (mfbii != null)
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.Tr);
+                tw.AddAttribute("colspan", "2");
+                tw.RenderBeginTag(HtmlTextWriterTag.Td);
+                tw.AddAttribute(HtmlTextWriterAttribute.Href, AbsoluteBrandedUrl(mfbii.URLFullImage));
+                tw.AddAttribute(HtmlTextWriterAttribute.Target, "_blank");
+                tw.RenderBeginTag(HtmlTextWriterTag.A);
+                // JPEGs: the full image (the absorbed image IS the endorsement, so print it like one).  PDFs: just the PDF icon, linking to the file.
+                tw.AddAttribute(HtmlTextWriterAttribute.Src, AbsoluteBrandedUrl(fIsPDF ? mfbii.URLThumbnail : mfbii.URLFullImage));
+                tw.AddAttribute(HtmlTextWriterAttribute.Alt, Resources.Endorsements.ImageEndorsementViewOriginal);
+                tw.AddAttribute(HtmlTextWriterAttribute.Title, Resources.Endorsements.ImageEndorsementViewOriginal);
+                if (!fIsPDF)
+                    tw.AddAttribute("loading", "lazy");
+                tw.AddAttribute("class", fIsPDF ? "endorsementImageBodyPDF" : "endorsementImageBodyJPG");
+                tw.RenderBeginTag(HtmlTextWriterTag.Img);
+                tw.RenderEndTag();  // img
+                tw.RenderEndTag();  // a
+                if (fIsPDF && e.PageNumber > 0)
+                {
+                    tw.Write(" ");
+                    tw.WriteEncodedText(String.Format(CultureInfo.CurrentCulture, Resources.Endorsements.ImageEndorsementPage, e.PageNumber));
+                }
+                tw.RenderEndTag(); // td
+                tw.RenderEndTag(); // tr
+            }
+
+            tw.RenderEndTag();  // table
             tw.RenderEndTag();  // div
         }
 

@@ -210,6 +210,7 @@
         @if (po.Sections.Endorsements != PrintingSections.EndorsementsLevel.None)
         {
             IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(fq.UserName, null);
+            // Image endorsements (images that have been read and "absorbed") are treated as digital endorsements; they render their own image.
             foreach (Endorsement e in rgEndorsements)
             {
                 <div>@Html.Raw(e.RenderHTML())</div>
@@ -219,6 +220,7 @@
             {
                 ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, fq.UserName);
                 il.Refresh(fIncludeDocs: false, fIncludeVids: false);
+                il = ImageEndorsementManager.UnabsorbedImages(il);  // absorbed images were already shown with their endorsements above
                 foreach (MFBImageInfo mfbii in il.ImageArray)
                 {
                     <div class="c" style="margin-bottom: 5px; page-break-inside:avoid;"><img style="max-width: 50%;" src="@mfbii.URLFullImage" /></div>

@@ -3,6 +3,7 @@ using MyFlightbook.Clubs;
 using MyFlightbook.FlightDeckScan;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
+using MyFlightbook.Instruction;
 using MyFlightbook.Payments;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Services;
@@ -62,7 +63,13 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     bool fCanActAsAdmin = (fAsAdmin && MyFlightbook.Profile.GetUser(User.Identity.Name).CanManageData);
                     if (!fCanActAsAdmin)
                         ImageAuthorization.ValidateAuth(mfbii, User.Identity.Name, ImageAuthorization.ImageAction.Delete, true);
+
+                    // Images that have been absorbed into image endorsements are managed through those endorsements; delete them first.
+                    if (ImageEndorsementManager.IsEndorsementImageClass(ic) && ImageEndorsementManager.IsAbsorbed(ic, key, szThumb))
+                        throw new InvalidOperationException(Resources.Endorsements.ImageEndorsementCantDeleteAbsorbed);
+
                     _ = await mfbii.DeleteImage();
+                    ImageEndorsementManager.OnImageDeleted(ic, key, szThumb);
                 }
                 return new EmptyResult();
             });
@@ -116,7 +123,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
         [Authorize]
         [HttpPost]
         [ValidateHeaderAntiForgeryToken]
-        public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false)
+        public ActionResult ImagesForClassAndKey(MFBImageInfoBase.ImageClass imageClass, string szKey, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", bool fIncludeDocs = false, bool fEndorsementTools = false)
         {
             return SafeOp(() =>
             {
@@ -131,7 +138,15 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
                     il = new ImageList(imageClass, szKey);
                     il.Refresh(fIncludeDocs);
                 }
-                return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, confirmText, defaultImage, onMakeDefault, onDelete, onAnnotate);
+
+                // For the owner's endorsement images, hide images that have been absorbed into image endorsements and add the image-endorsement tools
+                IDictionary<string, ImageScanStatus> scanStatus = null;
+                if (fEndorsementTools && ImageEndorsementManager.IsEndorsementImageClass(imageClass) && szKey.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                {
+                    il = ImageEndorsementManager.UnabsorbedImages(il);
+                    scanStatus = ImageEndorsementManager.ScanStatusForImages(il);
+                }
+                return ImageListDisplay(il, altText, fCanDelete, fCanEdit, fCanMakeDefault, zoomLinkType, confirmText, defaultImage, onMakeDefault, onDelete, onAnnotate, scanStatus);
             });
         }
 
@@ -399,7 +414,7 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
 
         #region displaying of images
         [ChildActionOnly]
-        public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
+        public ActionResult ImageListDisplay(ImageList il, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, string confirmText = "", string defaultImage = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", IDictionary<string, ImageScanStatus> scanStatus = null)
         {
             if (il == null)
                 throw new ArgumentNullException(nameof(il));
@@ -414,14 +429,16 @@ namespace MyFlightbook.Web.Areas.mvc.Controllers
             ViewBag.onDelete = onDelete;
             ViewBag.onAnnotate = onAnnotate;
             ViewBag.onMakeDefault = onMakeDefault;
+            ViewBag.scanStatus = scanStatus;
 
             return PartialView("_imageList");
         }
 
         [ChildActionOnly]
-        public ActionResult EditableImage(MFBImageInfoBase mfbii, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "")
+        public ActionResult EditableImage(MFBImageInfoBase mfbii, string altText = "", bool fCanDelete = false, bool fCanEdit = false, bool fCanMakeDefault = false, GeoLinkType zoomLinkType = GeoLinkType.None, bool fIsDefault = false, string confirmText = "", string onMakeDefault = "", string onDelete = "", string onAnnotate = "", IDictionary<string, ImageScanStatus> scanStatus = null)
         {
             ViewBag.mfbii = mfbii;
+            ViewBag.scanStatus = scanStatus;
 
             ViewBag.altText = altText;
             ViewBag.fCanDelete = fCanDelete;

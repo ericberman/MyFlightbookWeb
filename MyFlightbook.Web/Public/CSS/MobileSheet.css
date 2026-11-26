@@ -206,6 +206,12 @@ html[xmlns] #menu-bar {
     margin-right:auto;
 }
 
+.endorsementImageContainer
+{
+    min-width: 0;
+    max-width: 100%;
+}
+
 /* Calendaring */
 .calContainer { }
 

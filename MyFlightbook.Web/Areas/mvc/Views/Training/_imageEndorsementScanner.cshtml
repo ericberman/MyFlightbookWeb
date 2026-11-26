@@ -1,0 +1,196 @@
+﻿@using MyFlightbook.Instruction
+@using MyFlightbook.Image
+@using System.Globalization
+@{
+    MFBImageInfoBase.ImageClass imageClass = ViewBag.imageClass;
+    int pendingCount = ViewBag.pendingCount;
+    bool fConsented = ViewBag.consented;
+    bool fConfigured = ViewBag.configured;
+    Func<string, IHtmlString> JSString = (sz) => Html.Raw(HttpUtility.JavaScriptStringEncode(sz));
+}
+@if (fConfigured)
+{
+    <script type="text/javascript">
+        var imageScan = {
+            imageClass: "@imageClass.ToString()",
+            consented: @(fConsented ? "true" : "false"),
+            queue: [],
+            index: 0,
+            totalPending: 0,
+            stopRequested: false,
+            imagesWithFinds: 0,
+            endorsementsFound: 0,
+            errors: 0,
+            onConsent: null
+        };
+
+        function imageScanRequireConsent(onConsent) {
+            if (imageScan.consented) {
+                onConsent();
+                return;
+            }
+            imageScan.onConsent = onConsent;
+            showModalById("divImageScanConsent", "@JSString(Resources.Endorsements.ImageScanConsentTitle)", 500);
+        }
+
+        function imageScanGrantConsent() {
+            $.ajax({
+                url: '@Url.Action("GrantImageScanConsent", "Training")',
+                type: "POST", data: "{}", dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) { window.alert(xhr.responseText); },
+                success: function (response) {
+                    imageScan.consented = true;
+                    dismissDlg("#divImageScanConsent");
+                    if (imageScan.onConsent)
+                        imageScan.onConsent();
+                    imageScan.onConsent = null;
+                }
+            });
+        }
+
+        function imageScanLog(text, cssClass) {
+            $("<li></li>").text(text).addClass(cssClass || "").appendTo($("#lstImageScanLog"));
+        }
+
+        function startImageScan() {
+            imageScanRequireConsent(function () {
+                $("#btnStartImageScan").prop("disabled", true);
+                $("#divImageScanDone").hide();
+                $.ajax({
+                    url: '@Url.Action("PendingImageScans", "Training")',
+                    type: "POST", data: JSON.stringify({ imageClass: imageScan.imageClass }), dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) { window.alert(xhr.responseText); $("#btnStartImageScan").prop("disabled", false); },
+                    success: function (r) {
+                        imageScan.queue = r.images;
+                        imageScan.totalPending = r.total;
+                        imageScan.index = 0;
+                        imageScan.stopRequested = false;
+                        if (imageScan.queue.length == 0) {
+                            $("#lblImageScanStatus").text("@JSString(Resources.Endorsements.ImageScanNothingPending)");
+                            $("#divImageScanProgress").show();
+                            $("#btnStopImageScan").hide();
+                            return;
+                        }
+                        $("#divImageScanProgress").show();
+                        $("#btnStopImageScan").show().prop("disabled", false);
+                        imageScanNext();
+                    }
+                });
+            });
+        }
+
+        function stopImageScan() {
+            imageScan.stopRequested = true;
+            $("#btnStopImageScan").prop("disabled", true);
+            $("#lblImageScanStatus").text("@JSString(Resources.Endorsements.ImageScanStopping)");
+        }
+
+        function imageScanUpdateProgress() {
+            var total = imageScan.queue.length;
+            var pct = total == 0 ? 100 : Math.round(100 * imageScan.index / total);
+            $("#divImageScanBar").css("width", pct + "%");
+        }
+
+        function imageScanNext() {
+            imageScanUpdateProgress();
+            if (imageScan.stopRequested || imageScan.index >= imageScan.queue.length) {
+                imageScanFinish();
+                return;
+            }
+
+            var img = imageScan.queue[imageScan.index];
+            $("#lblImageScanStatus").text("@JSString(Resources.Endorsements.ImageScanProgressTemplate)".replace("{0}", imageScan.index + 1).replace("{1}", imageScan.queue.length).replace("{2}", img.comment));
+            $.ajax({
+                url: '@Url.Action("ScanEndorsementImage", "Training")',
+                type: "POST", data: JSON.stringify({ imageClass: imageScan.imageClass, szThumb: img.thumb, fForce: false }), dataType: "json", contentType: "application/json",
+                error: function (xhr, status, error) {
+                    imageScan.errors++;
+                    imageScanLog(img.comment + ": " + xhr.responseText, "error");
+                    // Configuration/consent/service-wide problems will keep failing; stop rather than burn through the queue.
+                    if (xhr.status == 0 || imageScan.errors >= 3)
+                        imageScan.stopRequested = true;
+                },
+                success: function (r) {
+                    if (r.skipped)
+                        return;
+                    if (r.found > 0) {
+                        imageScan.imagesWithFinds++;
+                        imageScan.endorsementsFound += r.found;
+                        imageScanLog(img.comment + ": " + r.titles.join("; "));
+                    } else
+                        imageScanLog(img.comment + ": @JSString(Resources.Endorsements.ImageScanNothingFoundBadge)", "fineprint");
+                },
+                complete: function () {
+                    imageScan.index++;
+                    imageScanNext();
+                }
+            });
+        }
+
+        function imageScanFinish() {
+            $("#btnStopImageScan").hide();
+            var processed = imageScan.index;
+            var remaining = imageScan.totalPending - processed;
+            $("#lblImageScanStatus").text("@JSString(Resources.Endorsements.ImageScanSummaryTemplate)".replace("{0}", processed).replace("{1}", imageScan.endorsementsFound));
+            $("#btnContinueImageScan").toggle(remaining > 0).text("@JSString(Resources.Endorsements.ImageScanContinueTemplate)".replace("{0}", remaining));
+            $("#btnReloadAfterImageScan").toggle(processed > 0);
+            $("#divImageScanDone").show();
+            $("#btnStartImageScan").prop("disabled", false);
+        }
+
+        function scanSingleEndorsementImage(sender, imageClass, thumb) {
+            imageScanRequireConsent(function () {
+                var lnk = $(sender);
+                var tools = lnk.closest("[name='imageEndorsementTools']");
+                var links = tools.find("[name='imageEndorsementToolLinks']");
+                links.hide();
+                var lbl = $("<span></span>").appendTo(tools);
+                var lblText = $("<span></span>").text("@JSString(Resources.Endorsements.ImageScanReadingOne)");
+                lbl.append($("<img></img>").attr("src", "@("~/images/progress.gif".ToAbsolute())").css({ width: "16px", height: "16px", verticalAlign: "middle", marginRight: "3px" })).append(lblText);
+                $.ajax({
+                    url: '@Url.Action("ScanEndorsementImage", "Training")',
+                    type: "POST", data: JSON.stringify({ imageClass: imageClass, szThumb: thumb, fForce: true }), dataType: "json", contentType: "application/json",
+                    error: function (xhr, status, error) { lbl.remove(); links.show(); window.alert(xhr.responseText); },
+                    success: function (r) {
+                        if (r.found > 0)
+                            window.location.reload();
+                        else {
+                            lbl.text("@JSString(Resources.Endorsements.ImageScanNothingFoundBadge)");
+                            links.show();
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+    <div class="noprint" style="margin: 8px 0px;">
+        <button type="button" id="btnStartImageScan" onclick="javascript: startImageScan();">@Resources.Endorsements.ImageScanButton</button>
+        <span class="fineprint">@(pendingCount == 0 ? Resources.Endorsements.ImageScanNonePending : String.Format(CultureInfo.CurrentCulture, Resources.Endorsements.ImageScanPendingTemplate, pendingCount, Math.Min(pendingCount, ImageEndorsementManager.MaxImagesPerRun)))</span>
+        <div id="divImageScanProgress" style="display: none; margin-top: 6px; max-width: 500px;">
+            <div style="border: 1px solid gray; height: 10px; width: 100%;"><div id="divImageScanBar" style="background-color: #4472C4; height: 100%; width: 0%;"></div></div>
+            <div id="lblImageScanStatus"></div>
+            <button type="button" id="btnStopImageScan" onclick="javascript: stopImageScan();">@Resources.Endorsements.ImageScanStop</button>
+            <ul id="lstImageScanLog" style="max-height: 200px; overflow-y: auto;"></ul>
+        </div>
+        <div id="divImageScanDone" style="display: none;">
+            <button type="button" id="btnContinueImageScan" onclick="javascript: startImageScan();"></button>
+            <button type="button" id="btnReloadAfterImageScan" onclick="javascript: window.location.reload();">@Resources.Endorsements.ImageScanShowResults</button>
+        </div>
+    </div>
+    <div id="divImageScanConsent" style="display: none;">
+        <p>@Branding.ReBrand(Resources.Endorsements.ImageScanConsentText)</p>
+        <p class="fineprint">@Resources.Endorsements.ImageScanConsentManualAlternative</p>
+        <div style="text-align: center;">
+            <button type="button" onclick="javascript: dismissDlg('#divImageScanConsent');">@Resources.LocalizedText.Cancel</button>
+            <button type="button" onclick="javascript: imageScanGrantConsent();">@Resources.Endorsements.ImageScanConsentAgree</button>
+        </div>
+    </div>
+}
+else
+{
+    <script type="text/javascript">
+        // Reading images isn't configured; per-image "read" links just explain that.
+        function scanSingleEndorsementImage(sender, imageClass, thumb) { window.alert("@JSString(Resources.Endorsements.ImageScanNotConfigured)"); }
+    </script>
+}
+@{ Html.RenderAction("RenderImageEndorsementEditor", "Training"); }

@@ -1,0 +1,145 @@
+﻿@using MyFlightbook.Instruction
+@using MyFlightbook.Image
+@{
+    // Rendered by both the endorsement list and the image scanner; only emit it once per page.
+    const string szRenderedKey = "imageEndorsementEditorRendered";
+    bool fAlreadyRendered = Context.Items.Contains(szRenderedKey);
+    Context.Items[szRenderedKey] = true;
+}
+@if (!fAlreadyRendered)
+{
+    <script type="text/javascript">
+        function editImageEndorsement(d) {
+            var dlg = $("#divImageEndorsementEditor");
+            dlg.find("[name='ieID']").val(d.id || 0);
+            dlg.find("[name='ieImageClass']").val(d.imageClass || "");
+            dlg.find("[name='ieThumb']").val(d.thumb || "");
+            dlg.find("[name='ieTitle']").val(d.title || "");
+            dlg.find("[name='ieFarRef']").val(d.farRef || "");
+            dlg.find("[name='ieDate']").val(d.date || "");
+            dlg.find("[name='ieCfiName']").val(d.cfiName || "");
+            dlg.find("[name='ieCfiCert']").val(d.cfiCert || "");
+            dlg.find("[name='ieCfiExpiration']").val(d.cfiExpiration || "");
+            dlg.find("[name='ieText']").val(d.text || "");
+            dlg.find("[name='ieCategory']").val(d.category && d.category != "None" ? d.category : "Other");
+            dlg.find("[name='ieStudent']").val(d.student || "");
+            dlg.find(".ieStudentRow").toggle(d.imageClass == "@MFBImageInfoBase.ImageClass.OfflineEndorsement");
+            dlg.find(".ieRawTextRow").toggle(!!d.rawText);
+            dlg.find("[name='ieRawText']").text(d.rawText || "");
+            $("#lblImageEndorsementErr").text("");
+            showModalById("divImageEndorsementEditor", d.id > 0 ? "@Html.Raw(HttpUtility.JavaScriptStringEncode(Resources.Endorsements.ImageEndorsementEditTitle))" : "@Html.Raw(HttpUtility.JavaScriptStringEncode(Resources.Endorsements.ImageEndorsementAddTitle))", 650);
+        }
+
+        function addImageEndorsementFromImage(imageClass, thumb) {
+            editImageEndorsement({ id: 0, imageClass: imageClass, thumb: thumb, category: "Other" });
+        }
+
+        function saveImageEndorsement() {
+            var dlg = $("#divImageEndorsementEditor");
+            var params = new Object();
+            params.id = parseInt(dlg.find("[name='ieID']").val());
+            params.imageClass = dlg.find("[name='ieImageClass']").val();
+            params.szThumb = dlg.find("[name='ieThumb']").val();
+            params.title = dlg.find("[name='ieTitle']").val();
+            params.farRef = dlg.find("[name='ieFarRef']").val();
+            params.date = dlg.find("[name='ieDate']").val();
+            params.cfiName = dlg.find("[name='ieCfiName']").val();
+            params.cfiCert = dlg.find("[name='ieCfiCert']").val();
+            params.cfiExpiration = dlg.find("[name='ieCfiExpiration']").val();
+            params.text = dlg.find("[name='ieText']").val();
+            params.category = dlg.find("[name='ieCategory']").val();
+            params.student = dlg.find("[name='ieStudent']").val();
+            if ((params.title || "").trim() == "") {
+                $("#lblImageEndorsementErr").text("@Html.Raw(HttpUtility.JavaScriptStringEncode(Resources.SignOff.errNoTitle))");
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("SaveImageEndorsement", "Training")',
+                type: "POST", data: JSON.stringify(params), dataType: "text", contentType: "application/json",
+                error: function (xhr, status, error) { $("#lblImageEndorsementErr").text(xhr.responseText); },
+                success: function (response) { window.location.reload(); }
+            });
+        }
+    </script>
+    <div id="divImageEndorsementEditor" style="display: none;">
+        <input type="hidden" name="ieID" />
+        <input type="hidden" name="ieImageClass" />
+        <input type="hidden" name="ieThumb" />
+        <p class="fineprint">@Branding.ReBrand(Resources.Endorsements.ImageEndorsementEditDescription)</p>
+        <table class="w100">
+            <tr>
+                <td class="b">@Resources.Endorsements.ImageEndorsementTitlePrompt</td>
+                <td><input type="text" name="ieTitle" class="w100" maxlength="255" required /></td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.SignOff.EditEndorsementFARPrompt</td>
+                <td><input type="text" name="ieFarRef" class="w100" maxlength="255" /></td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.Endorsements.ImageEndorsementCategoryPrompt</td>
+                <td>
+                    <select name="ieCategory">
+                        @{
+                            Dictionary<int, List<EndorsementCategory>> d = new Dictionary<int, List<EndorsementCategory>>();
+                            foreach (EndorsementCategory ec in Enum.GetValues(typeof(EndorsementCategory)))
+                            {
+                                if (ec == EndorsementCategory.None)
+                                {
+                                    continue;
+                                }
+                                int mc = EndorsementType.MajorCategoryForSubCategory(ec);
+                                if (!d.TryGetValue(mc, out List<EndorsementCategory> categories))
+                                {
+                                    d[mc] = categories = new List<EndorsementCategory>();
+                                }
+                                categories.Add(ec);
+                            }
+                            foreach (int mc in d.Keys)
+                            {
+                                <optgroup label="@EndorsementType.EndorsementMajorCategory(mc)">
+                                    @foreach (EndorsementCategory ec in d[mc])
+                                    {
+                                        <option value="@ec.ToString()">@EndorsementType.EndorsementCategoryName(ec)</option>
+                                    }
+                                </optgroup>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.SignOff.EditEndorsementDatePrompt</td>
+                <td><input type="date" name="ieDate" /></td>
+            </tr>
+            <tr class="ieStudentRow">
+                <td class="b">@Resources.SignOff.EditEndorsementStudentPrompt</td>
+                <td><input type="text" name="ieStudent" class="w100" maxlength="255" /></td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.SignOff.EditEndorsementInstructorPrompt</td>
+                <td><input type="text" name="ieCfiName" class="w100" maxlength="255" /></td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.SignOff.EditEndorsementCFIPrompt</td>
+                <td><input type="text" name="ieCfiCert" class="w100" maxlength="255" /></td>
+            </tr>
+            <tr>
+                <td class="b">@Resources.SignOff.EditEndorsementExpirationPrompt</td>
+                <td><input type="date" name="ieCfiExpiration" /></td>
+            </tr>
+            <tr>
+                <td class="b" style="vertical-align: top;">@Resources.SignOff.EditEndorsementEndorsementPrompt</td>
+                <td><textarea name="ieText" class="w100" rows="6"></textarea></td>
+            </tr>
+            <tr class="ieRawTextRow">
+                <td class="b" style="vertical-align: top;">@Resources.Endorsements.ImageEndorsementRawTextPrompt</td>
+                <td><div name="ieRawText" class="fineprint" style="white-space: pre-line; max-height: 120px; overflow-y: auto;"></div></td>
+            </tr>
+        </table>
+        <div class="error" id="lblImageEndorsementErr"></div>
+        <div style="text-align: center; margin-top: 8px;">
+            <button type="button" onclick="javascript: dismissDlg('#divImageEndorsementEditor');">@Resources.LocalizedText.Cancel</button>
+            <button type="button" onclick="javascript: saveImageEndorsement();">@Resources.LocalizedText.OK</button>
+        </div>
+    </div>
+}

@@ -554,5 +554,401 @@ namespace Resources {
                 return ResourceManager.GetString("SubCatWithoutRating", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add endorsement.
+        /// </summary>
+        internal static string ImageEndorsementAddManually {
+            get {
+                return ResourceManager.GetString("ImageEndorsementAddManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type in an endorsement or document found in this image yourself.
+        /// </summary>
+        internal static string ImageEndorsementAddManuallyTip {
+            get {
+                return ResourceManager.GetString("ImageEndorsementAddManuallyTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add an endorsement from this image.
+        /// </summary>
+        internal static string ImageEndorsementAddTitle {
+            get {
+                return ResourceManager.GetString("ImageEndorsementAddTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter dates as YYYY-MM-DD.
+        /// </summary>
+        internal static string ImageEndorsementBadDate {
+            get {
+                return ResourceManager.GetString("ImageEndorsementBadDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This image has endorsements that were read from it.  Delete those endo[rest of string was truncated].
+        /// </summary>
+        internal static string ImageEndorsementCantDeleteAbsorbed {
+            get {
+                return ResourceManager.GetString("ImageEndorsementCantDeleteAbsorbed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category:.
+        /// </summary>
+        internal static string ImageEndorsementCategoryPrompt {
+            get {
+                return ResourceManager.GetString("ImageEndorsementCategoryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this endorsement?  The image it was read from will NOT be delet[rest of string was truncated].
+        /// </summary>
+        internal static string ImageEndorsementConfirmDelete {
+            get {
+                return ResourceManager.GetString("ImageEndorsementConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a representation of an endorsement or document that exists els[rest of string was truncated].
+        /// </summary>
+        internal static string ImageEndorsementDisclaimer {
+            get {
+                return ResourceManager.GetString("ImageEndorsementDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This summarizes an endorsement or document that exists elsewhere, so y[rest of string was truncated].
+        /// </summary>
+        internal static string ImageEndorsementEditDescription {
+            get {
+                return ResourceManager.GetString("ImageEndorsementEditDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit this endorsement summary.
+        /// </summary>
+        internal static string ImageEndorsementEditPrompt {
+            get {
+                return ResourceManager.GetString("ImageEndorsementEditPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit endorsement summary.
+        /// </summary>
+        internal static string ImageEndorsementEditTitle {
+            get {
+                return ResourceManager.GetString("ImageEndorsementEditTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needs review.
+        /// </summary>
+        internal static string ImageEndorsementNeedsReview {
+            get {
+                return ResourceManager.GetString("ImageEndorsementNeedsReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This was read automatically and may contain mistakes.  Compare it to t[rest of string was truncated].
+        /// </summary>
+        internal static string ImageEndorsementNeedsReviewTip {
+            get {
+                return ResourceManager.GetString("ImageEndorsementNeedsReviewTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Summary derived from page {0}).
+        /// </summary>
+        internal static string ImageEndorsementPage {
+            get {
+                return ResourceManager.GetString("ImageEndorsementPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text as read:.
+        /// </summary>
+        internal static string ImageEndorsementRawTextPrompt {
+            get {
+                return ResourceManager.GetString("ImageEndorsementRawTextPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title:.
+        /// </summary>
+        internal static string ImageEndorsementTitlePrompt {
+            get {
+                return ResourceManager.GetString("ImageEndorsementTitlePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Unknown student).
+        /// </summary>
+        internal static string ImageEndorsementUnknownStudent {
+            get {
+                return ResourceManager.GetString("ImageEndorsementUnknownStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the original.
+        /// </summary>
+        internal static string ImageEndorsementViewOriginal {
+            get {
+                return ResourceManager.GetString("ImageEndorsementViewOriginal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categorize images.
+        /// </summary>
+        internal static string ImageScanButton {
+            get {
+                return ResourceManager.GetString("ImageScanButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I agree.
+        /// </summary>
+        internal static string ImageScanConsentAgree {
+            get {
+                return ResourceManager.GetString("ImageScanConsentAgree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you prefer not to, you can still add endorsements from an image you[rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanConsentManualAlternative {
+            get {
+                return ResourceManager.GetString("ImageScanConsentManualAlternative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To find the endorsements in your images, %APP_NAME% sends each image o[rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanConsentText {
+            get {
+                return ResourceManager.GetString("ImageScanConsentText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading your images.
+        /// </summary>
+        internal static string ImageScanConsentTitle {
+            get {
+                return ResourceManager.GetString("ImageScanConsentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue ({0} more).
+        /// </summary>
+        internal static string ImageScanContinueTemplate {
+            get {
+                return ResourceManager.GetString("ImageScanContinueTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to "Categorize images" reads your scanned endorsements and documents and [rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanDescription {
+            get {
+                return ResourceManager.GetString("ImageScanDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to "Categorize images" reads your scanned records of endorsements given a[rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanDescriptionOffline {
+            get {
+                return ResourceManager.GetString("ImageScanDescriptionOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please agree to having your images read first..
+        /// </summary>
+        internal static string ImageScanNeedsConsent {
+            get {
+                return ResourceManager.GetString("ImageScanNeedsConsent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All of your images have been read..
+        /// </summary>
+        internal static string ImageScanNonePending {
+            get {
+                return ResourceManager.GetString("ImageScanNonePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading images is not available right now..
+        /// </summary>
+        internal static string ImageScanNotConfigured {
+            get {
+                return ResourceManager.GetString("ImageScanNotConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only images and PDF files can be read..
+        /// </summary>
+        internal static string ImageScanNotScannable {
+            get {
+                return ResourceManager.GetString("ImageScanNotScannable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No endorsements found.
+        /// </summary>
+        internal static string ImageScanNothingFoundBadge {
+            get {
+                return ResourceManager.GetString("ImageScanNothingFoundBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no images to read..
+        /// </summary>
+        internal static string ImageScanNothingPending {
+            get {
+                return ResourceManager.GetString("ImageScanNothingPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This PDF couldn't be opened (it may be protected or damaged), and is t[rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanPDFUnreadable {
+            get {
+                return ResourceManager.GetString("ImageScanPDFUnreadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} image(s) not yet read; up to {1} will be read at a time..
+        /// </summary>
+        internal static string ImageScanPendingTemplate {
+            get {
+                return ResourceManager.GetString("ImageScanPendingTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading {0} of {1}: {2}.
+        /// </summary>
+        internal static string ImageScanProgressTemplate {
+            get {
+                return ResourceManager.GetString("ImageScanProgressTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read.
+        /// </summary>
+        internal static string ImageScanReadOne {
+            get {
+                return ResourceManager.GetString("ImageScanReadOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read this image (again) to find endorsements.
+        /// </summary>
+        internal static string ImageScanReadOneTip {
+            get {
+                return ResourceManager.GetString("ImageScanReadOneTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading....
+        /// </summary>
+        internal static string ImageScanReadingOne {
+            get {
+                return ResourceManager.GetString("ImageScanReadingOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The image-reading service returned an error (HTTP {0}).  Please try ag[rest of string was truncated].
+        /// </summary>
+        internal static string ImageScanServiceError {
+            get {
+                return ResourceManager.GetString("ImageScanServiceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The image-reading service didn't respond.  Please try again..
+        /// </summary>
+        internal static string ImageScanServiceUnavailable {
+            get {
+                return ResourceManager.GetString("ImageScanServiceUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show results.
+        /// </summary>
+        internal static string ImageScanShowResults {
+            get {
+                return ResourceManager.GetString("ImageScanShowResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string ImageScanStop {
+            get {
+                return ResourceManager.GetString("ImageScanStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping after the current image....
+        /// </summary>
+        internal static string ImageScanStopping {
+            get {
+                return ResourceManager.GetString("ImageScanStopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read {0} image(s) and found {1} endorsement(s)..
+        /// </summary>
+        internal static string ImageScanSummaryTemplate {
+            get {
+                return ResourceManager.GetString("ImageScanSummaryTemplate", resourceCulture);
+            }
+        }
     }
 }
