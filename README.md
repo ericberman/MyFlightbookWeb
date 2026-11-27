@@ -8,18 +8,7 @@ The website and services for MyFlightbook. This provides the back-end for the mo
  * Make sure IIS has HTTP Redirection turned on under Internet Information Services/World Wide Web Services/Common HTTP Features
  * Create 6 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "OfflineEndorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).  
  NOTE: Visual studio debugging can get very slow if these contain a lot of files/folders, so it's a good idea to mark them as hidden in the file system (top level only is sufficient).
- * Add the following web.config to the Telemetry folder created above, so that it can't serve telemetry directly:
- ~~~~
- <?xml version="1.0"?>
-<configuration>
-  <system.webServer>
-    <authorization>
-      <deny users="?" />
-      <deny users="*"/>
-    </authorization>
-  </system.webServer>
-</configuration>
- ~~~~
+ 
  * Set up the virtual directory for "logbook" pointing to your working directory, convert it to an application. Use ASP.NET 4.5 or later as your application pool. A lot of items point to /logbook, so the root should be the parent folder
 and the application should be called "logbook" and point to the /logbook branch.
  * Set up a certificate to enable https.
@@ -38,7 +27,6 @@ and the application should be called "logbook" and point to the /logbook branch.
     <add name="logbookConnectionString" connectionString="server=...;User Id=...;password=...;Persist Security Info=false;database=logbook;CharSet=utf8mb4;Pooling=false" providerName="MySql.Data.MySqlClient" />
   </connectionStrings>
 ~~~~
- * Review Packages.config and install the requisite products/DLLs (typically via NuGet) into the Bin directory.
  
  ### Setting up the database
  * Install MySQL and import "MinimalDB-xxxx-xx-xx.sql" (in the Support folder), then apply any/all scripts in that folder that are after that date.  The scripts all assue that your database schema is "logbook" (see connection.config above), but you can use any connection you like; just be sure to edit the update scripts if you use other than "logbook".
@@ -46,17 +34,20 @@ and the application should be called "logbook" and point to the /logbook branch.
  * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216.
  * Not a bad idea to bump up group_concat_max_len to something like 2048.
  * Depending on where MySQL is hosted, may need to set  lower_case_table_names=1, since the code is not consistent about upper/lower case for table names.
- * If on 5.7, may need any of the following: 
+ * If on 5.7, may need any of the following:  
  * sql_mode ALLOW_INVALID_DATES
  
  #### LocalConfig settings
  * AdminAuthAccessKey - Enables use of certain admin-only functionality (provides an encrytion seed)
+ * AircraftPixDir - the path to the Aircraft images directory (e.g., "~/images/aircraft/id/")
  * AnthropicApiKey - API key for using Anthropic's AI services (aka "Claude")
- * AnthropicScanModel - the Anthropic model to use
+ * AnthropicEndorsementModel - the Anthropic model to use for endorsement scanning
+ * AnthropicScanModel - the Anthropic model to use for flight deck scanning
  * AuthorizedWebServiceClients - Comma separated list of authorized clients of the web services (i.e., the iOS and Android apps)
  * AWSAccessKey - Access key for Amazon Web services
  * AWSMediaConvertRoleArn - Arn for converting media (video) files on AWS
  * AWSSecretKey - Secret for Amazon Web Services
+ * BasicMedDir - the path to the BasicMed images directory (e.g., "~/images/basicmed/")
  * BoxClientID - oAuth ID for Box.com
  * BoxClientSecret - oAuth secret for Box.com
  * CloudAhoyID - oAuth ID for CloudAhoy oAuth
@@ -64,6 +55,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * DebugDomains - Identifies local domains (e.g., http://localhost) from which oAuth requests may originate
  * DropboxAccessID - Access key for Dropbox
  * DropboxClientSecret - Secret for Dropbox
+ * EndorsementPixDir - the path to the Endorsements image directory (e.g., "~/images/Endorsements/")
  * ETSPipelineID - Amazon Elastic Transcoder ID for processing videos
  * ETSPipelineIDDebug - Amazon Elastic Transcoder ID for processing videos from a debug/development website
  * ETSPipelineIDStaging - Amazon Elastic Transcoder ID for processing videos from staging website
@@ -72,6 +64,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * FacebookClientSecret - Secret for Facebook (Obsolete)
  * FlightCrewViewClientID - oAuth clientID for interacting with FlightCrewView
  * FlightCrewViewClientSecret - oAuth secret for interacting with FlightCrewView
+ * FlightPixDir - the path to the flights images directory (e.g., "~/images/flights/")
  * FlyStoAccessID - oAuth clientID for interacting with FlySto
  * FlyStoClientSecret - oAuth secret for interacting with FlySto
  * GoogleAdClient - ID for google adsense ads (shown only on select public pages)
@@ -84,6 +77,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  * GoogleDriveAccessID - oAuth ID for Google Drive
  * GoogleDriveClientSecret - oAuth secret for Google Drive
  * GoogleMapID - ID for google maps (required to use AdvancedMarkerElement and recaptcha)
+ * GoogleMapIDVisited - ID for google maps for visited map (i.e., with coloring of countries/regions)
  * GoogleMapsKey - Key for using Google maps. Get your own
  * GooglePlusAccessID - Access key for Google Plus (Obsolete)
  * GooglePlusAPIKey - API key for Google Plus (Obsolete)
@@ -91,6 +85,9 @@ and the application should be called "logbook" and point to the /logbook branch.
  * GroundSchoolDiscountLink - promotion text (in markup) for a donation tier
  * LeonClientID - oAuth ID for Leon Scheduling System
  * LeonClientSecret - oAuth secret for Leon Scheduling System
+ * MyTailLogClientID - oAuth ID for MyTailLog
+ * MyTailLogClientSecret - oAuth secret for MyTailLog
+ * OfflineEndorsementsPixDir = the path to the offline-endorsements images directory (e.g., "~/images/OfflineEndorsements/")
  * OneDriveAccessID - oAuth ID for OneDrive
  * OneDriveClientSecret - oAuth secret for OneDrive
  * PeerRequestEncryptorKey - Key used for encrypting/decrypting requests between peer users
@@ -98,6 +95,11 @@ and the application should be called "logbook" and point to the /logbook branch.
  * rbClientDIDDev - oAuth ID for RosterBuster (development)
  * recaptchaKey - ID for using Google's recaptcha
  * recaptchValidateEndpoint - the url for validating recaptcha
+ * RequireSignedResourceUrls - set to "yes" to require signed pre-signed URLs for serving thumbnails and full images
+ * ResourceUrlSigningKey - base64 byte array used for resource signing (for pre-signed URLs)
+ * ResourceUrlSigningKeyPrevious - when rotating the signing key, this is the previous value so that it can continue to work for an overlapping period of time.
+ * S3BucketName - the name for the S3 bucket in production
+ * S3BucketNameDebug - the name for a debug S3 bucket (when testing against a server that doesn't match production's hostname)
  * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world
  * ShuntState - "shunted" to shunt the site, otherwise empty
  * ShuntMessage - the message to display while the site is shunted.
@@ -106,9 +108,16 @@ and the application should be called "logbook" and point to the /logbook branch.
  * StripeLiveThinWebhook - webhook for receiving notifications in the live environment from Stripe (no longer stripe version dependent).
  * StripeTestKey - key for interacting with stripe in the development environment
  * StripeTestWebhook - webhook for receiving notifications in the development environment from Stripe
+ * StripeLiveWebhookStandby - obsolete
+ * TachTimeClientID - oAuth ID for TachTime
+ * TachTimeClientIDSandbox - oAuth ID for TachTime (development)
+ * TachTimeClientSecret - oAuth secret for TachTime
+ * TachTimeClientSecretSandbox - oAuth ID for TachTime (development)
+ * TelemetryDir - the path to the telemetry folder (e.g., "~/images/Telemetry")
  * TwitterAccessID - oAuth ID for Twitter (obsolete)
  * TwitterClientSecret - Secret for Twitter (Obsolete)
- * UseAWSS3 - Set to "yes" to migrate images to S3. Best to leave this "no" for local debugging
+ * UseAWSS3 - Set to "yes" to migrate images to S3. If no, images stay local to your machine.
+ * UseImageDB - Set to "yes" to track images in the database (leave it "yes" - things will break otherwise)
  * UseOOF - set to "yes" to auto-respond to contact-me requests with an out-of-office message.
  * UserAccessEncryptorKey - Used to share flights
  * UserPasswordHashKey - Hash key used when storing hashed passwords in the database
