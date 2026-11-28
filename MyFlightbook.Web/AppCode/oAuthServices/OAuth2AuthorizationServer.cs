@@ -1,6 +1,5 @@
 ﻿using MyFlightbook;
 using MyFlightbook.OAuth;
-using MyFlightbook.OAuth.Legacy;
 using MyFlightbook.OAuth.Server;
 using MySql.Data.MySqlClient;
 using System;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Web;
 
 /******************************************************
@@ -107,6 +105,8 @@ namespace OAuthAuthorizationServer.Code
                 throw new MyFlightbookValidationException("Client identifier cannot be a URL (URL client IDs are reserved for Client ID Metadata Documents)");
             if (Callbacks == null || !Callbacks.Any())
                 throw new MyFlightbookValidationException("Callback URL cannot be empty");
+            if (ClientName.CompareCurrentCultureIgnoreCase(OAuth2AuthorizationServer.publicClientProxyID) == 0)
+                throw new MyFlightbookValidationException($"Client name cannot be \"{OAuth2AuthorizationServer.publicClientProxyID}\" - that is reserved");
 
             foreach (string callback in Callbacks)
             {
@@ -169,7 +169,6 @@ namespace OAuthAuthorizationServer.Code
             });
             OAuth2AuthorizationServer.RefreshClients();
         }
-
         #region Properties
         public string ClientIdentifier { get; set; }
         public string ClientName { get; set; }
@@ -403,7 +402,6 @@ GROUP BY clientID;");
                 TokenEndpoint = "~/mvc/oAuth/OAuthToken".ToAbsoluteURL(request),
                 RevocationEndpoint = "~/mvc/oAuth/Revoke".ToAbsoluteURL(request),
                 LegacyProxyClientId = publicClientProxyID,
-                LegacyAccessTokenReader = ReadLegacyAccessToken,
                 OnLegacyTokenUsed = (kind, clientId, user) => MyFlightbook.SharedUtility.EventRecorder.EventRecorder.LogCall("Legacy (DotNetOpenAuth) OAuth {kind} token used: client {client}, user {user}", kind, clientId, user)
             };
             options.Resources.Add("~/mvc/oAuth/OAuthResource".ToAbsoluteURL(request).AbsoluteUri);  // the MyFlightbook API
@@ -411,25 +409,5 @@ GROUP BY clientID;");
 
             return new OAuthServer(options, new MySqlOAuthServerStore(), _registry);
         }
-
-        #region Legacy (DotNetOpenAuth) access tokens - REMOVE 14+ days after cutover
-        // DNOA access tokens were RSA-signed and -encrypted with the key in the machine key container below, and lived 14 days.
-        // Once the last of them has expired, delete this region and set LegacyAccessTokenReader = null above.
-        private const string KeyContainerName = "MyFlightbookContainer";
-
-        private static LegacyTokenContents ReadLegacyAccessToken(string token)
-        {
-            CspParameters cp = new CspParameters()
-            {
-                Flags = CspProviderFlags.UseArchivableKey | CspProviderFlags.UseMachineKeyStore,
-                KeyContainerName = KeyContainerName
-            };
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(cp))
-            {
-                // Same key pair signs (public half verifies) and encrypts (private half decrypts), exactly as DNOA used it
-                return LegacyDnoaTokenReader.TryReadAccessToken(token, rsa, rsa, out LegacyTokenContents contents) ? contents : null;
-            }
-        }
-        #endregion
     }
 }

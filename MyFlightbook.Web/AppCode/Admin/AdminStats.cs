@@ -63,20 +63,17 @@ FROM users");
 
     public class OAuthStats
     {
-        public int NonceCount { get; private set; }
         public int OAuthAccounts { get; private set; }
         public int PasswordResets { get; private set; }
 
         public void Refresh()
         {
             DBHelper dbh = new DBHelper(@"SELECT 
-            (SELECT count(*) FROM nonce) AS NonceCount,
             (SELECT count(*) FROM oauthclientauthorization) AS 'oAuthClient Auths',
             (SELECT count(*) FROM passwordresetrequests) AS PasswordResetCount;");
             dbh.ReadRow((comm) => { comm.CommandTimeout = 300; },
                 (dr) =>
                 {
-                    NonceCount = Convert.ToInt32(dr["NonceCount"], CultureInfo.InvariantCulture);
                     OAuthAccounts = Convert.ToInt32(dr["oAuthClient Auths"], CultureInfo.InvariantCulture);
                     PasswordResets = Convert.ToInt32(dr["PasswordResetCount"], CultureInfo.InvariantCulture);
                 });
@@ -421,7 +418,6 @@ ORDER BY numflights;");
         public static void TrimOldOAuth()
         {
             // Clean up old Nonces and cryptokeys
-            new DBHelper("DELETE FROM nonce WHERE timestampUtc < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
             new DBHelper("DELETE FROM cryptokeys WHERE ExpiresUtc < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
             new DBHelper("DELETE FROM passwordresetrequests WHERE expiration < DATE_ADD(Now(), INTERVAL -14 DAY)").DoNonQuery();
         }
